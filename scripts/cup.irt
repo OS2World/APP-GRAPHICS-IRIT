@@ -1,0 +1,91 @@
+#
+# A modern cup.
+#
+#				Gershon Elber, November 1995
+#
+
+PtList = nil();
+for ( i = 0, 1, 7,
+    snoc( point( cos( i * 2 * Pi / 8 ), sin( i * 2 * Pi / 8 ), 0.0 ),
+	  PtList ) );
+free( i );
+
+C1 = coerce( cbspline( 3, PtList, list( KV_PERIODIC ) ), KV_OPEN ) * rz( -22.5 );
+C2 = coerce( cbspline( 2, PtList, list( KV_PERIODIC ) ), KV_OPEN ) * sc( 1.1 );
+free( PtList );
+
+MinSize = 0.01;
+Body = sFromCrvs( list( C2 * sc( MinSize ) * tz( 0.05 ),
+			C2 * sc( 0.7 ) * tz( 0.05 ),
+			C2 * sc( 0.8 ) * tz( 0.05 ),
+			C2 * sc( 0.9 ),
+			C2,
+			C2 * tz( 2.0 ),
+			C2 * tz( 2.2 ),
+			C1 * tz( 2.2 ),
+			C1 * tz( 2.0 ),
+			C1 * tz( 0.4 ),
+			C1 * sc( 0.5 ) * tz( 0.2 ),
+			C1 * sc( MinSize ) * tz( 0.2 ) ),
+		  3, KV_OPEN );
+free( MinSize );
+
+HandAxis = crefine( cbspline( 3,
+			      list( ctlpt( E3, 0.0, 0.0, 0.0 ),
+				    ctlpt( E3, 0.3, 0.0, 0.1 ),
+				    ctlpt( E3, 0.5, 0.0, 0.5 ),
+				    ctlpt( E3, 0.5, 0.0, 0.8 ),
+				    ctlpt( E3, 0.0, 0.0, 0.8 ) ),
+			      list( KV_OPEN ) ),
+		    false, list( 0.1, 0.23, 0.43, 0.57 ) );
+Handle = SwpSclSrf( C1 * sx( 0.7 ),
+		    HandAxis * sc( 1.5 ),
+		    0.15,
+		    vector( 0, 1, 0 ),
+		    1 ) * trans( vector( 1.0, 0.0, 0.4 ) );
+free( HandAxis );
+free( C1 );
+free( C2 );
+
+Cup = list( Body, Handle );
+color( Cup, white );
+
+save( "cup", cup );
+interact( Cup );
+
+BodyIn = sregion( Body, row, 0.6, 1.0 );
+color( BodyIn, red );
+BodyOut = sregion( Body, row, 0.0, 0.6 );
+color( BodyOut, green );
+interact( list( BodyOut, BodyIn ) );
+
+HandleOut = Handle;
+color( HandleOut, red );
+HandleIn = offset( HandleOut, 0.05, 0.05, false );
+color( HandleIn, green );
+
+interact( list( HandleOut, HandleIn ) );
+
+#
+# Create a trimmed surfaces (model) version of the cup
+#
+
+mHandle = coerce( Handle, model_type );
+mBody = coerce( Body, model_type );
+
+mCup = mHandle + mBody;
+free( mHandle );
+free( mBody );
+
+save( "cup2", mCup );
+interact( mCup );
+
+
+free( HandleOut );
+free( HandleIn );
+free( BodyOut );
+free( BodyIn );
+free( Cup );
+free( mCup );
+free( Body );
+free( Handle );

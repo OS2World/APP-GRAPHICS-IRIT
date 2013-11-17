@@ -1,0 +1,174 @@
+#
+# Bisectors using multivariates
+#
+#
+#                       Gershon Elber, August 1997.
+#
+
+ExtractE3Pts = function( UVXYZPts ): UVXYZPt: i:
+    return = nil():
+    printf("Found %d points\\n", list( sizeof( UVXYZPts ) ) ):
+    for ( i = 1, 1, sizeof( UVXYZPts ),
+	UVXYZPt = nth( UVXYZPts, i ):
+	snoc( ctlpt( E3, coord( UVXYZPt, 3 ),
+			 coord( UVXYZPt, 4 ),
+			 coord( UVXYZPt, 5 ) ), return ) );
+
+#############################################################################
+# Surface - Surface bisectors.
+#############################################################################
+
+s1 = sbezier(
+	list( list( ctlpt( E3, 0,  0,  0 ),
+	            ctlpt( E3, 2,  0,  0 ) ),
+	      list( ctlpt( E3, 0,  2,  0 ),
+	            ctlpt( E3, 2,  2,  0 ) ) ) ) * tx( -1 ) * ty( -1 );
+color( s1, red );
+
+s2 = sbezier(
+	list( list( ctlpt( E3, 0,  0,  2 ),
+	            ctlpt( E3, 1,  0,  1 ),
+	            ctlpt( E3, 2,  0,  2 ) ),
+	      list( ctlpt( E3, 0,  1,  1 ),
+	            ctlpt( E3, 1,  1,  0 ),
+	            ctlpt( E3, 2,  1,  1 ) ),
+	      list( ctlpt( E3, 0,  2,  2 ),
+	            ctlpt( E3, 1,  2,  1 ),
+	            ctlpt( E3, 2,  2,  2 ) ) ) )* tx( -1 ) * ty( -1 );
+color( s2, magenta );
+
+ms1 = coerce( s1, multivar_type );
+ms2 = coerce( s2, multivar_type );
+
+mb1 = mbisector( ms1, ms2, 3, 0.3, -1e-10 );
+b1 = sinterp( mb1, 3, 3, 4, 4, PARAM_UNIFORM );
+
+mb2 = ExtractE3Pts( mb1 );
+
+interact( list( s1, s2, mb2, b1 ) );
+
+save( "mbisect1", list( s1, s2, mb2, b1 ) );
+
+#############################################################################
+
+s1 = s1 * sc( 1.5 ) * rx( 20 );
+color( s1, red );
+
+ms1 = coerce( s1, multivar_type );
+ms2 = coerce( s2, multivar_type );
+
+mb1 = mbisector( ms1, ms2, 3, 0.3, -1e-10 );
+b1 = sinterp( mb1, 3, 3, 4, 4, PARAM_UNIFORM );
+
+mb2 = ExtractE3Pts( mb1 );
+
+interact( list( s1, s2, mb2, b1 ) );
+
+save( "mbisect2", list( s1, s2, mb2, b1 ) );
+
+#############################################################################
+# Curve - Surface bisectors.
+#############################################################################
+
+c = cbezier( list( ctlpt( E3,  1,  1,  0 ),
+		   ctlpt( E3,  1,  1,  2 ) ) );
+color( c, red );
+
+s = sbezier(
+	list( list( ctlpt( E3, 0,  0,  0 ),
+	            ctlpt( E3, 2,  0,  0 ) ),
+	      list( ctlpt( E3, 0,  2,  0 ),
+	            ctlpt( E3, 2,  2,  0 ) ) ) );
+color( s, magenta );
+
+mc = coerce( c, multivar_type );
+ms = coerce( s, multivar_type );
+
+mb1 = mbisector( mc, ms, 3, 0.1, -1e-10 );
+b1 = sinterp( mb1, 3, 3, 6, 6, PARAM_UNIFORM );
+
+mb2 = ExtractE3Pts( mb1 );
+
+interact( list( c, s, mb2, b1 ) );
+
+mb3 = mbisector( mc, ms, 4, 1, 1 );
+
+interact( list( c, s, mb3 ) );
+
+save( "mbisect3", list( c, s, mb2, b1, mb3 ) );
+
+#############################################################################
+
+c = cbezier( list( ctlpt( E3,  0,  0,  2 ),
+		   ctlpt( E3,  2,  2,  1 ) ) );
+color( c, red );
+
+s = sbezier(
+	list( list( ctlpt( E3, 0,  0,  0 ),
+	            ctlpt( E3, 2,  0,  0 ) ),
+	      list( ctlpt( E3, 0,  2,  0 ),
+	            ctlpt( E3, 2,  2,  0 ) ) ) );
+color( s, magenta );
+
+mc = coerce( c, multivar_type );
+ms = coerce( s, multivar_type );
+
+mb1 = mbisector( mc, ms, 3, 0.2, -1e-10 );
+b1 = sinterp( mb1, 3, 3, 4, 4, PARAM_UNIFORM );
+
+mb2 = ExtractE3Pts( mb1 );
+
+interact( list( c, s, mb2, b1 ) );
+
+mb3 = mbisector( mc, ms, 4, 1, 1 );
+
+interact( list( c, s, mb3 ) );
+
+save( "mbisect4", list( c, s, mb2, b1, mb3 ) );
+
+#############################################################################
+
+c = cbezier( list( ctlpt( E3,  0,  0, 3 ),
+		   ctlpt( E3,  1,  1, 1.1 ),
+		   ctlpt( E3,  2,  2, 1 ) ) );
+color( c, red );
+
+s = sbezier(
+	list( list( ctlpt( E3, 0,  0,  0 ),
+	            ctlpt( E3, 2,  0,  0 ) ),
+	      list( ctlpt( E3, 0,  2,  0 ),
+	            ctlpt( E3, 2,  2,  0 ) ) ) );
+color( s, magenta );
+
+mc = coerce( c, multivar_type );
+ms = coerce( s, multivar_type );
+
+mb1 = mbisector( mc, ms, 3, 0.2, -1e-10 );
+b1 = sinterp( mb1, 3, 3, 4, 4, PARAM_UNIFORM );
+
+mb2 = ExtractE3Pts( mb1 );
+
+interact( list( c, s, mb2, b1 ) );
+
+mb3 = mbisector( mc, ms, 4, 1, 1 );
+
+interact( list( c, s, mb3 ) );
+
+save( "mbisect5", list( c, s, mb2, b1, mb3 ) );
+
+#############################################################################
+
+free( c );
+free( s );
+free( mc );
+free( ms );
+
+free( s1 );
+free( s2 );
+free( ms1 );
+free( ms2 );
+
+free( b1 );
+free( mb1 );
+free( mb2 );
+free( mb3 );

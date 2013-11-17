@@ -1,0 +1,194 @@
+#
+# Demonstrates and adaptively reduced the degeneracies of Gimbell Lock.
+#
+#						Gershon Elber, April 1995.
+#
+
+#
+# Extracts and displays a half a sphere.
+#
+s = sregion( sphereSrf( 1 ), ROW, 0, 1 );
+viewobj( s );
+
+#
+# Computes a curve on a sphere between two spheical angles by interpolating
+# between the two angles a piecewise linear curve.
+#
+ComputeSphericalCrv = function( Theta1, Theta2, Phi1, Phi2 ):
+    PtList: t: Phi: Theta:
+    PtList = nil():
+    for ( t = 0, 1, 100,
+	Theta = (Theta2 * t + Theta1 * (100 - t)) * Pi / (180 * 100):
+	Phi = (Phi2 * t + Phi1 * (100 - t)) * Pi / (180 * 100):
+	snoc( point( cos(Theta) * cos(Phi),
+		     cos(Theta) * sin(Phi),
+		     sin(Theta) ),
+	      PtList ) ):
+    return = cbspline( 2, PtList, list( KV_OPEN ) ):
+    attrib( return, "dwidth", 3 ):
+    color( return, red );
+
+#
+# Computes a unit vector that is perpendicular to the great arc defined
+# by the two spherical angular coordinates.
+#
+ComputeOrthoVector = function( Theta1, Theta2, Phi1, Phi2 ):
+    Pt1: Pt2: Theta1d: Theta2d: Phi1d: Phi2d:
+    Theta1d = Theta1 * Pi / 180:
+    Theta2d = Theta2 * Pi / 180:
+    Phi1d = Phi1 * Pi / 180:
+    Phi2d = Phi2 * Pi / 180:
+    Pt1 = point( cos(Theta1d) * cos(Phi1d),
+		 cos(Theta1d) * sin(Phi1d),
+		 sin(Theta1d) ):
+    Pt2 = point( cos(Theta2d) * cos(Phi2d),
+		 cos(Theta2d) * sin(Phi2d),
+		 sin(Theta2d) ):
+    return = coerce( normalize(Pt1 ^ Pt2), vector_type ):
+    attrib( return, "dwidth", 3 ):
+    color( return, green );
+
+#
+# Estimates the deviation of the linearly interpolated curve over Theta and
+# Phi from the great arc between these two points.
+#
+EstimateSphericalCrv = function( Theta1, Theta2, Phi1, Phi2 ):
+    OrthoVec: PtList: t: Phi: Theta: Val:
+    OrthoVec = ComputeOrthoVector( Theta1, Theta2, Phi1, Phi2 ):
+    return = 0.0:
+    for ( t = 0, 1, 100,
+	Theta = (Theta2 * t + Theta1 * (100 - t)) * Pi / (180 * 100):
+	Phi = (Phi2 * t + Phi1 * (100 - t)) * Pi / (180 * 100):
+	Val = coord( OrthoVec, 0 ) * cos(Theta) * cos(Phi) +
+	      coord( OrthoVec, 1 ) * cos(Theta) * sin(Phi) +
+	      coord( OrthoVec, 2 ) * sin(Theta):
+	if ( return < Val, return = Val ) );
+
+#
+# Computes the mid point on the great arc from 1 to 2.
+#
+MidGreatCircPt = function( Theta1, Theta2, Phi1, Phi2 ):
+    x: y: z: Theta1d: Theta2d: Phi1d: Phi2d: Phi: Theta:
+    Theta1d = Theta1 * Pi / 180:
+    Theta2d = Theta2 * Pi / 180:
+    Phi1d = Phi1 * Pi / 180:
+    Phi2d = Phi2 * Pi / 180:
+    x = ( cos(Theta1d) * cos(Phi1d) + cos(Theta2d) * cos(Phi2d) ) / 2.0:
+    y = ( cos(Theta1d) * sin(Phi1d) + cos(Theta2d) * sin(Phi2d) ) / 2.0:
+    z = ( sin(Theta1d) + sin(Theta2d) ) / 2.0:
+#   printf("%f %f %f\\n", list(x, y, z)):
+    Theta = atan2(z, sqrt(x*x + y*y)) * 180 / Pi:
+    Phi = atan2(y, x) * 180 / Pi:
+    return = list(Theta, Phi);
+
+
+#
+# Recursive computation of optimal motion.
+# 
+ComputeOptimalMotion = function( Theta1, Theta2, Phi1, Phi2, Eps ):
+    return = 1.0;
+ComputeOptimalMotion = function( Theta1, Theta2, Phi1, Phi2, Eps ):
+    Err: NewPt: Theta: Phi:
+    Err = EstimateSphericalCrv( Theta1, Theta2, Phi1, Phi2 ):
+    printf( " %12g %12g %12g %12g = %f\\n",
+	    list( Theta1, Theta2, Phi1, Phi2, Err ) ):
+    if ( Err > Eps,
+         NewPt = MidGreatCircPt( Theta1, Theta2, Phi1, Phi2 ):
+	 Theta = nth( NewPt, 1 ):
+	 Phi = nth( NewPt, 2 ):
+	 return = ComputeOptimalMotion( Theta1, Theta, Phi1, Phi, Eps ) +
+		  ComputeOptimalMotion( Theta, Theta2, Phi, Phi2, Eps ),
+	 return = list( ComputeSphericalCrv( Theta1, Theta2, Phi1, Phi2 ) ) );
+
+c = ComputeSphericalCrv( 10, 85, 10, 80 );
+v = ComputeOrthoVector( 10, 85, 10, 80 );
+interact( list( s, c, v ) );
+
+c2 = ComputeOptimalMotion( 10, 85, 10, 80, 0.5 );
+interact( list( s, c2, v ) );
+
+c2 = ComputeOptimalMotion( 10, 85, 10, 80, 0.25 );
+interact( list( s, c2, v ) );
+
+c2 = ComputeOptimalMotion( 10, 85, 10, 80, 0.1 );
+interact( list( s, c2, v ) );
+
+c2 = ComputeOptimalMotion( 10, 85, 10, 80, 0.05 );
+interact( list( s, c2, v ) );
+
+
+
+c = ComputeSphericalCrv( 10, 45, 10, 170 );
+v = ComputeOrthoVector( 10, 45, 10, 170 );
+interact( list( s, c, v ) );
+
+c2 = ComputeOptimalMotion( 10, 45, 10, 170, 0.5 );
+interact( list( s, c2, v ) );
+
+c2 = ComputeOptimalMotion( 10, 45, 10, 170, 0.25 );
+interact( list( s, c2, v ) );
+
+c2 = ComputeOptimalMotion( 10, 45, 10, 170, 0.1 );
+interact( list( s, c2, v ) );
+
+c2 = ComputeOptimalMotion( 10, 45, 10, 170, 0.05 );
+interact( list( s, c2, v ) );
+
+
+save( "nc5axis1", 
+      list( s, v,
+	    ComputeSphericalCrv( 10, 45, 10, 170 ),
+	    ComputeOptimalMotion( 10, 45, 10, 170, 0.5 ),
+	    ComputeOptimalMotion( 10, 45, 10, 170, 0.25 ),
+	    ComputeOptimalMotion( 10, 45, 10, 170, 0.1 ),
+	    ComputeOptimalMotion( 10, 45, 10, 170, 0.05 ) ) );
+
+
+c = ComputeSphericalCrv( 35, 85, 40, 70 );
+v = ComputeOrthoVector( 35, 85, 40, 70 );
+interact( list( s, c, v ) );
+
+c2 = ComputeOptimalMotion( 35, 85, 40, 70, 0.5 );
+interact( list( s, c2, v ) );
+
+c2 = ComputeOptimalMotion( 35, 85, 40, 70, 0.1 );
+interact( list( s, c2, v ) );
+
+c2 = ComputeOptimalMotion( 35, 85, 40, 70, 0.025 );
+interact( list( s, c2, v ) );
+
+c2 = ComputeOptimalMotion( 35, 85, 40, 70, 0.01 );
+interact( list( s, c2, v ) );
+
+
+
+c = ComputeSphericalCrv( 70, 5, 70, 130 );
+v = ComputeOrthoVector( 70, 5, 70, 130 );
+interact( list( s, c, v ) );
+
+c2 = ComputeOptimalMotion( 70, 5, 70, 130, 0.1 );
+interact( list( s, c2, v ) );
+
+c2 = ComputeOptimalMotion( 70, 5, 70, 130, 0.05 );
+interact( list( s, c2, v ) );
+
+c2 = ComputeOptimalMotion( 70, 5, 70, 130, 0.025 );
+interact( list( s, c2, v ) );
+
+c2 = ComputeOptimalMotion( 70, 5, 70, 130, 0.01 );
+interact( list( s, c2, v ) );
+
+
+save( "nc5axis2", 
+      list( s, v,
+	    ComputeOptimalMotion( 70, 5, 70, 130, 0.1 ),
+	    ComputeOptimalMotion( 70, 5, 70, 130, 0.05 ),
+	    ComputeOptimalMotion( 70, 5, 70, 130, 0.025 ),
+	    ComputeOptimalMotion( 70, 5, 70, 130, 0.01 ) ) );
+
+
+free( c );
+free( c2 );
+free( v );
+free( s );
+

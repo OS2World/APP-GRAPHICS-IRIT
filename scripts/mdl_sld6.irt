@@ -1,0 +1,40 @@
+#
+# Simple test for the surface of revolution operator. Defines the cross section
+# in line and then rotate it along Z axes.
+#
+#				Created by Gershon Elber,	May 2011
+#
+
+cross = cbspline( 2,
+		  list( vector( 0.6, 0.0, 0.25 ),
+		        vector( 0.9, 0.0, 0.25 ),
+		        vector( 0.9, 0.0, 0.2 ),
+		        vector( 0.8, 0.0, 0.2 ),
+		        vector( 0.8, 0.0,-0.2 ),
+		        vector( 0.9, 0.0,-0.2 ),
+		        vector( 0.9, 0.0,-0.25 ),
+		        vector( 0.6, 0.0,-0.25 ),
+		        vector( 0.6, 0.0,-0.2 ),
+		        vector( 0.7, 0.0,-0.2 ),
+		        vector( 0.7, 0.0, 0.2 ),
+		        vector( 0.6, 0.0, 0.2 ),
+			vector( 0.6, 0.0, 0.25 ) ),
+		  list( kv_disc_open ) );
+view( list( axes, cross ), 1 );
+
+T1 = surfrev( -cross );
+free( cross );
+interact( T1 );
+
+C1 = coerce( -CylinSrf( 0.6, 0.15 ) * tz( 0.4 ) * rx( 90 ), model_type );
+
+for ( i = 0, 90, 270,
+    T1 = T1 * ( C1 * rz( i ) ) );
+
+free( C1 );
+
+interact( list( T1 ) );
+
+save( "mdl_sld6", T1 );
+free( T1 );
+free( i );

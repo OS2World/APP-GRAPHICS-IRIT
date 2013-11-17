@@ -1,0 +1,119 @@
+#
+# Test file to include ALL scripts without any pause.
+#
+
+pause = procedure():
+    printf("", nil());
+miliSleep = procedure( n ):
+    printf("", nil());
+TimedInclude = function( FileName ):
+    return = Time( true ):
+    include(FileName);
+TotalTime = 0.0;
+PrintTime = procedure( FileName, BTime ): t:
+    t = Time( false ):
+    TotalTime = TotalTime + t - BTime:
+    printf("************* Execution Time for %-13s is %-9.4f ******************\\n",
+	   list( FileName, t - BTime ) );
+
+LastFloatFrmt = iritstate( "FloatFrmt", "%-.12f" );
+LastDoGraphics = iritstate( "DoGraphics", false );
+LastEchoSrc = iritState( "EchoSource", false );
+
+logfile( "test_mvs.log" );
+logfile( on );
+
+# x = iritstate("MVNConeTst", 1 );
+
+BTime = TimedInclude("antipodl.irt");
+	PrintTime("antipodl.irt", BTime );
+BTime = TimedInclude("cbisect.irt");
+	PrintTime("cbisect.irt", BTime );
+BTime = TimedInclude("crv_krnl.irt");
+	PrintTime("crv_krnl.irt", BTime );
+BTime = TimedInclude("crv_tan.irt");
+	PrintTime("crv_tan.irt", BTime );
+BTime = TimedInclude("csrfproj.irt");
+	PrintTime("csrfproj.irt", BTime );
+BTime = TimedInclude("curvatur.irt");
+	PrintTime("curvatur.irt", BTime );
+BTime = TimedInclude("flecnodl.irt");
+	PrintTime("flecnodl.irt", BTime );
+BTime = TimedInclude("hausdorf.irt");
+	PrintTime("hausdorf.irt", BTime );
+BTime = TimedInclude("mbisect.irt");
+	PrintTime("mbisect.irt", BTime );
+BTime = TimedInclude("min_dist.irt");
+	PrintTime("min_dist.irt", BTime );
+BTime = TimedInclude("msc_ch.irt");
+	PrintTime("msc_ch.irt", BTime );
+BTime = TimedInclude("multivr2.irt");
+	PrintTime("multivr2.irt", BTime );
+BTime = TimedInclude("mvarpack.irt");
+	PrintTime("mvarpack.irt", BTime );
+BTime = TimedInclude("mvinter.irt");
+	PrintTime("mvinter.irt", BTime );
+BTime = TimedInclude("ray_trap.irt");
+	PrintTime("ray_trap.irt", BTime );
+BTime = TimedInclude("saccess.irt");
+	PrintTime("saccess.irt", BTime );
+BTime = TimedInclude("selfintr.irt");
+	PrintTime("selfintr.irt", BTime );
+BTime = TimedInclude("skel2d.irt");
+	PrintTime("skel2d.irt", BTime );
+BTime = TimedInclude("srf_dist.irt");
+	PrintTime("srf_dist.irt", BTime );
+BTime = TimedInclude("srf_ssi.irt");
+	PrintTime("srf_ssi.irt", BTime );
+BTime = TimedInclude("srf_tan.irt");
+	PrintTime("srf_tan.irt", BTime );
+BTime = TimedInclude("ssi-test.irt");
+	PrintTime("ssi-test.irt", BTime );
+BTime = TimedInclude("ssidscnt.irt");
+	PrintTime("ssidscnt.irt", BTime );
+BTime = TimedInclude("trim_off.irt");
+	PrintTime("trim_off.irt", BTime );
+BTime = TimedInclude("vor_cell.irt");
+	PrintTime("vor_cell.irt", BTime );
+
+iritstate("BoolPerturb", 1e-6);
+iritstate("CmpObjEps", 0);
+iritstate("Coplanar", 1);
+iritstate("CursorKeep", 0);
+iritstate("DebugFunc", 0);
+iritstate("Dependency", 0);
+iritstate("DumpLevel", 23);
+iritstate("EchoSource", 1);
+iritstate("FlatLoad", 0);
+iritstate("FloatFrmt", "%-16.14lg");
+iritstate("GMEpsilon", 0);
+iritstate("InterCrv", 0);
+iritstate("BspProdMethod", 2);
+iritstate("PolySort", 0);
+iritstate("PrimType", 0);
+iritstate("PrimRatSrfs", 1);
+iritstate("RandomInit", 0);
+iritstate("TrimCrvs", 0);
+iritstate("UVBoolean", 0);
+
+comment $
+
+#
+# These files are really slow to execute!
+#
+
+BTime = TimedInclude("x.irt");
+	PrintTime("x.irt", BTime );
+
+$
+
+LastEchoSrc = iritState( "EchoSource", LastEchoSrc );
+printf("############# Total Execution Time is %9.4f ##################\\n",
+	   list( TotalTime ) ):
+
+logfile( off );
+
+free( BTime );
+free( LastFloatFrmt );
+free( LastEchoSrc );
+free( LastDoGraphics );

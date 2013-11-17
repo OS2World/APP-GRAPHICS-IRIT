@@ -1,0 +1,201 @@
+#
+# Simple examples for the use of adaptive isocurves.
+#
+#					Gershon Elber May 1993.
+#
+
+srf1 = sbezier( list( list( ctlpt( E3, -0.5, -1.0,  0.0 ),
+		            ctlpt( E3,  0.4,  0.0,  0.1 ),
+		            ctlpt( E3, -0.5,  1.0,  0.0 ) ),
+	              list( ctlpt( E3,  0.0, -0.7,  0.1 ),
+		            ctlpt( E3,  0.0,  0.0,  0.0 ),
+		            ctlpt( E3,  0.0,  0.7, -0.2 ) ),
+	              list( ctlpt( E3,  0.5, -1.0,  0.1 ),
+		            ctlpt( E3, -0.4,  0.0,  0.0 ),
+		            ctlpt( E3,  0.5,  1.0, -0.2 ) ) ) );
+color( srf1, magenta );
+
+aiso1 = adapiso( srf1, true, COL, 0.05, false, false, nil() );
+color( aiso1, yellow );
+interact( list( axes, srf1, aiso1 ) );
+
+aiso1 = adapiso( srf1, true, ROW, 0.05, true, false, nil() );
+color( aiso1, yellow );
+interact( list( axes, srf1, aiso1 ) );
+
+aiso2 = adapiso( srf1, true, ROW, 0.05, false, false, nil() );
+color( aiso2, yellow );
+interact( list( axes, srf1, aiso2 ) );
+
+aiso3 = adapiso( srf1, true, ROW, 0.05, false, true, nil() );
+color( aiso3, yellow );
+interact( list( axes, srf1, aiso3 ) );
+
+Pt = point( 0, 1, 0 ):
+aiso4 = adapiso( srf1, true, ROW, 0.5, false, false, list( Pt, 5000, 100 ) ):
+color( aiso4, yellow ):
+interact( list( axes, Pt, srf1, aiso4 ) );
+
+save( "adap1iso", list( axes, srf1, aiso1 * tx( 2 ),
+				    aiso2 * tx( 4 ),
+				    aiso3 * tx( 6 ),
+				    aiso4 * tx( 8 ) ) );
+
+# Quadrilateral regions tiling:
+
+aiso1 = adapiso( srf1, false, row, 0.35, 3, 10, nil() );
+color( aiso1, yellow );
+interact( list( axes, srf1, aiso1 ) );
+
+aiso2 = adapiso( srf1, false, col, 0.1, 2, 5, nil() );
+color( aiso2, yellow );
+interact( list( axes, srf1, aiso2 ) );
+
+aiso3 = adapiso( srf1, false, row, 0.2, 1, 5, nil() );
+color( aiso3, yellow );
+interact( list( axes, srf1, aiso3 ) );
+
+save( "adap2iso", list( axes, srf1, aiso1 * tx( 2 ),
+				    aiso2 * tx( 4 ),
+				    aiso3 * tx( 6 ) ) );
+
+#############################################################################
+
+srf2 = sbspline( 3, 3,
+		 list( list( ctlpt( E3, 1.0, 0.0, 0.0 ),
+		             ctlpt( E3, 1.0, 1.0, 2.0 ),
+		             ctlpt( E3, 1.0, 2.0, 0.0 ) ),
+        	       list( ctlpt( E3, 2.0, 0.9, 2.0 ),
+	        	     ctlpt( E3, 2.0, 1.0, 0.0 ),
+		             ctlpt( E3, 2.0, 1.1, 2.0 ) ),
+        	       list( ctlpt( E3, 3.0, 0.0, 0.0 ),
+	        	     ctlpt( E3, 3.0, 1.0, 2.0 ),
+		             ctlpt( E3, 3.0, 2.0, 0.0 ) ),
+        	       list( ctlpt( E3, 4.0, 0.9, 1.0 ),
+	        	     ctlpt( E3, 4.0, 1.0, 0.0 ),
+		             ctlpt( E3, 4.0, 1.1, 1.0 ) ) ),
+		 list( list( KV_OPEN ),
+		       list( KV_OPEN ) ) ) *
+	scale( vector( 0.5, 0.5, 0.5 ) ) * trans( vector( -0.5, 0.0, 0.0 ) );
+color( srf2, magenta );
+
+aiso1 = adapiso( srf2, true, COL, 0.05, true, false, nil() );
+color( aiso1, yellow );
+interact( list( axes, srf2, aiso1 ) );
+
+aiso2 = adapiso( srf2, true, COL, 0.05, false, false, nil() );
+color( aiso2, yellow );
+interact( list( SplitLst( axes ), srf2, aiso2 ) ); # Test SplitLst...
+
+aiso3 = adapiso( srf2, true, COL, 0.05, false, true, nil() );
+color( aiso3, yellow );
+interact( list( axes, srf2, aiso3 ) );
+
+Pt = point( 0, 0.5, 0.55 ):
+aiso4 = adapiso( srf2, true, COL, 0.5, false, false, list( Pt, 1500, 100 ) ):
+color( aiso4, yellow ):
+interact( list( axes, Pt, srf2, aiso4 ) );
+
+save( "adap3iso", list( axes, srf2, aiso1 * tx( 2 ),
+				    aiso2 * tx( 4 ),
+				    aiso3 * tx( 6 ),
+				    aiso4 * tx( 8 ) ) );
+
+# Quadrilateral regions tiling:
+
+aiso1 = adapiso( srf2, false, row, 0.35, 2, 10, nil() );
+color( aiso1, yellow );
+interact( list( axes, srf2, aiso1 ) );
+
+aiso2 = adapiso( srf2, false, col, 0.2, 2, 5, nil() );
+color( aiso2, yellow );
+interact( list( axes, srf2, aiso2 ) );
+
+# Try the following for tolerance of 0.125 - will give wrong answer due to
+# the fact we measure distances in Euclidean space and not geodesic space.
+aiso3 = adapiso( srf2, false, col, 0.1, 2, 10, nil() );
+color( aiso3, yellow );
+interact( list( axes, srf2, aiso3 ) );
+
+save( "adap4iso", list( axes, srf2, aiso1 * tx( 2 ),
+				    aiso2 * tx( 4 ),
+				    aiso3 * tx( 6 ) ) );
+
+#############################################################################
+
+srf3 = sbspline( 3, 3,
+		 list( list( ctlpt( E3, 1.0, 0.0, 0.0 ),
+		             ctlpt( E3, 1.0, 1.0, 0.0 ),
+		             ctlpt( E3, 1.0, 2.0, 0.0 ) ),
+        	       list( ctlpt( E3, 2.0, 0.9, 0.0 ),
+	        	     ctlpt( E3, 2.0, 1.0, 0.0 ),
+		             ctlpt( E3, 2.0, 1.1, 0.0 ) ),
+        	       list( ctlpt( E3, 3.0, 0.0, 0.0 ),
+	        	     ctlpt( E3, 3.0, 1.0, 0.0 ),
+		             ctlpt( E3, 3.0, 2.0, 0.0 ) ),
+        	       list( ctlpt( E3, 4.0, 0.9, 0.0 ),
+	        	     ctlpt( E3, 4.0, 1.0, 0.0 ),
+		             ctlpt( E3, 4.0, 1.1, 0.0 ) ) ),
+		 list( list( KV_OPEN ),
+		       list( KV_OPEN ) ) ) *
+	scale( vector( 0.5, 0.5, 0.5 ) ) * trans( vector( -0.5, 0.0, 0.0 ) );
+color( srf3, magenta );
+
+aiso1 = adapiso( srf3, true, COL, 0.05, true, false, nil() );
+color( aiso1, yellow );
+interact( list( axes, srf3, aiso1 ) );
+
+aiso2 = adapiso( srf3, true, COL, 0.05, false, false, nil() );
+color( aiso2, yellow );
+interact( list( axes, srf3, aiso2 ) );
+
+aiso3 = adapiso( srf3, true, COL, 0.05, false, true, nil() );
+color( aiso3, yellow );
+interact( list( axes, srf3, aiso3 ) );
+
+Pt = point( 1.0, 0.5, 0 ):
+aiso4 = adapiso( srf3, true, COL, 0.5, false, false, list( Pt, 1500, 100 ) ):
+color( aiso4, yellow ):
+interact( list( axes, Pt, srf3, aiso4 ) );
+
+Pt = point( 1.0, 0.15, 0 ):
+aiso5 = adapiso( srf3, true, COL, 0.5, false, false, list( Pt, 1500, 100 ) ):
+color( aiso5, yellow ):
+interact( list( axes, Pt, srf3, aiso5 ) );
+
+save( "adap5iso", list( axes, srf3, aiso1 * tx( 2 ),
+				    aiso2 * tx( 4 ),
+				    aiso3 * tx( 6 ),
+				    aiso4 * tx( 8 ),
+				    aiso5 * tx( 10 ) ) );
+
+
+
+
+aiso1 = adapiso( srf3, false, row, 0.35, 3, 10, nil() );
+color( aiso1, yellow );
+interact( list( axes, srf3, aiso1 ) );
+
+aiso2 = adapiso( srf3, false, col, 0.1, 2, 15, nil() );
+color( aiso2, yellow );
+interact( list( axes, srf3, aiso2 ) );
+
+aiso3 = adapiso( srf3, false, col, 0.2, 1, 10, nil() );
+color( aiso3, yellow );
+interact( list( axes, srf3, aiso3 ) );
+
+save( "adap6iso", list( axes, srf3, aiso1 * tx( 2 ),
+				    aiso2 * tx( 4 ),
+				    aiso3 * tx( 6 ) ) );
+
+#############################################################################
+
+free( Pt );
+free( srf1 );
+free( srf2 );
+free( srf3 );
+free( aiso1 );
+free( aiso2 );
+free( aiso3 );
+free( aiso4 );
+free( aiso5 );

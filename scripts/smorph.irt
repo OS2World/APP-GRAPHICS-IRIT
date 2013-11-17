@@ -1,0 +1,345 @@
+#
+# A simple example of surface morphing.
+#
+#					Gershon Elber, July 1992.
+#
+# render with raysahde with a unit matrix and the following:
+#
+# eyep   10 8  6
+# lookp  0  0  0
+# up     0  0  1
+# fov 12
+# 
+# light 0.8 directional 0 0 1
+# light 0.7 directional 0 1 0
+# light 0.6 directional 1 0 0
+# 
+
+save_res = resolution;
+view(list(view_mat), on);
+
+if ( machine == msdos, resolution = 7, resolution = 10 );
+if ( machine == msdos, step = 0.2, step = 0.05 );
+
+BaseLvl = -0.72;
+BaseXYMin = -1.4;
+
+v1 = vector( -16.0, -16.0, BaseLvl );
+V2 = vector( -16.0,  16.0, BaseLvl );
+v3 = vector(  16.0,  16.0, BaseLvl );
+v4 = vector(  16.0, -16.0, BaseLvl );
+Base = poly( list( v1, v2, v3, v4 ), false );
+color( Base, red );
+attrib( Base, "rgb", "244,164,96" );
+attrib( Base, "texture", "wood" );
+attrib( Base, "reflect", "0.3" );
+free( v1 );
+free( v2 );
+free( v3 );
+free( v4 );
+
+Wall1 = poly( list( vector( BaseXYMin,      16.0, BaseLvl ),
+		    vector( BaseXYMin, BaseXYMin, BaseLvl ),
+		    vector( BaseXYMin, BaseXYMin, 16.0 ),
+		    vector( BaseXYMin,      16.0, 16.0 ) ),
+	      false );
+Wall2 = poly( list( vector(       16.0, BaseXYMin, BaseLvl ),
+		    vector( BaseXYMin,  BaseXYMin, BaseLvl ),
+		    vector( BaseXYMin,  BaseXYMin, 16.0 ),
+		    vector(       16.0, BaseXYMin, 16.0 ) ),
+	      false );
+color( Wall1, white );
+attrib( Wall1, "rgb", "255,255,255" );
+color( Wall2, white );
+attrib( Wall2, "rgb", "255,255,255" );
+
+Backgrd = list( Base, Wall1, Wall2 );
+free( Base );
+free( Wall1 );
+free( Wall2 );
+
+#############################################################################
+# First Morphing Sequence.						    #
+#############################################################################
+
+Srf1 = ruledsrf( circle( vector( 0.0, 0.0, BaseLvl + 0.01 ), 1.0 ),
+		 circle( vector( 0.0, 0.0, BaseLvl + 0.01 ), 0.01 ) );
+color( Srf1, yellow );
+
+bcross = cbspline( 3,
+		   list( ctlpt( E3,  0.0,  0.0, -0.71 ),
+		         ctlpt( E3,  0.2,  0.0, -0.72 ),
+		         ctlpt( E3,  0.25, 0.0, -0.7 ),
+		         ctlpt( E3,  0.25, 0.0, -0.1 ),
+		         ctlpt( E3,  0.2,  0.0, -0.05 ),
+		         ctlpt( E3,  0.15, 0.0,  0.0 ),
+		         ctlpt( E3,  0.1,  0.0,  0.6 ),
+			 ctlpt( E3,  0.11, 0.0,  0.61 ),
+			 ctlpt( E3,  0.12, 0.0,  0.61 ),
+			 ctlpt( E3,  0.12, 0.0,  0.65 ),
+			 ctlpt( E3,  0.09, 0.0,  0.65 ),
+			 ctlpt( E3,  0.07, 0.0,  0.64 ),
+			 ctlpt( E3,  0.10, 0.0, -0.05 ),
+			 ctlpt( E3,  0.21, 0.0, -0.1 ),
+			 ctlpt( E3,  0.21, 0.0, -0.64 ),
+			 ctlpt( E3,  0.18, 0.0, -0.67),
+			 ctlpt( E3,  0.0,  0.0, -0.66 ) ),
+		   list( KV_OPEN ) );
+Srf2 = surfrev( bcross );
+free( bcross );
+color( Srf2, green );
+
+#
+# Must make them compatible before doing some morphing.
+#
+ffcompat( Srf1, Srf2 );
+
+#
+# Since we would like the animation to look as good as possible we need
+# to precompute as much as possible before invoking view to erase old
+# drawing and display new one. That is why we precompute isolines.
+#
+
+for ( i = 0, step, 1.0,
+    view( smorph( Srf1, Srf2, i ), true )
+);
+
+#
+# Now dump 12 steps in this morphing sequence as 12 distinct files.
+#
+for ( i = 0.0, 1.0, 11.0,
+	Msrf = smorph( Srf1, Srf2, i / 11.0 ):
+	color( Msrf, white ):
+	attrib( Msrf, "rgb", "255,255,255" ):
+	attrib( Msrf, "reflect", 1.0 ):
+	attrib( Msrf, "transp", 0.95 ):
+	attrib( Msrf, "index", 1.4 ):
+	save( "morp1-" + i, list( Msrf, Backgrd ) )
+);
+
+#############################################################################
+# Second Morphing Sequence.						    #
+#############################################################################
+
+bcross = cbspline( 3,
+		   list( ctlpt( E3,  0.0,  0.0, -0.71 ),
+		         ctlpt( E3,  0.2,  0.0, -0.72 ),
+		         ctlpt( E3,  0.25, 0.0, -0.7 ),
+		         ctlpt( E3,  0.25, 0.0, -0.1 ),
+		         ctlpt( E3,  0.2,  0.0, -0.05 ),
+		         ctlpt( E3,  0.15, 0.0,  0.0 ),
+		         ctlpt( E3,  0.1,  0.0,  0.6 ),
+			 ctlpt( E3,  0.11, 0.0,  0.61 ),
+			 ctlpt( E3,  0.12, 0.0,  0.61 ),
+			 ctlpt( E3,  0.12, 0.0,  0.65 ),
+			 ctlpt( E3,  0.09, 0.0,  0.65 ),
+			 ctlpt( E3,  0.07, 0.0,  0.64 ),
+			 ctlpt( E3,  0.10, 0.0, -0.05 ),
+			 ctlpt( E3,  0.21, 0.0, -0.1 ),
+			 ctlpt( E3,  0.21, 0.0, -0.64 ),
+			 ctlpt( E3,  0.18, 0.0, -0.67),
+			 ctlpt( E3,  0.0,  0.0, -0.66 ) ),
+		   list( KV_OPEN ) );
+Srf2 = surfrev( bcross );
+free( bcross );
+color( Srf2, green );
+
+gcross = cbspline( 3,
+		   list( ctlpt( E3, 0.001, 0.0, 0.02 ),
+		  	 ctlpt( E3, 0.2,   0.0, 0.02 ),
+			 ctlpt( E3, 0.22,  0.0, 0. ),
+			 ctlpt( E3, 0.22,  0.0, 0.03 ),
+			 ctlpt( E3, 0.03,  0.0, 0.03 ),
+			 ctlpt( E3, 0.03,  0.0, 0.07 ),
+			 ctlpt( E3, 0.04,  0.0, 0.3 ),
+			 ctlpt( E3, 0.3,   0.0, 0.3 ),
+			 ctlpt( E3, 0.4,   0.0, 0.4 ),
+			 ctlpt( E3, 0.3,   0.0, 0.7 ),
+			 ctlpt( E3, 0.28,  0.0, 0.7 ),
+			 ctlpt( E3, 0.37,  0.0, 0.42 ),
+			 ctlpt( E3, 0.31,  0.0, 0.32 ),
+			 ctlpt( E3, 0.001, 0.0, 0.32 ) ),
+		   list( KV_OPEN ) );
+Srf3 = surfrev( gcross * trans( vector( 0.0, 0.0, -0.45 ) ) *
+			 scale( vector( 1.6, 1.6, 1.6 ) ) );
+free( gcross );
+color( Srf3, cyan );
+
+#
+# Must make them compatible before doing some morphing.
+#
+ffcompat( Srf2, Srf3 );
+
+for ( i = 0, step, 1.0,
+    view( smorph( Srf2, Srf3, i ), true )
+);
+
+#
+# Now dump 12 steps in this morphing sequence as 12 distinct files.
+#
+
+for ( i = 0.0, 1.0, 11.0,
+	Msrf = smorph( Srf2, Srf3, i / 11.0 ):
+	color( Msrf, white ):
+	attrib( Msrf, "rgb", "255,255,255" ):
+	attrib( Msrf, "reflect", 1.0 ):
+	attrib( Msrf, "transp", 0.95 ):
+	attrib( Msrf, "index", 1.4 ):
+	save( "morp2-" + i, list( Msrf, Backgrd ) )
+);
+
+#############################################################################
+# Third Morphing Sequence.						    #
+#############################################################################
+
+gcross = cbspline( 3,
+		   list( ctlpt( E3, 0.001, 0.0, 0.02 ),
+		  	 ctlpt( E3, 0.2,   0.0, 0.02 ),
+			 ctlpt( E3, 0.22,  0.0, 0. ),
+			 ctlpt( E3, 0.22,  0.0, 0.03 ),
+			 ctlpt( E3, 0.03,  0.0, 0.03 ),
+			 ctlpt( E3, 0.03,  0.0, 0.07 ),
+			 ctlpt( E3, 0.04,  0.0, 0.3 ),
+			 ctlpt( E3, 0.3,   0.0, 0.3 ),
+			 ctlpt( E3, 0.4,   0.0, 0.4 ),
+			 ctlpt( E3, 0.3,   0.0, 0.7 ),
+			 ctlpt( E3, 0.28,  0.0, 0.7 ),
+			 ctlpt( E3, 0.37,  0.0, 0.42 ),
+			 ctlpt( E3, 0.31,  0.0, 0.32 ),
+			 ctlpt( E3, 0.001, 0.0, 0.32 ) ),
+		list( KV_OPEN ) );
+Srf3 = surfrev( gcross * trans( vector( 0.0, 0.0, -0.45 ) ) *
+			 scale( vector( 1.6, 1.6, 1.6 ) ) );
+free( gcross );
+color( Srf3, cyan );
+
+s45 = sin( pi / 4 );
+HelixAux = cbspline( 3,
+		     list( ctlpt( P3, 1, 1, 0, 0 ),
+			   ctlpt( P3, s45, s45, s45, 0.2 * s45 ),
+			   ctlpt( P3, 1, 0, 1, 0.4 ),
+			   ctlpt( P3, s45, -s45, s45, 0.6 * s45 ),
+			   ctlpt( P3, 1, -1, 0, 0.8 ),
+			   ctlpt( P3, s45, -s45, -s45, 1.0 * s45 ),
+			   ctlpt( P3, 1, 0, -1, 1.2 ),
+			   ctlpt( P3, s45, s45, -s45, 1.4 * s45 ),
+			   ctlpt( P3, 1, 1, 0, 1.6 ) ),
+		     list( 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 4 ) );
+HelixApx = HelixAux +
+	   HelixAux * trans( vector( 0.0, 0.0, 1.6 ) ) +
+	   HelixAux * trans( vector( 0.0, 0.0, 3.2 ) );
+
+ScaleCrv = cbezier( list( ctlpt( E2, 0.0, 0.01 ),
+			  ctlpt( E2, 1.0, 1.0 ) ) );
+
+Srf4 = swpsclsrf( circle( vector( 0.0, 0.0, 0.0 ), 0.8 ), HelixApx, ScaleCrv,
+		  off, 0 ) *
+	scale( vector( 0.2, 0.2, 0.2 ) ) *
+	trans( vector( 0.0, 0.0, BaseLvl ) );
+
+free( HelixAux );
+free( HelixApx );
+free( ScaleCrv );
+color( Srf4, magenta );
+
+#
+# Must make them compatible before doing some morphing.
+#
+ffcompat( Srf3, Srf4 );
+
+for ( i = 0, step, 1.0,
+    view( smorph( Srf3, Srf4, i ), true )
+);
+
+#
+# Now dump 12 steps in this morphing sequence as 12 distinct files.
+#
+
+for ( i = 0.0, 1.0, 11.0,
+	Msrf = smorph( Srf3, Srf4, i / 11.0 ):
+	color( Msrf, white ):
+	attrib( Msrf, "rgb", "255,255,255" ):
+	attrib( Msrf, "reflect", 1.0 ):
+	attrib( Msrf, "transp", 0.95 ):
+	attrib( Msrf, "index", 1.4 ):
+	save( "morp3-" + i, list( Msrf, Backgrd ) )
+);
+
+#############################################################################
+# Fourth Morphing Sequence.						    #
+#############################################################################
+
+s45 = sin( pi / 4 );
+HelixAux = cbspline( 3,
+		     list( ctlpt( P3, 1, 1, 0, 0 ),
+			   ctlpt( P3, s45, s45, s45, 0.2 * s45 ),
+			   ctlpt( P3, 1, 0, 1, 0.4 ),
+			   ctlpt( P3, s45, -s45, s45, 0.6 * s45 ),
+			   ctlpt( P3, 1, -1, 0, 0.8 ),
+			   ctlpt( P3, s45, -s45, -s45, 1.0 * s45 ),
+			   ctlpt( P3, 1, 0, -1, 1.2 ),
+			   ctlpt( P3, s45, s45, -s45, 1.4 * s45 ),
+			   ctlpt( P3, 1, 1, 0, 1.6 ) ),
+		     list( 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 4 ) );
+HelixApx = HelixAux +
+	   HelixAux * trans( vector( 0.0, 0.0, 1.6 ) ) +
+	   HelixAux * trans( vector( 0.0, 0.0, 3.2 ) );
+
+ScaleCrv = cbezier( list( ctlpt( E2, 0.0, 0.01 ),
+			  ctlpt( E2, 1.0, 1.0 ) ) );
+
+Srf4 = swpsclsrf( circle( vector( 0.0, 0.0, 0.0 ), 0.8 ), HelixApx, ScaleCrv,
+		 off, 0 ) *
+	scale( vector( 0.2, 0.2, 0.2 ) ) *
+	trans( vector( 0.0, 0.0, BaseLvl ) );
+
+free( HelixAux );
+free( HelixApx );
+free( ScaleCrv );
+color( Srf4, magenta );
+
+Srf1 = ruledsrf( circle( vector( 0.0, 0.0, BaseLvl + 0.01 ), 1.0 ),
+		 circle( vector( 0.0, 0.0, BaseLvl + 0.01 ), 0.01 ) );
+color( Srf1, yellow );
+
+#
+# Must make them compatible before doing some morphing.
+#
+ffcompat( Srf4, Srf1 );
+
+#
+# Since we would like the animation to look as good as possible we need
+# to precompute as much as possible before invoking view to erase old
+# drawing and display new one. That is why we precompute isolines.
+#
+for ( i = 0, step, 1.0,
+    view( smorph( Srf4, Srf1, i ), true )
+);
+
+#
+# Now dump 12 steps in this morphing sequence as 12 distinct files.
+#
+for ( i = 0.0, 1.0, 11.0,
+	Msrf = smorph( Srf4, Srf1, i / 11.0 ):
+	color( Msrf, white ):
+	attrib( Msrf, "rgb", "255,255,255" ):
+	attrib( Msrf, "reflect", 1.0 ):
+	attrib( Msrf, "transp", 0.95 ):
+	attrib( Msrf, "index", 1.4 ):
+	save( "morp4-" + i, list( Msrf, Backgrd ) )
+);
+free( i );
+
+free( s45 );
+free( BaseLvl );
+free( BaseXYMin );
+free( step );
+free( Srf1 );
+free( Srf2 );
+free( Srf3 );
+free( Srf4 );
+free( Msrf );
+free( Backgrd );
+
+resolution = save_res;
+

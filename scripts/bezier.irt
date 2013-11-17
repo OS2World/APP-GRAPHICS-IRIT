@@ -1,0 +1,342 @@
+#
+# Some routines to test bezier curves/surfaces.
+#
+
+#
+# Set display to on to view some results, off to view nothing.
+#
+display = on;
+save_res = resolution;
+
+DLevel = iritState( "DumpLevel", 255 );
+
+if ( machine == msdos, resolution = 5, resolution = 10 );
+
+s45 = sin( pi / 4 );
+cbzr = list( ctlpt( P2, 1.0, 1.0, 0.0 ),
+	     ctlpt( P2, s45, s45, s45 ),
+	     ctlpt( P2, 1.0, 0.0, 1.0 ) );
+free( s45 );
+sbzr = list ( list( ctlpt( E3, 0.1, 0.0, 1.0 ),
+	            ctlpt( E3, 0.3, 1.0, 0.0 ),
+	            ctlpt( E3, 0.0, 2.0, 1.0 ) ),
+              list( ctlpt( E3, 1.1, 0.0, 0.0 ),
+	            ctlpt( E3, 1.3, 1.5, 2.0 ),
+	            ctlpt( E3, 1.0, 2.1, 0.0 ) ),
+              list( ctlpt( E3, 2.1, 0.0, 2.0 ),
+	            ctlpt( E3, 2.3, 1.0, 0.0 ),
+	            ctlpt( E3, 2.0, 2.0, 2.0 ) ),
+              list( ctlpt( E3, 3.1, 0.0, 0.0 ),
+	            ctlpt( E3, 3.3, 1.5, 2.0 ),
+	            ctlpt( E3, 3.0, 2.1, 0.0 ) ),
+              list( ctlpt( E3, 4.1, 0.0, 1.0 ),
+	            ctlpt( E3, 4.3, 1.0, 0.0 ),
+	            ctlpt( E3, 4.0, 2.0, 1.0 ) ) );
+
+cb = cbezier( cbzr ) * scale( vector( 0.7, 1.4, 1.0 ) );
+free( cbzr );
+color( cb, red );
+sb = sbezier( sbzr );
+free( sbzr );
+color( sb, red );
+
+save( "bezier1",
+      list( fforder( cb ),
+	    ffmsize( cb ),
+	    ffctlpts( cb ),
+	    fforder( sb ),
+	    ffmsize( sb ),
+	    ffctlpts( sb ) ) );
+
+if ( display == on, interact( list( axes, cb, sb ) ):
+		    viewstate( "DSrfMesh", on ):
+		    pause():
+		    viewstate( "DSrfMesh", off ):
+		    pause() );
+
+#
+# Curve refinement (note the returned curve is a bspline curve).
+#
+cb_ref = crefine( cb, false, list( 0.25, 0.5, 0.75 ) );
+color( cb_ref, yellow );
+if ( display == on, interact( list( axes, cb, cb_ref ) ) );
+free( cb_ref );
+
+#
+# Curve subdivision.
+#
+cb_lst = cdivide( cb, 0.5 );
+cb1 = nth( cb_lst, 1 );
+color( cb1, green );
+cb2 = nth( cb_lst, 2 );
+color( cb2, yellow );
+free( cb_lst );
+if ( display == on, interact( list( axes, cb, cb1, cb2 ) ) );
+free( cb1 );
+free( cb2 );
+
+#
+# Region from curve.
+#
+cbr1 = cregion( cb, 0.3, 0.6 );
+color( cbr1, yellow );
+cbr2 = cregion( cb, 0.5, 1.0 );
+color( cbr2, green );
+cbr3 = cregion( cb, 0.3, 0.0 );
+color( cbr3, blue );
+if ( display == on, interact( list( cb, cbr1, cbr2, cbr3 ) ) );
+free( cbr1 ); free( cbr2 ); free( cbr3 );
+
+#
+# Surface subdivision and merging.
+#
+sb_lst = sdivide( sb, COL, 0.4 );
+sb1 = nth( sb_lst, 1 );
+color( sb1, green );
+sb2 = nth( sb_lst, 2 );
+color( sb2, yellow );
+free( sb_lst );
+if ( display == on, interact( list( axes, sb, sb1, sb2 ) ) );
+sbm = smerge( sb1, sb2, COL, 1 );
+display = on;
+
+if ( display == on, interact( list( axes, sbm, sb1, sb2 ) ) );
+sbm = smerge( sb1 * trans( vector( 0.0, -0.5, 0.0 ) ),
+	      sb2 * trans( vector( 0.0,  0.5, 0.0 ) ), COL, 0 );
+if ( display == on, interact( list( axes, sbm, sb1, sb2 ) ) );
+free( sb1 );
+free( sb2 );
+
+sb_lst = sdivide( sb, ROW, 0.8 );
+sb1 = nth( sb_lst, 1 );
+color( sb1, green );
+sb2 = nth( sb_lst, 2 );
+color( sb2, yellow );
+free( sb_lst );
+if ( display == on, interact( list( axes, sb, sb1, sb2 ) ) );
+sbm = smerge( sb1, sb2, ROW, 1 );
+if ( display == on, interact( list( axes, sbm, sb1, sb2 ) ) );
+sbm = smerge( sb1 * trans(vector( -0.5, 0.0, 0.0 ) ),
+	      sb2 * trans(vector(  0.5, 0.0, 0.0 ) ), ROW, 0 );
+if ( display == on, interact( list( axes, sbm, sb1, sb2 ) ) );
+free( sbm );
+free( sb1 );
+free( sb2 );
+
+#
+# Region from surface.
+#
+sbr1 = sregion( sb, COL, 0.3, 0.6 );
+color( sbr1, yellow );
+sbr2 = sregion( sb, COL, 0.8, 1.0 );
+color( sbr2, green );
+sbr3 = sregion( sb, ROW, 0.1, 0.4 );
+color( sbr3, blue );
+interact( list( sb, sbr1, sbr2, sbr3 ) );
+free( sbr1 ); free( sbr2 ); free( sbr3 );
+
+#
+# Derivative, intergals and normal curves/surfaces
+#
+dcb = cderive( cb );
+if ( display == on, interact( list( axes, dcb, cb ) ) );
+dsb1 = sderive( sb, ROW );
+color( dsb1, magenta );
+dsb2 = sderive( sb, COL );
+color( dsb2, yellow );
+if ( display == on, interact( list( axes, dsb1, dsb2, sb ) ) );
+ncb = cnrmlcrv( cb );
+color( ncb, yellow );
+if ( display == on, interact( list( axes, ncb, cb ) ) );
+nsb = snrmlsrf( sb );
+color( nsb, yellow );
+if ( display == on, interact( list( axes, nsb, sb ) ) );
+
+cb1 = coerce( cb, e3 );
+printf( "C/SDerive tests = %d  %d  %d\\n",
+        list(cb1 == cderive( cinteg( cb1 ) ),
+
+	      sb == sderive( sinteg( sb, ROW ), ROW ),
+	      sb == sderive( sinteg( sb, COL ), COL ) ) );
+
+free( cb1 );
+free( dcb );
+free( dsb1 );
+free( dsb2 );
+free( ncb );
+free( nsb );
+
+#
+# Iso curves extraction from surface.
+#
+cb_all = list( axes );
+snoc( sb, cb_all );
+for ( t = 0.1, 0.1, 0.9,
+	cb1 = csurface( sb, COL, t ):
+	color( cb1, green ):
+	snoc( cb1, cb_all )
+    );
+for ( t = 0.1, 0.1, 0.9,
+	cb1 = csurface( sb, ROW, t ):
+	color( cb1, green ):
+	snoc( cb1, cb_all )
+    );
+if ( display == on, interact( cb_all ) );
+free( cb_all );
+
+
+#
+# curves extraction from surface mesh. Note curves may be not on the surface.
+#
+cb_all = list( axes );
+snoc( sb, cb_all );
+for ( t = 0, 1, 2,
+	cb1 = cmesh( sb, COL, t ):
+	color( cb1, green ):
+	snoc( cb1, cb_all )
+    );
+for ( t = 0, 1, 4,
+	cb1 = cmesh( sb, ROW, t ):
+	color( cb1, green ):
+	snoc( cb1, cb_all )
+    );
+free( t );
+
+if ( display == on, interact( cb_all ):
+		    viewstate( "DSrfMesh", on ):
+		    pause():
+		    viewstate( "DSrfMesh", off ):
+		    pause() );
+
+free( cb_all );
+
+#
+# convert into polygons/polylines (using default resolution).
+#
+
+p = gpolyline( list( sb, cb ), off );
+if ( display == on, interact( list( p, axes ) ) );
+
+p = gpolygon( sb, on );
+if ( display == on, viewstate( "DrawVNrml", on ):
+		    interact( list( p, axes ) ):
+		    viewstate( "DrawVNrml", off ) );
+
+#
+# reverse surface ( flip normals ).
+#
+q = gpolygon( -sb, on );
+if ( display == on, viewstate( "DrawVNrml", on ):
+		    interact( list( q, axes ) ):
+		    viewstate( "DrawVNrml", off ) );
+
+free(p);
+free(q);
+
+#
+# Offset approximation by translation of srf/crv in normal direction.
+#
+cbo = offset( cb, 0.1, 0.1, off );
+if ( display == on, interact( list( axes, cb, cbo ) ) );
+free(cbo);
+
+sbo = offset( sb, 0.2, 0.1, off );
+if ( display == on, interact( list( axes, sb, sbo ) ) );
+free(sbo);
+
+#
+# Surface and Curve evaluation.
+#
+save( "bezier2",
+      list( ceval( cb, 0.0 ),
+	    ceval( cb, 0.1 ),
+	    ceval( cb, 0.3 ),
+	    ceval( cb, 0.5 ),
+	    ceval( cb, 0.9 ),
+	    ceval( cb, 1.0 ),
+
+	    seval( sb, 0.0, 0.0 ),
+	    seval( sb, 0.1, 0.0 ),
+	    seval( sb, 0.3, 0.0 ),
+	    seval( sb, 0.5, 0.5 ),
+	    seval( sb, 0.9, 0.1 ),
+	    seval( sb, 1.0, 1.0 ) ) );
+
+
+#
+# Surface and Curve tangents.
+#
+
+save( "bezier3",
+      list( ctangent( cb, 0.0, true ),
+	    ctangent( cb, 0.1, true ),
+	    ctangent( cb, 0.3, true ),
+	    ctangent( cb, 0.5, true ),
+	    ctangent( cb, 0.9, true ),
+	    ctangent( cb, 1.0, true ),
+
+	    stangent( sb, ROW, 0.0, 0.0, true ),
+	    stangent( sb, COL, 0.1, 0.0, true ),
+	    stangent( sb, ROW, 0.3, 0.0, true ),
+	    stangent( sb, COL, 0.5, 0.5, true ),
+	    stangent( sb, ROW, 0.9, 0.1, true ),
+	    stangent( sb, COL, 1.0, 1.0, true ) ) );
+
+z = IritState( "CmpObjEps", 1e-10 );
+
+CheckTangentEval = function( c ): dc:
+    dc = cderive( c ):
+    return =
+      ( ctangent( c, 0.0, 0 ) == coerce( ceval( dc, 0.0 ), vector_type ) &&
+	ctangent( c, 0.1, 0 ) == coerce( ceval( dc, 0.1 ), vector_type ) &&
+        ctangent( c, 0.3, 0 ) == coerce( ceval( dc, 0.3 ), vector_type ) &&
+        ctangent( c, 0.5, 0 ) == coerce( ceval( dc, 0.5 ), vector_type ) &&
+        ctangent( c, 0.9, 0 ) == coerce( ceval( dc, 0.9 ), vector_type ) &&
+        ctangent( c, 1.0, 0 ) == coerce( ceval( dc, 1.0 ), vector_type ) );
+
+printf( "Tangent evaluations for\\n\\tpolynomial - %d\\n\\trational - %d\\n",
+	list( CheckTangentEval( coerce( cb, e3 ) ),
+	      CheckTangentEval( cb ) ) );
+
+z = IritState( "CmpObjEps", z );
+free( z );
+
+#
+# Surface and Curve normals.
+#
+save( "bezier4",
+      list( cnormal( cb, 0.0 ),
+	    cnormal( cb, 0.1 ),
+	    cnormal( cb, 0.3 ),
+	    cnormal( cb, 0.5 ),
+	    cnormal( cb, 0.9 ),
+	    cnormal( cb, 1.0 ),
+
+	    snormal( sb, 0.0, 0.0 ),
+	    snormal( sb, 0.1, 0.0 ),
+	    snormal( sb, 0.3, 0.0 ),
+	    snormal( sb, 0.5, 0.5 ),
+	    snormal( sb, 0.9, 0.1 ),
+	    snormal( sb, 1.0, 1.0 ) ) );
+
+DLevel = iritState( "DumpLevel", DLevel );
+free( DLevel );
+
+resolution = save_res;
+
+#
+# save("cb", cb);
+# save("sb", sb);
+#
+# cb1 = load("cb.crv");
+# sb1 = load("sb.srf");
+#
+# save("cb1", cb1);
+# save("sb1", sb1);
+#
+#
+
+free( cb1 );
+free( cb );
+free( sb );
+free( display );

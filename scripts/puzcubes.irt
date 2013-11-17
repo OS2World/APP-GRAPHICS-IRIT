@@ -1,0 +1,275 @@
+#
+# A puzzle of transparent boxes in ball inside.
+#
+# 					Gershon Elber, June 1996
+
+Sqr1 = poly( list( point( -1, -1, 1 ),
+		   point( -1,  1, 1 ),
+		   point(  1,  1, 1 ),
+		   point(  1, -1, 1 ) ), false );
+SclFctr = 0.6;
+Sqr2 = Sqr1 * sc( -SclFctr ) * tz( SclFctr * 2 );
+
+Trap1 = poly( list( point( -1, -1, 1 ) * sc( SclFctr ),
+		    point( -1,  1, 1 ) * sc( SclFctr ),
+		    point( -1,  1, 1 ),
+		    point( -1, -1, 1 ) ), false );
+Trap2 = Trap1 * rz( 180 );
+
+Prim1 = list( Sqr1, Sqr2, Trap1, Trap2 );
+Prim2 = Prim1 * rx( 90 );
+Prim3 = Prim1 * rx( -90 );
+
+BaseUnitAux = list( Prim1, Prim2, Prim3,
+		    Trap1 * rx( 90 ) * ry( -90 ),
+		    Trap2 * rx( -90 ) * ry( 90 ) );
+BaseUnit = list( BaseUnitAux,
+		 BaseUnitAux * ty( 2.35 ),
+		 box( vector( -0.15, 1.0, -0.5 ), 0.3, 0.35, 1.0 ) )
+	* sc( 0.5 );
+free( BaseUnitAux );
+
+BaseUnit1 = BaseUnit;
+color( BaseUnit1, red );
+
+BaseUnit2 = BaseUnit * tx( 1.175 );
+color( BaseUnit2, green );
+
+BaseUnit3 = BaseUnit * rx( 180 ) * rz( 90 );
+color( BaseUnit3, cyan );
+
+BaseUnit4 = BaseUnit3 * ty( 1.175 );
+color( BaseUnit4, magenta );
+
+free( BaseUnit );
+
+rot_x = creparam( cbezier( list( ctlpt( E1, 0.0 ),
+		  	         ctlpt( E1, 360.0 ) ) ),
+		  0.0, 1.0 );
+rot_y = creparam( cbezier( list( ctlpt( E1, 0.0 ),
+		  	         ctlpt( E1, 720.0 ) ) ),
+		  0.0, 1.0 );
+rot_z = creparam( cbezier( list( ctlpt( E1, 0.0 ),
+		  	         ctlpt( E1, 360.0 ) ) ),
+		  0.0, 1.0 );
+
+mov_x = creparam( cbezier( list( ctlpt( E1, 0.0 ),
+		  	         ctlpt( E1, -1.5 ) ) ),
+		  3.0, 4.0 );
+mov_z = creparam( cbezier( list( ctlpt( E1, 0.0 ),
+		  	         ctlpt( E1, 2.0 ) ) ),
+		  1.0, 2.0 );
+attrib( BaseUnit1, "animation", list( rot_x, rot_y, rot_z, mov_x, mov_z ) );
+free( mov_x );
+free( mov_z );
+
+mov_x = creparam( cbezier( list( ctlpt( E1, 0.0 ),
+		  	         ctlpt( E1, 3.0 ) ) ),
+		  3.0, 4.0 );
+mov_z = creparam( cbezier( list( ctlpt( E1, 0.0 ),
+		  	         ctlpt( E1, 2.0 ) ) ),
+		  2.0, 3.0 );
+attrib( BaseUnit2, "animation", list( rot_x, rot_y, rot_z, mov_x, mov_z ) );
+free( mov_x );
+free( mov_z );
+
+mov_y = creparam( cbezier( list( ctlpt( E1, 0.0 ),
+		  	         ctlpt( E1, -1.0 ) ) ),
+		  3.0, 4.0 );
+attrib( BaseUnit3, "animation", list( rot_x, rot_y, rot_z, mov_y ) );
+free( mov_y );
+
+mov_y = creparam( cbezier( list( ctlpt( E1, 0.0 ),
+		  	         ctlpt( E1, 1.0 ) ) ),
+		  3.0, 4.0 );
+attrib( BaseUnit4, "animation", list( rot_x, rot_y, rot_z, mov_y ) );
+free( mov_y );
+
+Base = list( BaseUnit1, BaseUnit2, BaseUnit3, BaseUnit4 );
+attrib( Base, "transp", 0.4 );
+
+free( BaseUnit1 );
+free( BaseUnit2 );
+free( BaseUnit3 );
+free( BaseUnit4 );
+
+#############################################################################
+
+g = (sqrt( 5 ) + 1) / 2; # The golden ratio
+q = g - 1;
+
+v1 = vector(  1,  1,  1 );
+v2 = vector(  1, -1, -1 );
+v3 = vector( -1,  1, -1 );
+v4 = vector( -1, -1,  1 );
+
+pl1 = poly( list( v1, v3, v2 ), false );
+pl2 = poly( list( v1, v4, v3 ), false );
+pl3 = poly( list( v1, v2, v4 ), false );
+pl4 = poly( list( v2, v3, v4 ), false );
+
+tetra = mergepoly( list( pl1, pl2, pl3, pl4 ) );
+
+v1 = vector(  0,  0,  1 );
+v2 = vector(  1,  0,  0 );
+v3 = vector(  0,  1,  0 );
+v4 = vector( -1,  0,  0 );
+v5 = vector(  0, -1,  0 );
+v6 = vector(  0,  0, -1 );
+
+pl1 = poly( list( v1, v3, v2 ), false );
+pl2 = poly( list( v1, v4, v3 ), false );
+pl3 = poly( list( v1, v5, v4 ), false );
+pl4 = poly( list( v1, v2, v5 ), false );
+pl5 = poly( list( v6, v2, v3 ), false );
+pl6 = poly( list( v6, v3, v4 ), false );
+pl7 = poly( list( v6, v4, v5 ), false );
+pl8 = poly( list( v6, v5, v2 ), false );
+
+octa = mergepoly( list( pl1, pl2, pl3, pl4, pl5, pl6, pl7, pl8 ) );
+
+v1  = vector(  0,  q,  g );
+v2  = vector(  0, -q,  g );
+v3  = vector(  1,  1,  1 );
+v4  = vector(  1, -1,  1 );
+v5  = vector( -1, -1,  1 );
+v6  = vector( -1,  1,  1 );
+v7  = vector( -g,  0,  q );
+v8  = vector(  g,  0,  q );
+v9  = vector(  q,  g,  0 );
+v10 = vector( -q,  g,  0 );
+v11 = vector( -q, -g,  0 );
+v12 = vector(  q, -g,  0 );
+v13 = vector( -g,  0, -q );
+v14 = vector(  g,  0, -q );
+v15 = vector(  1,  1, -1 );
+v16 = vector( -1,  1, -1 );
+v17 = vector( -1, -1, -1 );
+v18 = vector(  1, -1, -1 );
+v19 = vector(  0,  q, -g );
+v20 = vector(  0, -q, -g );
+
+pl1  = poly( list( v2, v1, v3, v8, v4 ), false );
+pl2  = poly( list( v1, v2, v5, v7, v6 ), false );
+pl3  = poly( list( v1, v3, v9, v10, v6 ), false );
+pl3  = poly( list( v6, v10, v9, v3, v1 ), false );
+pl4  = poly( list( v2, v4, v12, v11, v5 ), false );
+pl5  = poly( list( v4, v8, v14, v18, v12 ), false );
+pl6  = poly( list( v5, v7, v13, v17, v11 ), false );
+pl6  = poly( list( v11, v17, v13, v7, v5 ), false );
+pl7  = poly( list( v13, v16, v10, v6, v7 ), false );
+pl8  = poly( list( v16, v19, v15, v9, v10 ), false );
+pl9  = poly( list( v3, v9, v15, v14, v8 ), false );
+pl10 = poly( list( v14, v15, v19, v20, v18 ), false );
+pl11 = poly( list( v12, v18, v20, v17, v11 ), false );
+pl12 = poly( list( v17, v13, v16, v19, v20 ), false );
+pl12 = poly( list( v20, v19, v16, v13, v17 ), false );
+
+dodeca = mergepoly( list( pl1, pl2, pl3, pl4, pl5, pl6,
+			  pl7, pl8, pl9, pl10, pl11, pl12 ) );
+
+v1  = vector(  1,  0,  g );
+v2  = vector( -1,  0,  g );
+v3  = vector(  0,  g,  1 );
+v4  = vector(  0, -g,  1 );
+v5  = vector(  g,  1,  0 );
+v6  = vector( -g,  1,  0 );
+v7  = vector( -g, -1,  0 );
+v8  = vector(  g, -1,  0 );
+v9  = vector(  0,  g, -1 );
+
+pl1  = poly( list( v2, v3, v1 ), false );
+pl2  = poly( list( v1, v4, v2 ), false );
+pl3  = poly( list( v2, v6, v3 ), false );
+pl4  = poly( list( v3, v5, v1 ), false );
+pl5  = poly( list( v3, v9, v5 ), false );
+pl6  = poly( list( v3, v6, v9 ), false );
+pl7  = poly( list( v2, v7, v6 ), false );
+pl8  = poly( list( v2, v4, v7 ), false );
+pl9  = poly( list( v1, v8, v4 ), false );
+pl10 = poly( list( v1, v5, v8 ), false );
+
+icosa1 = mergepoly( list( pl1, pl2, pl3, pl4, pl5, pl6, pl7, pl8, pl9, pl10 ) );
+icosa2 = icosa1 * rotx( 180 );
+icosa = mergepoly( list( icosa1, icosa2 ) );
+
+#############################################################################
+
+tetraAux = tetra * sc( 0.15 );
+color( tetraAux, white );
+octaAux = octa * sc( 0.2 ) * tx( 1.175 );
+color( octaAux, white );
+dodecaAux = dodeca * sc( 0.1 ) * ty( 1.175 );
+color( dodecaAux, white );
+icosaAux = icosa * sc( 0.1 ) * tx( 1.175 ) * ty( 1.175 );
+color( icosaAux, white );
+
+Plato = list( tetraAux, octaAux, dodecaAux, icosaAux );
+attrib( Plato, "animation", list( rot_x, rot_y, rot_z ) );
+attrib( Plato, "transp", 0.6 );
+free( tetraAux );
+free( octaAux );
+free( dodecaAux );
+free( icosaAux );
+
+free( rot_x );
+free( rot_y );
+free( rot_z );
+
+All = list( Base, Plato );
+view( All, 1);
+save( "puzcubes", All );
+
+free( pl1 );
+free( pl2 );
+free( pl3 );
+free( pl4 );
+free( pl5 );
+free( pl6 );
+free( pl7 );
+free( pl8 );
+free( pl9 );
+free( pl10 );
+free( pl11 );
+free( pl12 );
+
+free( v1 );
+free( v2 );
+free( v3 );
+free( v4 );
+free( v5 );
+free( v6 );
+free( v7 );
+free( v8 );
+free( v9 );
+free( v10 );
+free( v11 );
+free( v12 );
+free( v13 );
+free( v14 );
+free( v15 );
+free( v16 );
+free( v17 );
+free( v18 );
+free( v19 );
+free( v20 );
+
+free( q );
+free( g );
+free( All );
+free( Base );
+free( Plato );
+free( Icosa );
+free( Icosa1 );
+free( Icosa2 );
+free( Dodeca );
+free( Octa );
+free( Tetra );
+free( Sqr1 );
+free( Sqr2 );
+free( SclFctr );
+free( Trap1 );
+free( Trap2 );
+free( Prim1 );
+free( Prim2 );
+free( Prim3 );

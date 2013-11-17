@@ -1,0 +1,229 @@
+#
+# Display the Gamma-Kernel surfaces.  gershon Elber, September 2003.
+#
+
+ri = iritstate( "RandomInit", 1964 );  # Seed-initiate the randomizer,
+free( ri );
+
+CntrPolys = function( Pls, ZMin, dz, ZMax ): IntrCrv: i: p: z:
+    return = nil():
+    IntrCrv = iritstate( "intercrv", true ):
+    for ( z = ZMin, dz, ZMax,
+	p = circpoly( vector( 0.0, 0.0, 1.0 ), vector( 0.0, 0.0, z ), 6.0 ):
+	snoc(Pls * p, return)
+    ):
+    IntrCrv = iritstate( "intercrv", IntrCrv ):
+    color( return, yellow );
+
+SetRandomColor = function( Obj ):
+    attrib( Obj, "rgb", floor( random( 100, 255 ) ) + "," +
+			floor( random( 100, 255 ) ) + "," +
+			floor( random( 100, 255 ) ) ):
+    return = Obj;
+
+GammaKernelPolySrfs = function( Pl, MaxGamma, Extent ): i: c: k1: k2:
+    return = nil():
+    for ( i = 1, 1, sizeof( Pl ),
+	c = coerce( coord( Pl, i - 1 ), e2 ) +
+	    coerce( coord( Pl, i ), e2 ):
+	k1 = crvKernel( c, MaxGamma, 0, Extent, 2 ):
+	k2 = crvKernel( c, -MaxGamma, 0, Extent, 2 ):
+	snoc( list( SetRandomColor( k1 ), SetRandomColor( k2 ) ),
+	      return ) );
+
+PlgnToPlln = function( Pl ): j:
+    return = nil():
+    for ( j = 0, 1, sizeof( Pl ) - 1,
+	snoc( coord( Pl, j ), return ) ):
+    snoc( coord( Pl, 0 ), return ):
+    return = poly( return, true ):
+    attrib( return, "dwidth", 3 );
+
+ExtractGammaSrf = function( Tv, t, Clr ):
+    return = sTrivar( TV, row, t ):
+    color( return, Clr );
+
+view_mat1 = sc( 1 );
+
+viewobj( view_mat1 );
+
+viewstate( "NumIsos", 1 );
+viewstate( "NumIsos", 1 );
+viewstate( "PolyAprx", 1 );
+viewstate( "PolyAprx", 1 );
+viewstate( "PolyAprx", 1 );
+viewstate( "DrawStyle", 1 );
+viewstate( "DepthCue", 0 );
+viewstate( "DSrfPoly", 1 );
+
+#############################################################################
+#
+# Polygons:
+#
+#############################################################################
+
+Pl = poly( list( point(  1.0,  0.0, 0 ),
+		 point(  0.0, -0.8, 0 ),
+		 point( -0.5,  0.0, 0 ) ),
+	   false );
+PPl = PlgnToPlln( Pl );
+
+interact( list( axes, PPl, GammaKernelPolySrfs( Pl, 25, 2 ) * sz( -1 ) ) );
+
+for ( Angle = 18, 0.1, 19.3,
+    printf( "Angle = %.2f\\n", list( Angle ) ):
+    view( list( PPl, GammaKernelPolySrfs( Pl, Angle, 2 ) * sz( -1 ) ), 1 ) );
+
+pause();
+
+#############################################################################
+
+Pl = poly( list( point(  0.9,  0.0, 0 ),
+		 point(  0.0, -0.9, 0 ),
+		 point( -0.8,  0.0, 0 ),
+		 point( -0.5,  0.0, 0 ),
+		 point(  0.0,  1.0, 0 ),
+		 point(  0.5,  0.0, 0 ) ),
+	   false );
+PPl = PlgnToPlln( Pl );
+
+interact( list( axes, PPl, GammaKernelPolySrfs( Pl, 25, 2 ) * sz( -1 ) ) );
+
+save( "gama1krn", list( PPl, GammaKernelPolySrfs( Pl, 25, 2 ) * sz( -1 ) ) );
+
+for ( Angle = 21, 0.1, 22.5,
+    printf( "Angle = %.2f\\n", list( Angle ) ):
+    view( list( PPl, GammaKernelPolySrfs( Pl, Angle, 2 ) * sz( -1 ) ), 1 ) );
+
+free( Pl );
+free( PPl );
+free( Angle );
+
+pause();
+
+#############################################################################
+#
+# Curves
+# 
+#############################################################################
+
+view_mat1 = sc( 0.5 );
+
+viewobj( view_mat1 );
+
+#############################################################################
+
+C = cbezier( list( ctlpt( E2,  0.0,  -1.0 ),
+                   ctlpt( E2,  0.0,   1.0 ) ) ) * tx( 0.3 ) * ty( 0.5 );
+adwidth( C, 3 );
+
+k = crvKernel( C, 15, 0, 2, 2 );
+color(k , yellow );
+
+interact( list( C, k, axes ) );
+
+#############################################################################
+
+C = cbezier( list( ctlpt( E2, -1.0,   1.0 ),
+                   ctlpt( E2,  0.0,  -1.0 ),
+                   ctlpt( E2,  1.0,   1.0 ) ) );
+adwidth( C, 3 );
+color( C, red );
+CT = C * tz( 1 );
+
+k1 = coerce( crvKernel( C, 50, 0, 1, 2 ), trivar_type ) * sz( 0.7 );
+color( k1, yellow );
+
+k2 = coerce( crvKernel( C, -50, 0, 1, 2 ), trivar_type ) * sz( 0.7 );
+color( k2, cyan );
+
+#
+# The entire trivariate - paramterizing along the curve, gamma, and line.
+#
+interact( list( CT, k1, k2, axes ) );
+
+save( "gama2krn", list( CT, k1, k2 ) );
+
+#
+# Fixed Gamma value, parametrizing along the curve and line.
+#
+interact( list( CT, ExtractGammaSrf( k1, 0.1, yellow ),
+		    ExtractGammaSrf( k2, 0.1, cyan ), axes ) );
+
+save( "gama3krn", list( CT, ExtractGammaSrf( k1, 0.1, yellow ),
+		            ExtractGammaSrf( k2, 0.1, cyan ) ) );
+
+#
+# Iterating along different Gamma values:
+#
+for ( Gamma = 1, 1, 50,
+    view( list( CT, ExtractGammaSrf( k1, Gamma / 50, yellow ),
+		    ExtractGammaSrf( k2, Gamma / 50, cyan ), axes ), 1 ) );
+
+pause();
+
+#############################################################################
+
+C = cbspline( 3,
+	      list( point(  0.9,  0.0, 0 ),
+		    point(  0.0, -0.9, 0 ),
+		    point( -0.8,  0.0, 0 ),
+		    point( -0.5,  0.0, 0 ),
+		    point(  0.0,  1.0, 0 ),
+		    point(  0.5,  0.0, 0 ) ),
+	      list( kv_periodic ) );
+C = coerce( C, kv_open );
+adwidth( C, 3 );
+color( C, red );
+CT = C * tz( 1 );
+
+k1 = coerce( crvKernel( C, 50, 0, 2, 2 ), trivar_type ) * sz( 0.7 );
+color( k1, yellow );
+
+k2 = coerce( crvKernel( C, -50, 0, 2, 2 ), trivar_type ) * sz( 0.7 );
+color( k2, cyan );
+
+#
+# The entire trivariate - paramterizing along the curve, gamma, and line.
+#
+interact( list( CT, k1, k2, axes ) );
+
+#
+# Fixed Gamma value, parametrizing along the curve and line.
+#
+interact( list( CT, ExtractGammaSrf( k1, 0.1, yellow ),
+		    ExtractGammaSrf( k2, 0.1, cyan ), axes ) );
+save( "gama4krn", list( CT, ExtractGammaSrf( k1, 0.1, yellow ),
+		            ExtractGammaSrf( k2, 0.1, cyan ) ) );
+
+#
+# Iterating along different Gamma values:
+#
+for ( Gamma = 1, 1, 22,
+    view( list( CT, ExtractGammaSrf( k1, Gamma / 50, yellow ),
+		    ExtractGammaSrf( k2, Gamma / 50, cyan ), axes ), 1 ) );
+
+pause();
+
+#############################################################################
+
+free( C );
+free( CT );
+free( k );
+free( k1 );
+free( k2 );
+free( Gamma );
+
+free( view_mat1 );
+
+#############################################################################
+
+viewstate( "NumIsos", 0 );
+viewstate( "NumIsos", 0 );
+viewstate( "PolyAprx", 0 );
+viewstate( "PolyAprx", 0 );
+viewstate( "PolyAprx", 0 );
+viewstate( "DrawStyle", 1 );
+viewstate( "DrawStyle", 1 );
+viewstate( "DepthCue", 1 );
+viewstate( "DSrfPoly", 0 );

@@ -1,0 +1,127 @@
+#
+# A model of a light bulb,				Gershon Elber, 1997
+#
+
+Width = 1.0;
+Thread = cbspline( 3,
+		   list( ctlpt( E2, 0.0, Width ),
+			 ctlpt( E2, 0.2, Width ),
+			 ctlpt( E2, 0.4, Width + 0.2 ),
+			 ctlpt( E2, 0.6, Width - 0.2 ),
+			 ctlpt( E2, 0.8, Width + 0.2 ),
+			 ctlpt( E2, 1.0, Width - 0.2 ),
+			 ctlpt( E2, 1.2, Width + 0.2 ),
+			 ctlpt( E2, 1.4, Width - 0.2 ),
+			 ctlpt( E2, 1.6, Width + 0.2 ),
+			 ctlpt( E2, 1.8, Width - 0.2 ),
+			 ctlpt( E2, 2.0, Width - 0.2 ) ),
+		   list( KV_OPEN ) );
+Threads = nil();
+i = 0;
+Shift = 0.42;
+for ( s = -Shift, Shift * 0.12, Shift * 0.12,
+    snoc( ( ctlpt( E2, -0.01, Width ) +
+	    Thread * tx( -s ) +
+	    ctlpt( E2, 2.41, Width - 0.2 ) +
+	    ctlpt( E2, 2.55, Width * 0.55 ) +
+	    ctlpt( E2, 2.85, Width * 0.35 ) +
+	    ctlpt( E2, 2.86,  Width * 0.001 ) ) * rx( 45 * i ),
+	  Threads ):
+    i = i + 1 );
+free( Thread ); 
+Base = -sFromCrvs( Threads, 3, KV_FLOAT );
+free( Threads ); 
+attrib(  Base, "rgb", "200,200,200" );
+free( Shift );
+
+CoverGlassCross =
+     cbspline( 3,
+	       list( ctlpt( E2,  0.0, Width ),
+		     ctlpt( E2, -0.2, Width + 0.2 ),
+		     ctlpt( E2, -0.8, Width + 0.2 ),
+		     ctlpt( E2, -1.4, Width + 0.5 ),
+		     ctlpt( E2, -1.6, Width + 0.7 ),
+		     ctlpt( E2, -2.6, Width + 1.4 ),
+		     ctlpt( E2, -4.9, Width + 1.2 ),
+		     ctlpt( E2, -5.7, Width ),
+		     ctlpt( E2, -5.7, 0.001 ) ),
+	       list( KV_OPEN ) ) * ry( 90 );
+CoverGlass = surfRev( CoverGlassCross ) * ry( -90 );
+free( CoverGlassCross ); 
+attrib( CoverGlass, "rgb", "255,255,255" );
+attrib( CoverGlass, "transp", 0.95 );
+free( Width );
+
+WireHolder = SwpCircSrf( cbspline( 3,
+				   list( ctlpt( E3, 0.0, 0.0, -2.0 ),
+					 ctlpt( E3, 0.0, 0.0,  0.8 ),
+					 ctlpt( E3, 0.0, 0.0,  1.2 ),
+					 ctlpt( E3, 0.8, 0.0,  3.0 ) ),
+				   list( KV_OPEN ) ),
+		         0.02, 1 );
+WireHolder1 = WireHolder * ry( -90 ) * tz( 0.2 );
+WireHolder2 = WireHolder1 * rx( 180 );
+attrib( WireHolder1, "rgb", "128,55,55" );
+attrib( WireHolder2, "rgb", "128,55,55" );
+
+InnerGlass = surfRev( cbspline( 3,
+				list( ctlpt( E3, 0.3, 0.0, -2.0 ),
+				      ctlpt( E3, 0.3, 0.0,  0.3 ),
+				      ctlpt( E3, 0.1, 0.0,  0.6 ),
+				      ctlpt( E3, 0.3, 0.0,  0.9 ),
+				      ctlpt( E3, 0.1, 0.0,  1.0 ),
+				      ctlpt( E3, 0.1, 0.0,  1.1 ),
+				      ctlpt( E3, 0.1, 0.0,  2.4 ),
+				      ctlpt( E3, 0.1, 0.0,  2.49 ),
+				      ctlpt( E3, 0.2, 0.0,  2.5 ),
+				      ctlpt( E3, 0.2, 0.0,  2.6 ),
+				      ctlpt( E3, 0.1, 0.0,  2.61 ),
+				      ctlpt( E3, 0.001, 0.0,  2.61 ) ),
+				list( KV_OPEN ) ) ) *sx( 1.5 ) * ry( -90 );
+attrib( InnerGlass, "rgb", "255,255,255" );
+attrib( InnerGlass, "transp", 0.95 );
+
+Wire = SwpCircSrf( cbspline( 3,
+			     list( ctlpt( E3, -3, -0.02,  1.0 ),
+				   ctlpt( E3, -3,  0.7,   0.32 ),
+				   ctlpt( E3, -3,  0.7,   0.28 ),
+				   ctlpt( E3, -3,  0.7,  -0.28 ),
+				   ctlpt( E3, -3,  0.7,  -0.32 ),
+				   ctlpt( E3, -3, -0.02, -1.0 ) ),
+			     list( KV_OPEN ) ),
+		   0.015, 1 );
+attrib( Wire, "rgb", "255,255,255" );
+
+SupportWire1 = SwpCircSrf( cbspline( 2,
+			     list( ctlpt( E3, -2.5, 0.0,  0.1 ),
+				   ctlpt( E3, -3.0, 0.7,  0.3 ) ),
+			     list( KV_OPEN ) ),
+		   0.015, 1 );
+SupportWire2 = SwpCircSrf( cbspline( 2,
+			     list( ctlpt( E3, -2.5, 0.0, -0.1 ),
+				   ctlpt( E3, -3.0, 0.7, -0.3 ) ),
+			     list( KV_OPEN ) ),
+		   0.015, 1 );
+attrib( SupportWire1, "rgb", "128,55,55" );
+attrib( SupportWire2, "rgb", "128,55,55" );
+
+All = list( Base, CoverGlass, WireHolder1, WireHolder2,
+	    SupportWire1, SupportWire2, InnerGlass, Wire );
+
+interact( All );
+save( "bulb", All );
+
+free( i );
+free( s );
+free( Base );
+free( CoverGlass ); 
+free( WireHolder ); 
+free( WireHolder1 ); 
+free( WireHolder2 );
+free( SupportWire1 ); 
+free( SupportWire2 ); 
+free( InnerGlass ); 
+free( Wire );
+free( All );
+
+

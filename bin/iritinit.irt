@@ -1,0 +1,675 @@
+dummy = iritState("EchoSource", false);
+#
+# Init file for IRIT solid modeller.
+#
+# iritstate( "FloatFrmt", "%16.14lg" );
+#
+dummy = iritstate( "DumpLevel", 16 + 4 + 2 + 1 );
+
+demo = procedure():
+    include("demo.irt");
+
+pause = procedure():t:
+    printf("Press return to continue:", nil()):
+    t = getline(string_type);
+
+miliSleep = procedure( n ):
+    msleep( n );
+
+#
+# Some simple functions.
+#
+isEven = function( x ):
+    return = x == floor( x / 2 ) * 2;
+mod = function( x, n ):
+    return = x - floor( x / n ) * n;
+min = function(x, y):
+    if (x > y, return = y, return = x);
+max = function(x, y):
+    if (x > y, return = x, return = y);
+sqr = function(x):
+    return = x * x;
+normalize = function(x):len:
+    return = 1.0:
+    if (thisobj("x") == vector_type || thisobj("x") == point_type,
+	len = sqrt(x * x):
+	return = point(coord(x, 0) / len,
+		       coord(x, 1) / len,
+		       coord(x, 2) / len):
+	if (thisobj("x") == vector_type,
+	    return = coerce(return, vector_type))):
+    if (thisobj("return") == numeric_type,
+	printf("NORMALIZE: Can handle only vectors or points, found %8.6lDg\n",
+	       list(x)));
+midPoint = function(pt1, pt2):
+    return = (pt1 + pt2) * 0.5;
+InterpPoint = function(pt1, pt2, t):
+    return = (pt1 * (1 - t) + pt2 * t);
+edge2d = function( x1, y1, x2, y2 ):
+    return = ctlpt( E2, x1, y1 ) + ctlpt( E2, x2, y2 );
+edge3d = function( x1, y1, z1, x2, y2, z2 ):
+    return = ctlpt( E3, x1, y1, z1 ) + ctlpt( E3, x2, y2, z2 );
+dstPtPt = function ( Pt1, Pt2 ):
+    return = sqrt( ( Pt1 - Pt2 ) * ( Pt1 - Pt2 ) );
+
+GenRandomColor = function( ):
+    return = floor( random( 100, 255 ) ) + "," +
+	     floor( random( 100, 255 ) ) + "," +
+	     floor( random( 100, 255 ) );
+
+#
+# Setting a fixed normal to polygonal object.
+#
+SetNormalsInPoly = function( Pl, Normal ):V:i:
+   return = nil():
+   for ( i = 0, 1, sizeof( Pl ) - 1,
+       V = coord( Pl, i ):
+       attrib( V, "normal", Normal ):
+       snoc( V, return ) ):
+   return = poly( return, false );
+SetNormalsInPolyObj = function( Obj, Normal ):Pl:i:
+   return = SetNormalsInPoly( coord( Obj, 0 ), Normal ):
+   for ( i = 1, 1, sizeof( Obj ) - 1,
+       Pl = SetNormalsInPoly( coord( Obj, i ), Normal ):
+       return = return ^ Pl );
+SetNormalsInObjList = function( ObjList, Normal ):
+   return = nil();
+SetNormalsInObjList = function( ObjList, Normal ):Obj:i:
+   return = nil():
+   for ( i = 1, 1, sizeof( ObjList ),
+       Obj = nth( ObjList, i ):
+       if ( thisobj( "Obj" ) == list_type ,
+	    snoc( SetNormalsInObjList( Obj, Normal ), return ),
+	    if ( thisobj( "Obj" ) == poly_type,
+		 snoc( SetNormalsInPolyObj( Obj, Normal ), return ),
+		 snoc( Obj, return ) ) ) );
+
+#
+# Sweep of circular cross section.
+#
+SwpCircSrf = function( AxisCrv, ScaleCrv, ScaleRefine ):
+    return = SwpSclSrf( circle( vector( 0, 0, 0 ), 1 ),
+			AxisCrv,
+			ScaleCrv,
+			off,
+			ScaleRefine );
+
+#
+# Example for a useful recursive function.  Such function needs to be defined
+# first as a regular function so it is known in function name-space.
+#
+ProcessObjsMaxEdgeLen = function( Obj, MaxLen ): return = 0;
+ProcessObjsMaxEdgeLen = function( Obj, MaxLen ): i:
+    return = nil():
+    if ( thisobj( "Obj" ) == list_type,
+	for ( i = 1, 1, sizeof( Obj ),
+	    return = return +
+		     ProcessObjsMaxEdgeLen( nth( Obj, i ), MaxLen ) ) ):
+    if ( thisobj( "Obj" ) == poly_type,
+	return = list( MaxEdgeLen( triangl( Obj, false ), MaxLen ) ):
+	cpattr( nref( return, 1 ), Obj ) );
+
+#
+# Extractions of Control Polygon/Mesh/Points from a curve or a surface.
+#
+GetCtlPoints = function( Crv, Vecs ):i:p:
+    return = nil():
+    for ( i = 1, 1, sizeof( Crv ),
+	if ( Vecs,
+	     p = coerce( coord( Crv, i - 1 ), vector_type ),
+	     p = coerce( coord( Crv, i - 1 ), point_type ) ):
+	snoc( p, return )
+    );
+GetCtlPolygon = function( Crv ):
+    return = poly( GetCtlPoints( Crv, false ), true );
+
+GetCtlMeshPts = function( Srf, Vecs ):l:i:j:p:rsize:csize:
+    return = nil():
+    rsize = meshsize( Srf, ROW ):
+    csize = meshsize( Srf, COL ):
+    for ( i = 1, 1, csize,
+        for ( j = 1, 1, rsize,
+	     if ( Vecs,
+	          p = coerce( coord( Srf, (i - 1) * rsize + j - 1 ),
+			      vector_type ),
+	          p = coerce( coord( Srf, (i - 1) * rsize + j - 1 ),
+			      point_type ) ):
+	     snoc( p, return )
+	)
+    );
+GetCtlMesh = function( Srf ):l:i:j:p:pl:rsize:csize:first:
+    first = true:
+    rsize = meshsize( Srf, ROW ):
+    csize = meshsize( Srf, COL ):
+    for ( i = 1, 1, rsize,
+	pl = nil():
+        for ( j = 1, 1, csize,
+	     p = coerce( coord( Srf, (i - 1) * csize + j - 1 ), vector_type ):
+	     snoc( p, pl )
+	):
+	if ( first == true,
+	     return = poly( pl, true ): first = false,
+	     return = return + poly( pl, true ) )
+    ):
+    for ( j = 1, 1, csize,
+	pl = nil():
+        for ( i = 1, 1, rsize,
+	     p = coerce( coord( Srf, (i - 1) * csize + j - 1 ), vector_type ):
+	     snoc( p, pl )
+	):
+	return = return + poly( pl, true )
+    );
+
+# Expects a list object of polyline objects.
+GenPllnsToPlgons = function( Pl ): i: j: Pl1: Pl1n:
+    return = nil():
+    for ( i = 1, 1, sizeof( Pl ),
+	Pl1n = nil():
+	Pl1 = coord( Pl, i ):
+	for ( j = 0, 1, sizeof ( Pl1 ) - 1,
+	    snoc( coord( Pl1, j ), Pl1n ) ):
+	snoc( coord( Pl1, 0 ), Pl1n ):
+	snoc( poly( Pl1n, false ), return ) ):
+    return = mergePoly( return );
+
+# Expects a poly object of polygons.
+GenPlgonsToPllns = function( Pl ): i: j: Pl1: Pl1n:
+    return = nil():
+    for ( i = 0, 1, sizeof( Pl ) - 1,
+	Pl1n = nil():
+	Pl1 = coord( Pl, i ):
+	for ( j = 0, 1, sizeof ( Pl1 ) - 1,
+	    snoc( coord( Pl1, j ), Pl1n ) ):
+	snoc( coord( Pl1, 0 ), Pl1n ):
+	snoc( poly( Pl1n, true ), return ) ):
+    return = mergePoly( return );
+
+PutCrvMarkers = function( Crv, n, Size ):TMin: TMax: dt: t: Nrml: Pt1: Pt2: i:
+    TMin = nth( pdomain( Crv ), 1 ):
+    TMax = nth( pdomain( Crv ), 2 ):
+    return = nil():
+    dt = (TMax - TMin - 1e-6) / n:
+    t = TMin:
+    for ( i = 0, 1, n,
+	Nrml = cnormal( Crv, t ) * Size:
+	Pt1 = coerce( ceval( Crv, t ), vector_type ) - Nrml:
+	Pt2 = coerce( ceval( Crv, t ), vector_type ) + Nrml:
+	snoc( coerce( Pt1, E3 ) + coerce( Pt2, E3 ), return ):
+	t = t + dt );
+
+#
+# Create avisual dispaly of the given knot vector KV (list of numbers).
+# VSpace controls the vertical space of identical/multiple knots.
+#
+MakeKVMarkers = function( KV, Order, VSpace ):
+    TMin: TMax: PrevT: t: PrevPosY: PosY: i:
+    PrevT = -1e30:
+    PrevPosY = 0.0:
+    TMin = nth( KV, Order ):
+    TMax = nth( KV, sizeof( KV ) - Order + 1 ):
+    return = list( ctlpt( E2, TMin, 0 ) + ctlpt( E2, TMax, 0 ) ):
+    for ( i = 1, 1, sizeof( KV ),
+	t = nth( KV, i ):
+	if ( abs( t - PrevT ) < 1e-6,
+	    PosY = PrevPosY,
+	    PosY = VSpace ):
+        PosY = PosY - VSpace:
+	snoc( ctlpt( E2, t, PosY ), return ):
+	PrevPosY = PosY:
+	PrevT = t );
+
+#
+# Extract a network of isocurves.
+#
+GetIsoCurves = function( Srf, NumU, NumV ):domain:Umin:Umax:Vmin:Vmax:i:
+    return = nil():
+    domain = pdomain( Srf ):
+    Umin = nth( domain, 1 ):
+    Umax = nth( domain, 2 ):
+    Vmin = nth( domain, 3 ):
+    Vmax = nth( domain, 4 ):
+    if ( NumU > 0,
+        for ( i = 0, 1, NumU,
+	    snoc( csurface( Srf, COL, Umin + (Umax - Umin) * i / NumU ),
+	          return ) ) ):
+    if ( NumV > 0,
+	for ( i = 0, 1, NumV,
+	    snoc( csurface( Srf, ROW, Vmin + (Vmax - Vmin) * i / NumV ),
+	          return ) ) );
+
+GetIsoCurveTubes = function( Srf, NumU, NumV, Rad ):domain:Umin:Umax:Vmin:Vmax:i:
+    return = nil():
+    domain = pdomain( Srf ):
+    Umin = nth( domain, 1 ):
+    Umax = nth( domain, 2 ):
+    Vmin = nth( domain, 3 ):
+    Vmax = nth( domain, 4 ):
+    for ( i = 0, 1, NumU,
+	snoc( SwpCircSrf( csurface( Srf, COL,
+				    Umin + (Umax - Umin) * i / NumU ),
+			  Rad, 1 ),
+	      return ) ):
+    for ( i = 0, 1, NumV,
+	snoc( SwpCircSrf( csurface( Srf, ROW,
+				    Vmin + (Vmax - Vmin) * i / NumV ),
+			  Rad, 1 ),
+	      return ) );
+
+#
+# Construct a box in the size of the bbox of an object.
+#
+CreateBBoxBox = function( o ): b:
+    b = bbox( o ):
+    return = box( vector( nth( b, 1), nth( b, 3 ), nth( b, 5 ) ),
+		  nth( b, 2 ) - nth( b, 1 ),
+		  nth( b, 4 ) - nth( b, 3 ),
+		  nth( b, 6 ) - nth( b, 5 ) );
+
+#
+# Approximate a curve as a polygon/line with n vertices.
+#
+CnvrtCrvToPolygon = function( Crv, n, IsPolyline ):ptl:pt:lastPt:t:t0:t1:dt:
+    ptl = nil():
+    t0 = nth( pdomain( Crv ), 1 ):
+    t1 = nth( pdomain( Crv ), 2 ):
+    if ( n < 2, n = 2 ):
+    dt = (t1 - t0) / (n + 0.0001 - 1):
+    if ( IsPolyline == 0, t1 = t1 - dt ):
+    for ( t = t0, dt, t1,
+	pt = ceval( Crv, t ):
+	snoc( pt, ptl )
+    ):
+    return = poly( ptl, IsPolyline );
+
+#
+# Convert a polygon/polyline into a list of points or a curve.
+#
+CnvrtPolyToPtList = function( Ply ): i:
+    return = nil():
+    for ( i = 0, 1, sizeof( Ply ) - 1,
+	  snoc( coord( Ply, i ), return ) );
+CnvrtPolyToCrv = function( Ply, Order, KVShape ):
+    return = cbspline( Order,
+		       CnvrtPolyToPtList( Ply ),
+		       list( KVShape ) );
+#
+# Convert a polygon/polyline Pl into a tubular surface of radius Rad and
+# "reasonable" number of control points, limited between MinCtlPt and MaxCtlPt.
+#
+CnvrtPolyToTube = function( Pl, Rad, MinCtlPt, MaxCtlPt ): PtList: Len: c:
+    PtList = CnvrtPolyToPtList( Pl ):
+    Len = sizeof( PtList ):
+    return = nil():
+    if ( Len > 1,
+	if ( Len < 4,
+	    c = cinterp( PtList, Len, Len, PARAM_UNIFORM, false ),
+	    c = cinterp( PtList, 3, min( max( Len / 10, MinCtlPt ), MaxCtlPt ),
+			 PARAM_UNIFORM, false ) ):
+	return = SwpCircSrf( c, Rad, 1 ) );
+
+#
+# Convert polynomial expressions to explicit Bezier.
+#
+Univariate2Bezier = function( Polynom, Deg ): x: f:
+return = nil():
+f = 1:
+for ( x = 0, 0.05 / Deg, 1,
+    exec( "f = " + Polynom ):
+    snoc( ctlpt( E1, f ), return ) ):
+return = coerce( cinterp( return, Deg + 1, Deg + 1, PARAM_UNIFORM, FALSE ),
+		 bezier_type );
+
+Bivariate2Bezier = function( Polynom, Xdeg, Ydeg ): x: y: f:
+return = nil():
+f = 1:
+for ( x = 0, 0.1 / Xdeg, 1,
+    for ( y = 0, 0.1 / Ydeg, 1,
+	exec( "f = " + Polynom ):
+	snoc( ctlpt( E3, x, y, f ), return ) ) ):
+return = coerce( sinterp( return, Xdeg + 1, Ydeg + 1, Xdeg + 1, Ydeg + 1,
+		          PARAM_UNIFORM ),
+		 bezier_type );
+
+#
+# Primitives in freeform surface form.
+#
+planeSrf = function( x1, y1, x2, y2 ):
+    return = ruledSrf( edge2d( x1, y1, x2, y1 ),
+		       edge2d( x1, y2, x2, y2 ) );
+sphereSrf = function( Radius ):s45:
+    s45 = sin( 45 * pi / 180 ):
+    return = surfRev( cbspline( 3,
+				list( ctlpt( P3, 1.0,  0.0, 0.0, -1.0 ),
+				      ctlpt( P3, s45, -s45, 0.0, -s45 ),
+				      ctlpt( P3, 1.0, -1.0, 0.0,  0.0 ),
+				      ctlpt( P3, s45, -s45, 0.0,  s45 ),
+				      ctlpt( P3, 1.0,  0.0, 0.0,  1.0 ) ),
+				list( 0, 0, 0, 1, 1, 2, 2, 2 ) ) ) *
+	scale( vector( Radius, Radius, Radius ) );
+torusSrf = function( MRadius, mRad ):
+    return = SwpCircSrf( circle( vector( 0, 0, 0 ), MRadius ), mRad, 0 );
+coneSrf = function( Height, Radius ):
+    return = surfRev( ctlpt( E3, 0.0, 0.0, 0.0 ) +
+		      ctlpt( E3, Radius, 0.0, 0.0 ) +
+		      ctlpt( E3, 0.0, 0.0, Height ) );
+cone2Srf = function( Height, Radius1, Radius2 ):
+    return = surfRev( ctlpt( E3, 0.0, 0.0, 0.0 ) +
+		      ctlpt( E3, Radius1, 0.0, 0.0 ) +
+		      ctlpt( E3, Radius2, 0.0, Height ) +
+		      ctlpt( E3, 0.0, 0.0, Height ) );
+cylinSrf = function( Height, Radius ):
+    return = surfRev( ctlpt( E3, 0.0, 0.0, 0.0 ) +
+		      ctlpt( E3, Radius, 0.0, 0.0 ) +
+		      ctlpt( E3, Radius, 0.0, Height ) +
+		      ctlpt( E3, 0.0, 0.0, Height ) );
+boxSrf = function( Width, Dpth, Height ):
+    return = list( coerce( -planeSrf( 0, 0, Width, Dpth ), e3 ),
+		   coerce( planeSrf( 0, 0, Width, Dpth ), e3 ) *
+		       trans( vector( 0, 0, Height ) ),
+		   coerce( planeSrf( 0, 0, Width, Height ), e3 ) *
+		       rotx( 90 ),
+		   coerce( -planeSrf( 0, 0, Width, Height ), e3 ) *
+		       rotx( 90 ) * trans( vector( 0, Dpth, 0 ) ),
+		   coerce( planeSrf( 0, 0, Height, Dpth ), e3 ) *
+		       roty( -90 ),
+		   coerce( -planeSrf( 0, 0, Height, Dpth ), e3 ) *
+		       roty( -90 ) * trans( vector( Width, 0, 0 ) ) );
+flatSrf = function( UOrder, VOrder ):
+    return = sbezier( list( list( ctlpt( E3, -1.0, -1.0, 0.0 ),
+				  ctlpt( E3, -1.0,  1.0, 0.0 ) ),
+			    list( ctlpt( E3,  1.0, -1.0, 0.0 ),
+				  ctlpt( E3,  1.0,  1.0, 0.0 ) ) ) ):
+    return = sraise( sraise( return, row, UOrder ), col, VOrder );
+
+#
+# Domain that will be printed in A4 using a unit matrix.
+#
+PrintableA4UnitMat = poly( list( point( -1.1,  -1.22, 0.0 ),
+			         point(  1.18, -1.22, 0.0 ),
+			         point(  1.18,  2.02, 0.0 ),
+			         point( -1.1,   2.02, 0.0 ),
+			         point( -1.1,  -1.22, 0.0 ) ),
+		           true );
+
+#
+# Transformations.
+#
+tx = function( r ):
+    return = trans( vector( r, 0, 0 ) );
+ty = function( r ):
+    return = trans( vector( 0, r, 0 ) );
+tz = function( r ):
+    return = trans( vector( 0, 0, r ) );
+sx = function( r ):
+    return = scale( vector( r, 1, 1 ) );
+sy = function( r ):
+    return = scale( vector( 1, r, 1 ) );
+sz = function( r ):
+    return = scale( vector( 1, 1, r ) );
+sc = function( s ):
+    return = scale( vector( s, s, s ) );
+rx = function( r ):
+    return = rotx( r );
+ry = function( r ):
+    return = roty( r );
+rz = function( r ):
+    return = rotz( r );
+
+#
+# Rotate vector w to/from Z axis
+#
+RotVec2Z = function( w ):u:v: # Rotation Trans. of w dir to Z axis.
+    if ( abs( coord( w, 0 ) ) > abs( coord( w, 1 ) ),
+	 u = vector( 0, 1, 0 ),
+	 u = vector( 1, 0, 0 ) ):
+    w = normalize( w ):
+    v = normalize( u ^ w ):
+    u = normalize( w ^ v ):
+    return =
+	homomat( list( list( coord( u, 0 ), coord( v, 0 ), coord( w, 0 ), 0 ),
+		       list( coord( u, 1 ), coord( v, 1 ), coord( w, 1 ), 0 ),
+		       list( coord( u, 2 ), coord( v, 2 ), coord( w, 2 ), 0 ),
+		       list( 0, 0, 0, 1 ) ) );
+RotZ2Vec = function( w ): # Rotation Trans. of Z axis to W dir.
+    return = RotVec2Z( w )^-1;
+
+#
+# Rotate matrix around line (Pt + t Dir), Theta degrees.
+#
+RotLine = function( Pt, Dir, Theta ):
+    return = trans( coerce( Pt, vector_type ) * -1 ) *
+	     RotVec2Z( Dir ) *
+	     rz( Theta ) *
+	     RotZ2Vec( Dir ) *
+	     trans( coerce( Pt, vector_type ) );	     
+
+#
+# make a grid in the XY plane of n lines.
+#
+GridXY = function( n ): i:
+    return = nil():
+    for ( i = 0, 1, n,
+	snoc( ctlpt( E2, i / n, 0 ) + ctlpt( E2, i / n, 1 ),
+	      return ) ):
+    for ( i = 0, 1, n,
+	snoc( ctlpt( E2, 0, i / n ) + ctlpt( E2, 1, i / n ),
+	      return ) ):
+    return = return * sc( 2 ) * tx( -1 ) * ty( -1 );
+GridXYZ = function( n ): i: g: Grids:
+    g = GridXY( n ):
+    Grids = nil():
+    for ( i = 0, 1, n,
+	snoc( g * tz( 2 * i / n - 1 ), Grids ) ):
+    return = list( Grids * rx( 0 ), Grids * rx( 90 ), Grids * ry( 90 ) );
+
+MakePolyNSides = function( n ): i: a:
+    return = nil():
+    a = 360 / n:
+    for ( i = 0, a, 360 - a / 2,
+        snoc( vector( cos( i * pi / 180 ),
+                      sin( i * pi / 180 ),
+                      0 ), return ) ):
+    return = poly( return, false ) * rz( 270 - a / 2 );
+
+#
+# A transparent grid: TranspGrid( 5, 5, 1, 5 )
+#
+TranspGridAux = function( n, m, Scl, Even ): i: j: Sqr:
+    Sqr = poly( list( point( 0, 0, 0 ),
+		  point( 0, 1, 0 ),
+		  point( 1, 1, 0 ),
+		  point( 1, 0, 0 ) ), false ):
+    return = Sqr:
+    for ( i = -n, 1, n - 1,
+        for ( j = -m, 1, m - 1,
+	    if ( isEven( i + j ) == Even,
+                if ( return == Sqr,
+		    return = Sqr * sc( Scl ) * tx( i * Scl ) * ty( j * Scl ),
+		    return = ( Sqr * sc( Scl ) * tx( i * Scl ) * ty( j * Scl ) )
+		             ^ return ) ) ) );
+TranspGridTicks = function( n, m, Scl, Dup ): Lines: Line: i:
+    Line = poly( list( point( -n * scl, 0, 0 ),
+		       point(  n * scl, 0, 0 ) ), true ):
+    Lines = nil():
+    for ( i = -n * Dup, 1, n * Dup,
+	snoc( Line * ty( i * Scl / Dup ), Lines ) ):
+    return = MergePoly( Lines + Lines * rz( 90 ) ):
+    attrib( return, "rgb", "255,255,255" );
+TranspGrid = function( n, m, Scl, Ticks ): OddGrid: EvenGrid:
+    OddGrid = TranspGridAux( n, m, Scl, 0 ):
+    attrib( OddGrid, "rgb", "0, 0, 255" ):
+    attrib( OddGrid, "transp", 0.01 ):
+    EvenGrid = TranspGridAux( n, m, Scl, 1 ):
+    attrib( EvenGrid, "rgb", "0, 255, 255" ):
+    attrib( EvenGrid, "transp", 0.01 ):
+    return = list( OddGrid, EvenGrid ):
+    if ( Ticks,
+	snoc( TranspGridTicks( n, m, Scl, Ticks ), return ) );
+
+#
+# Arrows.
+#
+arrow3d = function( Pt, Dir, Length, Width, HeadLength, HeadWidth ):
+    return = list( cylinSrf( Length - HeadLength, Width / 2 )
+			* RotZ2Vec( Dir )
+			* trans( coerce( Pt, vector_type ) ),
+		   coneSrf( HeadLength, HeadWidth )
+			* trans( vector( 0, 0, Length - HeadLength ) )
+			* RotZ2Vec( Dir )
+			* trans( coerce( Pt, vector_type ) ) );
+
+CurveArrowEnd = function( Crv, End, HeadLength, HeadWidth ):
+    TMin: TMax: Pt: Dir:
+    TMin = nth( pdomain( Crv ), 1 ):
+    TMax = nth( pdomain( Crv ), 2 ):
+    if ( End,
+	 Pt = coerce( ceval( Crv, TMax ), point_type ):
+	 Dir = cTangent( Crv, TMax, true ),
+	 Pt = coerce( ceval( Crv, TMin ), point_type ):
+	 Dir = cTangent( Crv, TMin, true ) ):
+    return = coneSrf( HeadLength, HeadWidth )
+	* trans( vector( 0, 0, -HeadLength ) )
+	* RotZ2Vec( Dir )
+	* trans( coerce( Pt, vector_type ) );
+
+#
+# Emulation of view, interact and other useful viewing functions using VIEWOBJ
+# for the default display device.
+#
+beep = procedure():command_: # Make some noise.
+    command_ = "BEEP":
+    viewobj(command_);
+viewClear = procedure():command_: # Clear the screen.
+    command_ = "CLEAR":
+    viewobj(command_);
+viewDClear = procedure():command_: # Delayed clear screen.
+    command_ = "DCLEAR":
+    viewobj(command_);
+viewDisc = procedure():command_: # Disconnect from this display device
+    command_ = "DISCONNECT":
+    viewobj(command_);
+viewEditCrv = procedure(Name):command_: # Edit the specified curve.
+    command_ = "EDITCRV " + Name:
+    viewobj(command_);
+viewEditSrf = procedure(Name):command_: # Edit the specified surface.
+    command_ = "EDITSRF " + Name:
+    viewobj(command_);
+viewEditObj = procedure(Name):command_: # Edit the specified object.
+    command_ = "EDITOBJ " + Name:
+    viewobj(command_);
+viewCloneObj = procedure(Name):command_: # Clone & edit the specified object.
+    command_ = "CLONEOBJ " + Name:
+    viewobj(command_);
+viewExit = procedure():command_: # Force Display device to exit.
+    command_ = "EXIT":
+    viewobj(command_);
+viewMSave = procedure(name):command_: # Save viewing matrix under name.
+    command_ = "MSAVE " + name:
+    viewobj(command_);
+viewImgSave = procedure(name):command_: # Save display as image under name.
+    command_ = "IMGSAVE " + name:
+    viewobj(command_);
+viewRemove = procedure(name):command_: # Remove an object from display.
+    command_ = "REMOVE " + name:
+    viewobj(command_);
+viewAnim = procedure(TMin, TMax, Dt):command_: # Animate a sequence.
+    command_ = "ANIMATE " ^ TMin ^ " " ^ TMax ^ " " ^ Dt:
+    viewobj(command_);
+viewState = procedure(state, status):command_: # Change display device state.
+    command_ = "STATE " + state + " " + status:
+    viewobj(command_);
+view = procedure(none,clear): # Emulation of old VIEW command.
+    if (clear != 0.0, viewdclear()):
+    viewobj(none);
+interact = procedure(none): # Emulation of old INTERACT command.
+    viewdclear():
+    viewobj(none):
+    pause();
+
+#
+# Client communication helper functions.
+#
+clntClear = procedure(h):command_:       # Clear the screen.
+    command_ = "CLEAR":
+    clntwrite(h, command_);
+clntDClear = procedure(h):command_:      # Delayed clear screen.
+    command_ = "DCLEAR":
+    clntwrite(h, command_);
+clntDisc = procedure(h):command_:        # Disconnect from this display device
+    command_ = "DISCONNECT":
+    clntwrite(h, command_);
+clntEditCrv = function(h, Name):command_: # Edit the specified curve.
+    command_ = "EDITCRV " + Name:
+    clntwrite(h, command_);
+clntEditSrf = function(h, Name):command_: # Edit the specified surface.
+    command_ = "EDITSRF " + Name:
+    clntwrite(h, command_);
+clntEditObj = procedure(h, Name):command_: # Edit the specified object.
+    command_ = "EDITOBJ " + Name:
+    clntwrite(h, command_);
+clntCloneObj = procedure(h, Name):command_: # Clone & edit specified object.
+    command_ = "CLONEOBJ " + Name:
+    clntwrite(h, command_);
+clntExit = procedure(h):command_:        # Force Display device to exit.
+    command_ = "EXIT":
+    clntwrite(h, command_);
+clntGetObj = function(h, Name):command_: # Get an object from a client.
+    command_ = "GETOBJ " + Name:
+    clntwrite(h, command_):
+    return = clntread(h, 10000);
+clntPickCrsr = procedure(h):command_:    # Get cursor events from a client.
+    command_ = "PICKCRSR":
+    clntwrite(h, command_);
+clntPickName = procedure(h):command_:    # Get an object's name from a client.
+    command_ = "PICKNAME":
+    clntwrite(h, command_);
+clntPickObj = procedure(h):command_:     # Pick an object from a client.
+    command_ = "PICKOBJ":
+    clntwrite(h, command_);
+clntPickDone = procedure(h):command_:    # Done picking from clients.
+    command_ = "PICKDONE":
+    clntwrite(h, command_);
+clntMSave = procedure(h, name):command_: # Save viewing matrix under name.
+    command_ = "MSAVE " + name:
+    clntwrite(h, command_);
+clntImgSave = procedure(h, name):command_: # Save display as image under name.
+    command_ = "IMGSAVE " + name:
+    clntwrite(h, command_);
+clntRemove = procedure(h, name):command_: # Remove an object from display.
+    command_ = "REMOVE " + name:
+    clntwrite(h, command_);
+clntAnim = procedure(h, TMin, TMax, Dt):command_: # Animate a sequence.
+    command_ = "ANIMATE " ^ TMin ^ " " ^ TMax ^ " " ^ Dt:
+    clntwrite(h, command_);
+clntState = procedure(h, state):command_: # Change state of display device.
+    command_ = "STATE " + state:
+    clntwrite(h, command_);
+clntView = procedure(h, none, clear):    # Emulation of old VIEW command.
+    if (clear != 0.0, clntclear(h)):
+    clntwrite(h, none);
+cntrIntr = procedure(h, none):           # Emulation of old INTERACT command.
+    clntclear(h):
+    clntwrite(h, none):
+    pause();
+clntHigh1 = procedure(h, name):command_: # Highlight1 object.
+    command_ = "HIGHLIGHT1 " + name:
+    clntwrite(h, command_);
+clntHigh2 = procedure(h, name):command_: # Highlight2 object.
+    command_ = "HIGHLIGHT2 " + name:
+    clntwrite(h, command_);
+clntUnhigh = procedure(h):command_:	 # Unhighlight objects.
+    command_ = "UNHIGHLIGHT":
+    clntwrite(h, command_);
+
+FreeUserDefFuncs = procedure( FuncNameList ): i:
+    for ( i = 1, 1, sizeof( FuncNameList ),
+	FnFree( nth( FuncNameList, i ) ) );
+
+FreeAllUserDefFuncs = procedure(): i:
+    for ( i = 1, 1, sizeof( usr_fn_list ),
+        fnfree( nth( usr_fn_list, i ) ) ):
+    usr_fn_list = nil();
+
+usr_fn_list = nil(); # Make sure we do not delete iritinit user def funcs.
+
+dummy = iritState("EchoSource", true);

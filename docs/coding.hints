@@ -1,0 +1,147 @@
+This file presents some special coding tools and featurs of the IRIT
+modeling environment.  It is suggested to read and follow these
+recomendations before ones starts to code using the IRIT libraries and
+tools.
+
+The IRIT libraries are written in Ansi C.  No attempt is foreseen to
+convert the libraries to C++ so do not ask.   While the reason are
+mostly historic, we do not see such a conversion as a must and hence
+do not wait for it.  Yet, if you are developing a third party code
+that only invokes the IRIT library functions as all the .h header
+files have the 'extern "C"' prefixes for all function declarations.
+
+Read the file docs/coding.std that presents the coding standards of
+IRIT.  If you are developing a piece of code that is expected to be
+part of the IRIT release, you better follow these coding standards.
+You code will not get into the release without these proper coding
+standards.
+
+Go over the header files in the include subdirectory of the IRIT
+release to get a vague idea what can you expect to find in the
+libraries.  An header file you like to start with is irit_sm.h which
+is included by all C sources of the IRIT libraries.  irit_sm.h has
+large amount of macros you might find useful.  The header file for
+functions to read and write IRIT data files is iritprsr.h which is
+another one you probably want to skim over.  Each library has its own
+header files, most of the time.  As an example, if you expect to
+manipulate curves and surfaces, your probably would like to look
+at cagd_lib.h and possible symb_lib.h.  Need trimmed surfaces!?
+Take a look at trim_lib.h.
+
+Debugging your code
+-------------------
+
+IRIT provide quite a few options to debug your code, geometrically
+To begin with almots all libraries has functions to dump geometry to
+stderr using its Dbg functions. For example CagdDbg will dump curves
+and surfaces out and IPVertexDbg and IPPolygonDbg will dump out vertices
+list or a polygon to stderr.
+
+Eqaully important, you can fork-out from your code a display device
+and dump geoemtry into it, to visualize the geometry as you progress
+in your debugging.  The function IPDbgDisplayObject receives
+one object and dumps it to the display device available.  A NULL
+object will clear the screen of the display device.
+
+Dymnalic memory allocation
+--------------------------
+One strong development feature of the IRIT package is the ability to
+closely inspect allocation and release of dynamic memory, hence
+trapping memory leaks, overwriting dynamic memory beyond the
+allocationed size, etc. In order to use this ability, look at 
+include/misc_lib.h for the "basic dynamic memory allocation routines".
+In order for this memory consistency checking package to work, you must
+compile your code with '#define DEBUG_IRIT_MALLOC' which is the default
+for a debug compilation.
+
+You must use 'IritMalloc' instead of the standard C 'malloc' function,
+and you must use 'IritFree' instead of the standard C 'free function.
+The IritMalloc and IritFree functions compile differently in debug and
+release compilation modes.  Under the release mode, they are #defined
+as the standard malloc and free C functions.  Under debug mode, however,
+IritMalloc is developed into a marco that recall the dynamic memory
+allocation location (file name and line number).  Further, imalloc.c 
+in the misc_lib will examine for the following iregularities and error
+is maintening the dynamic memory heap:
+
+1. A free (call to IritFree) using a pointer that was never allocated.
+2. A free (call to IritFree) using a pointer to an already freed memory.
+3. A written memory region beyond the end of the allocated block or before
+   its starting point.
+
+In order to faciliate 1 above, a global has table of allocated pointers
+is defined in imalloc.c.  You might get the message:
+
+    Irit malloc debug hash table is full pointer 0x040befb8 allocated
+
+which means you allocate a lot and so far freed nothing.  This is NOT
+an error but merely hints to the fact that the imalloc table is full.
+Either do you testings on simpler examples or extended the size of the
+table by increasing either the IRIT_MALLOC_HASH_TABLE_SIZE or the
+IRIT_MALLOC_HASH_ENTRY_SIZE constants.
+
+OOption 2 above is detected by writing a special marker over the freed
+memory so when wrongly freed again it could be detected.
+
+In order to facilitate option 3 above, when you invoke 'IritMalloc(X)' the
+OS is actualy requested X+12 bytes, with 8 bytes before and 4 bytes after
+the returned pointer.  The 8 bytes before are used to save the size of the
+block and keep a special marker for detecting overwritten memory.  Similarly
+the last 4 bytes are set with a marker to detected memory overwrite at the
+end.
+
+In addition, one can follow a specific pointer during the execution
+of the program. Say you got the message
+
+    A pointer that was never allocated, Ptr = 0x40c8fb8 (67932088)
+
+which hints on a free of a none allocated point.  Three variables control
+the search after this pointer:
+
+* IRIT_MALLOC 
+
+    0x01       A test for overwriting before the dynamic memory
+               is allocated or immediately after it. Cheap in time.
+    0x02       Savings of all allocated objects in a table for the
+               detection of freeing unallocated objects and consistency
+               of the entire dynamic memory. Time expensive.
+    0x04       Zeros every freed object, once it is freed.
+
+* IRIT_MALLOC_PTR
+
+    Holds the pointer address we are seeking.
+
+* IRIT_MALLOC_PTR_ABORT
+
+    Holds a number value that is decreased every time IritMalloc or
+    IritFree is called with the pointer registered in IRIT_MALLOC_PTR.
+
+You can set these three variables using the environment variables mechanism
+of the Operating systems:
+
+set IRIT_MALLOC = 7
+set IRIT_MALLOC_PTR = 67932088
+set IRIT_MALLOC_PTR_ABORT = 10
+
+Which will track pointer 67932088 and will invoke abort() on the fifth
+free (remember five allocations and five free operations).
+
+Alternatively you can invoke (see misc_lib.h) with this three values:
+
+    void IritInitTestDynMemory2(int DebugMalloc,
+			        int DebugSearchPtr,
+			        int DebugSearchPtrAbort);
+
+so you can make a simple interface from the command line of your
+program to get this information and invoke IritInitTestDynMemory2
+with in.
+
+It is also suggested for you to look at misc_lib/imalloc.c as you might
+one to put a break point on lines such as :
+
+	    fprintf(stderr,
+      		IRIT_EXP_STR("Pointer 0x%08lx just allocated (abort = %d)\n"),
+      		(unsigned intgr32) p, IritDebugSearchPtrAbort);
+
+which prints this trapping information.  Then you could easily inspect
+the stack and see why and how the error was created.

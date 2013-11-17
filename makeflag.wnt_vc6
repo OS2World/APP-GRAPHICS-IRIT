@@ -1,0 +1,185 @@
+include <ntwin32.mak>
+
+MAKE = nmake
+
+#
+# The XXX_DIR variables below MUST have ABSOLUTE path. Since this file
+# is sourced from several directories relative path specification will
+# be simple wrong.
+#
+IRIT_SRC_DIR = c:\irit
+
+#
+# All libraries created will be installed into the IRIT_LIB_DIR directory.
+#
+IRIT_LIB_DIR = $(IRIT_SRC_DIR)\lib
+
+#
+# All includes files associated with the installed libraries will be
+# installed into the IRIT_INC_DIR directory.
+#
+IRIT_INC_DIR = $(IRIT_SRC_DIR)\include
+
+#
+# All binaries created will be installed into the IRIT_BIN_DIR directory.
+#
+IRIT_BIN_DIR = $(IRIT_SRC_DIR)\ntbin
+
+#
+# Quiet strings
+#
+# QUIET_STR = -DIRIT_QUIET_STRINGS
+
+#
+# Support for RLE image read/write using the Utah Raster Toolkit (IRIT_URT) library.
+# You can ftp it from cs.utah.edu.
+#
+#   Make these empty if you would like to give up on irender's compilation.
+#
+#IRIT_URT = c:\c\urt
+#IRIT_URT_INC = -I$(IRIT_URT)\include
+#IRIT_URT_LIB = $(IRIT_URT)\lib\rle.lib
+#IRIT_URT_FLAGS = -DIRIT_HAVE_URT_RLE
+
+#
+# Support for IRIT_GIF image read/write using the giflib toolkit library.
+# You can ftp it from http://catb.org/~esr/giflib/doc/gif_lib.html
+#
+#IRIT_GIF = c:\c\giflib
+#IRIT_GIF_INC = -I$(IRIT_GIF)\lib
+#IRIT_GIF_LIB = $(IRIT_GIF)\lib\libgif.lib
+#IRIT_GIF_FLAGS = -DIRIT_HAVE_GIF_LIB
+
+#
+# Support for IRIT_PNG image read/write using the pnglib toolkit library.
+# You can ftp it from http://www.libpng.org/pub/png/libpng.html
+# libpng also requires zlib.
+#
+#IRIT_PNG = c:\c\libpng\lpng125
+#IRIT_PNG_INC = -I$(IRIT_PNG) 
+#IRIT_PNG_LIB = $(IRIT_PNG)\libpng.lib
+#IRIT_PNG_FLAGS = -DIRIT_HAVE_PNG_LIB
+
+#
+# Support for IRIT_GZIP image read/write using the gzip toolkit library.
+# You can ftp it from http://www.gzip.org/zlib/
+#
+#IRIT_GZIP = c:\c\zlib
+#IRIT_GZIP_INC = -I$(IRIT_GZIP)
+#IRIT_GZIP_LIB = $(IRIT_GZIP)\zlib.lib
+#IRIT_GZIP_FLAGS = -DIRIT_HAVE_GZIP_LIB
+
+#
+# Support for IRIT_MAGELLAN/SpaceMouse drivers
+#
+#IRIT_MAGELLAN = c:\c\magellan
+#IRIT_MAGELLAN_INC = -I$(IRIT_MAGELLAN)\inc
+#IRIT_MAGELLAN_LIB = $(IRIT_MAGELLAN)\lib\siapp.lib
+#IRIT_MAGELLAN_FLAGS = -DIRIT_HAVE_MAGELLAN_LIB
+
+#
+# Type of windowing system.  W95/98/NT/2000 should use __WINNT__
+#
+IRITWINDOW = -D__WINNT__ -D__OPENGL__
+#IRITWINDOW = -D__WINCE__
+
+#############################################################################
+# Flags for Mircosoft C compiler, Windows NT
+#
+IRITCC = cl
+DFLAGS = $(QUIET_STR) $(IRITWINDOW) -D_X86_=1 -DWIN32 -D_MT -DRANDOM_IRIT -DWINNT_SETARGV -W3 -nologo
+#-DIPC_BIN_COMPRESSION 
+IRITLIB = $(implib)
+IRITCONLINK = $(link) /dll
+
+!IF "$(CFG)" == "Release" || "$(CFG)" == "Rel"
+#
+# **** NON DEBUG ****
+#
+CFLAGS = -G5 -O1 -Oi -Gy $(DFLAGS) $(IRIT_URT_INC) $(IRIT_GIF_INC) $(IRIT_PNG_INC) $(IRIT_MAGELLAN_INC) $(IRIT_GZIP_INC) -DNDEBUG
+IRITCONLINK = $(link) $(conflags)
+IRITGUILINK = $(link) $(guiflags)
+IRITDLL = $(link)
+IRIT_OBJ_PF = obj
+IRIT_LIB_PF =
+IRIT_EXE_PF = 
+!ELSE
+#
+# **** DEBUG ****
+#
+# Add "-fixed:no -map:$*.map" for profiling info to IRIT???LINK below
+#
+CFLAGS = -Zi -Od $(DFLAGS) $(IRIT_URT_INC) $(IRIT_GIF_INC) $(IRIT_PNG_INC) $(IRIT_MAGELLAN_INC) $(IRIT_GZIP_INC) -DDEBUG_IRIT_MALLOC -DDEBUG
+IRITCONLINK = $(link) $(conflags) $(linkdebug)
+IRITGUILINK = $(link) $(guiflags) $(linkdebug) # -entry:mainCRTStartup
+IRITDLL = $(link) $(linkdebug)
+IRIT_OBJ_PF = Dobj
+IRIT_LIB_PF = D
+IRIT_EXE_PF = D
+!ENDIF
+
+#############################################################################
+# IRIT Libraries to use:
+#
+# For using regular libraries.
+#
+IRIT_CIRCLINK = $(IRIT_SRC_DIR)/circlink/circlink.$(IRIT_OBJ_PF)
+IRIT_LIBS = $(IRIT_CIRCLINK) $(EXT_LIB) \
+	$(GRAP_LIB) $(RNDR_LIB) $(USER_LIB) $(BOOL_LIB) \
+	$(PRSR_LIB) $(MDL_LIB) $(MVAR_LIB) $(TRIM_LIB) \
+	$(TRIV_LIB) $(TRNG_LIB) $(SYMB_LIB) \
+	$(CAGD_LIB) $(GEOM_LIB) $(MISC_LIB) $(XTRA_LIB) \
+	$(IRIT_URT_LIB) $(IRIT_GIF_LIB) $(IRIT_PNG_LIB) $(IRIT_MAGELLAN_LIB) \
+	$(IRIT_GZIP_LIB)
+DO_IRIT_LIB = circlink_dir
+
+#
+# For using Dynamically Linked Library
+#
+# IRIT_LIBS = $(IRIT_LIB_DIR)\irit.lib $(IRIT_URT_LIB) $(IRIT_GIF_LIB) $(IRIT_PNG_LIB) \
+#	 $(IRIT_MAGELLAN_LIB) $(IRIT_GZIP_LIB)
+# DO_IRIT_LIB = irit.dll
+
+#############################################################################
+# Display devices to support
+#
+GRAPDRVS = nuldrvs$(IRIT_EXE_PF).exe wntdrvs$(IRIT_EXE_PF).exe \
+	 wntgdrvs$(IRIT_EXE_PF).exe wntgaiso$(IRIT_EXE_PF).exe 
+
+#
+# Default rule for compilation.
+#
+.c.$(IRIT_OBJ_PF):
+	$(IRITCC) $(IRIT_URT_FLAGS) $(IRIT_GIF_FLAGS) $(IRIT_PNG_FLAGS) $(IRIT_MAGELLAN_FLAGS) $(IRIT_GZIP_FLAGS) $(IRIT_MORE_FLAGS) $(CFLAGS) -I. -I$(IRIT_INC_DIR) -c -Fo$*.$(IRIT_OBJ_PF) $<
+
+.cpp.$(IRIT_OBJ_PF):
+	$(IRITCC) $(IRIT_URT_FLAGS) $(IRIT_GIF_FLAGS) $(IRIT_PNG_FLAGS) $(IRIT_MAGELLAN_FLAGS) $(IRIT_GZIP_FLAGS) $(IRIT_MORE_FLAGS) $(CFLAGS) -I. -I$(IRIT_INC_DIR) -c -Fo$*.$(IRIT_OBJ_PF) $<
+
+
+BOOL_LIB = $(IRIT_LIB_DIR)\IritBool$(IRIT_LIB_PF).lib
+CAGD_LIB = $(IRIT_LIB_DIR)\IritCagd$(IRIT_LIB_PF).lib
+EXT_LIB = $(IRIT_LIB_DIR)\IritExt$(IRIT_LIB_PF).lib
+GEOM_LIB = $(IRIT_LIB_DIR)\IritGeom$(IRIT_LIB_PF).lib
+GRAP_LIB = $(IRIT_LIB_DIR)\IritGrap$(IRIT_LIB_PF).lib
+MVAR_LIB = $(IRIT_LIB_DIR)\IritMvar$(IRIT_LIB_PF).lib
+MDL_LIB  = $(IRIT_LIB_DIR)\IritMdl$(IRIT_LIB_PF).lib
+MISC_LIB = $(IRIT_LIB_DIR)\IritMisc$(IRIT_LIB_PF).lib
+PRSR_LIB = $(IRIT_LIB_DIR)\IritPrsr$(IRIT_LIB_PF).lib
+RNDR_LIB = $(IRIT_LIB_DIR)\IritRndr$(IRIT_LIB_PF).lib
+SYMB_LIB = $(IRIT_LIB_DIR)\IritSymb$(IRIT_LIB_PF).lib
+TRIM_LIB = $(IRIT_LIB_DIR)\IritTrim$(IRIT_LIB_PF).lib
+TRIV_LIB = $(IRIT_LIB_DIR)\IritTriv$(IRIT_LIB_PF).lib
+TRNG_LIB = $(IRIT_LIB_DIR)\IritTrng$(IRIT_LIB_PF).lib
+USER_LIB = $(IRIT_LIB_DIR)\IritUser$(IRIT_LIB_PF).lib
+XTRA_LIB = $(IRIT_LIB_DIR)\IritXtra$(IRIT_LIB_PF).lib
+
+GLOBINGCON = setargv.obj
+W32CONLIBS = wsock32.lib $(GLOBINGCON) $(conlibs)
+W32CONMTLIBS = wsock32.lib $(GLOBINGCON) $(conlibsmt) \
+					 /nodefaultlib:libc.lib libcmt.lib
+W32OPENGLLIBS = opengl32.lib glu32.lib glaux.lib
+W32GUISHARED = Shell32.lib wsock32.lib $(GLOBINGCON) comctl32.lib
+W32GUILIBS = $(W32GUISHARED) $(guilibs)
+W32GUIMTLIBS = $(W32GUISHARED) $(guilibsmt)
+W32GUIOGLLIBS = $(W32GUISHARED) $(W32OPENGLLIBS) $(guilibs)
+W32GUIMTOGLLIBS = $(W32GUISHARED) $(W32OPENGLLIBS) $(guilibsmt)

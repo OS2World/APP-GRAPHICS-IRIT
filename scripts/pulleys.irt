@@ -1,0 +1,88 @@
+#
+# Examples of belt creations over pulleys.
+#
+
+save_mat = view_mat;
+view_mat = sc( 0.3 ) * tx( -0.35 ) * ty( -0.35 );
+viewobj( view_mat );
+
+#############################################################################
+
+ColorCirc = function( Crc, CW ):
+    if ( Cw, color( Crc, green ),
+	     color( Crc, red ) ):
+    return = Crc;
+
+DrawCircs = function( Pls ): i: v:
+    return = nil():
+    for ( i = 0, 1, sizeof( Pls ) - 1,
+	v = coord( Pls, i ):
+	snoc( ColorCirc( circle( vector( coord( v, 0 ), coord( v, 1 ), -1.0 ),
+				 coord( v, 2 ) ),
+			 coord( v, 2 ) > 0.0 ),
+	      return ) );
+
+DrawCircsBelt = function( Pls, BeltThickness, CreateBoundingArcs, ReturnCrvs ):
+    interact( return = list( BeltCurve( Pls, BeltThickness,
+				        CreateBoundingArcs, ReturnCrvs ),
+	                     DrawCircs( Pls ) ) );
+
+#############################################################################
+
+#############################################################################
+
+Pls = poly( list( vector( 0, 0,   0.2 ),
+	          vector( 1, 3,  -0.24 ),
+		  vector( 1, 1.3, 0.3 ) ),
+	    true ):
+b1 = DrawCircsBelt( Pls, 0.1, false, true );
+b2 = DrawCircsBelt( Pls, 0.2, false, true );
+
+#################################
+
+Pls = poly( list( vector( 0, 0, 0.2 ),
+		  vector( 0, 2, 0.2 ),
+		  vector( 1, 1.5, 0.2 ) ),
+	    true ):
+b3 = DrawCircsBelt( Pls, 0.1, false, true );
+
+#################################
+
+Pls = poly( list( vector( 0, 0,   0.6 ),
+	          vector( 1, 3,  -0.24 ),
+	          vector( 3, 3,  -0.4 ),
+		  vector( 1, 1.3, 0.3 ) ),
+	    true ):
+b4 = DrawCircsBelt( Pls, 0.1, false, true );
+b5 = DrawCircsBelt( Pls, 0.2, false, true );
+
+#################################
+
+Pls = poly( list( vector( 0, 0,   0.6 ),
+	          vector( 1, 3,  -0.24 ),
+	          vector( 3, 3,  -0.24 ),
+	          vector( 3, 1,   0.4 ),
+		  vector( 3, -1,  0.3 ),
+		  vector( 1, -1,  0.3 ) ),
+	    true ):
+b6 = DrawCircsBelt( Pls, 0.1, false, true );
+
+#############################################################################
+
+save( "belts", list( b1 * ty( 10 ),
+		     b2 * ty( 10 ) * tx( 5 ),
+		     b3 * ty( 5 ),
+		     b4 * ty( 0 ),
+		     b5 * ty( 0 ) * tx( 5 ),
+		     b6 * ty( -5 ) ) );
+
+#################################
+
+view_mat = save_mat;
+free( b1 );
+free( b2 );
+free( b3 );
+free( b4 );
+free( b5 );
+free( b6 );
+free( Pls );

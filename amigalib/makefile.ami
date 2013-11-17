@@ -1,0 +1,17 @@
+#
+# This is the make file for the amiga lib subdirectory.
+#
+#				Gershon Elber, Aug 1991
+#
+
+include ../makeflag.ami
+
+OBJS = getenv.o putenv.o popen.o e_j1.o
+
+libamg.a: $(OBJS)
+	rm -f libamg.a
+	ar rcv libamg.a *.o
+	-ranlib libamg.a
+
+install: libamg.a
+	mv -f libamg.a $(IRIT_LIB_DIR)

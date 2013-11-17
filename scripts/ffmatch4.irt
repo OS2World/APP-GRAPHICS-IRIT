@@ -1,0 +1,243 @@
+#
+# This file demonstrates the use of ffmatch with norm 4 to compute bisectors
+#							to two curves.
+#
+#				Gershon Elber, December 1995
+#
+
+save_mat = view_mat;
+
+#
+# Functions to compute the bisector by sampling points along it and
+# interpolating symmetrically, to Crv1, and to Crv2.
+#
+BisectorCrv = function( Crv1, Crv2, Samples, Order, DOFs, ParamMethod ):
+    TCrv1: TCrv2: t: dt: PtList: Pt1: Pt2: Pt12: Dist2: i:
+    Tan1: Tan2: Nrml1: Nrml2:
+    TCrv1 = cderive( Crv1 ):
+    TCrv2 = cderive( Crv2 ):
+    t = nth( pdomain( Crv1 ), 1 ):
+    dt = ( nth( pdomain( Crv1 ), 2 ) - t ) / ( Samples - 1 + 1e-10 ):
+    PtList = nil():
+    for ( i = 1, 1, Samples,
+	Pt1 = coerce( ceval( Crv1, t ), point_type ):
+	Pt2 = coerce( ceval( Crv2, t ), point_type ):
+	Pt12 = Pt1 - Pt2:
+	Dist2 = sqrt( Pt12 * Pt12 ) / 2:
+	Pt12 = normalize( Pt12 ):
+	Tan1 = coerce( ceval( TCrv1, t ), vector_type ):
+	Tan2 = coerce( ceval( TCrv2, t ), vector_type ):
+	Nrml1 = normalize( vector(  coord( Tan1, 1 ), -coord( Tan1, 0 ),
+			   1e-32 ) ):
+	Nrml2 = normalize( vector( -coord( Tan2, 1 ),  coord( Tan2, 0 ),
+			   1e-32 ) ):
+	Pt1 = Pt1 + Nrml1 * ( Dist2 / abs( Nrml1 * Pt12 ) ):
+	Pt2 = Pt2 + Nrml2 * ( Dist2 / abs( Nrml2 * Pt12 ) ):
+	snoc( coerce( ( Pt1 + Pt2 ) * 0.5, point_type ), PtList ):
+	t = t + dt ):
+    return = cinterp( PtList, Order, DOFs, ParamMethod, false );
+
+BisectorCrv1 = function( Crv1, Crv2, Samples, Order, DOFs, ParamMethod ):
+    TCrv1: TCrv2: t: dt: PtList: Pt1: Pt2: Pt12: Dist2: i:
+    Tan1: Tan2: Nrml1: Nrml2:
+    TCrv1 = cderive( Crv1 ):
+    TCrv2 = cderive( Crv2 ):
+    t = nth( pdomain( Crv1 ), 1 ):
+    dt = ( nth( pdomain( Crv1 ), 2 ) - t ) / ( Samples - 1 + 1e-10 ):
+    PtList = nil():
+    for ( i = 1, 1, Samples,
+	Pt1 = coerce( ceval( Crv1, t ), point_type ):
+	Pt2 = coerce( ceval( Crv2, t ), point_type ):
+	Pt12 = Pt1 - Pt2:
+	Dist2 = sqrt( Pt12 * Pt12 ) / 2:
+	Pt12 = normalize( Pt12 ):
+	Tan1 = coerce( ceval( TCrv1, t ), vector_type ):
+	Tan2 = coerce( ceval( TCrv2, t ), vector_type ):
+	Nrml1 = normalize( vector(  coord( Tan1, 1 ), -coord( Tan1, 0 ), 0.0 ) ):
+	Nrml2 = normalize( vector( -coord( Tan2, 1 ),  coord( Tan2, 0 ), 0.0 ) ):
+	Pt1 = Pt1 + Nrml1 * ( Dist2 / abs( Nrml1 * Pt12 ) ):
+	Pt2 = Pt2 + Nrml2 * ( Dist2 / abs( Nrml2 * Pt12 ) ):
+	snoc( coerce( Pt1, point_type ), PtList ):
+	t = t + dt ):
+    return = cinterp( PtList, Order, DOFs, ParamMethod, false );
+
+BisectorCrv2 = function( Crv1, Crv2, Samples, Order, DOFs, ParamMethod ):
+    TCrv1: TCrv2: t: dt: PtList: Pt1: Pt2: Pt12: Dist2: i:
+    Tan1: Tan2: Nrml1: Nrml2:
+    TCrv1 = cderive( Crv1 ):
+    TCrv2 = cderive( Crv2 ):
+    t = nth( pdomain( Crv1 ), 1 ):
+    dt = ( nth( pdomain( Crv1 ), 2 ) - t ) / ( Samples - 1 + 1e-10  ):
+    PtList = nil():
+    for ( i = 1, 1, Samples,
+	Pt1 = coerce( ceval( Crv1, t ), point_type ):
+	Pt2 = coerce( ceval( Crv2, t ), point_type ):
+	Pt12 = Pt1 - Pt2:
+	Dist2 = sqrt( Pt12 * Pt12 ) / 2:
+	Pt12 = normalize( Pt12 ):
+	Tan1 = coerce( ceval( TCrv1, t ), vector_type ):
+	Tan2 = coerce( ceval( TCrv2, t ), vector_type ):
+	Nrml1 = normalize( vector(  coord( Tan1, 1 ), -coord( Tan1, 0 ), 0.0 ) ):
+	Nrml2 = normalize( vector( -coord( Tan2, 1 ),  coord( Tan2, 0 ), 0.0 ) ):
+	Pt1 = Pt1 + Nrml1 * ( Dist2 / abs( Nrml1 * Pt12 ) ):
+	Pt2 = Pt2 + Nrml2 * ( Dist2 / abs( Nrml2 * Pt12 ) ):
+	snoc( coerce( Pt2, point_type ), PtList ):
+	t = t + dt ):
+    return = cinterp( PtList, Order, DOFs, ParamMethod, false );
+
+
+#############################################################################
+# a Cup's cross section.
+#############################################################################
+
+view_mat = sc( 0.7 ) * tx( -0.5 ) * ty( 0.8 );
+viewobj( view_mat );
+
+PtList = nil();
+for ( i = 0, 1, 7,
+    snoc( point( cos( i * 2 * Pi / 8 ), sin( i * 2 * Pi / 8 ), 0.0 ),
+	  PtList ) );
+free( i );
+
+C1 = coerce( cbspline( 3, PtList, list( KV_PERIODIC ) ), KV_OPEN ) * rz( -22.5 );
+C2 = coerce( cbspline( 2, PtList, list( KV_PERIODIC ) ), KV_OPEN ) * sc( 1.1 );
+
+MinSize = 0.01;
+Body = sFromCrvs( list( C2 * sc( MinSize ),
+			C2 * sc( 0.6 ),
+			C2 * sc( 0.9 ) * tz( 0.05 ),
+			C2 * tz( 0.3 ),
+			C2 * sc( 0.8 ) * tz( 1.0 ),
+			C2 * tz( 2.0 ),
+			C2 * tz( 2.2 ),
+			C1 * tz( 2.2 ),
+			C1 * tz( 2.0 ),
+			C1 * sc( 0.8 ) * tz( 1.0 ),
+			C1 * tz( 0.4 ),
+			C1 * sc( 0.8 ) * tz( 0.15 ),
+			C1 * sc( 0.6 ) * tz( 0.1 ),
+			C1 * sc( 0.2 ) * tz( 0.2 ),
+			C1 * sc( MinSize ) * tz( 0.2 ) ),
+		  3, KV_OPEN );
+free( MinSize );
+
+Cross = coerce( csurface( Body * rx( 90 ), COL, 1.0 ), e2 );
+Cross1 = cregion( Cross, 0.0, 6.0 / 13.0 );
+Cross1 = creparam( Cross1, 0, 1 );
+color( Cross1, red );
+Cross2 = -cregion( Cross, 6.0 / 13.0, 1.0 );
+Cross2 = creparam( Cross2, 0, 1 );
+color( Cross2, green );
+
+
+Cross2b = ffmatch( Cross1, Cross2, 30, 50, 3, false, 4 );
+Srf0 = ruledSrf( Cross1, Cross2b );
+interact( Srf0 );
+
+Cross2b = ffmatch( Cross1, Cross2, 30, 100, 3, false, 4 );
+Srf0 = ruledSrf( Cross1, Cross2b );
+interact( Srf0 );
+
+Cross2b = ffmatch( Cross1, Cross2, 30, 200, 3, false, 4 );
+Srf0 = ruledSrf( Cross1, Cross2b );
+interact( Srf0 );
+
+color( srf0, blue );
+
+bCrv1 = BisectorCrv( Cross1, Cross2b, 100, 4, 30, PARAM_UNIFORM );
+bCrv1a = BisectorCrv1( Cross1, Cross2b, 100, 4, 30, PARAM_UNIFORM );
+bCrv1b = BisectorCrv2( Cross1, Cross2b, 100, 4, 30, PARAM_UNIFORM );
+color( bCrv1, green );
+interact( list( bCrv1, bCrv1a, bCrv1b, srf0  ) );
+save( "ffmatch41", list( bCrv1, bCrv1a, bCrv1b, srf0  ) );
+
+bCrv2 = BisectorCrv( Cross1, Cross2b, 100, 3, 10, PARAM_UNIFORM );
+bCrv2a = BisectorCrv1( Cross1, Cross2b, 100, 3, 10, PARAM_UNIFORM );
+bCrv2b = BisectorCrv2( Cross1, Cross2b, 100, 3, 10, PARAM_UNIFORM );
+color( bCrv2, green );
+interact( list( bCrv2, bCrv2a, bCrv2b, srf0 ) );
+
+bCrv3 = BisectorCrv( Cross1, Cross2b, 100, 3, 5, PARAM_UNIFORM );
+bCrv3a = BisectorCrv1( Cross1, Cross2b, 100, 3, 5, PARAM_UNIFORM );
+bCrv3b = BisectorCrv2( Cross1, Cross2b, 100, 3, 5, PARAM_UNIFORM );
+color( bCrv3, green );
+interact( list( bCrv3, bCrv3a, bCrv3b, srf0 ) );
+
+#############################################################################
+# Another example.
+#############################################################################
+
+view_mat = sc( 1.6 ) * tx( -0.8 ) * ty( 0.0 );
+viewobj( view_mat );
+
+
+Cross1 = cbspline( 3,
+		   list( ctlpt( e2, 0.0, 0.1 ),
+			 ctlpt( e2, 0.1, 0.15 ),
+			 ctlpt( e2, 0.9, 0.15 ),
+			 ctlpt( e2, 1.0, 0.1 ) ),
+		   list( KV_OPEN ) );
+Cross2 = cbspline( 3,
+		   list( ctlpt( e2, 0.1, 0.0 ),
+			 ctlpt( e2, 0.1, 0.1 ),
+			 ctlpt( e2, 0.5, 0.0 ),
+			 ctlpt( e2, 0.9, 0.1 ),
+			 ctlpt( e2, 0.9, 0.0 ) ),
+		   list( KV_OPEN ) );
+
+interact( list( Cross1, Cross2 ) );
+
+Cross2b = ffmatch( Cross1, Cross2, 30, 50, 3, false, 4 );
+Srf0 = ruledSrf( Cross1, Cross2b );
+interact( Srf0 );
+
+Cross2b = ffmatch( Cross1, Cross2, 30, 100, 3, false, 4 );
+Srf0 = ruledSrf( Cross1, Cross2b );
+interact( Srf0 );
+
+Cross2b = ffmatch( Cross1, Cross2, 30, 200, 3, false, 4 );
+Srf0 = ruledSrf( Cross1, Cross2b );
+interact( Srf0 );
+
+color( srf0, blue );
+
+bCrv1 = BisectorCrv( Cross1, Cross2b, 100, 4, 30, PARAM_UNIFORM );
+bCrv1a = BisectorCrv1( Cross1, Cross2b, 100, 4, 30, PARAM_UNIFORM );
+bCrv1b = BisectorCrv2( Cross1, Cross2b, 100, 4, 30, PARAM_UNIFORM );
+color( bCrv1, green );
+interact( list( bCrv1, bCrv1a, bCrv1b, srf0 ) );
+save( "ffmatch42", list( bCrv1, bCrv1a, bCrv1b, srf0 ) );
+
+bCrv2 = BisectorCrv( Cross1, Cross2b, 100, 3, 10, PARAM_UNIFORM );
+bCrv2a = BisectorCrv1( Cross1, Cross2b, 100, 3, 10, PARAM_UNIFORM );
+bCrv2b = BisectorCrv2( Cross1, Cross2b, 100, 3, 10, PARAM_UNIFORM );
+color( bCrv2, green );
+interact( list( bCrv2, bCrv2a, bCrv2b, srf0 ) );
+
+bCrv3 = BisectorCrv( Cross1, Cross2b, 100, 3, 5, PARAM_UNIFORM );
+bCrv3a = BisectorCrv1( Cross1, Cross2b, 100, 3, 5, PARAM_UNIFORM );
+bCrv3b = BisectorCrv2( Cross1, Cross2b, 100, 3, 5, PARAM_UNIFORM );
+color( bCrv3, green );
+interact( list( bCrv3, bCrv3a, bCrv3b, srf0 ) );
+
+view_mat = save_mat;
+free( save_mat );
+
+free( bCrv1 );
+free( bCrv1a );
+free( bCrv1b );
+free( bCrv2 );
+free( bCrv2a );
+free( bCrv2b );
+free( bCrv3 );
+free( bCrv3a );
+free( bCrv3b );
+free( srf0 );
+free( PtList );
+free( Cross );
+free( Cross1 );
+free( Cross2 );
+free( Cross2b );
+free( Body );
+free( C1 );
+free( C2 );

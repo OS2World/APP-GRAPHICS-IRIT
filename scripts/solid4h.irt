@@ -1,0 +1,63 @@
+#
+# This solid was taken from: Geometric Modeling,
+# by Michael E. Mortenson page 468, figure 10.34
+#
+#				Created by Gershon Elber,	Feb 89
+# 
+#   High resolution version. Do not try this on an IBM PC.
+#
+
+t = time( true );
+free( t );
+
+save_res = resolution;
+
+resolution = 32;
+T1 = CYLIN( vector( -1.1, 0.0, 0.0 ), vector(  2.2,  0.0, 0.0 ), 0.2, 3 );
+T2 = CYLIN( vector( -0.8, 0.0, 0.0 ), vector(  0.05, 0.0, 0.0 ), 0.3, 3 );
+T3 = CYLIN( vector(  0.8, 0.0, 0.0 ), vector( -0.05, 0.0, 0.0 ), 0.3, 3 );
+
+S1 = T1 + T2 + T3;
+free( T1 );
+free( T2 );
+free( T3 );
+S1 = convex( S1 );
+view( S1, true );
+
+S2 = S1 * roty( 90 );
+S3 = S1 * rotz( 90 );
+view( list( S2, S3 ), false );
+
+S4 = S1 + S2 + S3;
+free( S1 );
+free( S2 );
+free( S3 );
+view( S4, true );
+
+resolution = 64;
+T4 = sphere( vector( 0.0, 0.0, 0.0 ), 1.0 );
+
+S5 = T4 - S4;
+free( S4 );
+free( T4 );
+
+final = convex( S5 );
+free( S5 );
+
+printf( "Total Time = %f\\n", list( time( false ) ) ); # In Seconds
+
+interact( final );
+
+save( "solid4", final );
+
+# Now make the box cut out of it:
+T5 = box( vector( -0.01, -0.01, -0.01 ), 1.5, 1.5, 1.5 );
+cut = final - T5;
+cut = convex( cut );
+free( final );
+free( T5 );
+
+save( "solid4c", cut );
+free( cut );
+
+resolution = save_res;

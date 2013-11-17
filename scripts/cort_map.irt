@@ -1,0 +1,436 @@
+#
+# Few examples of computing the orthogonality map  of a planar curve.
+#
+#				gershon Elber, August 2004
+#
+
+UnitSquare = ctlpt( e2, 0, 0 ) +
+	     ctlpt( e2, 0, 1 ) +
+	     ctlpt( e2, 1, 1 ) +
+	     ctlpt( e2, 1, 0 ) +
+	     ctlpt( e2, 0, 0 );
+color( UnitSquare, red );
+m1 = rotx( -90 ) * roty( -90 );
+m2 = m1 * sz( 0.0 );
+
+DisplayPosNormal = procedure( Crv, t1, t2, Scl ):
+    Pt: Pt1: Pt2: N1: N2: Ptt1: Ptt2:
+
+    Pt1 = cEval( Crv, t1 ):
+    Pt2 = cEval( Crv, t2 ):
+
+    N1 = cNormal( Crv, t1 ):
+    N2 = cNormal( Crv, t2 ):
+
+    Ptt1 = ctlpt( e2, t1, t2 ) + ctlpt( e2, t1, 0 ):
+    color( Ptt1, yellow ):
+    Ptt2 = ctlpt( e2, t1, t2 ) + ctlpt( e2, 0, t2 ):
+    color( Ptt2, cyan ):
+
+    N1 = coerce( coerce( Pt1, point_type ) + N1 * sc( Scl ), e2 ) + Pt1:
+    color( N1, yellow ):
+    N2 = coerce( coerce( Pt2, point_type ) + N2 * sc( Scl ), e2 ) + Pt2:
+    color( N2, cyan ):
+
+    viewobj( N1 ):
+    viewobj( N2 ):
+    viewobj( Pt1 ):
+    viewobj( Pt2 ):
+    viewobj( Ptt1 ):
+    viewobj( Ptt2 );
+
+AnimateOrthoMatchPts = procedure( ppl, Crv, Scl ):
+    Pl: i: j: Pt: Pt1: Pt2: N1: N2: t1: t2: Ptt1: Ptt2:
+    view( list( UnitSquare, Crv, ppl ), 1 ):
+    for ( i = 0, 1, sizeof( ppl ) - 1,
+        pl = coord( ppl, i ):
+	for ( j = 0, 1, sizeof( Pl ) - 1,
+	    Pt = coord( Pl, j ):
+	    t1 = coord( Pt, 0 ):
+	    t2 = coord( Pt, 1 ):
+	    if ( t1 > t2,
+	        DisplayPosNormal( Crv, t1, t2, Scl ) ) ) );
+
+MakeRotTransAnimObj = function( Rot, Trns ): rot_z: mov_xyz:
+    if ( sizeof( Rot ) > 0,
+	rot_z = cbspline( 2, Rot, list( kv_open ) ):
+	mov_xyz = cbspline( 2, Trns, list( kv_open ) ):
+	return = list( rot_z, mov_xyz ),
+
+	mov_xyz = cbspline( 2, Trns, list( kv_open ) ):
+	return = list( mov_xyz ) );
+
+GenAnimationOrthoMatchCrvPts = function( ppl, Crv, Scl ):
+    Pl: i: j: Pt: Pos1: Pos2: Rot1: Rot2:
+    N1: N2: t1: t2: Ptt1: Ptt2: Vec1: Vec2: Pt1: Pt2:
+
+    Pt1 = point( 0, 0, 0 ):
+    Pt2 = point( 0, 0, 0 ):
+    Vec1 = ctlpt( E2, 0, 0 ) + ctlpt( E2, 0, Scl ):
+    color( Vec1, yellow ):
+    Vec2 = ctlpt( E2, 0, 0 ) + ctlpt( E2, 0, Scl ):
+    color( Vec2, cyan ):
+
+    Pos1 = nil():
+    Pos2 = nil():
+    Rot1 = nil():
+    Rot2 = nil():
+
+    for ( i = 0, 1, sizeof( ppl ) - 1,
+        pl = coord( ppl, i ):
+	for ( j = 0, 1, sizeof( Pl ) - 1,
+	    Pt = coord( Pl, j ):
+	    t1 = coord( Pt, 0 ):
+	    t2 = coord( Pt, 1 ):
+	    if ( t1 > t2,
+		snoc( coerce( cEval( Crv, t1 ), point_type ), Pos1 ):
+		snoc( coerce( cEval( Crv, t2 ), point_type ), Pos2 ):
+		N1 = cNormal( Crv, t1 ):
+		N2 = cNormal( Crv, t2 ):
+		snoc( point( atan2( coord( N1, 0 ),
+				    coord( N1, 1 ) ) * 180 / Pi, 0, 0 ), Rot1 ):
+		snoc( point( atan2( coord( N2, 0 ),
+				    coord( N2, 1 ) ) * 180 / Pi, 0, 0 ), Rot2 )) ):
+	        
+	if ( t1 > t2,
+	    # Take a break far far away.
+	    snoc( point( 1e4, 0, 0 ), Pos1 ):
+	    snoc( point( 1e4, 0, 0 ), Pos2 ):
+	    snoc( point( 0, 0, 0 ), Rot1 ):
+	    snoc( point( 0, 0, 0 ), Rot2 ) ) ):
+
+    attrib( Pt1, "animation", MakeRotTransAnimObj( nil(), Pos1 ) ):
+    attrib( Pt2, "animation", MakeRotTransAnimObj( nil(), Pos2 ) ):
+    attrib( Vec1, "animation", MakeRotTransAnimObj( Rot1, Pos1 ) ):
+    attrib( Vec2, "animation", MakeRotTransAnimObj( Rot2, Pos2 ) ):
+
+    return = list( Pt1, Pt2, Vec1, Vec2 );
+
+GenAnimationOrthoMatchPrmPts = function( ppl ):
+    Prm1: Prm2: Pt: Pl: i: j: Pos12: Pos1: Pos2: t1: t2:
+
+    Prm1 = ctlpt( E2, 0, 0 ) + ctlpt( E2, 0, 1 ):
+    color( Prm1, yellow ):
+    Prm2 = ctlpt( E2, 0, 0 ) + ctlpt( E2, 1, 0 ):
+    color( Prm2, cyan ):
+
+    Pos1 = nil():
+    Pos2 = nil():
+    Pos12 = nil():
+
+    for ( i = 0, 1, sizeof( ppl ) - 1,
+        pl = coord( ppl, i ):
+	for ( j = 0, 1, sizeof( Pl ) - 1,
+	    Pt = coord( Pl, j ):
+	    t1 = coord( Pt, 0 ):
+	    t2 = coord( Pt, 1 ):
+	    if ( t1 > t2,
+		snoc( point( t1, 0, 0 ), Pos1 ):
+		snoc( point( 0, t2, 0 ), Pos2 ):
+		snoc( Pt, Pos12 ) ) ):
+
+	if ( t1 > t2,
+	    # Take a break far far away.
+	    snoc( point( 1e4, 0, 0 ), Pos1 ):
+	    snoc( point( 1e4, 0, 0 ), Pos2 ) ) ):
+
+    Pt = point( 0, 0, 0 ):
+    color( Pt, red ):
+    adwidth( Pt, 3 ):
+    attrib( Pt,   "animation", MakeRotTransAnimObj( nil(), Pos12 ) ):
+    attrib( Prm1, "animation", MakeRotTransAnimObj( nil(), Pos1 ) ):
+    attrib( Prm2, "animation", MakeRotTransAnimObj( nil(), Pos2 ) ):
+
+    return = list( Pt, Prm1, Prm2 );
+
+#
+# Click and drag the mouse in the sqaure domain to evaluate the curve
+#
+Quit = false;
+InteractOrthoMap = procedure( ppl, Crv, Scl ): Quit: CrsrKeep: c: u: v:
+    # Ask all clients to send mouse/cursor events to the server.
+    ClntPickCrsr( clients_all ): 
+    # Ask the server to keep mouse/cursor events to be read view ClntCrsr.
+    CrsrKeep = IritState( "CursorKeep", 1 ):
+
+    Quit = false:
+    view( list( ppl, Crv, UnitSquare ), 1 ):
+
+    while ( !Quit,
+	c = clntcrsr( 100 ):
+	if ( sizeof( c ) > 0,
+	    u = coord( nth( c, 1 ), 0 ):
+	    v = coord( nth( c, 1 ), 1 ):
+	    printf( "u = %f,  v = %f\\n", list( u, v ) ):
+	    if ( u < 0 || u > 1 || v < 0 || v > 1,
+	        Quit = 1,
+	        DisplayPosNormal( Crv, u, v, Scl ) ) ) ):
+
+    ClntPickDone( clients_all ):
+    CrsrKeep = IritState( "CursorKeep", CrsrKeep );
+
+view_mat2 = sc( 0.6 ) * tx( 0.2 ) * ty( -0.3 );
+viewobj( view_mat2 );
+
+#############################################################################
+
+c1 = cbspline( 3,
+    list( ctlpt( E3, 0.123, 0.699, 0. ),
+          ctlpt( E2, -0.171, 0.737 ),
+          ctlpt( E2, -0.675, 0.369 ),
+          ctlpt( E2, -0.384, -0.475 ),
+          ctlpt( E2, 0.095, -0.638 ),
+          ctlpt( E2, 0.575, -0.431 ),
+          ctlpt( E2, 0.699, 0.196 ) ),
+    list( kv_periodic ) );
+color( c1, green );
+
+c2 = cbspline( 3,
+    list( ctlpt( E3, 0.123, 0.699, 0. ),
+          ctlpt( E2, -0.171, 0.737 ),
+          ctlpt( E2, -0.675, 0.369 ),
+          ctlpt( E2, -0.384, -0.475 ),
+          ctlpt( E2, 0.027, 0.306 ),
+          ctlpt( E2, 0.575, -0.431 ),
+          ctlpt( E2, 0.699, 0.196 ) ),
+    list( kv_periodic ) );
+color( c2, green );
+
+c3 = cbspline( 3,
+    list( ctlpt( E3, 0.334, 0.751, 0. ),
+          ctlpt( E2, -0.097, 0.486 ),
+          ctlpt( E2, -0.656, 0.605 ),
+          ctlpt( E2, -0.384, -0.475 ),
+          ctlpt( E2, 0.027, 0.306 ),
+          ctlpt( E2, 0.575, -0.431 ),
+          ctlpt( E2, 0.699, 0.196 ) ),
+    list( kv_periodic ) );
+color( c3, green );
+
+c4 = cbspline( 3,
+    list( ctlpt( E3, 0.123, 0.699, 0. ),
+          ctlpt( E2, -0.065, 0.787 ),
+          ctlpt( E2, -0.171, 0.737 ),
+          ctlpt( E2, -0.152, 0.545 ),
+          ctlpt( E2, -0.212, 0.348 ),
+          ctlpt( E2, -0.484, 0.586 ),
+          ctlpt( E2, -0.675, 0.369 ),
+          ctlpt( E2, -0.24, -0.06 ),
+          ctlpt( E2, -0.624, -0.156 ),
+          ctlpt( E2, -0.696, -0.329 ),
+          ctlpt( E2, -0.384, -0.475 ),
+          ctlpt( E2, -0.104, -0.267 ),
+          ctlpt( E2, -0.006, -0.34 ),
+          ctlpt( E2, 0.015, -0.673 ),
+          ctlpt( E2, 0.211, -0.717 ),
+          ctlpt( E2, 0.449, -0.525 ),
+          ctlpt( E2, 0.297, -0.197 ),
+          ctlpt( E2, 0.672, 0.068 ),
+          ctlpt( E2, 0.699, 0.196 ),
+          ctlpt( E2, 0.636, 0.321 ),
+          ctlpt( E2, 0.223, 0.241 ) ),
+    list( kv_periodic ) );
+color( c4, green );
+
+c5 = cbspline( 3,
+    list( ctlpt( E3, 0.57, 0.529, 0. ),
+          ctlpt( E2, -0.158, 0.914 ),
+          ctlpt( E2, -0.568, -0.145 ),
+          ctlpt( E2, 0.24, -0.355 ),
+          ctlpt( E2, 0.166, -0.033 ),
+          ctlpt( E2, -0.321, -0.033 ),
+          ctlpt( E2, 0.038, 0.739 ),
+          ctlpt( E2, 0.525, 0.237 ),
+          ctlpt( E2, 0.226, -0.04 ),
+          ctlpt( E2, 0.48, -0.167 ),
+          ctlpt( E2, 0.675, 0.057 ) ),
+    list( kv_periodic ) );
+color( c5, green );
+
+c6 = cbspline( 3,
+    list( ctlpt( E3, 0.57, 0.529, 0. ),
+          ctlpt( E2, -0.158, 0.914 ),
+          ctlpt( E2, -0.568, -0.145 ),
+          ctlpt( E2, 0.333, -0.312 ),
+          ctlpt( E2, 0.31, 0.077 ),
+          ctlpt( E2, -0.321, -0.033 ),
+          ctlpt( E2, 0.038, 0.739 ),
+          ctlpt( E2, 0.525, 0.237 ),
+          ctlpt( E2, 0.048, -0.095 ),
+          ctlpt( E2, 0.273, -0.29 ),
+          ctlpt( E2, 0.675, 0.057 ) ),
+    list( kv_periodic ) );
+color( c6, green );
+
+c7 = cbspline( 5,
+    list( ctlpt( E3, -0.812, 0.021, 0. ),
+          ctlpt( E2, 0.237, -0.893 ),
+          ctlpt( E2, 0.145, 0.871 ),
+          ctlpt( E2, 0.709, 0.83 ),
+          ctlpt( E2, 0.679, 0.17 ) ),
+    list( kv_periodic ) );
+color( c7, green );
+
+#############################################################################
+
+for ( i = 0, 10, 90,
+    OM = coerce( cAngleMap( c1, -1, i, false ), p3 ) * sx( 0.01 ):
+    color( OM, red ):
+    DE = cAngleMap( c1, 30, i, 1000 ):
+    color( DE, yellow ):
+    ppl = cAngleMap( c1, 30, i, false ):
+    color( ppl, cyan ):
+
+    All = list( list( OM, ppl, DE ) * m1, axes, c1 * tx( -1 ) * ty( 0.5 ) ):
+    view( All, 1 ) );
+
+for ( i = 10, 20, 90,
+    OM = coerce( cAngleMap( c3, -1, i, false ), p3 ) * sx( 0.01 ):
+    color( OM, red ):
+    DE = cAngleMap( c3, 30, i, 1000 ):
+    color( DE, yellow ):
+    ppl = cAngleMap( c3, 30, i, false ):
+    color( ppl, cyan ):
+
+    All = list( list( OM, ppl, DE ) * m1, axes, c3 * tx( -1 ) * ty( 0.5 ) ):
+    view( All, 1 ) );
+
+DE = cAngleMap( c3, 30, 45, 1000 );
+color( DE, yellow );
+OM = coerce( cAngleMap( c3, -1, 45, false ), e3 ) * sx( 0.01 );
+color( OM, red );
+ppl = cAngleMap( c3, 30, 45, false );
+color( ppl, cyan );
+
+All2 = list( list( OM, ppl, DE ) * m1, c3 * tx( -1 ) * ty( 0.5 ) );
+
+interact( All2 );
+
+save( "cort1map", list( All * ty( 1 ), All2 * ty( -1 ) ) );
+
+#################################
+
+DE = cAngleMap( c4, 30, 90, 1000 );
+color( DE, yellow );
+OM = coerce( cAngleMap( c4, -1, 90, false ), e3 ) * sx( 0.01 );
+color( OM, red );
+ppl = cAngleMap( c4, 30, 90, false );
+color( ppl, cyan );
+
+All1 = list( list( OM, ppl, DE ) * m1, c4 * tx( -1 ) * ty( 0.5 ) );
+
+interact( All1 );
+
+DE = cAngleMap( c4, 20, 60, 1000 );
+color( DE, yellow );
+OM = coerce( cAngleMap( c4, -1, 60, false ), e3 ) * sx( 0.01 );
+color( OM, red );
+ppl = cAngleMap( c4, 20, 60, false );
+color( ppl, cyan );
+
+All2 = list( list( OM, ppl, DE ) * m1, c4 * tx( -1 ) * ty( 0.5 ) );
+
+interact( All2 );
+
+save( "cort2map", list( All1 * ty( 1 ), All2 * ty( -1 ) ) );
+
+#################################
+
+DE = cAngleMap( c5, 30, 90, 1500 );
+color( DE, yellow );
+DE = list( DE,
+	   cAngleMap( c5, 30, 70, 1500 ),
+	   cAngleMap( c5, 30, 50, 1500 ),
+	   cAngleMap( c5, 30, 30, 1500 ),
+	   cAngleMap( c5, 30, 10, 1500 ) );
+OM = coerce( cAngleMap( c5, -1, 90, false ), e3 ) * sx( 0.01 );
+color( OM, red );
+ppl = cAngleMap( c5, 30, 90, false );
+color( ppl, cyan );
+
+All = list( list( OM, ppl, DE ) * m1, c5 * tx( -1 ) * ty( 0.5 ) );
+
+interact( All );
+
+save( "cort3map", All );
+
+#############################################################################
+
+ppl = cAngleMap( c1, 30, 90, false ) * m2;
+AnimateOrthoMatchPts( ppl, c1 * tx( -1 ) * ty( 0.5 ), 0.2 );
+
+ppl = cAngleMap( c2, 30, 90, false ) * m2;
+AnimateOrthoMatchPts( ppl, c2 * tx( -1 ) * ty( 0.5 ), 0.2 );
+AnimateOrthoMatchPts( mergepoly( list( coord( ppl, 3 ), coord( ppl, 4 ) ) ),
+		      c2 * tx( -1 ) * ty( 0.5 ), 0.2 );
+save( "cort4map", list( ppl, c2 * tx( -1 ) * ty( 0.5 ) ) );
+
+ppl = cAngleMap( c3, 30, 90, false ) * m2;
+AnimateOrthoMatchPts( ppl, c3 * tx( -1 ) * ty( 0.5 ), 0.2 );
+
+ppl = cAngleMap( c4, 30, 90, false ) * m2;
+All = list( axes, UnitSquare, c4 * tx( -1 ) * ty( 0.5 ), ppl,
+           GenAnimationOrthoMatchCrvPts( ppl, c4 * tx( -1 ) * ty( 0.5 ), 0.2 ),
+           GenAnimationOrthoMatchPrmPts( ppl ) );
+interact( All );
+save( "cort5map", All );
+
+ppl = cAngleMap( c5, 20, 90, false ) * m2;
+AnimateOrthoMatchPts( ppl, c5 * tx( -1 ) * ty( 0.5 ), 0.2 );
+
+ppl = cAngleMap( c6, 100, 90, false ) * m2;
+All = list( axes, UnitSquare, c6 * tx( -1 ) * ty( 0.5 ), ppl,
+           GenAnimationOrthoMatchCrvPts( ppl, c6 * tx( -1 ) * ty( 0.5 ), 0.2 ),
+           GenAnimationOrthoMatchPrmPts( ppl ) );
+interact( All );
+
+ppl = cAngleMap( c7, 30, 90, false ) * m2;
+AnimateOrthoMatchPts( ppl, c7 * tx( -1 ) * ty( 0.5 ), 0.2 );
+save( "cort6map", list( ppl, c7 * tx( -1 ) * ty( 0.5 ) ) );
+
+#############################################################################
+comment $
+
+ppl = cAngleMap( c1, 30, 90, false ) * m2;
+InteractOrthoMap( ppl, c1 * tx( -1 ) * ty( 0.5 ), 0.2 );
+
+ppl = cAngleMap( c2, 30, 90, false ) * m2;
+InteractOrthoMap( ppl, c2 * tx( -1 ) * ty( 0.5 ), 0.2 );
+
+ppl = cAngleMap( c3, 30, 90, false ) * m2;
+InteractOrthoMap( ppl, c3 * tx( -1 ) * ty( 0.5 ), 0.2 );
+
+ppl = cAngleMap( c4, 30, 90, false ) * m2;
+InteractOrthoMap( ppl, c4 * tx( -1 ) * ty( 0.5 ), 0.2 );
+
+ppl = cAngleMap( c5, 30, 90, false ) * m2;
+InteractOrthoMap( ppl, c5 * tx( -1 ) * ty( 0.5 ), 0.2 );
+
+ppl = cAngleMap( c6, 30, 90, false ) * m2;
+InteractOrthoMap( ppl, c6 * tx( -1 ) * ty( 0.5 ), 0.2 );
+
+ppl = cAngleMap( c7, 30, 90, false ) * m2;
+InteractOrthoMap( ppl, c7 * tx( -1 ) * ty( 0.5 ), 0.2 );
+
+$
+
+#############################################################################
+
+free( UnitSquare );
+free( All );
+free( All1 );
+free( All2 );
+free( OM );
+free( DE );
+free( m1 );
+free( m2 );
+free( ppl );
+free( c1 );
+free( c2 );
+free( c3 );
+free( c4 );
+free( c5 );
+free( c6 );
+free( c7 );
+free( Quit );
+free( view_mat2 );

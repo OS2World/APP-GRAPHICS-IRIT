@@ -1,0 +1,25 @@
+#
+# Combination of a square, triangle, and a circle
+#
+#				Gershon Elber, Feb 2009.
+#
+
+#
+# The Sqriancle
+#
+
+c = circle( vector( 0, 0, 0 ), 1 );
+
+STC = ruledSrf( c, c * tz( 2 ) * sx( 0.0001 ) );
+attrib( STC, "rgb", "255, 200, 200" );
+
+STCIsos = GetIsoCurveTubes( STC, 8, 4, 0.03 );
+attrib( STCIsos, "rgb", "25, 20, 200" );
+attrib( STCIsos, "specilar", 2.0 );
+
+view( list( STC, STCIsos ), 1 );
+save( "sqriacle", list( STC, STCIsos ) );
+
+free( c );
+free( STC );
+free( STCIsos );

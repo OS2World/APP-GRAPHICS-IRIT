@@ -1,0 +1,442 @@
+These are the coding standards I am using. If you make some changes to the
+code, please attempt to follow these rules.
+
+Gershon Elber
+
+gershon@cs.technion.ac.il
+
+Compile with IRIT makefile/flag tools to ensure maximum warnings. Attempt
+to minimize the number of warnings.
+------------------------------------------------------------------------------
+
+
+GENERAL
+-------
+
+Code should not exceed column 80. If the code is going to "look"
+better with more that 80 columns it is allowed but should be
+restricted as possible.
+
+NESTING
+-------
+
+Nesting of all expressions is by 4 spaces. Tabs used are 8 spaces.
+
+SPACES
+------
+
+No spaces are allowed after '(' and before ')' in a function call or
+math expression. However, spaces are allowed between arguments after
+the comma or between operations:
+
+	sin(x);
+	Function1(x, y, z);
+	x + 5 * sin(y);
+
+Spaces should also be placed between operators.  That is "p -> Pt[1] == y"
+(and not ("p->Pt[1]==y")).
+
+FUNCTION HEADER'S COMMENT
+-------------------------
+
+The comment of a function (method in C++) will consist of the following
+sections:
+
+* DESCRIPTION: a general descript of the function.  This block of information
+  will be copied to the programmer manual.  Two types of records can appear
+  in this section:
+
+  1. A line terminated with 'M' - this line will be copied and be formated.
+  2. A line terminated with 'V' - this line will be copied verbatim as is.
+
+* PARAMETERS: enumeration of all function's parameter one per line and the
+  description of the parameter.  Several parameters of very close association
+  may be placed in one line (for example "U, V: the parametic location on S").
+  If the function gets no parameters, "None" should appear.
+
+* RETURN VALUE: the type of the returned value, (or void if no return value)
+  and a description as to its meaning.  A C++ con/destructor will have
+  'NoValue' in this slot.
+
+* SEE ALSO: list of other functions that are related.
+  This section is optional and is unlikely to exist in local static functions.
+
+* KEYWORDS: list of keywords that are related, with the function name as the
+  first keyword.  This section does not exist in local static functions.
+
+Example:
+
+/*****************************************************************************
+* DESCRIPTION:								     M
+* Multi line description of the function. This is a text that will be copied M
+* to the programmer's manual iff the end of the line is M instead of a *     M
+* like this line.							     M
+*   If a V is found at the end of the line, it is copied Verbatim. Example:  M
+* A x + B y + C z + D w + E = 0						     V
+* defines an hyper plane in four space.        				     M
+*									     M
+*   Proper indentation will be given to algorithms or sequences that begin   M
+* with an alpha-numeric values followed by a point. For example:             M
+*									     M
+* 1. One letter	which sets the option letter (i.e. 'x' for option '-x').     M
+*    1.1 Allow even sub sequences.					     M
+* 2. '!' or '%'	to determines if this option is	really optional	('%') or     M
+*    it	must be provided by the user ('!').				     M
+* 3. '-' always.							     M
+* 4. Sequences that start with either '!' or '%'.			     M
+*       Each sequence will be followed by one or two characters	which        M
+*    defines the kind of the input:			   		     M
+*    4.1 d, x, o, u - integer is expected (decimal, hex, octal base or	     M
+*		  unsigned).						     M
+*    4.2 D, X, O, U - long integer is expected (same as above).		     M
+*    4.3 f - float number is expected.					     M
+*									     *
+* PARAMETERS:								     M
+*   I1: one per line, must have an M at the end to show up in prog manual.   M
+*   C2: this parameter is the second one.				     M
+*									     *
+* RETURN VALUE:								     M
+*   int: Number of manuals to create.					     M
+*									     *
+* SEE ALSO:     (only if a global non static function)                       M
+*   ProgrammerManual2, ReferenceManual					     M
+*                                                                            *
+* KEYWORDS:	(only if a global non static function).			     M
+*   ProgrammerManual, manual, documentation				     M
+*****************************************************************************/
+int ProgrammerManual(int I1, char C2)
+{
+}
+
+Functions that are obviously auxiliary can have the postfix Aux, must be
+static, and can have documentation as:
+
+/*****************************************************************************
+* AUXILIARY:								     *
+* Auxiliary function to function SymbPiecewiseRuledSrfApprox		     *
+*****************************************************************************/
+static CagdSrfStruct *CagdPiecewiseRuledSrfAux(CagdSrfStruct *Srf,
+					       CagdBType ConsistentDir,
+					       CagdRType Epsilon,
+					       CagdSrfDirType Dir)
+
+The function comment must be followed very precisely so they could be
+grabbed out of the code directly into the programmer's manual. If you
+are using the emacs editor (If you dont, you better switch to it), add
+irit.el from the irit subdirectory to your .emacs. This emacs-lisp file
+contains a definition for make-irit-c-function which expands a skeleton
+from a given prototype. Once irit.el is installed, type
+'M-x make-irit-c-function' followed by a function prototype 'int Test(char c)'.
+
+Static functions will never have 'M' or 'V' as last character in line. Only
+'*'. The 'SEE ALSO' section is recommended but optional.
+
+C++ code should use the "Class::Method" as the function name in the
+keyword and the "SEE ALSO" section would include the "Class" name.
+
+INTERNAL COMMENTS
+-----------------
+
+Internal comments will be aligned to the right to column 80 if the
+are commenting expression in the same line:
+
+	i %= 2;						      /* Is i even? */
+
+Comments that explains the following block, will be left aligned as
+the block. The comment does not need to be right aligned to column 80
+as well:
+
+	/* This is a comment for the next line. */
+	i %= 2;
+
+All comments should be properly Capitalized and terminate with a point.
+C++ code should not use the // comment notation.
+
+
+FUNCTION AND VARIABLE NAMES
+---------------------------
+
+Both function and variable names will have NO UNDERSCORES. Words will be
+capitalized to distinguish them from each other. Variables of single
+character will be lower case. Examples of valid names:
+
+    ThisIsAFunction, VariableOne, X1, i, j
+
+Global functions should prevent from name space collisions, via the use
+of related and unique prefixes.  For example the "Cagd" prefix in the
+function (and variables names) of the cagd library.
+
+If a function (or a variable) is to be used in a library by more than one
+module, yet the function (or a variable) is not to be considered global, the
+function (or variable) must be prefixed with underscore ('_').  For example,
+"_CagdMakePolygon" or "_CagdSrf2PolygonStrips".
+
+CLASSES, STRUCTURES and UNIONS
+------------------------------
+
+Structures must be typedef defined.  A structure will be defined with
+indentation of four spaces.  If next and prev slots are allocated, they
+must be called Pnext and Pprev respectively. If an attribute slot
+(IPAttributeStruct) is also used, it must be called Attr:
+
+typedef struct CagdPtStruct {
+    struct CagdPtStruct *Pnext;
+    struct IPAttributeStruct *Attr;
+    CagdPType Pt;
+} CagdPtStruct;
+
+Classes will follow the same guideline, with the methods of the class
+indented four spaces as well.  The "private:" and "public:" modifiers
+will be indented two spaces only.
+
+Defined types (via typedef) will hint on themselves.  All typedef will
+the the following suffixes:
+
+* For a typedef of a structure, name of typedef will terminate with "Struct".
+  For example, "IPAttributeStruct" or "CagdCrvStruct".
+
+* For a typedef of a class, name of typedef will terminate with "Class".
+  For example, "IRWindowClass" or "CagdFreeformClass".
+
+* For a typedef of a pointer to a function, name of typedef will terminate
+  with "FuncType".  For example, "CagdCompFuncType" or "IritPrsrPrintFuncType".
+
+* All other typedefs will terminate with "Type".  For example
+  "CagdRType" or "PointType".
+
+
+VARIABLE'S DECLARATIONS
+-----------------------
+
+Variables will be declared at the deepest nesting possible. That is, if
+a variable is used in one module, it will be local to the module. If the
+variable is used in one function, it will be defined in one function. If
+a variable is used in one block in one function, it will be defined in that
+block.
+
+* Variables will be declared static first, followed by automatic.
+* Variables will be declared from simple type to complex/composed ones.
+* Variables that are intialized are to be declared one per line,
+  indented once from the indentation level of the variable type.
+* One empty line should separate variable declarations from following code.
+
+While C++ allows declaration of variables everywhere, declare your variables
+at the begining of the block only.  This simplifies finding declared variables.
+
+Example:
+
+    IRIT_STATIC_DATA int
+	LastCount = 0;
+    IRIT_STATIC_DATA RealType
+	LastValue = 0.0;
+    IRIT_STATIC_DATA IPObjectStruct *TmpObj;
+    char Str[LINE_LEN], *p,
+	*Name = "MyName";
+    int Dir = REAL_PTR_TO_INT(RDir),
+	OldOrder = Dir == CAGD_CONST_U_DIR ? Srf -> VOrder : Srf -> UOrder,
+	NewOrder = REAL_PTR_TO_INT(RNewOrder);
+    IPObjectStruct *SrfObj;
+    CagdSrfStruct *TSrf,
+	*Srf = PObjSrf -> U.Srfs;
+
+The IRIT_STATIC_DATA is typically #defined to 'static' but use it and not
+just 'static'. Do not use the register modifier.
+
+Global variables should prevent from name space collisions, via the use
+of related and unique prefixes.  For example the "Cagd" prefix in the
+variables (and function names) of the cagd library.  All global variables
+should also be prefixed with IRIT_GLOBAL_DATA.  I.e.:
+
+    IRIT_GLOBAL_DATA jmp_buf GlblLongJumpBuffer;
+
+
+INPUT AND OUTPUT
+----------------
+
+Refrain from using iosteam, in C++, and use the C style printf/scanf
+code.  This will reduce the size of the generated executables and will
+also make all printing in the system more consistent.
+
+
+PARAMETERS OF FUNCTIONS
+-----------------------
+
+Parameters of function prototypes will either be all in one line:
+
+    int Func1Test(int Len, RealType *Vect)
+
+or all arguments must be aligned one below the other:
+
+    static CagdSrfStruct *CagdPiecewiseRuledSrfAux(CagdSrfStruct *Srf,
+					           CagdBType ConsistentDir,
+					           CagdRType Epsilon,
+					           CagdSrfDirType Dir)
+
+Local (to a file) functions must be declared static and a prototype of the
+function should also be placed in the beginning of the file.  Otherwise,
+for a non static function, a prototype must be place in the appropriate
+header ('.h' file) file.
+
+
+MACROS
+------
+
+All the names of the macros will be in uppercase and words seperated
+by underscore:
+
+#define LINE_LEN_VLONG	1024	/* Lines read from stdin/files... */
+#define MIN(x, y)		((x) > (y) ? (y) : (x))
+
+All macros that are local to a file will be defined at the beginning of
+the file after the #include statements.   Global macros will be defined
+in the appropriate header file.  Global macros should prevent from
+name space collision, much like global variables, via the use of related
+prefixes.  For example CAGD prefix in the cagd library.
+
+Variables declared in macros will always be prefixed with underscore ('_').
+
+POINTERS and SLOTS
+------------------
+Points should be seperated before and after with a space:
+
+    X = P -> Coords[1];
+
+This is not the case for slots of a structure:
+
+    X = P.Coords[1];
+
+
+BLOCKS
+------
+
+Blocks starts with '{' and ends with '}'. If the block is beginning of
+function then it will start with '{' at column 1 and end at column 1
+with '}'.  Otherwise, it will start with some expression as for/if/while
+etc. in the nesting form: 
+
+    expression {
+	.
+	.
+	.
+    }
+
+FOR
+---
+	for (x = 0; x < 10; x++)
+
+    or
+
+	for (x = 0, i = 1;
+	     x < 5;
+	     x++, i--)
+
+	The body of the for loop can never be in the same line where the ')'
+    is. The ')' will be followed by '{' and the body will start in the next
+    line nested 4 space deapper:
+
+	for (....)
+	    x = sin(j);
+    or
+	for (....) {
+	    x = y / j;
+	    y = j + 2;
+	}
+
+    Notice that after a semicolon (';') there must be a space or a newline.
+
+WHILE
+-----
+	while (x > 0)
+	    x--;				       /* Better use x = 0! */
+
+or
+
+	while (x > 0 && y > 0) {
+	    x -= 4;
+	    y -= 4;
+	}
+
+or
+
+	while (x > 0 &&
+	       x < 5)
+	    x /= 2;
+
+
+IF
+--
+
+	if (x > 0)
+	    x = -x;
+
+or
+
+	if (x > 0 && y > 0) {
+	    x = -x;
+	    y = -y;
+	}
+
+or
+
+	if (x > 0)
+	    x = -x;
+	else
+	    x /= 2;
+
+or
+
+	if (x > 0)
+	    x = -x;
+	else if (x < -100)
+	    x /= 20;
+	else
+	    x /= 2;
+
+If an if expression has an else clause both bodies will be aligned 4
+space deep (The body of the if clause can not be in same line as the
+if and must be aligned with the else body).
+
+
+SWITCH
+------
+
+	switch (i) {
+	    case 1:
+		printf("1");
+		break;
+	    case 2:
+		printf("2");
+		break;
+	    case 3:
+		printf("3");
+		break;
+	    default:
+		printf("Too big");
+		break;
+	}
+
+
+GENERAL PROGRAMMING COMMENTS
+----------------------------
+
+For portability, you should use IritMalloc, IritRealloc and IritFree
+for dynamic memory maintenance. For this same reason you should also
+use IritRandom/IritRandomInit and IritSleep, IritCPUTime and
+IritRealTimeDate, whenever appropriate.  Employ the macros defined in
+irit_sm.h as much as possible.
+
+
+FINAL REMARK
+------------
+
+If you are still not sure how the code should be formated in some
+specific case, consult the code. Out of 200k of lines of code, you are
+most likely to find a similar case to yours.
+
+Write your code as if it is going to become a library. Isolate and
+encapsulate everything as much as possible. For modules that performs
+a specific task, isolate the access to a small set of accessor
+functions that have unique names using a prefix that hints on the
+functionality of the module. If you must have macros and/or global
+variables that are accessible to the world, make them uniquely
+prefixed in a similar manner.

@@ -1,0 +1,37 @@
+#
+# A simulation of a domino pieces falling.
+#
+
+Dominos = function( Path, Scl, PieceTimeStep ): AnimTime: DominoPiece:
+    rot_x: t: DPath: d: dLen: CrvDomain:
+    return = nil():
+    AnimTime = 0:
+    DominoPiece = box( vector( -0.01, -0.006, 0.0 ), 0.02, 0.006, 0.05 )
+								* sc( Scl ):
+    rot_x = cbezier( list( ctlpt( E1, 0.0 ),
+		           ctlpt( E1, 80.0 ) ) ):
+    CrvDomain = pdomain( Path ):
+    t = nth( CrvDomain, 1 ):
+    DPath = cderive( Path ):
+    while ( t < nth( CrvDomain, 2 ),
+	d = coerce( ceval( DPath, t ), point_type ):
+	dLen = sqrt( d * d ):
+	attrib( DominoPiece, "animation",
+	        list( creparam( rot_x,
+			        AnimTime, AnimTime + PieceTimeStep ) ) ):
+        SetName( getAttr( DominoPiece, "animation" ), 0, "rot_x" ):
+	snoc( DominoPiece * rz( -atan2( coord( d, 0 ),
+				        coord( d, 1 ) ) * 180 / Pi )
+			  * trans( coerce( ceval( Path, t ),
+				           vector_type ) ),
+	      return ):
+	t = t + 0.04 * Scl / dLen:
+	AnimTime = AnimTime + PieceTimeStep * 0.6 );
+
+Doms = Dominos( circle( vector( 0, 0, 0 ), 1 ), 1.5, 0.1 );
+
+view( list( axes, Doms ), 1 );
+
+save( "Dominos", Doms );
+
+free( Doms );

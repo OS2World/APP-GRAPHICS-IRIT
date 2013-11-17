@@ -1,0 +1,637 @@
+#
+# Playground model.
+#
+#				Gershon Elber, December 1993
+#
+
+#
+# A chair base, to be used by most games below.
+#
+ChairBaseCrv = cbspline( 3,
+		         list( ctlpt( E3,  0.6, 0.0, 0.0 ),
+			       ctlpt( E3,  0.3, 0.0, 0.05 ),
+			       ctlpt( E3,  0.0, 0.0, 0.0 ) ),
+		         list( KV_OPEN ) );
+ChairBaseCross = arc( vector(  0.25,  0.05,  0.0 ),
+		      vector(  0.25,  0.0,   0.0 ),
+		      vector(  0.3,   0.0,   0.0 ) ) +
+		 arc( vector(  0.3,   0.0,   0.0 ),
+		      vector(  0.25,  0.0,   0.0 ),
+		      vector(  0.25, -0.05,  0.0 ) ) +
+		 cbspline( 3,
+		           list( ctlpt( E3,  0.25, -0.05, 0.0 ),
+				 ctlpt( E3,  0.22, -0.05, 0.0 ),
+				 ctlpt( E3,  0.0, 0.0, 0.0 ),
+				 ctlpt( E3, -0.22, -0.05, 0.0 ),
+				 ctlpt( E3, -0.25, -0.05, 0.0 ) ),
+			   list( KV_OPEN ) ) +
+		 arc( vector( -0.25, -0.05,  0.0 ),
+		      vector( -0.25,  0.0,   0.0 ),
+		      vector( -0.3,   0.0,   0.0 ) ) +
+		 arc( vector( -0.3,   0.0,   0.0 ),
+		      vector( -0.25,  0.0,   0.0 ),
+		      vector( -0.25,  0.05,  0.0 ) ) +
+		 ctlpt( E3, 0.25, 0.05, 0.0 );
+ChairBaseMain = -sweepSrf( ChairBaseCross * rotz( 90 ), ChairBaseCrv, off );
+
+ChairCrv1 = cmesh( ChairBaseMain, ROW, 0 );
+ChairCrv1a = ChairCrv1 * trans( vector( 0.06, 0.0, -0.02 ) );
+ChairCrv1b = ChairCrv1 * scale( vector( 0.0, 0.83, 0.0 ) ) *
+			 trans( vector( 0.66, 0.0, -0.02 ) );
+ChairBaseCover1 = -sFromCrvs( list( ChairCrv1, ChairCrv1a, ChairCrv1b ),
+			      3, KV_OPEN );
+free( ChairCrv1 );
+free( ChairCrv1a );
+free( ChairCrv1b );
+free( ChairBaseCrv );
+
+ChairCrv2 = cmesh( ChairBaseMain, ROW, 2 );
+ChairCrv2a = ChairCrv2 * trans( vector( -0.06, 0.0, -0.02 ) );
+ChairCrv2b = ChairCrv2 * scale( vector( 0.0, 0.83, 0.0 ) ) *
+			 trans( vector( -0.06, 0.0, -0.02 ) );
+ChairBaseCover2 = sFromCrvs( list( ChairCrv2, ChairCrv2a, ChairCrv2b ),
+			     3, KV_OPEN );
+free( ChairCrv2 );
+free( ChairCrv2a );
+free( ChairCrv2b );
+
+ChairBase = list( ChairBaseMain, ChairBaseCover1, ChairBaseCover2 ) *
+					scale( vector( 0.75, 1.0, 1.0 ) );
+color( ChairBase, yellow );
+attrib( ChairBase, "texture", "wood" );
+attrib( ChairBase, "rgb", "244,164,96" );
+free( ChairBaseMain );
+free( ChairBaseCover1 );
+free( ChairBaseCover2 );
+
+#
+# A full free form chair.
+#
+ChairSwpCrv = cbspline( 3,
+		        list( ctlpt( E3,  0.6, 0.0, 0.5 ),
+			      ctlpt( E3,  0.3, 0.0, 0.6 ),
+			      ctlpt( E3,  0.0, 0.0, 0.5 ),
+			      ctlpt( E3, -0.1, 0.0, 0.5 ),
+			      ctlpt( E3, -0.1, 0.0, 0.6 ),
+			      ctlpt( E3,  0.0, 0.0, 0.9 ),
+			      ctlpt( E3, -0.1, 0.0, 1.2 ) ),
+		        list( KV_OPEN ) );
+ChairSwpCrv = crefine( ChairSwpCrv, false,
+		    list( 0.002, 0.02, 0.04, 0.06, 0.94, 0.96, 0.98, 0.998 ) );
+
+ChairCoverMain = -sweepSrf( ChairBaseCross * rz( 90 ), ChairSwpCrv, off );
+color( ChairCoverMain, yellow );
+attrib( ChairCoverMain, "texture", "wood" );
+attrib( ChairCoverMain, "rgb", "244,164,96" );
+free( ChairSwpCrv );
+free( ChairBaseCross );
+
+ChairCover1 = cmesh( ChairCoverMain, ROW, 14 );
+ChairCover1a = ChairCover1 * trans( vector( -0.018, 0.0, 0.06 ) );
+ChairCover1b = ChairCover1 * scale( vector( 0.0, 0.83, 0.0 ) ) *
+			     trans( vector( -0.124, 0.0, 1.26 ) );
+ChairCoverTop = sFromCrvs( list( ChairCover1,  ChairCover1a, ChairCover1b ),
+			   3, KV_OPEN );
+color( ChairCoverTop, yellow );
+attrib( ChairCoverTop, "texture", "wood" );
+attrib( ChairCoverTop, "rgb", "244,164,96" );
+free( ChairCover1 );
+free( ChairCover1a );
+free( ChairCover1b );
+
+ChairCover2 = cmesh( ChairCoverMain, ROW, 0 );
+ChairCover2a = ChairCover2 * trans( vector( 0.06, 0.0, -0.02 ) );
+ChairCover2b = ChairCover2 * scale( vector( 0.0, 0.83, 0.0 ) ) *
+			     trans( vector( 0.66, 0.0, 0.48 ) );
+ChairCoverBot = -sFromCrvs( list( ChairCover2, ChairCover2a, ChairCover2b ),
+			    3, KV_OPEN );
+color( ChairCoverBot, yellow );
+attrib( ChairCoverBot, "texture", "wood" );
+attrib( ChairCoverBot, "rgb", "244,164,96" );
+free( ChairCover2 );
+free( ChairCover2a );
+free( ChairCover2b );
+
+Chair = list( ChairCoverMain, ChairCoverBot, ChairCoverTop );
+free( ChairCoverMain );
+free( ChairCoverBot );
+free( ChairCoverTop );
+
+#
+# Carousel
+#
+CarouselTube = sweepSrf( circle( vector( 0, 0, 0 ), 0.01 ),
+			 cbspline( 3,
+			           list( ctlpt( E3,  1.0,  0.0, 0.2 ),
+				         ctlpt( E3,  1.0,  0.0, 0.02 ),
+				         ctlpt( E3,  1.0,  0.0, 0.0 ),
+				         ctlpt( E3,  0.98, 0.0, 0.0 ),
+				         ctlpt( E3,  0.5,  0.0, 0.0 ),
+				         ctlpt( E3,  0.0,  0.0, 0.2 ),
+				         ctlpt( E3, -0.5,  0.0, 0.0),
+				         ctlpt( E3, -0.98, 0.0, 0.0 ),
+				         ctlpt( E3, -1.0,  0.0, 0.0 ),
+				         ctlpt( E3, -1.0,  0.0, 0.02 ),
+				         ctlpt( E3, -1.0,  0.0, 0.2 ) ),
+				   list( KV_OPEN ) ),
+			 off );
+color( CarouselTube, red );
+attrib( CarouselTube, "reflect", 0.9 );
+
+CarouselRod1 = list( CarouselTube,
+		     ChairBase * scale( vector( 0.35, 0.35, 0.35 ) )
+			       * trans( vector( -0.93, 0.0, 0.03 ) ),
+		     ChairBase * roty( 90 )
+			       * scale( vector( 0.35, 0.35, 0.35 ) )
+			       * trans( vector( -0.98, 0.0, 0.25 ) ),
+		     ChairBase * scale( vector( 0.35, 0.35, 0.35 ) )
+			       * trans( vector( -0.93, 0.0, 0.03 ) )
+			       * rotz( 180 ),
+		     ChairBase * roty( 90 )
+			       * scale( vector( 0.35, 0.35, 0.35 ) )
+			       * trans( vector( -0.98, 0.0, 0.25 ) )
+			       * rotz( 180 ) );
+CarouselRod2 = CarouselRod1 * rotz( 45 );
+CarouselRod3 = CarouselRod1 * rotz( 90 );
+CarouselRod4 = CarouselRod1 * rotz( 135 );
+free( CarouselTube );
+
+CarouselRods = list( CarouselRod1, CarouselRod2, CarouselRod3, CarouselRod4 );
+free( CarouselRod1 );
+free( CarouselRod2 );
+free( CarouselRod3 );
+free( CarouselRod4 );
+
+CarouselBase = -surfRev( cbspline( 3,
+				   list( ctlpt( E3, 0.001,  0.0, 0.5 ),
+					 ctlpt( E3, 0.03, 0.0, 0.5 ),
+					 ctlpt( E3, 0.03, 0.0, 0.35 ),
+					 ctlpt( E3, 0.06, 0.0, 0.2 ),
+					 ctlpt( E3, 0.07, 0.0, 0.06 ),
+					 ctlpt( E3, 0.13, 0.0, 0.015 ),
+					 ctlpt( E3, 0.13, 0.0, 0.0 ) ),
+				   list( KV_OPEN ) ) );
+color( CarouselBase, green );
+attrib( CarouselBase, "reflect", 0.9 );
+
+Carousel = list( CarouselBase,
+		 CarouselRods * trans( vector ( 0.0, 0.0, 0.3 ) ) );
+free( CarouselBase );
+free( CarouselRods );
+
+#
+# A swing
+#
+SwingSideRod = sweepSrf( circle( vector( 0, 0, 0 ), 0.01 ),
+			 cbspline( 3,
+			           list( ctlpt( E3,  0.2,  0.0, -0.05 ),
+				         ctlpt( E3,  0.1,  0.0,  0.95 ),
+				         ctlpt( E3,  0.05, 0.0,  1.0 ),
+				         ctlpt( E3, -0.05, 0.0,  1.0 ),
+				         ctlpt( E3, -0.1,  0.0,  0.95 ),
+					 ctlpt( E3, -0.2,  0.0, -0.05 ) ),
+				   list( KV_OPEN ) ),
+			 off );
+SwingFrame = list( SwingSideRod * trans( vector( 0.0, -1.0, 0.0 ) ),
+		   SwingSideRod * trans( vector( 0.0, 1.0, 0.0 ) ),
+		   extrude( circle( vector( 0, 0, 0 ), 0.01 ),
+		  	    vector( 0.0, 0.0, 2.0 ), 0 ) *
+		       rotx( -90 ) *
+		       trans( vector( 0.0, -1.0, 1.0 ) ) );
+color( SwingFrame, red );
+attrib( SwingFrame, "reflect", 0.5 );
+free( SwingSideRod );
+
+SwingChairRods = list( extrude( circle( vector( 0, 0, 0 ), 0.02 ),
+				vector( 0.0, 0.0, 0.03 ), 0 ) *
+			   rotx( -90 ) *
+			   trans( vector( 0.0, -0.015, 1.0 ) ),
+		       extrude( circle( vector( 0, 0, 0.2 ), 0.01 ),
+				vector( 0.0, 0.0, 0.8 ), 0 ),
+		       -extrude( circle( vector( 0, 0, 0.2 ), 0.007 ),
+				 vector( 0.0, 0.0, -0.07 ), 0 ) *
+			   roty( 90 ) *
+			   trans( vector( -0.2, 0.0, 0.27 ) ) );
+SwingChair1Rods = list( SwingChairRods * trans( vector( 0.0, -0.07, 0.0 ) ),
+			SwingChairRods * trans( vector( 0.0,  0.07, 0.0 ) ) );
+color( SwingChair1Rods, green );
+attrib( SwingChair1Rods, "reflect", 0.9 );
+SwingChair1 = list( SwingChair1Rods,
+		    Chair * scale( vector( 0.25, 0.28, 0.25 ) )
+			  * trans( vector( -0.07, 0.0, 0.05 ) ) );
+free( SwingChair1Rods );
+
+SwingChair2Rods = list( SwingChairRods * trans( vector( 0.0,  0.53, 0.0 ) ),
+			SwingChairRods * trans( vector( 0.0,  0.67, 0.0 ) ) );
+color( SwingChair2Rods, yellow );
+attrib( SwingChair2Rods, "reflect", 0.9 );
+SwingChair2 = list( SwingChair2Rods,
+		    Chair * scale( vector( 0.25, 0.28, 0.25 ) )
+			  * trans( vector( -0.07, 0.6, 0.05 ) ) );
+free( SwingChair2Rods );
+
+SwingChair3Rods = list( SwingChairRods * trans( vector( 0.0,  -0.53, 0.0 ) ),
+			SwingChairRods * trans( vector( 0.0,  -0.67, 0.0 ) ) );
+color( SwingChair3Rods, cyan );
+attrib( SwingChair3Rods, "reflect", 0.9 );
+SwingChair3 = list( SwingChair3Rods,
+		    Chair * scale( vector( 0.25, 0.28, 0.25 ) )
+			  * trans( vector( -0.07, -0.6, 0.05 ) ) );
+free( SwingChair3Rods );
+
+Swing = list( SwingFrame, SwingChair1, SwingChair2, SwingChair3 );
+free( Chair );
+free( SwingFrame );
+free( SwingChair1 );
+free( SwingChair2 );
+free( SwingChair3 );
+free( SwingChairRods );
+
+#
+# A straight slide.
+#
+SlideCross = cbspline( 3,
+        list( ctlpt( E2, 0.0,  -0.06 ),
+              ctlpt( E2, 0.25, -0.06 ),
+              ctlpt( E2, 0.3,  -0.06 ),
+              ctlpt( E2, 0.3,  -0.03 ),
+              ctlpt( E2, 0.3,   0.03 ),
+              ctlpt( E2, 0.3,   0.06 ),
+              ctlpt( E2, 0.26,  0.06 ),
+              ctlpt( E2, 0.26, -0.04 ),
+              ctlpt( E2, 0.23, -0.04 ),
+              ctlpt( E2, 0.0,  -0.04 ) ),
+         list( kv_open ) ):
+SlideCross = SlideCross + -SlideCross * sx( -1 ):
+
+SlideSlopeCrv = cbspline( 3,
+			  list( ctlpt( E3, -0.6,  0.0,  0.1 ),
+				ctlpt( E3, -0.6,  0.0,  0.2 ),
+				ctlpt( E3, -0.5,  0.0,  0.2 ),
+				ctlpt( E3, -0.2,  0.0,  0.2 ),
+				ctlpt( E3,  0.0,  0.0,  0.3 ),
+				ctlpt( E3,  1.0,  0.0,  0.9 ),
+				ctlpt( E3,  1.05, 0.0,  0.9 ),
+				ctlpt( E3,  1.3,  0.0,  0.9 ) ),
+			  list ( KV_OPEN ) );
+SlideSlope = sweepSrf( SlideCross * rotz( -90 )
+				  * scale( vector( 0.4, 0.4, 0.4 ) ),
+		       SlideSlopeCrv, off );
+color( SlideSlope, yellow );
+attrib( SlideSlope, "resolution", 2.0 );
+free( SlideCross );
+free( SlideSlopeCrv );
+
+SlideSlopeSupport = list( extrude( circle( vector( 0, 0, 0.0 ), 0.007 ),
+				   vector( 0.0, 0.0, 0.111 ), 0 ) *
+				   trans( vector( -0.615, 0.112, -0.01 ) ),
+			  extrude( circle( vector( 0, 0, 0.0 ), 0.007 ),
+				   vector( 0.0, 0.0, 0.111 ), 0 ) *
+				   trans( vector( -0.615, -0.112, -0.01 ) ) );
+color( SlideSlopeSupport, white );
+attrib( SlideSlopeSupport, "reflect", 0.99 );
+
+SlideSideSupport =
+   list( sweepSrf( circle( vector( 0, 0, 0 ), 0.015 ),
+		   cbspline( 3,
+			     list( ctlpt( E3,  1.3,  0.0,  0.0 ),
+				   ctlpt( E3,  1.3,  0.0,  1.0 ),
+				   ctlpt( E3,  1.3,  0.0,  1.2 ),
+				   ctlpt( E3,  1.2,  0.0,  1.3 ),
+				   ctlpt( E3,  1.1,  0.0,  1.3 ),
+				   ctlpt( E3,  1.01, 0.0,  1.2 ),
+				   ctlpt( E3,  1.01, 0.0,  0.9 ) ),
+			     list( KV_OPEN ) ),
+		   off ),
+	 sweepSrf( circle( vector( 0, 0, 0 ), 0.01 ),
+		   cbspline( 3,
+			     list( ctlpt( E3,  2.1,  0.0,  0.0 ),
+				   ctlpt( E3,  2.1,  0.0,  0.35 ),
+				   ctlpt( E3,  2.05, 0.0,  0.4 ),
+				   ctlpt( E3,  1.29,  0.0,  1.18 ) ),
+			     list( KV_OPEN ) ),
+		   off ) );
+color( SlideSideSupport, white );
+attrib( SlideSideSupport, "reflect", 0.99 );
+
+SlideStairs = extrude( ctlpt( E3, 1.3, -0.12, 0.9 ) +
+		       ctlpt( E3, 1.3, -0.12, 0.8 ) +
+		       ctlpt( E3, 1.4, -0.12, 0.8 ) +
+		       ctlpt( E3, 1.4, -0.12, 0.7 ) +
+		       ctlpt( E3, 1.5, -0.12, 0.7 ) +
+		       ctlpt( E3, 1.5, -0.12, 0.6 ) +
+		       ctlpt( E3, 1.6, -0.12, 0.6 ) +
+		       ctlpt( E3, 1.6, -0.12, 0.5 ) +
+		       ctlpt( E3, 1.7, -0.12, 0.5 ) +
+		       ctlpt( E3, 1.7, -0.12, 0.4 ) +
+		       ctlpt( E3, 1.8, -0.12, 0.4 ) +
+		       ctlpt( E3, 1.8, -0.12, 0.3 ) +
+		       ctlpt( E3, 1.9, -0.12, 0.3 ) +
+		       ctlpt( E3, 1.9, -0.12, 0.2 ) +
+		       ctlpt( E3, 2.0, -0.12, 0.2 ) +
+		       ctlpt( E3, 2.0, -0.12, 0.1 ) +
+		       ctlpt( E3, 2.1, -0.12, 0.1 ) +
+		       ctlpt( E3, 2.1, -0.12, 0.0 ),
+		      vector( 0.0, 0.24, 0.0 ), 0 );
+
+Slide = list( SlideSlope,
+	      SlideStairs,
+	      SlideSlopeSupport,
+	      SlideSideSupport * trans( vector( 0.0,  0.12, 0.0 ) ),
+	      SlideSideSupport * trans( vector( 0.0, -0.12, 0.0 ) ) );
+free( SlideSlope );
+free( SlideStairs );
+free( SlideSlopeSupport );
+free( SlideSideSupport );
+
+#
+# Sand box for the slide.
+#
+SandBoxBoundary = cbspline( 3,
+			    list( ctlpt( E3,  0.5,  0.0,  0.03 ),
+				  ctlpt( E3,  0.5,  0.7,  0.03 ),
+				  ctlpt( E3, -0.5,  0.7,  0.03 ),
+				  ctlpt( E3, -1.5,  0.7,  0.03 ),
+				  ctlpt( E3, -1.9,  0.0,  0.03 ),
+				  ctlpt( E3, -1.5, -0.9,  0.03 ),
+				  ctlpt( E3, -1.0, -0.7,  0.03 ),
+				  ctlpt( E3, -0.5, -0.4,  0.03 ),
+				  ctlpt( E3,  0.5, -0.6,  0.03 ),
+				  ctlpt( E3,  0.5,  0.0,  0.03 ) ),
+			    list( KV_OPEN ) );
+SandBoxWall = sweepSrf( ( ctlpt( E3, -0.03, 0.0, -0.05 ) +
+		          ctlpt( E3, -0.03, 0.0,  0.05) +
+		          ctlpt( E3,  0.1,   0.0,  0.05 ) +
+		          ctlpt( E3,  0.1,   0.0, -0.05 ) +
+		          ctlpt( E3, -0.03, 0.0, -0.05 ) ) * rotx( 90 ),
+			SandBoxBoundary,
+			vector( 0, 0, 1 ) );
+color( SandBoxWall, red );
+attrib( SandBoxWall, "rgb", "244,50,50" );
+attrib( SandBoxWall, "reflect", 0.1 );
+attrib( SandBoxWall, "resolution", 4.0 );
+
+SandBoxSand = ruledSrf( cregion( SandBoxBoundary, 0.0, 0.4375 ),
+			-cregion( SandBoxBoundary, 0.4375, 1.0 ) );
+color( SandBoxSand, white );
+attrib( SandBoxSand, "rgb", "255,255,150" );
+
+SandBox = list( SandBoxSand, SandBoxWall );
+free( SandBoxSand );
+free( SandBoxWall );
+free( SandBoxBoundary );
+
+#
+# Rounded Slide.
+#
+RSlideHelix = cbspline( 4,
+		        list( ctlpt( E3, 0.0,  1.0, 0.0 ),
+			      ctlpt( E3, 0.267697, 1.0, 0.0 ),
+			      ctlpt( E3, 0.788770, 0.778080, 0.125925 ),
+			      ctlpt( E3, 1.10908, -0.011628, 0.251853 ),
+			      ctlpt( E3, 0.778636, -0.789588, 0.375925 ),
+			      ctlpt( E3, 0.0, -1.10356, 0.5 ),
+			      ctlpt( E3, -0.778635, -0.789590, 0.624075 ),
+			      ctlpt( E3, -1.10908, -0.011628, 0.748147 ),
+			      ctlpt( E3, -0.788770, 0.778077, 0.874075 ),
+			      ctlpt( E3, -0.267696, 1.0, 0.957408 ),
+			      ctlpt( E3, 0.0, 1.0, 1.000000 ) ),
+			list( 0, 0, 0, 0, 0.812947, 1.59055, 2.40349,  3.18109,
+			      3.95869, 4.77164, 5.54924,
+                              6.36219, 6.36219, 6.36219, 6.36219 ) );
+RSlideHelix2 = ( RSlideHelix + RSlideHelix * trans( vector( 0.0, 0.0, 1.0 ) ) )
+					    * scale( vector( 0.4, 0.4, 0.5 ) );
+free( RSlideHelix );
+
+RSlideCross = cbspline( 3,
+		        list( ctlpt( E2,  0.0,  -0.5 ),
+			      ctlpt( E2, -0.1,  -0.5 ),
+			      ctlpt( E2, -0.5,  -0.3 ),
+			      ctlpt( E2, -0.5,   0.0 ),
+			      ctlpt( E2, -0.5,   0.05 ),
+			      ctlpt( E2, -0.45,  0.05 ),
+			      ctlpt( E2, -0.45, -0.25 ),
+			      ctlpt( E2,  0.0,  -0.45 ),
+			      ctlpt( E2,  0.45, -0.25 ),
+			      ctlpt( E2,  0.45,  0.05 ),
+			      ctlpt( E2,  0.5,   0.05 ),
+			      ctlpt( E2,  0.5,   0.0 ),
+			      ctlpt( E2,  0.5,  -0.3 ),
+			      ctlpt( E2,  0.1,  -0.5 ),
+			      ctlpt( E2,  0.0,  -0.5 ) ),
+		        list( KV_OPEN ) );
+RSlideSlopeSrf = -sweepSrf( coerce( RSlideCross, E3 ) *
+					scale( vector( 0.7, 0.7, 0.7 ) ),
+			    RSlideHelix2,
+			    vector( 0, 0, 1 ) );
+attrib( RSlideSlopeSrf, "resolution", 2.0 );
+RSlideSlopeEndCrv = cSurface( RSlideSlopeSrf, ROW, 12.7243 );
+RSlideSlopeEnd = list( ruledSrf( cRegion( RSlideSlopeEndCrv, 0.0, 0.25 ),
+		                 -cRegion( RSlideSlopeEndCrv, 0.25, 0.5 ) ),
+		       ruledSrf( cRegion( RSlideSlopeEndCrv, 0.5, 0.75 ),
+			         -cRegion( RSlideSlopeEndCrv, 0.75, 1 ) ) );
+RSlideSlope = list( RSlideSlopeEnd, RSlideSlopeSrf );
+color( RSlideSlope, yellow );
+attrib( RSlideSlope, "reflect", 0.5 );
+attrib( RSlideSlope, "rgb", "255,255,55" );
+free( RSlideHelix2 );
+free( RSlideCross );
+free( RSlideSlopeEnd );
+free( RSlideSlopeEndCrv );
+free( RSlideSlopeSrf );
+
+RSlideCenter = surfRev( cbspline( 3,
+				  list( ctlpt( E3, 0.1,  0.0, 0.0 ),
+				        ctlpt( E3, 0.1,  0.0, 1.1 ),
+				        ctlpt( E3, 0.11, 0.0, 1.1 ),
+				        ctlpt( E3, 0.11, 0.0, 1.11 ),
+				        ctlpt( E3, 0.11, 0.0, 1.11 ),
+				        ctlpt( E3, 0.2, 0.0, 1.11 ),
+				        ctlpt( E3, 0.2, 0.0, 1.4 ),
+				        ctlpt( E3, 0.001, 0.0, 1.4 ) ),
+		        list( KV_OPEN ) ) );
+color( RSlideCenter, green );
+attrib( RSlideCenter, "rgb", "55,255,55" );
+
+RSlideLadderSideCrv = cbspline( 3,
+				list( ctlpt( E3, 0.0, 0.0, 0.0 ),
+				      ctlpt( E3, 0.0, 0.0, 0.8 ),
+				      ctlpt( E3, 0.0, 0.0, 0.9 ),
+				      ctlpt( E3, 0.1, 0.0, 0.9 ),
+				      ctlpt( E3, 0.9, 0.0, 0.9 ) ),
+				list( KV_OPEN ) ) *
+		      rotz( 180 ) *
+		      trans( vector( 0.85, 0.1, 0.0 ) );
+RSlideLadderSide = sweepSrf( circle( vector( 0.0, 0.0, 0.0 ), 0.015 ),
+			     RSlideLadderSideCrv,
+			     off );
+RSlideLadderStep = extrude( circle( vector( 0.0, 0.0, 0.0 ), 0.01 ),
+			    vector( 0.0, 0.0, 0.61 ), 0 ) * rotx( 90 );
+RSlideLadder = list( RSlideLadderSide,
+		     RSlideLadderSide * trans( vector( 0.0, 0.61, 0.0 ) ),
+		     RSlideLadderStep * trans( vector( 0.85, 0.71, 0.2 ) ),
+		     RSlideLadderStep * trans( vector( 0.85, 0.71, 0.4 ) ),
+		     RSlideLadderStep * trans( vector( 0.85, 0.71, 0.6 ) ),
+		     RSlideLadderStep * trans( vector( 0.85, 0.71, 0.6 ) ),
+		     RSlideLadderStep * trans( vector( 0.85, 0.71, 0.8 ) ),
+		     RSlideLadderStep * trans( vector( 0.75, 0.71, 0.9 ) ),
+		     RSlideLadderStep * trans( vector( 0.55, 0.71, 0.9 ) ),
+		     RSlideLadderStep * trans( vector( 0.35, 0.71, 0.9 ) ),
+		     RSlideLadderStep * trans( vector( 0.15, 0.71, 0.9 ) ) );
+color( RSlideLadder, red );
+attrib( RSlideLadder, "rgb", "255,55,55" );
+
+RSlide = list( RSlideSlope, RSlideCenter, RSlideLadder );
+free( RSlideLadderSideCrv );
+free( RSlideLadderSide );
+free( RSlideLadderStep );
+free( RSlideSlope );
+free( RSlideCenter );
+free( RSlideLadder );
+
+#
+# Swing for two.
+#
+
+TSwingSupport1 = list( extrude( circle( vector( 0.0, 0.0, -0.02 ), 0.015 ),
+			        vector( 0.0, 0.0, 0.22 ), 0 ) *
+		           rotx( 20 ) *
+			   trans( vector( -0.7, 0.07, 0.0 ) ),
+		       extrude( circle( vector( 0.0, 0.0, -0.02 ), 0.015 ),
+			        vector( 0.0, 0.0, 0.22 ), 0 ) *
+		           rotx( -20 ) *
+			   trans( vector( -0.7, -0.07, 0.0 ) ) );
+TSwingSupport2 = TSwingSupport1 * trans( vector( 1.4, 0.0, 0.0 ) );
+TSwingSupport = list( TSwingSupport1, TSwingSupport2,
+		      extrude( circle( vector( 0.0, 0.0, 0.0 ), 0.015 ),
+			       vector( 0.0, 0.0, 1.4 ), 0 ) *
+			           roty( 90 ) *
+			           trans( vector( -0.7, 0.0, 0.2 ) ) );
+color( TSwingSupport, blue );
+attrib( TSwingSupport, "rgb", "50,50,255" );
+free( TSwingSupport1 );
+free( TSwingSupport2 );
+
+TSwingChairSupport = extrude( circle( vector( 0.0, 0.0, 0.0 ), 0.015 ),
+			      vector( 0.0, 0.0, 1.4 ), 0 ) *
+			 rotx( 90 ) *
+			 trans( vector( 0.0, 0.7, 0.215 ) );
+color( TSwingChairSupport, green );
+attrib( TSwingChairSupport, "rgb", "50,255,50" );
+
+TSwingChair = list( TSwingChairSupport,
+		    ChairBase *
+			scale( vector( 0.3, 0.3, 0.3 ) ) *
+			trans( vector( -0.065, 0.7, 0.235 ) ),
+		    ChairBase *
+			scale( vector( 0.3, 0.3, 0.3 ) ) *
+			trans( vector( -0.065, 0.7, 0.235 ) ) *
+			rotz( 180 ) );
+
+TSwingChair1 = TSwingChair *
+	       trans( vector( 0.0, 0.0, -0.215 ) ) *
+	       rotx( 16 ) *
+	       trans( vector( 0.4, 0.0, 0.215 ) );
+TSwingChair2 = TSwingChair *
+	       trans( vector( 0.0, 0.0, -0.215 ) ) *
+	       rotx( -16 ) *
+	       trans( vector( -0.4, 0.0, 0.215 ) );
+
+TSwing = list( TSwingSupport, TSwingChair1, TSwingChair2 );
+free( TSwingChairSupport );
+free( TSwingSupport );
+free( TSwingChair );
+free( TSwingChair1 );
+free( TSwingChair2 );
+free( ChairBase );
+#
+# Network
+#
+
+NetworkX1 = list( extrude( circle( vector( 0.0, 0.0, 0.0 ), 0.01 ),
+			   vector( 0.0, 0.0, 1.0 ), 0 ) *
+		      rotx( 90 ) *
+		      trans( vector( 0.0, 0.0, 0.0 ) ),
+		  extrude( circle( vector( 0.0, 0.0, 0.0 ), 0.01 ),
+			   vector( 0.0, 0.0, 1.0 ), 0 ) *
+		      rotx( 90 ) *
+		      trans( vector( 0.0, 0.0, 0.25 ) ),
+		  extrude( circle( vector( 0.0, 0.0, 0.0 ), 0.01 ),
+			   vector( 0.0, 0.0, 1.0 ), 0 ) *
+		      rotx( 90 ) *
+		      trans( vector( 0.0, 0.0, 0.5 ) ),
+		  extrude( circle( vector( 0.0, 0.0, 0.0 ), 0.01 ),
+			   vector( 0.0, 0.0, 1.0 ), 0 ) *
+		      rotx( 90 ) *
+		      trans( vector( 0.0, 0.0, 0.75 ) ),
+		  extrude( circle( vector( 0.0, 0.0, 0.0 ), 0.01 ),
+			   vector( 0.0, 0.0, 1.0 ), 0 ) *
+		      rotx( 90 ) *
+		      trans( vector( 0.0, 0.0, 1.0 ) ) );
+NetworkX = list( NetWorkX1,
+		 NetWorkX1 * trans( vector( 0.25, 0.0, 0.0 ) ),
+		 NetWorkX1 * trans( vector( 0.5,  0.0, 0.0 ) ),
+		 NetWorkX1 * trans( vector( 0.75, 0.0, 0.0 ) ),
+		 NetWorkX1 * trans( vector( 1.0,  0.0, 0.0 ) ) );
+color( NetworkX, green );
+attrib( NetworkX, "rgb", "50,255,50" );
+free( NetworkX1 );
+
+NetworkY = NetworkX * rotz( 90 ) * trans( vector( 0.0, -1.0, 0.0 ) );
+color( NetworkY, red );
+attrib( NetworkY, "rgb", "255,50,50" );
+
+NetworkZ = NetworkX * rotx( 90 ) * trans( vector( 0.0, 0.0, 1.0 ) );
+color( NetworkZ, yellow );
+attrib( NetworkZ, "rgb", "255,255,50" );
+
+Network = list( NetworkX, NetworkY, NetworkZ );
+free( NetworkX );
+free( NetworkY );
+free( NetworkZ );
+
+#
+# Place all the toys in the playground.
+#
+PlayGround = ruledSrf( ctlpt( E2,  1.0, -1.0 ) + ctlpt( E2,  1.0,  1.0 ),
+		       ctlpt( E2, -1.0, -1.0 ) + ctlpt( E2, -1.0,  1.0 ) ) *
+	     scale( vector( 15.0, 15.0, 15.0 ) );
+color( PlayGround, white );
+attrib( PlayGround, "rgb", "25,25,25" );
+attrib( PlayGround, "reflect", 0.25 );
+
+PlayCarousel = Carousel * trans( vector( -1, -2, 0 ) );
+PlaySwing = Swing * trans( vector( 1, -2, 0 ) );
+PlaySlideSand = list( Slide, SandBox ) * trans( vector( 1.3, 0.7, 0 ) );
+PlaySlide2 = Slide * trans( vector( 0.5, -4.5, 0 ) );
+PlayRSlide = RSlide * trans( vector( -2.0, 0.5, 0 ) );
+PlayTSwing1 = TSwing * trans( vector( 3, -1, 0 ) );
+PlayTSwing2 = TSwing * trans( vector( 3, -3, 0 ) );
+PlayNetwork = Network * trans( vector( -4, -1.5, 0 ) );
+
+free( Swing );
+free( Slide );
+free( RSlide );
+free( TSwing );
+free( Network );
+free( Carousel );
+free( SandBox );
+
+All = list( PlayGround, PlayCarousel, PlaySwing, PlaySlideSand, PlaySlide2,
+	    PlayRSlide, PlayTSwing1, PlayTSwing2, PlayNetwork );
+
+free( PlayGround );
+free( PlayCarousel );
+free( PlaySwing );
+free( PlaySlideSand );
+free( PlaySlide2 );
+free( PlayRSlide );
+free( PlayTSwing1 );
+free( PlayTSwing2 );
+free( PlayNetwork );
+
+save( "playgrnd", All );
+
+viewobj( All );
+
+free( all );

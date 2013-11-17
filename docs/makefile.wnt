@@ -1,0 +1,200 @@
+#
+# Makefile for the IRIT solid modeler documentation (TC).
+#
+
+# Works only on TC++ 1.0 make and up - swap out make before invoking command.
+# .SWAP
+
+# Includes generic definitions.
+include ..\makeflag.wnt
+
+all:	irit.tex irit.doc irit.hlp
+
+HELP_OBJS = irithlp.$(IRIT_OBJ_PF)
+
+PROGMAN_OBJS = progman.$(IRIT_OBJ_PF)
+
+PROG_LIBS_TEX = \
+        prog_man\bool_lib.tex prog_man\cagd_lib.tex \
+	prog_man\geom_lib.tex prog_man\grap_lib.tex \
+	prog_man\mdl_lib.tex prog_man\misc_lib.tex \
+	prog_man\mvar_lib.tex prog_man\prsr_lib.tex \
+	prog_man\rndr_lib.tex\
+	prog_man\symb_lib.tex prog_man\trim_lib.tex \
+	prog_man\triv_lib.tex prog_man\trng_lib.tex \
+	prog_man\user_lib.tex prog_man\xtra_lib.tex
+
+PROG_LIBS_HTML = \
+        prog_man\bool_lib.html prog_man\cagd_lib.html \
+	prog_man\geom_lib.html prog_man\grap_lib.html \
+	prog_man\mdl_lib.html prog_man\misc_lib.html \
+	prog_man\mvar_lib.html prog_man\prsr_lib.html \
+	prog_man\rndr_lib.html \
+	prog_man\symb_lib.html prog_man\trim_lib.html \
+	prog_man\triv_lib.html prog_man\trng_lib.html \
+	prog_man\user_lib.html prog_man\xtra_lib.html
+
+irithlp.exe: $(HELP_OBJS)
+	$(IRITCONLINK) -out:$@ $(HELP_OBJS) $(W32CONLIBS)
+	$(IRITMANIFEST) -manifest $@.manifest -outputresource:$@;1
+
+install: irit.hlp
+	copy irit.hlp $(IRIT_BIN_DIR)
+	del irit.hlp
+
+irit.tex: irithlp.exe irit.src user_man
+	.\irithlp -l -o irit.tex irit.src
+
+irit.hlp: irithlp.exe irit.src
+	.\irithlp -h -o irit.hlp irit.src
+
+irit.doc: irithlp.exe irit.src
+	.\irithlp -t -o irit.doc irit.src
+
+user_man.html: irithlp.exe irit.src user_man/doc_figs.irt
+	-(cd user_man && $(MAKE) -f makefile.wnt all_img)
+	.\irithlp.exe -w -o user_man.html irit.src
+
+user_man.ps: irit.tex user_man/doc_figs.irt
+	-(cd user_man && $(MAKE) -f makefile.wnt all_ps)
+	-latex irit.tex
+	-latex irit.tex
+	dvips -f irit.dvi > user_man.ps
+
+progman.exe: $(PROGMAN_OBJS)
+	$(IRITCONLINK) -out:$@ $(PROGMAN_OBJS) $(IRIT_LIBS) $(IRIT_MORE_LIBS) $(W32CONLIBS)
+	$(IRITMANIFEST) -manifest $@.manifest -outputresource:$@;1
+
+
+prog_man.ps:	$(PROG_LIBS_TEX)
+	-(cd cexample && conv_c_to_tex)
+	-latex prog_man.tex
+	-makeindex prog_man.idx
+	-latex prog_man.tex
+	dvips -f prog_man.dvi > prog_man.ps
+
+prog_man\bool_lib.tex:	.\progman.exe
+	.\progman -l -o prog_man\bool_lib.tex ..\bool_lib\*.c
+
+prog_man\cagd_lib.tex:	.\progman.exe
+	.\progman -l -o prog_man\cagd_lib.tex ..\cagd_lib\*.c
+
+prog_man\geom_lib.tex:	.\progman.exe
+	.\progman -l -o prog_man\geom_lib.tex ..\geom_lib\*.c
+
+prog_man\mdl_lib.tex:	.\progman.exe
+	.\progman -l -o prog_man\mdl_lib.tex ..\mdl_lib\*.c
+
+prog_man\misc_lib.tex:	.\progman.exe
+	.\progman -l -o prog_man\misc_lib.tex ..\misc_lib\*.c
+
+prog_man\grap_lib.tex:	.\progman.exe
+	.\progman -l -o prog_man\grap_lib.tex ..\grap_lib\*.c
+
+prog_man/mvar_lib.tex:	.\progman.exe
+	.\progman -l -o prog_man\mvar_lib.tex ..\mvar_lib\*.c
+
+prog_man\prsr_lib.tex:	.\progman.exe
+	.\progman -l -o prog_man\prsr_lib.tex ..\prsr_lib\*.c
+
+prog_man\rndr_lib.tex:	.\progman.exe
+	.\progman -l -o prog_man\rndr_lib.tex ..\rndr_lib\*.c
+
+prog_man\symb_lib.tex:	.\progman.exe
+	.\progman -l -o prog_man\symb_lib.tex ..\symb_lib\*.c
+
+prog_man\triv_lib.tex:	.\progman.exe
+	.\progman -l -o prog_man\triv_lib.tex ..\triv_lib\*.c
+
+prog_man\trim_lib.tex:	.\progman.exe
+	.\progman -l -o prog_man\trim_lib.tex ..\trim_lib\*.c
+
+prog_man\trng_lib.tex:	.\progman.exe
+	.\progman -l -o prog_man\trng_lib.tex ..\trng_lib\*.c
+
+prog_man\xtra_lib.tex:	.\progman.exe
+	.\progman -l -o prog_man\xtra_lib.tex ..\xtra_lib\*.c
+
+prog_man\user_lib.tex:	.\progman.exe
+	.\progman -l -o prog_man\user_lib.tex ..\user_lib\*.c
+
+
+prog_man.html:	$(PROG_LIBS_HTML)
+
+prog_man\bool_lib.html:	.\progman.exe
+	.\progman -w -o bool_lib.html ..\bool_lib\*.c
+	move bool_lib.html* prog_man
+
+prog_man\cagd_lib.html:	.\progman.exe
+	.\progman -w -o cagd_lib.html ..\cagd_lib\*.c
+	move cagd_lib.html* prog_man
+
+prog_man\geom_lib.html:	.\progman.exe
+	.\progman -w -o geom_lib.html ..\geom_lib\*.c
+	move geom_lib.html* prog_man
+
+prog_man\mdl_lib.html:	.\progman.exe
+	.\progman -w -o mdl_lib.html ..\mdl_lib\*.c
+	move mdl_lib.html* prog_man
+
+prog_man\misc_lib.html:	.\progman.exe
+	.\progman -w -o misc_lib.html ..\misc_lib\*.c
+	move misc_lib.html* prog_man
+
+prog_man\grap_lib.html:	.\progman.exe
+	.\progman -w -o grap_lib.html ..\grap_lib\*.c
+	move grap_lib.html* prog_man
+
+prog_man\mvar_lib.html:	.\progman.exe
+	.\progman -w -o mvar_lib.html ..\mvar_lib\*.c
+	move mvar_lib.html* prog_man
+
+prog_man\prsr_lib.html:	.\progman.exe
+	.\progman -w -o prsr_lib.html ..\prsr_lib\*.c
+	move prsr_lib.html* prog_man
+
+prog_man\rndr_lib.html:	.\progman.exe
+	.\progman -w -o rndr_lib.html ..\rndr_lib\*.c
+	move rndr_lib.html* prog_man
+
+prog_man\symb_lib.html:	.\progman.exe
+	.\progman -w -o symb_lib.html ..\symb_lib\*.c
+	move symb_lib.html* prog_man
+
+prog_man\triv_lib.html:	.\progman.exe
+	.\progman -w -o triv_lib.html ..\triv_lib\*.c
+	move triv_lib.html* prog_man
+
+prog_man\trim_lib.html:	.\progman.exe
+	.\progman -w -o trim_lib.html ..\trim_lib\*.c
+	move trim_lib.html* prog_man
+
+prog_man\trng_lib.html:	.\progman.exe
+	.\progman -w -o trng_lib.html ..\trng_lib\*.c
+	move trng_lib.html* prog_man
+
+prog_man\xtra_lib.html:	.\progman.exe
+	.\progman -w -o xtra_lib.html ..\xtra_lib\*.c
+	move xtra_lib.html* prog_man
+
+prog_man\user_lib.html:	.\progman.exe
+	.\progman -w -o user_lib.html ..\user_lib\*.c
+	move user_lib.html* prog_man
+
+
+man3:	.\progman.exe
+	.\progman -M ..\*_lib\*.c
+
+man6:	irithlp.exe irit.src
+	irithlp -M irit.src
+
+man:	man3 man6
+
+clean:
+	-rm prog_man\*.html prog_man\*.tex user*.html
+	-rm *.ps irit.tex irit.doc
+	-rm *.aux *.dvi *.log *.ivd *.xet *.toc dviscr.dlg *.idx
+
+# Dependencies starts here - do not touch, generated automatically.
+irithlp.$(IRIT_OBJ_PF):	..\include\irit_sm.h
+

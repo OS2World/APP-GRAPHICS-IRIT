@@ -1,0 +1,101 @@
+#
+# A local variation of the Utah teapot.  This teapot fixes the following:
+#
+# 1. This model has no potential discontinuities in the teapot along 90 degrees
+#    quarters.
+# 2. This teapot has well behaved normal at the center of the cap.
+#
+#				Gershon Elber, November 1995
+#
+
+EchoSrc = iritState( "EchoSource", false );
+save_mat = view_mat;
+
+#
+# Create an approximation to a circle that is C1 everywhere. This circle
+# is accurate to within few promils.
+#
+PtList = nil();
+for ( i = 0, 1, 7,
+    snoc( point( cos( i * 2 * Pi / 8 ), sin( i * 2 * Pi / 8 ), 0.0 ),
+	  PtList ) );
+
+Circ = coerce( cbspline( 3, PtList, list( KV_PERIODIC ) ), KV_OPEN )
+	* rz( -22.5 ) * sc( 1 / 0.93 );
+free( i );
+free( PtList );
+
+c1 = Circ * rx( 90 ) * sc( 1.5 );
+c2 = Circ * rx( 90 ) * sc( 1.6 ) * ty( 0.1 );
+c3 = Circ * rx( 90 ) * sc( 2.1 ) * ty( 0.5 );
+c4 = Circ * rx( 90 ) * sc( 1.9 ) * ty( 1.4 );
+c5 = Circ * rx( 90 ) * sc( 1.5 ) * ty( 2.3 );
+c6 = Circ * rx( 90 ) * sc( 1.4 ) * ty( 2.4 );
+c7 = Circ * rx( 90 ) * sc( 1.4 ) * ty( 2.3 );
+Body2 = -sFromCrvs( list( c1, c2, c3, c4, c5, c6, c7 ), 4, KV_OPEN );
+
+MinScale = 0.01;
+c1 = Circ * rx( 90 ) * sc( 1.3 ) * ty( 2.25 );
+c2 = Circ * rx( 90 ) * sc( 1.3 ) * ty( 2.35 );
+c3 = Circ * rx( 90 ) * sc( 0.18 ) * ty( 2.5 );
+c4 = Circ * rx( 90 ) * sc( 0.15 ) * ty( 2.67 );
+c5 = Circ * rx( 90 ) * sc( 0.4 ) * ty( 2.9 );
+c6 = Circ * rx( 90 ) * sc( 0.3 ) * ty( 3.0 );
+c7 = Circ * rx( 90 ) * sc( MinScale ) * ty( 3.0 );
+Cap2 = -sFromCrvs( list( c1, c2, c3, c4, c5, c6, c7 ), 3, KV_OPEN );
+free( MinScale );
+
+Circ2 = Circ * sc( 0.25 ) * sy( 0.5 ) * ry( 90 );
+c0 = Circ2 * rz( -25 ) * sc( 2.0 ) * ty( 2.0 ) * tx( -1.53 );
+c1 = Circ2 * rz( -24 ) * ty( 2.0 ) * tx( -1.6 );
+c2 = Circ2 * rz( 10 ) * ty( 2.0 ) * tx( -2.3 );
+c3 = Circ2 * rz( 30 ) * sc( 1.2 ) * ty( 1.92 ) * tx( -2.77 );
+c4 = Circ2 * rz( 90 ) * sc( 1.3 ) * ty( 1.65 ) * tx( -2.85 );
+c5 = Circ2 * rz( 122 ) * sc( 1.2 ) * ty( 1.3 ) * tx( -2.75 );
+c6 = Circ2 * rz( 150 ) * ty( 0.9 ) * tx( -2.45 );
+c7 = Circ2 * rz( 195 ) * ty( 0.65 ) * tx( -2.0 );
+c8 = Circ2 * rz( 195 ) * sc( 2.0 ) * ty( 0.65 ) * tx( -1.84 );
+Handle2 = -sFromCrvs( list( c0, c1, c2, c3, c4, c5, c6, c7, c8 ), 3, KV_OPEN );
+
+Circ2 = Circ * sc( 0.42 ) * ry( 90 );
+c1 = Circ2 * ty( 0.87 ) * tx( 1.7 );
+c2 = Circ2 * sc( 0.95 ) * rz( 20 ) * ty( 0.85 ) * tx( 2.3 );
+c3 = Circ2 * sc( 0.5 ) * rz( 60 ) * ty( 1.7 ) * tx( 2.6 );
+c3a = Circ2 * sc( 0.4 ) * rz( 75 ) * ty( 2.2 ) * tx( 2.8 );
+c4 = Circ2 * sc( 0.5 ) * rz( 90 ) * sx( 1.8 ) * ty( 2.3 ) * tx( 3.1 );
+c5 = Circ2 * sc( 0.42 ) * rz( 90 ) * sx( 1.8 ) * ty( 2.35 ) * tx( 3.1 );
+c6 = Circ2 * sc( 0.25 ) * rz( 90 ) * sx( 1.8 ) * ty( 2.15 ) * tx( 2.82 );
+Spout2 = sFromCrvs( list( c1, c2, c3, c3a, c4, c5, c6 ), 4, KV_OPEN );
+
+color( Body2, red );
+color( Cap2, green );
+color( Spout2, cyan );
+color( Handle2, magenta );
+
+view_mat = scale( vector( 0.3, 0.3, 0.3 ) ) * ty( -0.5 ) * ry( 70 ) * rx( 20 );
+Teapot2 = list( Body2, Spout2, Handle2, Cap2 );
+save( "teapot2", Teapot2 );
+interact( list( view_mat, Teapot2 ) );
+
+free( c0 );
+free( c1 );
+free( c2 );
+free( c3 );
+free( c3a );
+free( c4 );
+free( c5 );
+free( c6 );
+free( c7 );
+free( c8 );
+free( Circ );
+free( Circ2 );
+
+free( Body2 );
+free( Cap2 );
+free( Spout2 );
+free( Handle2 );
+free( Teapot2 );
+
+view_mat = save_mat;
+EchoSrc = iritState( "EchoSource",  EchoSrc );
+free( EchoSrc );

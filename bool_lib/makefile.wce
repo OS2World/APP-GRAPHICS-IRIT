@@ -1,0 +1,22 @@
+#
+# This is the make file for the bool_lib library.
+#
+#				Gershon Elber, June 1993
+#
+
+# Get the destination directories:
+include ..\makeflag.wce
+
+OBJS =  adjacncy.$(IRIT_OBJ_PF) bool-hi.$(IRIT_OBJ_PF) bool1low.$(IRIT_OBJ_PF) \
+	bool2low.$(IRIT_OBJ_PF) bool-2d.$(IRIT_OBJ_PF) bool_err.$(IRIT_OBJ_PF)
+
+$(BOOL_LIB): $(OBJS)
+	-del $(BOOL_LIB)
+	$(IRITLIB) -out:$(BOOL_LIB) $(OBJS)
+
+$(IRIT_LIB_DIR)\$(BOOL_LIB): $(BOOL_LIB)
+	copy $(BOOL_LIB) $(IRIT_LIB_DIR)
+
+install: $(IRIT_LIB_DIR)\$(BOOL_LIB)
+
+# Dependencies starts here - do not touch, generated automatically.

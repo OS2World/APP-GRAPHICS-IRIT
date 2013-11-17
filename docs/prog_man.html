@@ -1,0 +1,697 @@
+<!
+# 
+# prog_man.html - The IRIT programmer's manual - main module.
+# 
+# Author:	Gershon Elber
+# 		Computer Science Dept.
+# 		Technion, IIT
+#
+>
+
+<TITLE> Programmers' Manual - IRIT </TITLE>
+
+<LINK REL="SHORTCUT ICON" HREF="IritLogo.ico">
+
+<H1 ALIGN=CENTER>  Programmers' Manual - IRIT </H1>
+
+<H2 ALIGN=CENTER> Introduction </H2>
+
+This manual describes the different libraries of the IRIT solid
+modeling environment. Quite a few libraries can be found to manipulate
+geometry in general, freeform curves and surfaces, symbolic
+computation, trimmed surfaces, triangular patches, freeform trivariate
+functions, Boolean operations, input output data file parsing, and
+miscelleneous.<BR><BR>
+
+All interface to the libraries should be made via the appropriate header
+files that can be found in the include subdirectory. Most libraries
+have a single header file that is named the same as the library.
+Functions and constants that are visible to the users of the libraries
+are prefixed with a unique prefix, usually derived from the library
+name itself. External definitions that start with an underscore should
+not be used, even if found in header files.<BR><BR>
+
+The header file <B> include/irit_sm.h </B> must be sourced by every
+source file in the solid modeller. In most cases, this file is sourced
+indirectly via local header files.<BR><BR>
+
+The following libraries are avaliable in IRIT:<BR><BR>
+<TABLE BORDER=7 CELLPADDING=1>
+<TR><TH align=left> Name of Library <TH align=left> Tasks
+<TR><TH align=left> bool <TH align=left> Boolean operations on polygonal models.
+<TR><TH align=left> cagd <TH align=left> Low level freeform curves and surfaces.
+<TR><TH align=left> geom <TH align=left> General geometry functions.
+<TR><TH align=left> grap <TH align=left> General graphics/display functions.
+<TR><TH align=left> mdl  <TH align=left> Model's processing functions.
+<TR><TH align=left> misc <TH align=left> Memory allocation, configuration files, attributes, etc.
+<TR><TH align=left> mvar <TH align=left> Multi variate functions.
+<TR><TH align=left> prsr <TH align=left> Input and output for file/sockets of objects of IRIT.
+<TR><TH align=left> rndr <TH align=left> Scan conversion rendering functions.
+<TR><TH align=left> symb <TH align=left> Symbolic manipulation of curves and surfaces.
+<TR><TH align=left> trim <TH align=left> Trimmed surfaces support.
+<TR><TH align=left> triv <TH align=left> Freeform trivariate functions.
+<TR><TH align=left> trng <TH align=left> Triangular patches support.
+<TR><TH align=left> user <TH align=left> General high level user inteface functions.
+<TR><TH align=left> xtra <TH align=left> Public domain code that is not part of IRIT.
+</TABLE>
+
+<!##########################################################################>
+
+<H3 ALIGN=CENTER> Tools and Programs </H3>
+
+The IRIT package includes several complete programs such as poly3d-h
+(hidden line removal), irender (scan conversion tool), and irit2ps (a
+filter to Postscript).  Somewhat different than most other programs is
+the kernel interpreter, also called irit.  The irit program is nothing
+more than an interpreter (written in C) that invokes numerous
+functions in the several libraries provided.  In order to add a new
+function to the irit interpreter, the following sequence of operations
+must be followed:
+
+<TABLE BORDER=7 CELLPADDING=1>
+<TR><TH align=left> 
+    Write a C function that accepts only one or more of the following
+     type of parameters.  All parameters, including the IrtRType, <B> must </B>
+     be transferred by address:
+     <TABLE BORDER=7 CELLPADDING=1>
+	<TR><TH align=left> IrtRType         (see irit_sm.h).
+	<TR><TH align=left> IrtVecType       (see irit_sm.h).
+	<TR><TH align=left> IrtPtType        (see irit_sm.h).
+	<TR><TH align=left> CagdCtlPtStruct  (see cagd_lib.h).
+	<TR><TH align=left> IrtPlnType       (see irit_sm.h).
+	<TR><TH align=left> StringType       (char *).
+	<TR><TH align=left> IPObjectStruct   (see iritprsr.h).  This
+		 includes all object
+		types in IPObjectStruct other than the above.
+    </TABLE>
+<TR><TH align=left>  The written C function can return one of:
+    <TABLE BORDER=7 CELLPADDING=1>
+	<TR><TH align=left>  IrtRType by value.
+	<TR><TH align=left>  IPObjectStruct by address.
+	<TR><TH align=left>  Nothing (a procedure).
+    </TABLE>
+<TR><TH align=left>  According to the returned type by the new C function,
+
+	go to file
+	<B> inptprsl.h </B>, and add a new enum NEW_FUNC for the new
+	function in enum RealValueFuncType (for IrtRType returned value), in
+	enum ObjValueFuncType (for IPObjectStruct * returned value),
+	or in enum GenValueFuncType (for no returned value).
+<TR><TH align=left>  In <B> inptevl1.c </B>, add one new line in one of
+	NumFuncTable,
+	ObjFuncTable, or GenFuncTable (depends upon the return value).
+	The line will have the form of:
+	<PRE>
+            { ``FuncName'', NEW_FUNC, CFunctionName,  N, { Param1Type,
+                                              Param2Type, ... ParamNType } }
+	</PRE>
+	for procedures with no return values, and of the form of:
+	<PRE>
+            { ``FuncName'', NEW_FUNC, CFunctionName,  N, { Param1Type,
+                                    Param2Type, ... ParamNType }, RetValType }
+	</PRE>
+	otherwise. N is the number of parameters,
+	``FuncName'' is the (unique) name that will be used in
+	the interpreter, CFunctionName is the name of the C function you
+	have written. This C function must be declared in one of the header
+	files that inptevl1.c includes. ParamIType, for I between 1 and N,
+	and RetValType are of type IritExprType (see inptprsl.h).
+<TR><TH align=left>  Thats it!
+</TABLE>
+
+For example, to add the C function declared as
+<PRE>
+    IPObjectStruct *PolyhedraMoments(IPObjectStruct *IPObjectStruct, IrtRType *m);
+</PRE>
+one has to add the following line to ObjFuncTable in iritevl1.c
+<PRE>
+    { ``PMOMENT'', PMOMENT, { POLY_EXPR, REAL_EXPR }, VECTOR_EXPR },
+</PRE>
+where PMOMENT needs to be added to ObjValueFuncType in iritprsl.h.
+
+While all objects in the interpreted space are of type IPObjectStruct,
+the functions' interface unfolds many types to simplify matter.
+IrtRType, IrtVecType, Strings, etc. are all extracted from the given
+(IPObjectStruct) parameters and passed directly by address.  For
+returned values, only numeric real data is allowed where everything
+else must be returned wrapped in an IPObjectStruct.
+
+<!##########################################################################>
+
+The following chapters reference the different function of different
+libraries. Chapter~ref{chap-examples} provides several examples of
+writing C code using the IRIT libraries.<BR><BR>
+
+<!##########################################################################>
+
+<HR><H2 ALIGN=CENTER> Boolean Library, bool_lib </H2>
+
+<H3> General Information </H3>
+
+On of the crucial operation in any solid modeling environment is the
+ability to perform Boolean operations among different geometric
+objects.  The interface of the library is defined in
+include/bool_lib.h. This library supports only Boolean operations of
+polygonal objects. The Boolean operations of OR, AND, SUBtract,
+NEGate, CUT, and MERGE are supported via the BoolOperType typedef:
+<TABLE BORDER=7 CELLPADDING=1>
+<TR><TH align=left> BoolOperType <TH align=left> Meaning
+<TR><TH align=left> BOOL_OPER_OR <TH align=left> Union of two geometrical objects
+<TR><TH align=left> BOOL_OPER_AND <TH align=left> Intersection of two geometrical objects
+<TR><TH align=left> BOOL_OPER_SUB <TH align=left> The difference of two geometrical objects
+<TR><TH align=left> BOOL_OPER_NEG <TH align=left> Unary Inside-out of one geometrical object
+<TR><TH align=left> BOOL_OPER_CUT <TH align=left> Boundary of one object outside the other
+<TR><TH align=left> BOOL_OPER_MERGE <TH align=left> Simple merge without any computation
+</TABLE>
+
+The <B> BoolOperType </B> typedef is used in two dimensional Boolean operations
+invoked via <B> Boolean2D </B>. Three dimensional Boolean operations are
+invoked via <B> BooleanXXX </B> where XXX is one of OR, AND, SUB, NEG, CUT
+or MERGE, denoting the same as in the table above.
+
+In addition several state functions are available to control the way
+the Boolean operations are conducted. Functions to enable the dump of
+(only) the intersection curves, to handle coplanar polygons, and to
+set the axis along which the sweep is performed are provided.
+
+<H3> Library Functions </H3>
+
+Click <A HREF=prog_man/bool_lib.html.index.html> Here </A> for the list
+of functions of this library.
+
+<!##########################################################################>
+
+<HR><H2 ALIGN=CENTER> CAGD Library, cagd_lib </H2>
+
+<H3> General Information </H3>
+
+This library provides a rich set of function to create, convert,
+display and process freeform Bezier and NURBs curves and surfaces. The
+interface of the library is defined in <B> include/cagd_lib.h </B>. This
+library mainly supports low level freeform curve and surface
+operations.  Supported are curves and surfaces from scalars to five
+dimensions as E1/P1 to E5/P5 using the <B> CagdPointType </B>. Pi is a
+rational (projective) version of Ei, with an additional W coefficient.
+Polynomial in the power basis have some very limited support as well.
+Different data structures to hold UV parameter values, control points,
+vectors, planes, bounding boxes, polylines and polygons are defined as
+well as the data strcutures to hold the curves and surfaces
+themselves,<BR><BR>
+<B><PRE>
+typedef struct CagdCrvStruct {
+    struct CagdCrvStruct *Pnext;
+    struct IPAttributeStruct *Attr;
+    CagdGeomType GType;
+    CagdPointType PType;
+    int Length;            /* Number of control points (== order in Bezier). */
+    int Order;	    /* Order of curve (only for Bspline, ignored in Bezier). */
+    CagdBType Periodic;			   /* Valid only for Bspline curves. */
+    CagdRType *Points[CAGD_MAX_PT_SIZE];     /* Pointer on each axis vector. */
+    CagdRType *KnotVector;
+} CagdCrvStruct;
+
+typedef struct CagdSrfStruct {
+    struct CagdSrfStruct *Pnext;
+    struct IPAttributeStruct *Attr;
+    CagdGeomType GType;
+    CagdPointType PType;
+    int ULength, VLength;	 /* Mesh size in the tensor product surface. */
+    int UOrder, VOrder;   /* Order in tensor product surface (Bspline only). */
+    CagdBType UPeriodic, VPeriodic;      /* Valid only for Bspline surfaces. */
+    CagdRType *Points[CAGD_MAX_PT_SIZE];     /* Pointer on each axis vector. */
+    CagdRType *UKnotVector, *VKnotVector;
+} CagdSrfStruct;
+</PRE></B>
+
+Curves and surfaces have a geometric type <B> GType </B> to prescribe the
+type of entity (such as CAGD_SBEZIER_TYPE for Bezier surface) and a
+point type <B> PType </B> to prescribe the point type of the entity (such
+as CAGD_PT_E3_TYPE for three dimensional Euclidean control points).
+<B> Length </B> and <B> Order </B> slots are used to hold the number of
+control points in the mesh and or control polygon and the order(s) of
+the basis functions. <B> Periodic </B> flag(s) are used to denote
+periodic end conditions. In addition, <B> KnotVector </B> slot(s) are
+used if the entity exploits Bspline basis functions, or NULL
+otherwise.
+
+The control polygon and/or mesh itself is organized in the <B>
+Points </B> slot as a vector of size <B> CAGD_MAX_PT_SIZE </B> of vectors
+of <B> CagdRType </B>s. For surfaces, the mesh is ordered U first and the
+macros of <B> CAGD_NEXT_U </B> <B> CAGD_NEXT_V </B>, and <B>
+CAGD_MESH_UV </B> can be used to determine indices in the mesh.
+
+All structures in the cagd library can be allocated using New
+constrcutures (i.e. <B> CagdUVNew </B> or <B> CagdCrfNew </B>, freed using
+Free destructores (i.e. <B> CagdSrfFree </B> or {CagdBBoxFree}, linked
+list free using FreeList destructores (i.e. <B>
+CagdPolylineFreeList </B>), and copied using copy constructores {i.e. <B>
+CagdPtCopy </B> or <B> CagdCtlPtCopyList </B>).
+
+This library has its own error handler, which by default prints an
+error message and exit the program called <B> CagdFatalError </B>.
+
+Most globals in this library have a prefix of <B> Cagd </B> for general
+cagd routines. Prefix of <B> Bzr </B> is used for Bezier routines, prefix
+of <B> Bsp </B> for Bspline specific routines, prefix of <B> Cnvrt </B> for
+conversion routines, and <B> Afd </B> for adaptive forward differencing
+routines.
+
+<H3> Library Functions </H3>
+
+Click <A HREF=prog_man/cagd_lib.html.index.html> Here </A> for the list
+of functions of this library.
+
+<!##########################################################################>
+
+<HR><H2 ALIGN=CENTER> Geometry Library, geom_lib </H2>
+
+<H3> General Information </H3>
+
+This library handles general computational geometry algorithms and
+geometric queries such as a distance between two lines, bounding
+boxes, convexity and convex hull of polygons, polygonal constructors
+of primitives (cylinders, spheres, etc.), basic scan conversion
+routines, etc.
+
+<H3> Library Functions </H3>
+
+Click <A HREF=prog_man/geom_lib.html.index.html> Here </A> for the list
+of functions of this library.
+<!##########################################################################>
+
+<HR><H2 ALIGN=CENTER> Graphics Library, grap_lib </H2>
+
+<H3> General Information </H3>
+
+This library handles general drawing and display algorithms, including
+tesselation of all geometric objects, such as curves and surfaces, into
+displayable primitives, i.e. polygons and polylines.
+
+<H3> Library Functions </H3>
+
+Click <A HREF=prog_man/grap_lib.html.index.html> Here </A> for the list
+of functions of this library.
+
+<!##########################################################################>
+
+<HR><H2 ALIGN=CENTER> Model, mdl_lib </H2>
+
+<H3> General Information </H3>
+
+This library provides the necessary tools to represent and process
+models.  Models are sets of trimmed surfaces forming a closed
+2-manifold shell.  Models are typically the result of Boolean operations
+over freeform (trimmed) NURBs geometry but can also be constructed
+directly or via other schemes.
+
+<H3> Library Functions </H3>
+
+Click <A HREF=prog_man/mdl_lib.html.index.html> Here </A> for the list
+of functions of this library.
+
+<!##########################################################################>
+
+<HR><H2 ALIGN=CENTER> Miscelleneous Library, misc_lib </H2>
+
+<H3> General Information </H3>
+
+This library holds general miscelleneous functions such as reading
+configuration files, low level homogeneous matrices computation, low
+level attributes and general machine specific low level routines.
+Several header files can be found for this library:
+<TABLE BORDER=7 CELLPADDING=1>
+<TR><TH align=left> Header (include/*.h) <TH align=left> Functionality
+<TR><TH align=left> config.h   <TH align=left> Manipulation of configuration files (*.cfg files)
+<TR><TH align=left> dist_pts.h <TH align=left> Enegry based distribution of points.
+<TR><TH align=left> gen_mat.h  <TH align=left> Homogeneous matrices manipulation
+<TR><TH align=left> getarg.h   <TH align=left> Command line parsing for application tools
+<TR><TH align=left> imalloc.h  <TH align=left> Low level dynamic memory functions for IRIT
+<TR><TH align=left> miscattr.h <TH align=left> Low level attribute related functions
+<TR><TH align=left> priorque.h <TH align=left> An implementation of a priority queue
+<TR><TH align=left> xgeneral.h <TH align=left> Low level, machine specific, routines
+</TABLE>
+
+<H3> Library Functions </H3>
+
+Click <A HREF=prog_man/misc_lib.html.index.html> Here </A> for the list
+of functions of this library.
+
+<!##########################################################################>
+
+<HR><H2 ALIGN=CENTER> Multi variate functions, mvar_lib </H2>
+
+<H3> General Information </H3>
+
+
+This library holds functions to handle functions of arbitrary number
+of variables. In this context curves (univariate), surfaces
+(bivariate) and trivariates are special cases. This library provides a
+rich set of functions to manipulate freeform Bezier and/or NURBs
+multivariates. This library heavily depends on the cagd an symb
+libraries. Functions are provided to create, copy, and destruct
+multivariates, to extract isoparametric lower degree multivariates, to
+evaluate, refine and subdivide, to read and write multivariates, to
+differentiate, degree raise, make compatible and convert back and
+forth to/from curves, surfaces, and trivariates.
+
+A multivariate has m orders, m Length prescriptions and,
+possibly, m knot vectors (if Bspline).  In addition it contains
+an m dimensional volume of control points,
+<B><PRE>
+typedef struct MvarMVStruct {
+    struct MvarMVStruct *Pnext;
+    struct IPAttributeStruct *Attr;
+    MvarGeomType GType;
+    CagdPointType PType;
+    int Dim;		      /* Number of dimensions in this multi variate. */
+    int *Lengths;               /* Dimensions of mesh size in multi-variate. */
+    int *SubSpaces;	   /* SubSpaces[i] = Prod(i = 0, i-1) of Lengths[i]. */
+    int *Orders;                /* Orders of multi varariate (Bspline only). */
+    CagdBType *Periodic;            /* Periodicity - valid only for Bspline. */
+    CagdRType *Points[CAGD_MAX_PT_SIZE];     /* Pointer on each axis vector. */
+    CagdRType **KnotVectors;
+} MvarMVStruct;
+</PRE></B>
+
+The interface of the library is defined in <B> include/mvar_lib.h </B>. 
+
+This library has its own error handler, which by default prints an
+error message and exit the program called <B> MvarFatalError </B>.
+
+All globals in this library have a prefix of <B> Mva r</B>.
+
+<H3> Library Functions </H3>
+
+Click <A HREF=prog_man/mvar_lib.html.index.html> Here </A> for the list
+of functions of this library.
+
+<!##########################################################################>
+
+<HR><H2 ALIGN=CENTER> Prsr Library, prsr_lib </H2>
+
+<H3> General Information </H3>
+
+This library provides the data file interface for IRIT. Functions are
+provided to read and write data files, both compressed (on unix only,
+using <B> compress </B>), and uncompressed, in binary and/or ascii text
+modes. This library is also used to exchange data between the IRIT
+server and the display devices' clients.  Several header files can be
+found for this library:
+<TABLE BORDER=7 CELLPADDING=1>
+<TR><TH align=left> Header (include/*.h) <TH align=left> Functionality
+<TR><TH align=left> allocate.h <TH align=left> High level dynamic allocation of objects
+<TR><TH align=left> attribut.h <TH align=left> High level attributes for objects
+<TR><TH align=left> ip_cnvrt.h <TH align=left> Freeform to polygon and polyline high level conversion
+<TR><TH align=left> iritprsr.h <TH align=left> Main interface to reading and writing data
+<TR><TH align=left> irit_soc.h <TH align=left> Socket communication for data exchange
+</TABLE>
+
+<H3> Library Functions </H3>
+
+Click <A HREF=prog_man/prsr_lib.html.index.html> Here </A> for the list
+of functions of this library.
+
+<!##########################################################################>
+
+<HR><H2 ALIGN=CENTER> Render Library, rndr_lib </H2>
+
+<H3> General Information </H3>
+
+This library provides a powerful full screen scan conversion Z-buffer
+tool to process IRIT geometry and convert it into images.  This
+library allows one to scan convert any IRIT geometry including
+polylines and curves that are converted to skinny polygons on the fly.
+The library offers regular scan conversion with flat, Gouraud, and
+Phong shading and several antialiasing filters along with advanced
+features such as transparency and animation support, and width depth
+cueing on polyline/curves rendering.  The library also provide direct
+access to the depth Z-buffer as well as a stencil buffer.
+
+<H3> Library Functions </H3>
+
+Click <A HREF=prog_man/rndr_lib.html.index.html> Here </A> for the list
+of functions of this library.
+
+<!##########################################################################>
+
+<HR><H2 ALIGN=CENTER> Symbolic Library, symb_lib </H2>
+
+<H3> General Information </H3>
+
+This library provides a rich set of functions to symbolically manipulate
+freeform curves and surfaces. This library heavily depends on the cagd
+library. Functions are provided to low level add, subtract, and multiply
+freeform curves and surfaces, to compute fields such as curvature,
+and to extract singular points such as extremums, zeros, and inflections.
+High level tools to metamorph curves and surfaces, to compute layout (prisa)
+of freeform surfaces, to compute offset approximations of curves and
+surfaces, and to compose curves and surfaces are also provided.
+
+The interface of the library is defined in <B> include/symb_lib.h </B>. 
+
+This library has its own error handler, which by default prints an
+error message and exit the program called <B> SymbFatalError </B>.
+
+Globals in this library have a prefix of <B> Symb </B> for general
+symbolic routines. Prefix of <B> Bzr </B> is used for Bezier routines,
+and prefix of <B> Bsp </B> for Bspline specific routines.
+
+<H3> Library Functions </H3>
+
+Click <A HREF=prog_man/symb_lib.html.index.html> Here </A> for the list
+of functions of this library.
+
+<!##########################################################################>
+
+<HR><H2 ALIGN=CENTER> Trimmed surfaces Library, trim_lib </H2>
+
+<H3> General Information </H3>
+
+This library provides a set of functions to manipulate freeform
+trimmed Bezier and/or NURBs surfaces. This library heavily depends on
+the cagd library. Functions are provided to create, copy, and destruct
+trimmed surfaces to extract isoparametric curves, to evaluate, refine
+and subdivide, to read and write trimmed surfaces, degree raise, and
+approximate using polygonal representations.  A trimming surface is
+defined out of a tensor product surface and a set of trimming loops
+that trims out portions of the parametric space of the surface,
+<B><PRE>
+typedef struct TrimSrfStruct {
+    struct TrimSrfStruct *Pnext;
+    IPAttributeStruct *Attr;
+    int Tags;
+    CagdSrfStruct *Srf;			  /* Surface trimmed by TrimCrvList. */
+    TrimCrvStruct *TrimCrvList;		         /* List of trimming curves. */
+} TrimSrfStruct;
+</PRE></B>
+
+Each trimming loop consists of a set of trimming curve segments:
+<B><PRE>
+typedef struct TrimCrvStruct {
+    struct TrimCrvStruct *Pnext;
+    IPAttributeStruct *Attr;
+    TrimCrvSegStruct *TrimCrvSegList;    /* List of trimming curve segments. */
+} TrimCrvStruct;
+</PRE></B>
+
+Each trimming curve segment contains a representation for the curve in the
+UV space of the surface as well as a representation in the Euclidean space,
+<B><PRE>
+typedef struct TrimCrvSegStruct {
+    struct TrimCrvSegStruct *Pnext;
+    IPAttributeStruct *Attr;
+    CagdCrvStruct *UVCrv;    /* Trimming crv segment in srf's param. domain. */
+    CagdCrvStruct *EucCrv;       /* Trimming curve as an E3 Euclidean curve. */
+} TrimCrvSegStruct;
+</PRE></B>
+
+The interface of the library is defined in <B> include/trim_lib.h </B>. 
+
+This library has its own error handler, which by default prints an
+error message and exit the program called <B> TrimFatalError </B>.
+
+All globals in this library have a prefix of <B> Trim </B>.
+
+<H3> Library Functions </H3>
+
+Click <A HREF=prog_man/trim_lib.html.index.html> Here </A> for the list
+of functions of this library.
+
+<!##########################################################################>
+
+<HR><H2 ALIGN=CENTER> Trivariate Library, triv_lib </H2>
+
+<H3> General Information </H3>
+
+This library provides a rich set of functions to manipulate freeform
+Bezier and/or NURBs trivariate. This library heavily depends on the cagd
+library. Functions are provided to create, copy, and destruct trivariates,
+to extract isoparametric surfaces, to evaluate, refine and subdivide, to
+read and write trivariates, to differentiate, degree raise, make compatible
+and approximate iso-surface at iso values using polygonal representations.
+
+A trivariate has three orders, three Length prescriptions and,
+possibly, three knot vectors (if Bspline).  In addition it contains
+a three dimensional volume of control points,
+<B><PRE>
+typedef struct TrivTVStruct {
+    struct TrivTVStruct *Pnext;
+    struct IPAttributeStruct *Attr;
+    TrivGeomType GType;
+    CagdPointType PType;
+    int ULength, VLength, WLength;/* Mesh size in tri-variate tensor product.*/
+    int UVPlane;	  /* Should equal ULength * VLength for fast access. */
+    int UOrder, VOrder, WOrder;       /* Order in trivariate (Bspline only). */
+    CagdBType UPeriodic, VPeriodic, WPeriodic;    /* Valid only for Bspline. */
+    CagdRType *Points[CAGD_MAX_PT_SIZE];     /* Pointer on each axis vector. */
+    CagdRType *UKnotVector, *VKnotVector, *WKnotVector;
+} TrivTVStruct;
+</PRE></B>
+
+The interface of the library is defined in <B> include/triv_lib.h </B>. 
+
+This library has its own error handler, which by default prints an
+error message and exit the program called <B> TrivFatalError </B>.
+
+All globals in this library have a prefix of <B> Triv </B>.
+
+<H3> Library Functions </H3>
+
+Click <A HREF=prog_man/triv_lib.html.index.html> Here </A> for the list
+of functions of this library.
+
+<!##########################################################################>
+
+<HR><H2 ALIGN=CENTER> Triangular Library, trng_lib </H2>
+
+<H3> General Information </H3>
+
+This library provides a subset of functions to manipulate freeform
+triangular Bezier and Bspline patches. This library heavily depends on
+the cagd library. Functions are provided to create, copy, and destruct
+triangular patches, to extract isoparametric curves, to evaluate,
+refine and subdivide, to read and write triangular patches, to
+differentiate, and approximate using polygonal representations.
+
+A triangular patch has one prescription of Length and one prescription
+of Order, the total Order and the length of an edge of the triangle.
+The control mesh mesh has Length * (Length + 1) / 2 control points,
+<B><PRE>
+typedef struct TrngTriangSrfStruct {
+    struct TrngTriangSrfStruct *Pnext;
+    struct IPAttributeStruct *Attr;
+    TrngGeomType GType;
+    CagdPointType PType;
+    int Length;		    /* Mesh size (length of edge of triangular mesh. */
+    int Order;		      /* Order of triangular surface (Bspline only). */
+    CagdRType *Points[CAGD_MAX_PT_SIZE];     /* Pointer on each axis vector. */
+    CagdRType *KnotVector;
+} TrngTriangSrfStruct;
+</PRE></B>
+
+The interface of the library is defined in <B> include/trng_lib.h </B>. 
+
+This library has its own error handler, which by default prints an
+error message and exit the program called <B> TrngFatalError </B>.
+
+All globals in this library have a prefix of <B> Trng </B>.
+
+<H3> Library Functions </H3>
+
+Click <A HREF=prog_man/trng_lib.html.index.html> Here </A> for the list
+of functions of this library.
+
+<!##########################################################################>
+
+<HR><H2 ALIGN=CENTER> User Library, user_lib </H2>
+
+<H3> General Information </H3>
+
+This library includes user interface related geometrical functions such
+as ray surface intersection (for mouse click/select operations), etc.
+
+The interface of the library is defined in <B> include/user_lib.h </B>. 
+
+<H3> Library Functions </H3>
+
+Click <A HREF=prog_man/user_lib.html.index.html> Here </A> for the list
+of functions of this library.
+
+<!##########################################################################>
+
+<HR><H2 ALIGN=CENTER> Extra Library, xtra_lib </H2>
+
+<H3> General Information </H3>
+
+This library is not an official part of IRIT and contains public
+domain code that is used by routines in IRIT.
+
+The interface of the library is defined in <B> include/extra_fn.h </B>. 
+
+<H3> Library Functions </H3>
+
+Click <A HREF=prog_man/xtra_lib.html.index.html> Here </A> for the list
+of functions of this library.
+
+<!##########################################################################>
+
+<HR><H2 ALIGN=CENTER> Programming Examples </H2>
+
+This chapter describes several simple examples of C programs that
+exploits the libraries of IRIT. All external function are defined in
+the <B> include </B> subdirectory of IRIT and one can 'grep' there for the
+exact include file that contains a certain function name. All C programs
+in all C files should include 'irit_sm.h' as their first include file
+of IRIT, before any other include file of IRIT. Header files are set so
+C++ code can compile and link to it without any special treatment.
+
+<H3> Setting up the Compilation Environment </H3>
+
+In order to compile programs that uses the libraries of IRIT, a makefile
+has to be constructed. Assuming IRIT is installed in <B> /usr/local/irit </B>,
+here is a simple makefile that can be used (for a unix environment):
+
+<B><PRE>
+IRIT_DIR = /usr/local/irit
+
+include $(IRIT_DIR)/makeflag.unx
+
+OBJS	= program.o
+
+program: $(OBJS)
+	$(CC) $(CFLAGS) -o program $(OBJS) $(LIBS) -lm $(MORELIBS)
+</PRE></B>
+
+The simplicity of this makefile is drawn from the complexity of
+makeflag.unx. The file makeflag.unx sets the CC, CFLAGS, LIBS, and
+MORELIBS for the machined using among other things. Furthermore,
+makeflag.unx also sets the default compilation rules from C sources to
+object files.  The file makeflag.unx had to be modified once, when
+IRIT was installed on this system. If the used system is not a unix
+environment, then the file makefile.unx will have to be replaced with
+the proper makeflag file.  In an OS2 environment, using the emx gcc
+compiler, the makefile is even simpler since the linking rule is also
+defined in makeflag.os2:
+
+<B><PRE>
+IRIT_DIR = /usr/local/irit
+
+include $(IRIT_DIR)/makeflag.os2
+
+OBJS	= program.o
+
+program.exe: $(OBJS)
+</PRE></B>
+
+Finally, here is a proper makefile for Windows NT/ Win 95:
+
+<B><PRE>
+IRIT_DIR = /usr/local/irit
+
+include $(IRIT_DIR)/makeflag.wnt
+
+OBJS	= program.obj
+
+program.exe: $(OBJS)
+        $(IRITCONLINK) -out:program.exe $(OBJS) $(LIBS) $(W32CONLIBS)
+</PRE></B>

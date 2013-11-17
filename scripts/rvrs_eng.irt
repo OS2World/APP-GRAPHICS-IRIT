@@ -1,0 +1,188 @@
+#
+# Some routines to test the is-geometry type operators.
+#
+#					Gershon Elber, December 1998
+#
+
+#
+# Set states.
+#
+# Faster product using Bezier decomposition.
+IntrpProd = iritstate( "BspProdMethod", 0 );
+EchoSrc = iritstate( "EchoSource", off );
+
+PrintTest = procedure( Title, Res, Val ):
+    printf( "%s test - %d\\n", list( Title, nth( Res, 1 ) == Val ) );
+
+#
+# Line
+#
+line = circle( vector( 0.1, 0.7, 3.0 ), 3.1415927 );
+PrintTest( "Line", isgeom( line, geom_linear, 1e-10 ), 0 );
+
+line = ctlpt( E3, -2, 10, -5 ) + ctlpt( E3, 1, -2, 3 );
+PrintTest( "Line", isgeom( line, geom_linear, 1e-10 ), 1 );
+
+line = cbezier( list( ctlpt( E3, 0, 1, -2 ),
+		      ctlpt( E3, 1, 1, -2 ),
+		      ctlpt( E3, 4, 1, -2 ) ) );
+PrintTest( "Line", isgeom( line, geom_linear, 1e-10 ), 1 );
+
+line = cbezier( list( ctlpt( E3, 0, 1, -2 ),
+		      ctlpt( E3, 1, 2, -2 ),
+		      ctlpt( E3, 4, 1, -2 ) ) );
+PrintTest( "Line", isgeom( line, geom_linear, 1e-10 ), 0 );
+
+#
+# Circle
+#
+PrintTest( "Circle", isgeom( line, geom_circular, 1e-3 ), 0 );
+
+circ = circle( vector( 0.1, 0.7, 3.0 ), 3.1415927 );
+PrintTest( "Circle", isgeom( circ, geom_circular, 1e-10 ), 1 );
+
+pcirc = pcircle( vector( 0.1, 0.7, 3.0 ), 3.1415927 );
+PrintTest( "Circle", isgeom( pcirc, geom_circular, 1e-10 ), 0 );
+PrintTest( "Circle", isgeom( pcirc, geom_circular, 1e-2 ), 1 );
+
+free( circ );
+free( pcirc );
+free( line );
+
+#
+# Plane
+#
+pln = ruledsrf( ctlpt( E3, 0, 0, 0 ) + ctlpt( E3, 1, 0, 0 ),
+		ctlpt( E3, 0, 2, 0 ) + ctlpt( E3, 1, 1, 0 ) );
+PrintTest( "Plane", isgeom( pln, geom_planar, 1e-10 ), 1 );
+
+pln = pln * rx( 45 ) * rz( 45 ) * tx( 1 ) * ty( -2 );
+PrintTest( "Plane", isgeom( pln, geom_planar, 1e-10 ), 1 );
+
+pln = ruledsrf( ctlpt( E3, 0, 0, 0 ) + ctlpt( E3, 1, 0, 0 ),
+		ctlpt( E3, 0, 2, 0 ) + ctlpt( E3, 1, 1, 1 ) );
+PrintTest( "Plane", isgeom( pln, geom_planar, 1e-3 ), 0 );
+
+pln = ruledsrf( cbezier( list( ctlpt( E3, -1, 0.0, 10.01 ),
+			       ctlpt( E3,  0, 0.2, 10.01 ),
+			       ctlpt( E3,  1, 0.0, 10.01 ) ) ),
+		cbezier( list( ctlpt( E3, -1, 1.0, 10.01 ),
+			       ctlpt( E3,  0, 0.5, 10.01 ),
+			       ctlpt( E3,  1, 1.0, 10.01 ) ) ) );
+PrintTest( "Plane", isgeom( pln, geom_planar, 1e-10 ), 1 );
+
+pln = ruledsrf( cbezier( list( ctlpt( E3, -1, 0.0, 10.01 ),
+			       ctlpt( E3,  0, 0.2, 10.01 ),
+			       ctlpt( E3,  1, 0.0, 10.01 ) ) ),
+		cbezier( list( ctlpt( E3, -1, 1.0, 10.01 ),
+			       ctlpt( E3,  0, 0.5, 10.01 ),
+			       ctlpt( E3,  1, 1.0, 11.01 ) ) ) );
+PrintTest( "Plane", isgeom( pln, geom_planar, 1e-10 ), 0 );
+
+free( pln );
+
+#
+# Sphere surface.
+#
+spr = ruledsrf( ctlpt( E3, 0, 0, 0 ) + ctlpt( E3, 1, 0, 0 ),
+		ctlpt( E3, 0, 2, 0 ) + ctlpt( E3, 1, 1, 0 ) );
+PrintTest( "Sphere", isgeom( spr, geom_spherical, 1e-10 ), 0 );
+
+comment $ # too slow for regular testing.
+spr = coerce( sregion( sregion( sphereSrf( 1 ), row, 0.1, 1 ), col, 0, 1 ),
+	      bezier_type ) * sc( 0.99 ) * tx( 1.1 ) * ty( 2.2 ) * tz( -3.3 );
+PrintTest( "Sphere", isgeom( spr, geom_spherical, 1e-10 ), 1 );
+$
+
+free( spr );
+
+#
+# Ruled surface.
+#
+PrintTest( "Ruled", isgeom( sphereSrf( 1 ), geom_ruled_srf, 1e-10 ), 0 );
+
+arc3 = arc( vector( 0.0,  0.0, 1.0 ),
+	    vector( 0.5, -0.2, 1.0 ),
+	    vector( 1.0,  0.0, 1.0 ) );
+ruled = ruledsrf( arc3,
+		  ctlpt( E2, 0.0, 0.0 ) + ctlpt( E2, 1.0, 0.0 ) );
+free( arc3 );
+PrintTest( "Ruled", isgeom( ruled, geom_ruled_srf, 1e-10 ), 2 );
+PrintTest( "Ruled", isgeom( sreverse( ruled ), geom_ruled_srf, 1e-10 ), 1 );
+
+circ = circle( vector( 0.0, 0.0, 0.0 ), 0.25 );
+ruled = ruledsrf( circ, circ * rx( 10 ) * sc( 0.5 ) * tz( 1.0 ) );
+PrintTest( "Ruled", isgeom( ruled, geom_ruled_srf, 1e-10 ), 2 );
+PrintTest( "Ruled", isgeom( sreverse( ruled ), geom_ruled_srf, 1e-10 ), 1 );
+
+ruled = ruledsrf( circ * rotx( 20 ), circ * rotx( -20 ) * tz( 1.0 ) );
+PrintTest( "Ruled", isgeom( ruled, geom_ruled_srf, 1e-10 ), 2 );
+PrintTest( "Ruled", isgeom( ruled, geom_extrusion, 1e-10 ), 0 );
+
+free( circ );
+
+#
+# Extrusion examples.
+#
+PrintTest( "Extrusion", isgeom( ruled, geom_extrusion, 1e-10 ), 0 );
+
+crv = cbezier( list( ctlpt( E2, 0.0, 0.0 ),
+		     ctlpt( E2, 1.0, 0.0 ),
+		     ctlpt( E2, 1.0, 1.0 ) ) );
+extr = extrude( crv, vector( 0.0, 0.0, 1.0 ), 0 );
+PrintTest( "Extrusion", isgeom( extr, geom_extrusion, 1e-10 ), 2 );
+
+extr = extrude( crv, vector( 1.0, 1.0, 1.0 ), 0 );
+PrintTest( "Extrusion", isgeom( extr, geom_extrusion, 1e-10 ), 2 );
+PrintTest( "Extrusion", isgeom( extr, geom_extrusion, 1e-10 ), 2 );
+PrintTest( "Extrusion", isgeom( sreverse( extr ), geom_extrusion, 1e-10 ), 1 );
+
+crv = circle( vector( 0.0, 0.0, 0.0 ), 0.25 );
+extr = extrude( crv, vector( 0.1, 0.2, 1.0 ), 0 );
+PrintTest( "Extrusion", isgeom( extr, geom_extrusion, 1e-10 ), 2 );
+
+free( crv );
+
+#
+# Srf of revolution examples
+#
+
+PrintTest( "Srf of revolution", isgeom( ruled, geom_srf_of_rev, 1e-5 ), 0 );
+PrintTest( "Srf of revolution", isgeom( extr, geom_srf_of_rev, 1e-5 ), 0 );
+
+crv = cbezier( list( ctlpt( E3, 0.1, 0.0, 0.0 ),
+		     ctlpt( E3, 1.0, 0.0, 0.0 ),
+		     ctlpt( E3, 1.0, 0.0, 1.0 ) ) );
+
+comment $ # too slow for regular testing.
+srev = surfrev( crv );
+PrintTest( "Srf of revolution", isgeom( srev, geom_srf_of_rev, 1e-10 ), 1 );
+$
+
+srev = surfprev( crv ) * tx( 1 ) * ty( 2 ) * sc( 0.5 )
+	               * rx( 10 ) * ry( 20 ) * rz( 30 );
+PrintTest( "Srf of revolution", isgeom( srev, geom_srf_of_rev, 1e-1 ), 1 );
+PrintTest( "Srf of revolution", isgeom( srev, geom_srf_of_rev, 1e-2 ), 0 );
+
+crv = cbspline( 3,
+		list( ctlpt( E3, 0.3, 0.0, 0.0 ),
+		      ctlpt( E3, 0.3, 0.0, 0.05 ),
+		      ctlpt( E3, 0.1, 0.0, 0.05 ),
+		      ctlpt( E3, 0.1, 0.0, 0.4 ),
+		      ctlpt( E3, 0.5, 0.0, 0.4 ),
+		      ctlpt( E3, 0.6, 0.0, 0.8 ) ),
+		list( KV_OPEN ) );
+srev = surfprev( crv ) * tx( -1 ) * tz( -5 ) * sc( 0.25 )
+	               * rx( 55 ) * ry( -220 ) * rz( -130 );
+PrintTest( "Srf of revolution", isgeom( srev, geom_srf_of_rev, 1e-1 ), 1 );
+PrintTest( "Srf of revolution", isgeom( srev, geom_srf_of_rev, 1e-3 ), 0 );
+
+free( crv );
+free( srev );
+free( extr );
+free( ruled );
+
+dummy = iritstate( "EchoSource", EchoSrc );
+free( EchoSrc );
+dummy = iritstate( "BspProdMethod", IntrpProd );
+free( IntrpProd );

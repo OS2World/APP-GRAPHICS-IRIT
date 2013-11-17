@@ -1,0 +1,32 @@
+#
+# This is the make file for the trng_lib library.
+#
+#				Gershon Elber, August 1996
+#
+
+include ../makeflag.unx
+
+OBJS =  trng_aux.o$(IRIT_OBJ_PF) \
+	trng_dbg.o$(IRIT_OBJ_PF) \
+	trng_err.o$(IRIT_OBJ_PF) \
+	trng_ftl.o$(IRIT_OBJ_PF) \
+	trng_gen.o$(IRIT_OBJ_PF) \
+	trngcoer.o$(IRIT_OBJ_PF) \
+	trngmesh.o$(IRIT_OBJ_PF) \
+	trng_iso.o$(IRIT_OBJ_PF) \
+	trng2ply.o$(IRIT_OBJ_PF) \
+	trngeval.o$(IRIT_OBJ_PF) \
+	trng_der.o$(IRIT_OBJ_PF) \
+	trng_grg.o$(IRIT_OBJ_PF)
+
+all:	libIritTrng$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+
+libIritTrng$(IRIT_LIB_PF).$(IRIT_LIB_SFX): $(OBJS)
+	rm -f libIritTrng$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+	$(IRIT_LIB_MAKE) libIritTrng$(IRIT_LIB_PF).$(IRIT_LIB_SFX) *.o$(IRIT_OBJ_PF)
+	-$(IRIT_LIB_RAN) libIritTrng$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+
+install: libIritTrng$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+	mv -f libIritTrng$(IRIT_LIB_PF).$(IRIT_LIB_SFX) $(IRIT_LIB_DIR)
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

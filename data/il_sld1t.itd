@@ -1,0 +1,213 @@
+[OBJECT MATRICES
+    [OBJECT VIEW_MAT
+	[MATRIX
+	       -0.269715    -0.117063     0.189397     0.000000
+	        0.221912    -0.117063     0.243664     0.000000 
+	       -0.018164     0.308080     0.164553     0.000000 
+	        0.116228     0.000000     0.018652     1.000000 
+	]
+    ]
+    [OBJECT PRSP_MAT
+	[MATRIX
+	        1.000000     0.000000     0.000000     0.000000 
+	        0.000000     1.000000     0.000000     0.000000 
+	        0.000000     0.000000     1.000000    -0.350000 
+	        0.000000     0.000000     0.000000     1.000000 
+	]
+    ]
+]
+
+[OBJECT [COLOR 2] [tubular 0.7] FINAL
+    [POLYGON [PLANE 1 0 0 0.5] 4
+	[[NORMAL 1 0 0] -0.5 2 1]
+	[[NORMAL 1 0 0] -0.5 1 1]
+	[[NORMAL 1 0 0] -0.5 1 -1]
+	[[NORMAL 1 0 0] -0.5 2 -1]
+    ]
+    [POLYGON [PLANE 0 -1 0 1] 5
+	[[NORMAL 0 -1 0] -1 1 -1]
+	[[NORMAL 0 -1 0] -1 1 -2]
+	[[NORMAL 0 -1 0] 1 1 -2]
+	[[NORMAL 0 -1 0] 1 1 -1]
+	[[INTERNAL] [NORMAL 0 -1 0] -0.5 1 -1]
+    ]
+    [POLYGON [PLANE -1 0 0 1] 4
+	[[NORMAL -1 0 0] 1 1 -2]
+	[[NORMAL -1 0 0] 1 -1 -2]
+	[[NORMAL -1 0 0] 1 -1 -1]
+	[[NORMAL -1 0 0] 1 1 -1]
+    ]
+    [POLYGON [PLANE 0 1 0 1] 4
+	[[NORMAL 0 1 0] -0.5 -1 -1]
+	[[NORMAL 0 1 0] 1 -1 -1]
+	[[NORMAL 0 1 0] 1 -1 -2]
+	[[INTERNAL] [NORMAL 0 1 0] -0.5 -1 -2]
+    ]
+    [POLYGON [PLANE 0 1 0 1] 5
+	[[NORMAL 0 1 0] -0.5 -1 -2]
+	[[NORMAL 0 1 0] -1 -1 -2]
+	[[INTERNAL] [NORMAL 0 1 0] -1 -1 1]
+	[[NORMAL 0 1 0] -0.5 -1 1]
+	[[INTERNAL] [NORMAL 0 1 0] -0.5 -1 -1]
+    ]
+    [POLYGON [PLANE 0 1 0 1] 5
+	[[NORMAL 0 1 0] -1 -1 1]
+	[[NORMAL 0 1 0] -1 -1 2]
+	[[NORMAL 0 1 0] 1 -1 2]
+	[[NORMAL 0 1 0] 1 -1 1]
+	[[INTERNAL] [NORMAL 0 1 0] -0.5 -1 1]
+    ]
+    [POLYGON [PLANE -1 0 0 1] 4
+	[[NORMAL -1 0 0] 1 1 2]
+	[[NORMAL -1 0 0] 1 1 1]
+	[[NORMAL -1 0 0] 1 -1 1]
+	[[NORMAL -1 0 0] 1 -1 2]
+    ]
+    [POLYGON [PLANE 0 0 1 2] 4
+	[[NORMAL 0 0 1] -1 -1 -2]
+	[[NORMAL 0 0 1] 1 -1 -2]
+	[[NORMAL 0 0 1] 1 1 -2]
+	[[NORMAL 0 0 1] -1 1 -2]
+    ]
+    [POLYGON [PLANE 1 0 0 1] 4
+	[[NORMAL 1 0 0] -1 1 2]
+	[[NORMAL 1 0 0] -1 -1 2]
+	[[NORMAL 1 0 0] -1 -1 -2]
+	[[NORMAL 1 0 0] -1 1 -2]
+    ]
+    [POLYGON [PLANE 0 0 -1 2] 4
+	[[NORMAL 0 0 -1] -1 1 2]
+	[[NORMAL 0 0 -1] 1 1 2]
+	[[NORMAL 0 0 -1] 1 -1 2]
+	[[NORMAL 0 0 -1] -1 -1 2]
+    ]
+    [POLYGON [PLANE 0 -1 0 1] 5
+	[[NORMAL 0 -1 0] -0.5 1 2]
+	[[NORMAL 0 -1 0] -1 1 2]
+	[[INTERNAL] [NORMAL 0 -1 0] -1 1 -1]
+	[[NORMAL 0 -1 0] -0.5 1 -1]
+	[[INTERNAL] [NORMAL 0 -1 0] -0.5 1 1]
+    ]
+    [POLYGON [PLANE 0 -1 0 1] 4
+	[[NORMAL 0 -1 0] -0.5 1 1]
+	[[NORMAL 0 -1 0] 1 1 1]
+	[[NORMAL 0 -1 0] 1 1 2]
+	[[INTERNAL] [NORMAL 0 -1 0] -0.5 1 2]
+    ]
+    [POLYGON [PLANE 0 0 -1 1] 4
+	[[NORMAL 0 0 -1] 1 1 1]
+	[[NORMAL 0 0 -1] -0.5 1 1]
+	[[NORMAL 0 0 -1] -0.5 2 1]
+	[[INTERNAL] [NORMAL 0 0 -1] 1 2 1]
+    ]
+    [POLYGON [PLANE 0 0 -1 1] 5
+	[[NORMAL 0 0 -1] 1 2 1]
+	[[NORMAL 0 0 -1] 1.5 2 1]
+	[[INTERNAL] [NORMAL 0 0 -1] 1.5 -1 1]
+	[[NORMAL 0 0 -1] 1 -1 1]
+	[[INTERNAL] [NORMAL 0 0 -1] 1 1 1]
+    ]
+    [POLYGON [PLANE 0 0 -1 1] 5
+	[[NORMAL 0 0 -1] 1.5 -1 1]
+	[[NORMAL 0 0 -1] 1.5 -2 1]
+	[[NORMAL 0 0 -1] -0.5 -2 1]
+	[[NORMAL 0 0 -1] -0.5 -1 1]
+	[[INTERNAL] [NORMAL 0 0 -1] 1 -1 1]
+    ]
+    [POLYGON [PLANE 1 0 0 0.5] 4
+	[[NORMAL 1 0 0] -0.5 -2 1]
+	[[NORMAL 1 0 0] -0.5 -2 -1]
+	[[NORMAL 1 0 0] -0.5 -1 -1]
+	[[NORMAL 1 0 0] -0.5 -1 1]
+    ]
+    [POLYGON [PLANE 0 0 1 1] 4
+	[[NORMAL 0 0 1] 1 -1 -1]
+	[[NORMAL 0 0 1] -0.5 -1 -1]
+	[[NORMAL 0 0 1] -0.5 -2 -1]
+	[[INTERNAL] [NORMAL 0 0 1] 1 -2 -1]
+    ]
+    [POLYGON [PLANE 0 0 1 1] 5
+	[[NORMAL 0 0 1] 1 -2 -1]
+	[[NORMAL 0 0 1] 1.5 -2 -1]
+	[[INTERNAL] [NORMAL 0 0 1] 1.5 1 -1]
+	[[NORMAL 0 0 1] 1 1 -1]
+	[[INTERNAL] [NORMAL 0 0 1] 1 -1 -1]
+    ]
+    [POLYGON [PLANE 0 0 1 1] 5
+	[[NORMAL 0 0 1] 1.5 1 -1]
+	[[NORMAL 0 0 1] 1.5 2 -1]
+	[[NORMAL 0 0 1] -0.5 2 -1]
+	[[NORMAL 0 0 1] -0.5 1 -1]
+	[[INTERNAL] [NORMAL 0 0 1] 1 1 -1]
+    ]
+    [POLYGON [PLANE 0 -1 0 2] 4
+	[[NORMAL 0 -1 0] 0 2 0.5]
+	[[NORMAL 0 -1 0] 1.5 2 0.5]
+	[[NORMAL 0 -1 0] 1.5 2 1]
+	[[INTERNAL] [NORMAL 0 -1 0] 0 2 1]
+    ]
+    [POLYGON [PLANE 0 -1 0 2] 5
+	[[NORMAL 0 -1 0] 0 2 1]
+	[[NORMAL 0 -1 0] -0.5 2 1]
+	[[INTERNAL] [NORMAL 0 -1 0] -0.5 2 -0.5]
+	[[NORMAL 0 -1 0] 0 2 -0.5]
+	[[INTERNAL] [NORMAL 0 -1 0] 0 2 0.5]
+    ]
+    [POLYGON [PLANE 0 -1 0 2] 5
+	[[NORMAL 0 -1 0] -0.5 2 -0.5]
+	[[NORMAL 0 -1 0] -0.5 2 -1]
+	[[NORMAL 0 -1 0] 1.5 2 -1]
+	[[NORMAL 0 -1 0] 1.5 2 -0.5]
+	[[INTERNAL] [NORMAL 0 -1 0] 0 2 -0.5]
+    ]
+    [POLYGON [PLANE -1 0 0 1.5] 4
+	[[NORMAL -1 0 0] 1.5 2 1]
+	[[NORMAL -1 0 0] 1.5 2 0.5]
+	[[NORMAL -1 0 0] 1.5 -2 0.5]
+	[[NORMAL -1 0 0] 1.5 -2 1]
+    ]
+    [POLYGON [PLANE -1 0 0 1.5] 4
+	[[NORMAL -1 0 0] 1.5 2 -1]
+	[[NORMAL -1 0 0] 1.5 -2 -1]
+	[[NORMAL -1 0 0] 1.5 -2 -0.5]
+	[[NORMAL -1 0 0] 1.5 2 -0.5]
+    ]
+    [POLYGON [PLANE 0 1 0 2] 4
+	[[NORMAL 0 1 0] 0 -2 -0.5]
+	[[NORMAL 0 1 0] 1.5 -2 -0.5]
+	[[NORMAL 0 1 0] 1.5 -2 -1]
+	[[INTERNAL] [NORMAL 0 1 0] 0 -2 -1]
+    ]
+    [POLYGON [PLANE 0 1 0 2] 5
+	[[NORMAL 0 1 0] 0 -2 -1]
+	[[NORMAL 0 1 0] -0.5 -2 -1]
+	[[INTERNAL] [NORMAL 0 1 0] -0.5 -2 0.5]
+	[[NORMAL 0 1 0] 0 -2 0.5]
+	[[INTERNAL] [NORMAL 0 1 0] 0 -2 -0.5]
+    ]
+    [POLYGON [PLANE 0 1 0 2] 5
+	[[NORMAL 0 1 0] -0.5 -2 0.5]
+	[[NORMAL 0 1 0] -0.5 -2 1]
+	[[NORMAL 0 1 0] 1.5 -2 1]
+	[[NORMAL 0 1 0] 1.5 -2 0.5]
+	[[INTERNAL] [NORMAL 0 1 0] 0 -2 0.5]
+    ]
+    [POLYGON [PLANE 0 0 -1 -0.5] 4
+	[[NORMAL 0 0 -1] 0 -2 -0.5]
+	[[NORMAL 0 0 -1] 0 2 -0.5]
+	[[NORMAL 0 0 -1] 1.5 2 -0.5]
+	[[NORMAL 0 0 -1] 1.5 -2 -0.5]
+    ]
+    [POLYGON [PLANE 0 0 1 -0.5] 4
+	[[NORMAL 0 0 1] 0 2 0.5]
+	[[NORMAL 0 0 1] 0 -2 0.5]
+	[[NORMAL 0 0 1] 1.5 -2 0.5]
+	[[NORMAL 0 0 1] 1.5 2 0.5]
+    ]
+    [POLYGON [PLANE -1 0 0 0] 4
+	[[NORMAL -1 0 0] 0 -2 0.5]
+	[[NORMAL -1 0 0] 0 2 0.5]
+	[[NORMAL -1 0 0] 0 2 -0.5]
+	[[NORMAL -1 0 0] 0 -2 -0.5]
+    ]
+]

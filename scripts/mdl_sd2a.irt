@@ -1,0 +1,84 @@
+#
+# This solid was taken from: Geometric Modeling,
+# by Michael E. Mortenson page 441, figure 10.9
+#
+#				Created by Gershon Elber,	Jan 89
+#
+
+t = time( true );
+free( t );
+
+save_mat = view_mat;
+view_mat = view_mat * scale( vector( 0.5, 0.5, 0.5 ) );
+
+OldBFF = iritstate( "BoolFreeform", vector( 0.01, 1e-8, 0.01 ) );
+
+#
+# Try it with coplanar false for fun.
+#
+# iritstate( "coplanar", false );
+#
+
+C1 = coerce( CylinSrf( 0.4, 1.4 ), model_type );
+Pln1 = coerce( PlaneSrf( -2, -2, 2, 2 ) * rx( 90 ) * ty( -0.35 ), model_type );
+Pln2 = coerce( -PlaneSrf( -2, -2, 2, 2 ) * rx( 90 ) * ty( 0.35 ), model_type );
+
+S1 = C1 * Pln1 * pln2;
+view( S1, 1 );
+
+free( C1 );
+free( Pln1 );
+free( Pln2 );
+view( S1, 1 );
+
+C2 = coerce( CylinSrf( 0.2, 0.9 ) * tz( 0.1 ), model_type );
+
+S2 = S1 + C2;
+free( C2 );
+free( S1 );
+view( S2, 1 );
+
+
+T4 = coerce( CylinSrf( 1.0, 0.9 ) * rx( 90 )
+			   * tx( 1.45 ) * ty( 0.5 ) * tz( 1.0 ), model_type );
+T5 = coerce( CylinSrf( 1.0, 0.9 ) * rx( 90 )
+			  * tx( -1.45 ) * ty( 0.5 ) * tz( 1.0 ), model_type );
+
+S3 = S2 - T4 - T5;
+free( T4 );
+free( T5 );
+free( S2 );
+view( S3, 1 );
+
+
+T6 = coerce( CylinSrf( 0.5, 0.1 ) * tx( 1.2 ) * tz( -0.15 ), model_type );
+T7 = coerce( CylinSrf( 0.5, 0.1 ) * tx( -1.2 ) * tz( -0.15 ), model_type );
+
+S4 = S3 - T6 - T7;
+free( T6 );
+free( T7 );
+free( S3 );
+view( S4, 1 );
+
+
+T8 = coerce( CylinSrf( 1.0, 0.5 ) * tz( -0.15 ), model_type );
+
+
+view( list( S4, T8 ), 1 );
+
+
+final = S4 - T8;
+free( T8 );
+free( S4 );
+
+printf( "Total Time = %f\\n", list( time( false ) ) ); # In Seconds
+
+save( "mdl_sd2a", final );
+interact( final );
+
+free( final );
+
+view_mat = save_mat;
+
+OldBFF = iritstate( "BoolFreeform", OldBFF );
+free( OldBFF );

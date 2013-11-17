@@ -1,0 +1,33 @@
+
+#
+# This is the make file for the mdl. lib subdirectory.
+#
+#				Gershon Elber, June 1993
+#
+
+# Get the destination directories:
+include ..\makeflag.wce
+
+OBJS =  mdl_aux.$(IRIT_OBJ_PF) \
+	mdl_bbox.$(IRIT_OBJ_PF) \
+	mdl_bool.$(IRIT_OBJ_PF) \
+	mdl2bool.$(IRIT_OBJ_PF) \
+	mdl_dbg.$(IRIT_OBJ_PF) \
+	mdl_dum.$(IRIT_OBJ_PF) \
+	mdl_err.$(IRIT_OBJ_PF) \
+	mdl_ftl.$(IRIT_OBJ_PF) \
+	mdl_gen.$(IRIT_OBJ_PF) \
+	mdl_prim.$(IRIT_OBJ_PF) \
+	mdl_ptch.$(IRIT_OBJ_PF) \
+	mdlcnvrt.$(IRIT_OBJ_PF)
+
+$(MDL_LIB): $(OBJS)
+	-del $(MDL_LIB)
+	$(IRITLIB) -out:$(MDL_LIB) $(OBJS)
+
+$(IRIT_LIB_DIR)\$(MDL_LIB): $(MDL_LIB)
+	copy $(MDL_LIB) $(IRIT_LIB_DIR)
+
+install: $(IRIT_LIB_DIR)\$(MDL_LIB)
+
+# Dependencies starts here - do not touch, generated automatically.

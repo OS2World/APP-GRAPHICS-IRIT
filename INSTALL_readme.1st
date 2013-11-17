@@ -1,0 +1,273 @@
+This file describes the steps need to be taken to compile this package
+under the different environments.
+
+Join IRIT mailing list:		gershon@cs.technion.ac.il
+Mailing list:			irit-mail@cs.technion.ac.il
+Bug reports:			irit-bugs@cs.technion.ac.il
+
+-----------------------------------------------------------------------------
+
+WINDOWS NT-XP/7, 95-98
+-------------------
+
+   For VC ?.x do "copy makeflag.wnt_vc? makeflag.wnt", ? = { 6,7,8 }.
+Edit the file makeflag.wnt. Set all the variables to the correct path
+you would like the include files/libraries/binaries to be installed
+to.  At the bare minimum, you should set IRIT_SRC to the root
+directory where you opened irit-sm.zip.  I.e.:
+	"set SRC_DIR = c:\irit"
+
+Settings are available for linking into the GIF, RLE (URT), PNG image
+libraries, Open GL hardware support via the CG shader language, and/or
+the GZIP compression and MAGELLAN mouse libraries.  None of these
+libraries are mandatory - you can simply comment their variables out
+in makeflag.wnt and they will be safely ignored:
+
+    IRIT_URT,
+    IRIT_GIF,
+    IRIT_PNG,
+    IRIT_GZIP,
+    IRIT_MAGELLAN,
+    IRIT_OGL_CG
+    IRIT_OGL_GLUT,
+    IRIT_SW_DBG
+
+   Open a command line (Windows 'Cmd' program) and in the IRIT root
+directory type (VC must be installed so it is available from the
+Cmd command line - you might need to run vcvars32.bat in the VC
+installation):
+	"nmake -f makefile.wnt"
+   Note 'nmake' is Microsoft's make provided with the SDK of Windows).
+This should build the libraries (misc/cagd/prsr/etc.)  following by
+all the tools including the solid modeler itself - IRIT.  This, by
+default, will build a Debug version (all objects/libraries/executables
+will have a 'D' attached to their names).  To build a release version
+you need to type:
+	"nmake CFG=Rel -f makefile.wnt"
+from the IRIT root directory.
+
+   You can also use the VC solution that is available in
+'windowsVC*/IRIT_SM', * = { 2003, 2005, 2008, 2010 } as IRIT_SM.sln
+and you might also like to consider the VC macros in
+'windowsVC?/IRIT_SM_MACROS' that can aid in file/function comments and
+in debugging IRIT objects (allowing you to both print and display IRIT
+structures/objects from within the debugger).
+
+   Make sure the relevant environment variables are properly set:
+IRIT_PATH should point to the IRIT binaries and IRIT_DISPLAY to the
+preferred display device, as described in the manual.  Optional are
+IRIT_BIN_IPC, IRIT_SERVER_HOST and IRIT_SERVER_PORT as described in
+the manual.  For example:
+	Path %Path%;c:\irit\ntbin
+	set IRIT_PATH=c:\irit\ntbin
+	set IRIT_DISPLAY=wntgdrvs -s-
+	set IRIT_BIN_IPC=1
+
+   Once everything is built and set, change directory to the executables
+directory (typically the 'ntbin' subdirectory).  Optionally edit all
+*.cfg configuration files and follow the instructions in them to
+configure the programs to your liking (this can wait as the defaults
+are reasonable).  On-line help is saved in irit.hlp and is copied to
+the executables directory. In the docs directories, the 'irit.tex' can
+be latex'ed and printed to get a hardcopy manual for IRIT.
+Alternatively print 'irit.doc' which is a similar but is a plain text
+file.
+
+   Some of the subdirectories, such as illustrt/filters/irender/etc.,
+have batch files called test-wnt.cmd. Run them to test your new
+executables.  Note that test-wnt.cmd on poly3d-h do require ???drvs
+display device executable to display the hidden line removed results.
+
+   On the 'scripts' subdirectory type 'irit demo.irt' to run a demo of
+IRIT.  There are quite a few other .irt files in that directory you
+may want to try.  You can run all these tests by executing 'nmake -f
+makefile.wnt test' from the main directory.
+-----------------------------------------------------------------------------
+
+CYGWIN
+------
+
+Cygwin is essentially a full Unix environment under Windows.  
+Copy makeflag.cygwin over makeflag.unx:
+
+cp makeflag.cygwin makeflag.unx
+
+and continue as usual with a unix-like compilation.
+
+-----------------------------------------------------------------------------
+
+MAC OSX
+-------
+
+Essentially a Unix port under the Mac.  Assumes Mac development
+environment (gcc, etc.), X11 (either the Mac version or Xfree86 port),
+and Motif (It is assumed it was installed by the Fink, for headers
+locations. see fink.sourceforge.net).  Just use the MAC OSX settings
+in the makeflag.gnux, and continue as usual with a unix-like
+compilation.
+
+This port was created with support from Bruno Schwander, bruno@tinkerbox.org
+
+-----------------------------------------------------------------------------
+
+UNIX
+----
+
+   Edit the file makeflag.unx in the main directory.  Set all the
+variables to the correct path you would like the include
+files/libraries/binaries to be installed to. You will, at least, need
+to set SRC_DIR.  Select the correct compiler flags if your
+architecture exists there.  Otherwise create a new entry in
+makeflag.unx flags for your system.
+
+   If you are using gnu-make, you might want to try makefile/flag.gnux
+which provides for automatic creation of both release and debug
+versions (see header of makeflag.gnux).  You will need to copy these
+two files over the regular makefile/flag.unx, before you use them.
+
+   Type 'make -f makefile.unx' from the IRIT root directory. This
+should build the libraries (misc, cagd, prsr, etc.) following by all
+the tools including the solid modeler itself - IRIT. This, by
+default, will build a debug version (all objects/libraries/executables
+will have a 'D' attached to their names).  To build a release version
+you need to type: 'make CFG=Rel -f makefile.wnt' from the IRIT root
+directory.
+
+   Once everything built, change directory to the binaries directory
+(typically the 'bin' subdirectory). Edit all *.cfg configuration files
+and follow the instructions in them to configure the programs to your
+system (this can wait as the defaults are reasonable).  On line help
+is saved in irit.hlp and is copied to the binaries directory. In the
+docs directories, the 'irit.tex' can be latex'ed and printed to get a
+hardcopy manual for IRIT. Alternatively print 'irit.doc' which is a
+similar but plain text file.
+
+   Some of the subdirectories illustrt/filters/irender/etc. have a
+batch file called test-unx. Run them to test your new executables by
+doing 'csh test-unx'. Note test-unx on poly3d-h do require a ???drvs
+display device executable to display the hidden line removed results.
+
+   In the scripts subdirectory type 'irit demo.irt' to run a demo of
+IRIT.  There are quite a few other .irt files in that directory you
+may want to try.  Make sure the IRIT_PATH environment variable is
+properly set as well as IRIT_BIN_IPC and IRIT_DISPLAY, as described in
+the manual. You can run all these tests by executing 'make -f
+makefile.unx test' from the main directory. Optionally you might need
+to set the environment of IRIT_SERVER_PORT and IRIT_SERVER_HOST.
+
+   Things to watch for:
+
+* all the makefiles in the subdirectories source makeflag.unx via the line
+  'include ../makeflag.unx'. If your make support different include structure
+  or does not support it at all, you will have to change it or manually
+  substitute makeflag.unx's content into the subdirectory makefiles.
+* Your system must support either X11 (and hopefully XMotif) or (Open) Gl.
+  Without graphics support you would not be able to build the display devices.
+
+-----------------------------------------------------------------------------
+
+AmigaOS
+-------
+
+The Amiga port of IRIT 7.0 was tested using gcc 2.7.2.1. (It can also be
+compiled with SAS/C version 6.57, but the resulting IRIT binary has problems.)
+
+When running demo.irt, IRIT required about 10M of memory, so you may
+need to install VMM before you can use IRIT.
+
+Compiling:
+
+You will need GNU make, as well as the programs sh, cp, mv, rm, and echo.  If
+you want to add Utah RLE support to irender, you will need to install the URT
+header files and libraries (source is available from ftp.cs.utah.edu).  If you
+want to build the documentation from scratch, you will need to build irender
+with Utah RLE support and to install the rletops and crop programs from the
+Utah raster toolkit.
+
+Compiling with gcc:
+
+Edit makeflag.ami, and modify the following assignments:
+SRC_DIR  = Put here the name of the top level IRIT directory.
+CPUFLAGS = Add the appropriate options for your CPU type and preferred
+	   math option.
+
+Also modify the URT, URT_INC, URT_LIB, and URT_FLAGS definitions to indicate
+whether you want Utah raster toolkit support or not, and where the URT
+libraries and header files are installed.
+
+Type make -f makefile.ami at the top directory, and go for a cup of coffee.
+When you return, all the binaries will be in the bin subdirectory.
+
+Compiling with SAS/C:
+(Currently not recommended--the resulting IRIT binary has problems.)
+
+Edit makeflag.sas, and modify the following assignments:
+SRC_DIR	= Put the name of the top level IRIT directory.
+CFLAGS	= Modify the CPU= and MATH= options according to what CPU you
+	  have and what kind of floating point math you want to use.
+MATHLIB = Put the name of the math library with which you want to link.
+
+Also modify the URT, URT_INC, URT_LIB, and URT_FLAGS definitions to indicate
+whether you want Utah raster toolkit support or not, and where the URT
+libraries and header files are installed.
+
+Type make -f makefile.sas at the top directory, and go for a cup of coffee.
+When you return, all the binaries will be in the bin subdirectory.
+
+Differences between UNIX and Amiga IRIT:
+
+None to speak of. There is no IRIT_SERVER_HOST environment variable, and
+IRIT_SERVER_PORT points to the name of an Exec port rather than to
+whatever it is that it points to in UNIX.  When amidrvs is displaying an
+animation, the "Animate" button turns into a "Stop Anim" button; hit it
+to stop the animation.  If you run amidrvs by hand, be sure to run it
+after IRIT starts looking for it. Yes, I know that the synchronization
+code between IRIT and amidrvs is an awful kludge, but since it works,
+I'm in no particular hurry to fix it.
+
+Bugs:
+Quitting from amidrvs while IRIT is running, will cause IRIT to hang.
+
+Bug reports:
+If you think you've found a bug in the Amiga port (as opposed to a bug
+in IRIT itself), send mail to kyrimis@cti.gr.
+
+-----------------------------------------------------------------------------
+
+OS2
+---
+
+   Edit the file makeflag.os2 in the main directory.
+Set all the variables to the correct path you would like the include
+files/libraries/binaries to be installed to.
+   Type 'make -f makefile.os2'. This should build the libraries
+(misc/cagd/prsr/etc.) following by all the tools including the solid
+modeler itself - IRIT.
+
+   Once everything built, change directory to the binaries directory. Edit
+all *.cfg configuration files and follow the instructions in them to configure
+the programs to your system. (this can wait as the defaults are reasonable).
+   On line help is saved in irit.hlp and is copied to the binaries
+directory. In the docs directories, the 'irit.tex' can be latex'ed and printed
+to get a hardcopy manual for IRIT. Alternatively, print 'irit.doc' which is
+a similar but plain text file.
+
+   Some of the subdirectories illustrt/filters/irender/etc. have a
+batch file called test-os2.cmd. Run them to test your new executables.
+Note that test-os2.cmd on poly3d-h do require ???Drvs display device
+executable to display the hidden line removed results.
+
+   On the scripts subdirectory type 'irit demo.irt' to run a demo of IRIT.
+There are quite a few other .irt files in that directory you may want to try.
+Make sure the IRIT_PATH environment variable is properly set as well as
+OS2IRIT and OS2IRIT_POS as described in the manual. You can run all
+these tests by executing 'make -f makefile.os2 test' from the main directory.
+
+   Things to watch for:
+
+* all the makefiles in the subdirectories source makeflag.unx via the line
+  'include ..\makeflag.os2'. If your make support different include structure
+  or does not support it at all, you will have to change it or manually
+  substitute makeflag.os2's content into the subdirectory makefiles.
+
+-----------------------------------------------------------------------------

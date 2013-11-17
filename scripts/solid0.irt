@@ -1,0 +1,266 @@
+#
+# Extrusion example of the IRIT letters created manually:
+#
+#				Created by Gershon Elber,	Mar 89
+#
+
+save_mat = view_mat;
+save_res = resolution;
+
+view_mat = view_mat * scale( vector( -1.0, 1.0, 1.0 ) );
+
+v1  = vector( 0.0, 0.0, 0.0);					# The I letter
+v2  = vector( 0.3, 0.0, 0.0);
+v3  = vector( 0.3, 0.1, 0.0);
+v4  = vector( 0.2, 0.1, 0.0);
+v5  = vector( 0.2, 0.5, 0.0);
+v6  = vector( 0.3, 0.5, 0.0);
+v7  = vector( 0.3, 0.6, 0.0);
+v8  = vector( 0.0, 0.6, 0.0);
+v9  = vector( 0.0, 0.5, 0.0);
+v10 = vector( 0.1, 0.5, 0.0);
+v11 = vector( 0.1, 0.1, 0.0);
+v12 = vector( 0.0, 0.1, 0.0);
+
+I = poly( list( v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12 ), false );
+view( list( view_mat, I ), true );
+
+
+v1  = vector( 0.0, 0.0, 0.0);					# The R Letter
+v2  = vector( 0.1, 0.0, 0.0);
+v3  = vector( 0.1, 0.5, 0.0);
+v4  = vector( 0.2, 0.5, 0.0);
+v5  = vector( 0.2, 0.4, 0.0);
+v6  = vector( 0.1, 0.4, 0.0);
+v7  = vector( 0.1, 0.3, 0.0);
+v8  = vector( 0.2, 0.0, 0.0);
+v9  = vector( 0.3, 0.0, 0.0);
+v10 = vector( 0.2, 0.3, 0.0);
+v11 = vector( 0.3, 0.3, 0.0);
+v12 = vector( 0.3, 0.6, 0.0);
+v13 = vector( 0.0, 0.6, 0.0);
+
+R = poly( list( v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13 ),
+	  false );
+view( R, true );
+
+v1  = vector( 0.2, 0.0, 0.0);					# The T Letter
+v2  = vector( 0.2, 0.5, 0.0);
+v3  = vector( 0.3, 0.5, 0.0);
+v4  = vector( 0.3, 0.6, 0.0);
+v5  = vector( 0.0, 0.6, 0.0);
+v6  = vector( 0.0, 0.5, 0.0);
+v7  = vector( 0.1, 0.5, 0.0);
+v8  = vector( 0.1, 0.0, 0.0);
+
+T = poly( list( v1, v2, v3, v4, v5, v6, v7, v8 ), false );
+view( T, true );
+
+I1 = I * rx( 90 );
+R2 = R * trans( vector( 0.4, 0.0, 0.0 ) ) * rx( 90 );
+I3 = I * trans( vector( 0.8, 0.0, 0.0 ) ) * rx( 90 );
+T4 = T * trans( vector( 1.2, 0.0, 0.0 ) ) * rx( 90 );
+
+OutlineChar = function ( Char ): OChar:
+    OChar = offset( Char, -0.02, 0.0, 0.0 ):
+    return = extrude( Char, vector( 0, 0, 1 ), 3 ) -
+	     extrude( OChar, vector( 0, 0, 1.2 ), 3 ) * tz( -0.1 );
+
+I1Outline = OutlineChar( I ) * rx( 90 );
+R2Outline = OutlineChar( R ) * trans( vector( 0.4, 0.0, 0.0 ) ) * rx( 90 );
+I3Outline = OutlineChar( I ) * trans( vector( 0.8, 0.0, 0.0 ) ) * rx( 90 );
+T4Outline = OutlineChar( T ) * trans( vector( 1.2, 0.0, 0.0 ) ) * rx( 90 );
+
+free( I );
+free( R );
+free( T );
+
+view_mat = view_mat * trans( vector( -0.8, 0.0, 0.0 ) );
+
+view( list( view_mat, I1, R2, I3, T4 ), true );
+
+ext_dir = vector( 0.0,-1.0, 0.0 );
+
+I1X = extrude( I1, ext_dir, 3 );
+R2X = extrude( R2, ext_dir, 3 );
+I3X = extrude( I3, ext_dir, 3 );
+T4X = extrude( T4, ext_dir, 3 );
+free( I1 );
+free( R2 );
+free( I3 );
+free( T4 );
+free( ext_dir );
+
+S1 = I1X ^ R2X ^ I3X ^ T4X;
+final = convex( S1 );
+free( S1 );
+interact( final );
+free( final );
+
+S2 = I1Outline ^ R2Outline ^ I3Outline ^ T4Outline;
+free(I1Outline);
+free(R2Outline);
+free(I3Outline);
+free(T4Outline);
+final = convex( S2 );
+free( S2 );
+interact( final );
+free( final );
+
+free( v1 );
+free( v2 );
+free( v3 );
+free( v4 );
+free( v5 );
+free( v6 );
+free( v7 );
+free( v8 );
+free( v9 );
+free( v10 );
+free( v11 );
+free( v12 );
+free( v13 );
+
+#
+# Animation one - all in parallel.
+#
+
+I1XT = I1X * trans( vector( -0.5, 0.5, -0.3 ) );
+R2XT = R2X * trans( vector( -0.5, 0.5, -0.3 ) );
+I3XT = I3X * trans( vector( -0.5, 0.5, -0.3 ) );
+T4XT = T4X * trans( vector( -0.5, 0.5, -0.3 ) );
+
+view_mat = save_mat * scale(vector( -0.9, 0.9, 0.9 ) )
+		    * trans( vector( 0.0, 0.0, 0.0 ) );
+viewobj( view_mat );
+
+scl = creparam( cbspline( 3,
+			  list( ctlpt( E1, 0.05 ),
+			        ctlpt( E1, 0.1 ),
+			        ctlpt( E1, 1.0 ) ),
+			  list( KV_OPEN ) ),
+		0, 2 );
+
+mov_x = creparam( cbspline( 3,
+			    list( ctlpt( E1, 3 ),
+				  ctlpt( E1, -8 ),
+				  ctlpt( E1, 3 ),
+				  ctlpt( E1, 0 ) ),
+			    list( KV_OPEN ) ),
+		  0, 2 );
+attrib( I1XT, "animation", list( mov_x, scl ) );
+free( mov_x );
+
+mov_y = creparam( cbspline( 3,
+			    list( ctlpt( E1, -3 ),
+				  ctlpt( E1, 8 ),
+				  ctlpt( E1, -2 ),
+				  ctlpt( E1, 0 ) ),
+			    list( KV_OPEN ) ),
+		  0, 2 );
+attrib( R2XT, "animation", list( mov_y, scl ) );
+free( mov_y );
+
+mov_x = creparam( cbspline( 3,
+			    list( ctlpt( E1, 3 ),
+				  ctlpt( E1, -8 ),
+				  ctlpt( E1, 3 ),
+				  ctlpt( E1, 0 ) ),
+			    list( KV_OPEN ) ),
+		  0, 2 );
+attrib( I3XT, "animation", list( mov_x, scl ) );
+free( mov_x );
+
+mov_z = creparam( cbspline( 3,
+			    list( ctlpt( E1, -3 ),
+				  ctlpt( E1, 8 ),
+				  ctlpt( E1, -2 ),
+				  ctlpt( E1, 0 ) ),
+			    list( KV_OPEN ) ),
+		  0, 2 );
+attrib( T4XT, "animation", list( mov_z, scl ) );
+free( mov_z );
+
+S1 = list( I1XT, R2XT, I3XT, T4XT );
+view( S1, on );
+viewanim( 0, 2, 0.01 );
+pause();
+save( "solid0a1", s1 );
+free( S1 );
+
+#
+# Animation two - do every character at a time.
+#
+
+scl = creparam( cbspline( 3,
+			  list( ctlpt( E1, 0.2 ),
+			        ctlpt( E1, 0.2 ),
+			        ctlpt( E1, 1.0 ) ),
+			  list( KV_OPEN ) ),
+		0, 2 );
+mov_x = creparam( cbspline( 3,
+			    list( ctlpt( E1, 5 ),
+				  ctlpt( E1, -8 ),
+				  ctlpt( E1, 3 ),
+				  ctlpt( E1, 0 ) ),
+		 	    list( KV_OPEN ) ),
+		  0, 2 );
+attrib( I1XT, "animation", list( mov_x, scl ) );
+attrib( I3XT, "animation", list( mov_x, scl ) );
+free( scl );
+free( mov_x );
+
+scl = creparam( cbspline( 3,
+			  list( ctlpt( E1, 0.2 ),
+			        ctlpt( E1, 0.2 ),
+			        ctlpt( E1, 1.0 ) ),
+			  list( KV_OPEN ) ),
+		2, 4 );
+mov_y = creparam( cbspline( 3,
+			    list( ctlpt( E1, -3 ),
+				  ctlpt( E1, 8 ),
+				  ctlpt( E1, -2 ),
+				  ctlpt( E1, 0 ) ),
+			    list( KV_OPEN ) ),
+		  2, 4 );
+attrib( R2XT, "animation", list( mov_y, scl ) );
+free( scl );
+free( mov_y );
+
+scl = creparam( cbspline( 3,
+			  list( ctlpt( E1, 0.2 ),
+			        ctlpt( E1, 0.2 ),
+			        ctlpt( E1, 1.0 ) ),
+			  list( KV_OPEN ) ),
+		4, 6 );
+mov_z = creparam( cbspline( 3,
+			    list( ctlpt( E1, -3 ),
+				  ctlpt( E1, 8 ),
+				  ctlpt( E1, -2 ),
+				  ctlpt( E1, 0 ) ),
+			    list( KV_OPEN ) ),	
+		  4, 6 );
+attrib( T4XT, "animation", list( mov_z, scl ) );
+free( scl );
+free( mov_z );
+
+S1 = list( I1XT, R2XT, I3XT, T4XT );
+view( S1, on );
+viewanim( 0, 6, 0.02 );
+pause();
+save( "solid0a2", s1 );
+free( S1 );
+
+free( I1X );
+free( R2X );
+free( I3X );
+free( T4X );
+
+free( I1XT );
+free( R2XT );
+free( I3XT );
+free( T4XT );
+
+resolution = save_res;
+view_mat = save_mat;
+

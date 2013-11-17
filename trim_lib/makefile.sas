@@ -1,0 +1,72 @@
+#
+# This is the make file for the trim_lib library.
+#
+#				Gershon Elber, Aug 1990
+#
+
+include ../makeflag.sas
+
+OBJS =  tr_prisa.o trim_aux.o trim_dbg.o trim_err.o trim_ftl.o trim_gen.o \
+	trim_iso.o trim_sub.o trim2ply.o trim2pl2.o trimcntr.o
+
+all:	trim.lib
+
+trim.lib: $(OBJS)
+	rm -f trim.lib
+	oml trim.lib a $(OBJS)
+
+install: trim.lib
+	mv -f trim.lib $(IRIT_LIB_DIR)
+
+testeval:	testeval.o triv.lib
+	slink from lib:c.o testeval.o to testeval sc $(SYMS) noicons\
+lib libtrim.a $(IRIT_LIBS) $(IRIT_MORE_LIBS) $(MATHLIB) lib:scnb.lib
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.
+
+tr_prisa.o: trim_loc.h ../include/irit_sm.h ../include/cagd_lib.h
+tr_prisa.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+tr_prisa.o: ../include/trim_lib.h ../include/allocate.h ../include/iritprsr.h
+tr_prisa.o: ../include/triv_lib.h ../include/trng_lib.h ../include/mdl_lib.h
+tr_prisa.o: ../include/mvar_lib.h ../include/obj_dpnd.h ../include/geom_lib.h
+tr_prisa.o: ../include/attribut.h
+trim2pl2.o: ../include/irit_sm.h ../include/iritprsr.h ../include/cagd_lib.h
+trim2pl2.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+trim2pl2.o: ../include/trim_lib.h ../include/triv_lib.h ../include/trng_lib.h
+trim2pl2.o: ../include/mdl_lib.h ../include/mvar_lib.h ../include/allocate.h
+trim2pl2.o: ../include/obj_dpnd.h ../include/geom_lib.h ../include/attribut.h
+trim2pl2.o: trim_loc.h ../include/ip_cnvrt.h
+trim2ply.o: trim_loc.h ../include/irit_sm.h ../include/cagd_lib.h
+trim2ply.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+trim2ply.o: ../include/trim_lib.h ../include/allocate.h ../include/iritprsr.h
+trim2ply.o: ../include/triv_lib.h ../include/trng_lib.h ../include/mdl_lib.h
+trim2ply.o: ../include/mvar_lib.h ../include/obj_dpnd.h ../include/geom_lib.h
+trim2ply.o: ../include/attribut.h
+trim_aux.o: trim_loc.h ../include/irit_sm.h ../include/cagd_lib.h
+trim_aux.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+trim_aux.o: ../include/trim_lib.h
+trim_dbg.o: trim_loc.h ../include/irit_sm.h ../include/cagd_lib.h
+trim_dbg.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+trim_dbg.o: ../include/trim_lib.h ../include/iritprsr.h ../include/triv_lib.h
+trim_dbg.o: ../include/trng_lib.h ../include/mdl_lib.h ../include/mvar_lib.h
+trim_err.o: trim_loc.h ../include/irit_sm.h ../include/cagd_lib.h
+trim_err.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+trim_err.o: ../include/trim_lib.h
+trim_ftl.o: trim_loc.h ../include/irit_sm.h ../include/cagd_lib.h
+trim_ftl.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+trim_ftl.o: ../include/trim_lib.h
+trim_gen.o: trim_loc.h ../include/irit_sm.h ../include/cagd_lib.h
+trim_gen.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+trim_gen.o: ../include/trim_lib.h
+trim_iso.o: trim_loc.h ../include/irit_sm.h ../include/cagd_lib.h
+trim_iso.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+trim_iso.o: ../include/trim_lib.h
+trim_sub.o: trim_loc.h ../include/irit_sm.h ../include/cagd_lib.h
+trim_sub.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+trim_sub.o: ../include/trim_lib.h
+trimcntr.o: ../include/irit_sm.h trim_loc.h ../include/cagd_lib.h
+trimcntr.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+trimcntr.o: ../include/trim_lib.h ../include/user_lib.h ../include/iritprsr.h
+trimcntr.o: ../include/triv_lib.h ../include/trng_lib.h ../include/mdl_lib.h
+trimcntr.o: ../include/mvar_lib.h ../include/allocate.h ../include/obj_dpnd.h
+trimcntr.o: ../include/geom_lib.h ../include/attribut.h

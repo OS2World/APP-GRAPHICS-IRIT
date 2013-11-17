@@ -1,0 +1,105 @@
+#
+# Examples of bump/disp geometric maps.
+#
+#					Gershon Elber, May 2002
+#
+
+save_res = resolution;
+save_approx_opt = poly_approx_opt;
+
+##############################################################################
+#
+# Create a glass surface
+#
+c = cbspline( 4,
+    list( ctlpt( E3, 0.357, -0.48, 0 ),
+          ctlpt( E2, 0.369, -0.41 ),
+          ctlpt( E2, 0.045, -0.41 ),
+          ctlpt( E2, 0.05, -0.22 ),
+          ctlpt( E2, 0.05, 0.08 ),
+          ctlpt( E2, 0.5, 0.1 ),
+          ctlpt( E2, 0.5, 0.5 ),
+          ctlpt( E2, 0.36, 0.7 ) ),
+    list( kv_open ) );
+
+Srf = surfrev( c * rx( 90 ) );
+free( c );
+
+##############################################################################
+#
+# Spikes like texture
+#
+
+SrfText1 = ruledSrf( ctlpt( E2, 0, 0 ) + ctlpt( E2, 0, 1 ),
+		     ctlpt( E2, 1, 0 ) + ctlpt( E2, 1, 1 ) );
+SrfText1 = sRaise( sRaise( SrfText1, row, 3 ), col, 3 );
+SrfText1 = sRefine( SrfText1, row, false, list( 0.25, 0.5, 0.75 ) );
+SrfText1 = sRefine( SrfText1, col, false, list( 0.25, 0.5, 0.75 ) );
+SrfText1 = coerce( SrfText1, E3 );
+
+# Make a spike out of the four interior points.
+SrfText1 = sEditPt( SrfText1, ctlpt( E3, 0.5, 0.5, 1 ), 2, 2 );
+SrfText1 = sEditPt( SrfText1, ctlpt( E3, 0.5, 0.5, 1 ), 2, 3 );
+SrfText1 = sEditPt( SrfText1, ctlpt( E3, 0.5, 0.5, 1 ), 3, 2 );
+SrfText1 = sEditPt( SrfText1, ctlpt( E3, 0.5, 0.5, 1 ), 3, 3 );
+
+resolution = 6;
+
+Srf1 = SDDMMap( Srf, gpolygon( -SrfText1 * sz( 0.1 ), on ), 4, 8, on );
+interact( Srf1 );
+
+Srf1 = SDDMMap( Srf, gpolygon( -SrfText1 * sz( 0.2 ), on ), 8, 12, on );
+interact( Srf1 );
+save( "disp1map", Srf1 );
+
+free( SrfText1 );
+free( Srf1 );
+
+##############################################################################
+#
+# Scale like texture
+#
+
+c = cbspline( 3,
+	      list( ctlpt( e3, 0.0, 0.2, 0.0 ),
+		    ctlpt( e3, 0.9, 0.5, 0.1 ),
+		    ctlpt( e3, 1.5, 0.5, 0.15 ),
+		    ctlpt( e3, 2.2, 0.3, 0.2 ),
+		    ctlpt( e3, 2.2, 0.1, 0.2 ) ),
+	      list( kv_open ) );
+
+s = sFromCrvs( list( c, c * sy( 0 ) * sz( 1.5 ), c * sy( -1 ) ),
+	       3, kv_open ) * ty( 0.5 );
+
+poly_approx_opt = 0;
+resolution = 7;
+SrfText2a = gpolygon( s, on );
+SrfText2b = gpolygon( sregion( s, row, 0, 0.5 ), on );
+SrfText2c = gpolygon( sregion( s, row, 0.5, 1 ), on );
+free( c );
+free( s );
+
+Srftext2 = list( SrfText2a,
+		 SrfText2b * tx( 0.5 )* ty( -0.5 ),
+		 SrfText2c * tx( 0.5 )* ty( 0.5 ) )
+	* sz( 0.5 ) * tz( -0.1 ) * rz( 90 ) * tx( 1 );
+free( SrfText2a );
+free( SrfText2b );
+free( SrfText2c );
+
+Srf2 = SDDMMap( Srf, gpolygon( -SrfText2, on ), 4, 8, on );
+interact( Srf2 );
+
+Srf2 = SDDMMap( Srf, gpolygon( -SrfText2, on ), 8, 12, on );
+interact( Srf2 );
+save( "disp2map", Srf2 );
+
+free( SrfText2 );
+free( Srf2 );
+
+##############################################################################
+
+free( Srf );
+
+poly_approx_opt = save_approx_opt;
+resolution = save_res;

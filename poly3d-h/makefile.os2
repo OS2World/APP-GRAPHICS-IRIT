@@ -1,0 +1,38 @@
+#
+# This is the make file for the poly3d-h directory - OS2
+#
+#				Gershon Elber, Dec 1991
+#
+
+include ..\makeflag.os2
+
+OBJS	= out-edge.o poly3d-h.o prepdata.o
+
+poly3d-h.exe: $(OBJS)
+
+install: poly3d-h.exe
+	$(CP) -f poly3d-h.exe $(IRIT_BIN_DIR)
+	$(CP) -f poly3d-h.cfg $(IRIT_BIN_DIR)
+	$(RM) poly3d-h.exe
+
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.
+
+out-edge.o: program.h ../include/irit_sm.h ../include/misc_lib.h
+out-edge.o: ../include/iritprsr.h ../include/cagd_lib.h ../include/miscattr.h
+out-edge.o: ../include/symb_lib.h ../include/trim_lib.h ../include/triv_lib.h
+out-edge.o: ../include/trng_lib.h ../include/mdl_lib.h ../include/mvar_lib.h
+out-edge.o: ../include/iritgrap.h ../include/geom_lib.h ../include/attribut.h
+out-edge.o: ../include/allocate.h ../include/obj_dpnd.h
+poly3d-h.o: program.h ../include/irit_sm.h ../include/misc_lib.h
+poly3d-h.o: ../include/iritprsr.h ../include/cagd_lib.h ../include/miscattr.h
+poly3d-h.o: ../include/symb_lib.h ../include/trim_lib.h ../include/triv_lib.h
+poly3d-h.o: ../include/trng_lib.h ../include/mdl_lib.h ../include/mvar_lib.h
+poly3d-h.o: ../include/iritgrap.h ../include/geom_lib.h ../include/attribut.h
+poly3d-h.o: ../include/allocate.h ../include/obj_dpnd.h ../include/ip_cnvrt.h
+prepdata.o: program.h ../include/irit_sm.h ../include/misc_lib.h
+prepdata.o: ../include/iritprsr.h ../include/cagd_lib.h ../include/miscattr.h
+prepdata.o: ../include/symb_lib.h ../include/trim_lib.h ../include/triv_lib.h
+prepdata.o: ../include/trng_lib.h ../include/mdl_lib.h ../include/mvar_lib.h
+prepdata.o: ../include/iritgrap.h ../include/geom_lib.h ../include/attribut.h
+prepdata.o: ../include/allocate.h ../include/obj_dpnd.h

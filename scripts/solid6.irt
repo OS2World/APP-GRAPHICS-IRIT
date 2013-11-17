@@ -1,0 +1,80 @@
+#
+# Simple test for the surface of revolution operator. Defines the cross section
+# in line and then rotate it along Z axes.
+#
+#				Created by Gershon Elber,	Mar 89
+#
+
+save_res = resolution;
+
+v1  = vector( 0.6, 0.0, 0.25);
+v2  = vector( 0.9, 0.0, 0.25);
+v3  = vector( 0.9, 0.0, 0.2);
+v4  = vector( 0.8, 0.0, 0.2);
+v5  = vector( 0.8, 0.0,-0.2);
+v6  = vector( 0.9, 0.0,-0.2);
+v7  = vector( 0.9, 0.0,-0.25);
+v8  = vector( 0.6, 0.0,-0.25);
+v9  = vector( 0.6, 0.0,-0.2);
+v10 = vector( 0.7, 0.0,-0.2);
+v11 = vector( 0.7, 0.0, 0.2);
+v12 = vector( 0.6, 0.0, 0.2);
+
+cross = poly( list( v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12 ),
+	      false );
+view( cross, true );
+
+free( v1 );
+free( v2 );
+free( v3 );
+free( v4 );
+free( v5 );
+free( v6 );
+free( v7 );
+free( v8 );
+free( v9 );
+free( v10 );
+free( v11 );
+free( v12 );
+
+resolution = 32;
+T1 = surfrev( cross );
+free( cross );
+interact( T1 );
+
+resolution = 16;
+T2 = cylin( vector( -1.0,  0.0, 0.0 ), vector( 2.0, 0.0, 0.0 ), 0.15, 3 );
+T3 = cylin( vector(  0.0, -1.0, 0.0 ), vector( 0.0, 2.0, 0.0 ), 0.15, 3 );
+view( list( T2, T3 ), false );
+
+S1 = T1 - T2 - T3;
+free( T1 );
+free( T2 );
+free( T3 );
+
+final = convex( S1 );
+free( S1 );
+
+interact( final );
+
+Pls = planeclip( final, plane( 1, -1.23456, 0, 0 ) );
+free( final );
+
+PlFront = nth( Pls, 1 );
+color( PlFront, magenta ); 
+PlInter = nth( Pls, 2 );
+color( PlInter, yellow );
+adwidth( PlInter, 3 );
+PlBack = nth( Pls, 3 );
+color( PlBack, red ); 
+Pls = list( PlFront, PlBack, PlInter );
+
+interact( Pls );
+
+save( "solid6", Pls );
+free( Pls );
+free( PlFront );
+free( PlInter );
+free( PlBack );
+
+resolution = save_res;

@@ -1,0 +1,142 @@
+#
+# A twelve identical pieces puzzle.
+#
+#					Gershon Elber, Dec 1998
+#
+
+Size = 0.25;
+
+Piece = (box( vector( -4 * Size, -Size, -Size ), 8 * Size, 2 * Size, 2 * Size )
+      - box( vector( -3 * Size, -2 * Size, 0 ), 2 * Size, 4 * Size, 2 * Size )
+      - box( vector(      Size, -2 * Size, 0 ), 2 * Size, 4 * Size, 2 * Size ))
+      - box( vector( -Size * 1.001, 0, -2 * Size ),
+	     2 * Size * 1.001, 2 * Size, 4 * Size );
+
+Piece1 = Piece * rx( 90 ) * rz( 180 ) * tz( -Size * 2 );
+attrib( Piece1, "rgb", "255,0,0" );
+
+Piece2 = Piece * ry( -90 ) * rz( 90 ) * tx( -Size * 2 );
+attrib( Piece2, "rgb", "255,100,0" );
+
+Piece3 = Piece * ry( 90 ) * rz( -90 ) * tx( Size * 2 );
+attrib( Piece3, "rgb", "255,0,100" );
+
+Piece4 = Piece * rz( 90 ) * rz( 180 ) * tx( -Size * 2 );
+attrib( Piece4, "rgb", "100,255,0" );
+
+Piece5 = Piece * rz( 90 ) * rz( 0 ) * tx( Size * 2 );
+attrib( Piece5, "rgb", "0,255,100" );
+
+Piece6 = Piece * rz( 90 ) * ry( -90 ) * tz( -Size * 2 );
+attrib( Piece6, "rgb", "0,0,255" );
+
+Piece7 = Piece * rz( -90 ) * rx( 90 ) * rz( 90 ) * ty( Size * 2 );
+attrib( Piece7, "rgb", "0,100,255" );
+
+Piece8 = Piece * rz( 90 ) * rx( 90 ) * rz( 90 ) * ty( -Size * 2 );
+attrib( Piece8, "rgb", "100,0,255" );
+
+Piece9 = Piece * rz( 90 ) * ry( -90 ) * tz( Size * 2 );
+attrib( Piece9, "rgb", "100,100,255" );
+
+Piece10 = Piece * ry( 180 ) * ty( -Size * 2 );
+attrib( Piece10, "rgb", "255,100,255" );
+
+Piece11 = Piece * ry( 180 ) * rz( 180 ) * ty( Size * 2 );
+attrib( Piece11, "rgb", "100,255,255" );
+
+Piece12 = Piece * rz( 180 ) * rx( -90 ) * tz( Size * 2 );
+attrib( Piece12, "rgb", "255,255,100" );
+
+All = list( axes, Piece1, Piece2, Piece3, Piece4, Piece5, Piece6,
+	    Piece7, Piece8, Piece9, Piece10, Piece11, Piece12 );
+view( all, 1 );
+# save( "puz12pcs", All );
+
+#
+# Disassembly into two sub-parts.
+#
+mov_z1 = creparam( cbezier( list( ctlpt( E1, 0 ), ctlpt( E1, Size * 2 ) ) ),
+		   0.0, 1.0 );
+
+mov_y1 = creparam( cbezier( list( ctlpt( E1, 0 ), ctlpt( E1, -Size ) ) ),
+		   1.0, 2.0 );
+
+mov_z2 = creparam( cbezier( list( ctlpt( E1, 0 ), ctlpt( E1, Size * 8 ) ) ),
+		   2.0, 3.0 );
+
+mov_x1 = creparam( cbezier( list( ctlpt( E1, 0 ), ctlpt( E1, Size * 15 ) ) ),
+		   3.0, 4.0 );
+
+mov_z3 = creparam( cbezier( list( ctlpt( E1, 0 ), ctlpt( E1, -Size * 10 ) ) ),
+		   4.0, 5.0 );
+
+#
+# Disassembly into single pieces.
+#
+
+mov_x2 = creparam( cbezier( list( ctlpt( E1, 0 ), ctlpt( E1, Size * 4 ) ) ),
+		   5.0, 6.0 );
+
+mov_x3 = creparam( cbezier( list( ctlpt( E1, 0 ), ctlpt( E1, -Size * 4 ) ) ),
+		   5.0, 6.0 );
+
+mov_y2 = creparam( cbezier( list( ctlpt( E1, 0 ), ctlpt( E1, Size * 4 ) ) ),
+		   5.0, 6.0 );
+
+mov_y3 = creparam( cbezier( list( ctlpt( E1, 0 ), ctlpt( E1, -Size * 4 ) ) ),
+		   5.0, 6.0 );
+
+mov_x4 = creparam( cbezier( list( ctlpt( E1, 0 ), ctlpt( E1, Size * 12 ) ) ),
+		   5.0, 6.0 );
+
+mov_x5 = creparam( cbezier( list( ctlpt( E1, 0 ), ctlpt( E1, Size * 3 ) ) ),
+		   6.0, 7.0 );
+
+mov_x6 = creparam( cbezier( list( ctlpt( E1, 0 ), ctlpt( E1, -Size * 3 ) ) ),
+		   6.0, 7.0 );
+
+attrib( Piece1,  "animation", list( mov_y3 ) );
+attrib( Piece4,  "animation", list( mov_x3 ) );
+attrib( Piece5,  "animation", list( mov_x2 ) );
+attrib( Piece6,  "animation", list( mov_z1, mov_y1, mov_z2, mov_x1, mov_z3, mov_x5 ) );
+attrib( Piece7,  "animation", list( mov_z1, mov_y1, mov_z2, mov_x1, mov_z3, mov_x6 ) );
+attrib( Piece8,  "animation", list( mov_z1, mov_y1, mov_z2, mov_x1, mov_z3, mov_x6 ) );
+attrib( Piece9,  "animation", list( mov_z1, mov_y1, mov_z2, mov_x1, mov_z3, mov_x5 ) );
+attrib( Piece10, "animation", list( mov_z1, mov_y1, mov_z2, mov_x1, mov_z3, mov_y3 ) );
+attrib( Piece11, "animation", list( mov_z1, mov_z2, mov_x1, mov_z3, mov_y2 ) );
+attrib( Piece12, "animation", list( mov_y1, mov_z2, mov_x1, mov_z3, mov_x4 ) );
+
+All = list( Piece1, Piece2, Piece3, Piece4, Piece5, Piece6,
+	    Piece7, Piece8, Piece9, Piece10, Piece11, Piece12 );
+view( all, 1 );
+
+save( "puz12pcs", All );
+
+free( All );
+free( Size );
+free( Piece );
+free( Piece1 );
+free( Piece2 );
+free( Piece3 );
+free( Piece4 );
+free( Piece5 );
+free( Piece6 );
+free( Piece7 );
+free( Piece8 );
+free( Piece9 );
+free( Piece10 );
+free( Piece11 );
+free( Piece12 );
+free( mov_x1 );
+free( mov_x2 );
+free( mov_x3 );
+free( mov_x4 );
+free( mov_x5 );
+free( mov_x6 );
+free( mov_y1 );
+free( mov_y2 );
+free( mov_y3 );
+free( mov_z1 );
+free( mov_z2 );
+free( mov_z3 );

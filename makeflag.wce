@@ -1,0 +1,213 @@
+
+MAKE = nmake
+
+#
+# The XXX_DIR variables below MUST have ABSOLUTE path. Since this file
+# is sourced from several directories relative path specification will
+# be simple wrong.
+#
+IRIT_SRC_DIR = c:\irit\irit
+
+#
+# All libraries created will be installed into the IRIT_LIB_DIR directory.
+#
+IRIT_LIB_DIR = $(IRIT_SRC_DIR)\wcelib
+
+#
+# All includes files associated with the installed libraries will be
+# installed into the IRIT_INC_DIR directory.
+#
+IRIT_INC_DIR = $(IRIT_SRC_DIR)\include
+
+#
+# All binaries created will be installed into the IRIT_BIN_DIR directory.
+#
+IRIT_BIN_DIR = $(IRIT_SRC_DIR)\wcebin
+
+#
+# Quiet strings
+#
+# QUIET_STR = -DIRIT_QUIET_STRINGS
+
+#
+# Support for RLE image read/write using the Utah Raster Toolkit (IRIT_URT) library.
+# You can ftp it from cs.utah.edu.
+#
+#IRIT_URT = c:\c\urt
+#IRIT_URT_INC = -I$(IRIT_URT)\include
+#IRIT_URT_LIB = $(IRIT_URT)\lib\rle.lib
+#IRIT_URT_FLAGS = -DIRIT_HAVE_URT_RLE
+
+#
+# Support for IRIT_GIF image read/write using the giflib toolkit library.
+# You can ftp it from http://catb.org/~esr/giflib/doc/gif_lib.html
+#
+IRIT_GIF = c:\c\giflib
+IRIT_GIF_INC = -I$(IRIT_GIF)\lib
+IRIT_GIF_LIB = $(IRIT_GIF)\lib\libgifWINCE.lib
+IRIT_GIF_FLAGS = -DIRIT_HAVE_GIF_LIB
+
+#
+# Support for IRIT_PNG image read/write using the pnglib toolkit library.
+# You can ftp it from http://www.libpng.org/pub/png/libpng.html
+# libpng also requires zlib.
+#
+IRIT_PNG = c:\c\libpng\lpng126
+IRIT_PNG_INC = -I$(IRIT_PNG) 
+IRIT_PNG_LIB = $(IRIT_PNG)\libpngWINCE.lib
+IRIT_PNG_FLAGS = -DIRIT_HAVE_PNG_LIB
+
+#
+# Support for IRIT_GZIP image read/write using the gzip toolkit library.
+# You can ftp it from http://www.gzip.org/zlib/
+#
+IRIT_GZIP = c:\c\zlib
+IRIT_GZIP_INC = -I$(IRIT_GZIP)
+IRIT_GZIP_LIB = $(IRIT_GZIP)\zlibWINCE.lib
+IRIT_GZIP_FLAGS = -DIRIT_HAVE_GZIP_LIB
+
+#
+# Support for IRIT_MAGELLAN/SpaceMouse drivers
+#
+#IRIT_MAGELLAN = c:\c\magellan
+#IRIT_MAGELLAN_INC = -I$(IRIT_MAGELLAN)\inc
+#IRIT_MAGELLAN_LIB = $(IRIT_MAGELLAN)\lib\siapp.lib
+#IRIT_MAGELLAN_FLAGS = -DIRIT_HAVE_MAGELLAN_LIB
+
+#
+# Support for OpenGL CG.
+#
+#OGL_NVIDIA_EXTENSION = "C:\Program Files\NVIDIA Corporation\SDK 9.5"
+#IRIT_OGL_CG = "C:\Program Files\NVIDIA Corporation\cg"
+#IRIT_OGL_CG_INC = -I$(OGL_NVIDIA_EXTENSION)\inc -I$(IRIT_OGL_CG)\include
+#IRIT_OGL_CG_LIB = $(IRIT_OGL_CG)\lib\cg.lib $(IRIT_OGL_CG)\lib\cgGL.lib
+#IRIT_OGL_CG_FLAGS = -DIRIT_HAVE_OGL_CG_LIB
+
+#
+# Support for OpenGL and GLUT
+#
+OGL = c:\c\OpenGLES\Vincent-1.0.0
+IRIT_OGL_GLUT = c:\c\OpenGLES\glutes-1.11
+IRIT_OGL_GLUT_INC = -I$(IRIT_OGL_GLUT)\Inc -I$(OGL)\include
+IRIT_OGL_GLUT_LIB = $(IRIT_OGL_GLUT)\Lib\ppcarmv4rel_Vincent\glutes_static.lib $(OGL)\bin\arm\Release\libGLES_CM.lib
+
+#OGL = C:\c\OpenGLES\rasteroid\rasteroid3.1
+#IRIT_OGL_GLUT = c:\c\OpenGLES\glutes-1.11
+#IRIT_OGL_GLUT_INC = -I$(IRIT_OGL_GLUT)\Inc -I$(OGL)\include
+#IRIT_OGL_GLUT_LIB = $(IRIT_OGL_GLUT)\Lib\ppcarmv4rel_rasteroid\glutes_static.lib -Libpath:$(OGL)\lib\wince\pp2003\device libGLES_CM_NoE.lib libEGL.lib
+
+IRIT_OGL_GLUT_FLAGS = -DIRIT_HAVE_OGL_GLUT
+
+#
+# Support for compressed binary files. 
+# This option also requires -DIRIT_HAVE_GZIP_LIB.
+#
+#IPC_COMP = -DIPC_BIN_COMPRESSION
+
+#
+# Type of windowing system.
+#
+IRITWINDOW = -D__WINCE__ -D__OPENGL__
+
+#############################################################################
+# Flags for Mircosoft C compiler, Windows CE
+#
+
+CC_IRIT_BIN_DIR = "c:\Program Files\Microsoft Visual Studio 8\vc\ce\bin\x86_arm"
+CC_IRIT_INC_DIR = "C:\Program Files\Microsoft Visual Studio 8\SmartDevices\SDK\PocketPC2003\Include"
+CC_IRIT_LIB_DIR = "C:\Program Files\Microsoft Visual Studio 8\SmartDevices\SDK\PocketPC2003\Lib\Armv4"
+IRITCC = $(CC_IRIT_BIN_DIR)\cl
+IRITLIB = $(CC_IRIT_BIN_DIR)\lib
+IRITLINK = $(CC_IRIT_BIN_DIR)\link -libpath:$(CC_IRIT_LIB_DIR)
+
+DFLAGS = -I$(CC_IRIT_INC_DIR) $(QUIET_STR) $(IRITWINDOW) $(IPC_COMP) -DRANDOM_IRIT -DDEPRECATE_SUPPORTED -D_WIN32_WCE -D_WIN32_WCE=0x420 -DUNDER_CE=0x420 -DWINCE -DWIN32_PLATFORM_PSPC -D_WINDOWS -DARM -D_ARM_ -D_UNICODE -DUNICODE -DPOCKETPC2003_UI_MODEL -DGLUTES_STATIC -D__WINCE__ -D__OPENGL__
+# -D_CRT_SECURE_NO_DEPRECATE
+
+!IF "$(CFG)" == "Release" || "$(CFG)" == "Rel"
+#
+# **** RELEASE ****
+#
+CFLAGS = -GL -MT -GR -O2 -Os -W3 -nologo -c -TC -DNDEBUG $(DFLAGS) $(IRIT_URT_INC) $(IRIT_GIF_INC) $(IRIT_PNG_INC) $(IRIT_MAGELLAN_INC) $(IRIT_GZIP_INC) $(IRIT_OGL_CG_INC) $(IRIT_OGL_GLUT_INC)
+IRITCONLINK = $(IRITLINK) -LTCG 
+IRITGUILINK = $(IRITLINK) -LTCG 
+IRIT_LIBC =
+IRIT_LIBCMT =
+IRITDLL = $(IRITLINK)
+IRIT_OBJ_PF = oce
+IRIT_LIB_PF = WCE
+IRIT_EXE_PF = WCE
+!ELSE
+#
+# **** DEBUG ****
+#
+CFLAGS = -MT -Zi -Od -GR -W3 -nologo -c -TC -DDEBUG -D_DEBUG $(DFLAGS) $(IRIT_URT_INC) $(IRIT_GIF_INC) $(IRIT_PNG_INC) $(IRIT_MAGELLAN_INC) $(IRIT_GZIP_INC) $(IRIT_OGL_CG_INC) $(IRIT_OGL_GLUT_INC) -DDEBUG_IRIT_MALLOC -DDEBUG -D_DEBUG -D_CRTDBG_MAP_ALLOC
+IRITCONLINK = $(IRITLINK)
+IRITGUILINK = $(IRITLINK)
+IRIT_LIBC =
+IRIT_LIBCMT =
+IRITDLL = $(IRITLINK)
+IRIT_OBJ_PF = Doce
+IRIT_LIB_PF = WCED
+IRIT_EXE_PF = WCED
+!ENDIF
+
+#############################################################################
+# IRIT Libraries to use:
+#
+# For using regular libraries.
+#
+IRIT_CIRCLINK = $(IRIT_SRC_DIR)/circlink/circlink.$(IRIT_OBJ_PF)
+IRIT_LIBS = -libpath:$(IRIT_LIB_DIR) $(IRIT_CIRCLINK) \
+	$(EXT_LIB) $(GRAP_LIB) $(USER_LIB) $(RNDR_LIB) $(BOOL_LIB) \
+	$(PRSR_LIB) $(MDL_LIB) $(MVAR_LIB) $(TRIM_LIB) \
+	$(TRIV_LIB) $(TRNG_LIB) $(SYMB_LIB) \
+	$(CAGD_LIB) $(GEOM_LIB) $(MISC_LIB) $(XTRA_LIB) \
+	$(IRIT_URT_LIB) $(IRIT_GIF_LIB) $(IRIT_PNG_LIB) $(IRIT_MAGELLAN_LIB) \
+	$(IRIT_GZIP_LIB) $(IRIT_OGL_CG_LIB) $(IRIT_OGL_GLUT_LIB)
+DO_IRIT_LIB = circlink_dir
+
+#
+# For using Dynamically Linked Library
+#
+# IRIT_LIBS = $(IRIT_LIB_DIR)\irit.lib $(IRIT_URT_LIB) $(IRIT_GIF_LIB) $(IRIT_PNG_LIB) \
+#	 $(IRIT_MAGELLAN_LIB) $(IRIT_GZIP_LIB) $(IRIT_OGL_CG_LIB) $(IRIT_OGL_GLUT_LIB)
+# DO_IRIT_LIB = irit.dll
+
+#############################################################################
+# Display devices to support
+#
+GRAPDRVS = nuldrvs$(IRIT_EXE_PF).exe glutdrvs$(IRIT_EXE_PF).exe 
+
+#
+# Default rule for compilation.
+#
+.c.$(IRIT_OBJ_PF):
+	$(IRITCC) $(IRIT_URT_FLAGS) $(IRIT_GIF_FLAGS) $(IRIT_PNG_FLAGS) $(IRIT_MAGELLAN_FLAGS) $(IRIT_GZIP_FLAGS) $(IRIT_OGL_CG_FLAGS) $(IRIT_OGL_GLUT_FLAGS) $(IRIT_MORE_FLAGS) $(CFLAGS) -I. -I$(IRIT_INC_DIR) -c -Fo$*.$(IRIT_OBJ_PF) $<
+
+.cpp.$(IRIT_OBJ_PF):
+	$(IRITCC) $(IRIT_URT_FLAGS) $(IRIT_GIF_FLAGS) $(IRIT_PNG_FLAGS) $(IRIT_MAGELLAN_FLAGS) $(IRIT_GZIP_FLAGS) $(IRIT_OGL_CG_FLAGS) $(IRIT_OGL_GLUT_FLAGS) $(IRIT_MORE_FLAGS) $(CFLAGS) -I. -I$(IRIT_INC_DIR) -c -Fo$*.$(IRIT_OBJ_PF) $<
+
+
+BOOL_LIB = IritBool$(IRIT_LIB_PF).lib
+CAGD_LIB = IritCagd$(IRIT_LIB_PF).lib
+EXT_LIB = IritExt$(IRIT_LIB_PF).lib
+GEOM_LIB = IritGeom$(IRIT_LIB_PF).lib
+GRAP_LIB = IritGrap$(IRIT_LIB_PF).lib
+MVAR_LIB = IritMvar$(IRIT_LIB_PF).lib
+MDL_LIB  = IritMdl$(IRIT_LIB_PF).lib
+MISC_LIB = IritMisc$(IRIT_LIB_PF).lib
+PRSR_LIB = IritPrsr$(IRIT_LIB_PF).lib
+RNDR_LIB = IritRndr$(IRIT_LIB_PF).lib
+SYMB_LIB = IritSymb$(IRIT_LIB_PF).lib
+TRIM_LIB = IritTrim$(IRIT_LIB_PF).lib
+TRIV_LIB = IritTriv$(IRIT_LIB_PF).lib
+TRNG_LIB = IritTrng$(IRIT_LIB_PF).lib
+USER_LIB = IritUser$(IRIT_LIB_PF).lib
+XTRA_LIB = IritXtra$(IRIT_LIB_PF).lib
+
+GLOBINGCON = 
+WCECORELIBS = winsock.lib coredll.lib corelibc.lib ole32.lib oleaut32.lib uuid.lib commctrl.lib commdlg.lib
+WCECONLIBS = -subsystem:windows $(WCECORELIBS) $(GLOBINGCON)
+WCEGUISHARED = -subsystem:windows $(WCECORELIBS) $(GLOBINGCON)
+WCEGUIOGLLIBS = $(WCEGUISHARED) $(WCEOPENGLLIBS)
+WCEGUIMTOGLLIBS = $(WCEGUISHARED) $(WCEOPENGLLIBS)

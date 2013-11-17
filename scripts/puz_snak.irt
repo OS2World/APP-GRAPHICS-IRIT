@@ -1,0 +1,126 @@
+#
+# A "snake" style 3D puzzle.
+#
+
+SnakePiece = function( Clr, XRot, YPos, ZPos ):
+    return = box( vector( 0, 0, -0.1 ), 1.0, 1.1, 1.1 ) -
+	     box( vector( 0, -1, -2 ), 2, 3, 2 ) * rx( 45 ) * tx( -0.5 ):
+    return = return * sc( 1 / sqrt( 2 ) ) * rx( -225 )
+			    * trans( vector( -1 / (2 * sqrt( 2 )), 1, 0.5 ) ):
+    return = return * rx( XRot ) * ty( YPos ) * tz( ZPos ):
+    color( return, Clr );
+
+Diag = cos( Pi / 4 );
+
+#################################
+
+S1 = SnakePiece( red, 45, 0, -Diag / 2 );
+rot_z = creparam( cbezier( list( ctlpt( E1, 0 ), ctlpt( E1, 180 ) ) ),
+		  0, 1 );
+attrib( S1, "animation", list( rot_z ) );
+free( rot_z );
+
+#################################
+
+S2 = list( S1 * rz( 180 ) * rx( 45 ) * ty( 0.75 ) * tz( 0.25 ),
+	   SnakePiece( blue,  270, 0.5,  0.5 ),
+	   SnakePiece( green,  90, 1.0, -1.0 ),
+	   SnakePiece( red,   270, 0.5, -0.5 ),
+	   SnakePiece( blue,   90, 1.0, -2.0 ),
+	   SnakePiece( green, 270, 0.5, -1.5 ) )
+	* rx( 45 ) * ty( -3 * Diag ) * tz( 1.5 * Diag ) * rx( 180 );
+rot_z = creparam( cbezier( list( ctlpt( E1, 0 ), ctlpt( E1, 180 ) ) ),
+		  1, 2 );
+attrib( S2, "animation", list( rot_z ) );
+free( rot_z );
+free( S1 );
+
+#################################
+
+S3 = list( S2 * ry( 180 ) * rx( -90 ) * ty( Diag / 2 ) * tz( Diag / 2 ),
+	   SnakePiece( red, 45, 0, -Diag / 2 ) );
+rot_z = creparam( cbezier( list( ctlpt( E1, 0 ), ctlpt( E1, 180 ) ) ),
+		  2, 3 );
+attrib( S3, "animation", list( rot_z ) );
+free( rot_z );
+free( S2 );
+
+#################################
+
+S4 = list( S3 * ry( 180 ) * rx( 45 ) * ty( 0.25 ) * tz( -2.25 ),
+	   SnakePiece( blue,  270,  0.0, -0.0 ),
+	   SnakePiece( red,    90,  0.5, -1.5 ),
+	   SnakePiece( green, 270,  0.0, -1.0 ),
+	   SnakePiece( blue,   90,  0.5, -2.5 ) )
+	* rx( 45 ) * ty( -Diag / 2 );
+rot_y = creparam( cbezier( list( ctlpt( E1, 0 ), ctlpt( E1, 180 ) ) ),
+		  3, 4 );
+attrib( S4, "animation", list( rot_y ) );
+free( rot_y );
+free( S3 );
+
+#################################
+
+S5 = list( S4 * ty( Diag / 2 ) * tz( Diag / 2 ),
+	   SnakePiece( green, 45, 0, -Diag / 2 ) );
+rot_z = creparam( cbezier( list( ctlpt( E1, 0 ), ctlpt( E1, 180 ) ) ),
+		  5, 6 );
+attrib( S5, "animation", list( rot_z ) );
+free( rot_z );
+free( S4 );
+
+#################################
+
+S6 = list( S5 * rx( 135 ) * ty( -0.25 ) * tz( -2.25 ),
+	   SnakePiece( red,   90,  0.0, -1.0 ),
+	   SnakePiece( blue, 270, -0.5, -0.5 ),
+	   SnakePiece( green, 90,  0.0, -2.0 ),
+	   SnakePiece( red,  270, -0.5, -1.5 ) )
+	* rx( -45 ) * ty( Diag / 2 );
+rot_y = creparam( cbezier( list( ctlpt( E1, 0 ), ctlpt( E1, 180 ) ) ),
+		  4, 5 );
+attrib( S6, "animation", list( rot_y ) );
+free( rot_y );
+free( S5 );
+
+#################################
+
+S7 = list( S6 * rx( 90 ),
+	   SnakePiece( blue, 45, 0, -Diag / 2 ) )
+	* ty( -Diag / 2 ) * tz( -Diag / 2 );
+rot_y = creparam( cbezier( list( ctlpt( E1, 0 ), ctlpt( E1, 180 ) ) ),
+		  6, 7 );
+attrib( S7, "animation", list( rot_y ) );
+free( rot_y );
+free( S6 );
+
+#################################
+
+S8 = list( S7 * rz( 180 ) * rx( 45 ) * tz( 0.25 ) * ty( -0.75 ),
+	   SnakePiece( red,    90,  -0.5,  -0.5 ),
+	   SnakePiece( green, 270,  -1.0,   0.0 ),
+	   SnakePiece( blue,   90,  -0.5,  -1.5 ),
+	   SnakePiece( red,   270,  -1.0,  -1.0 ),
+	   SnakePiece( green,  90,  -0.5,  -2.5 ) )
+	* rx( 45 ) * tz( 2.125 ) * ty( -1.1 );
+rot_y = creparam( cbezier( list( ctlpt( E1, 0 ), ctlpt( E1, 180 ) ) ),
+		  7, 8 );
+attrib( S8, "animation", list( rot_y ) );
+free( rot_y );
+free( S7 );
+
+#################################
+
+SnakePuz = list( S8 * rx( 135 ) * rz( 180 ) * tz( 0.28 ) * ty( -0.72 ),
+	         SnakePiece( blue,    0,  -1.0,   0.0 ),
+	         SnakePiece( green, 180,   0.5,   0.5 ) );
+free( S8 );
+free( Diag );
+
+view( list( SnakePuz, axes ), 1 );
+
+interact( list( SnakePuz ) );
+
+save( "puzsnake", SnakePuz );
+
+free( SnakePuz );

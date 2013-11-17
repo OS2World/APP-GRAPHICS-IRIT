@@ -1,0 +1,38 @@
+#
+#
+# This make file is for the aisoshad program for Unix
+#
+#					Gershon Elber, June 1997
+#
+
+include ../makeflag.unx
+
+GD = ../grapdrvs
+
+OBJS1	= aisoshad.o$(IRIT_OBJ_PF) zbufcrvs.o$(IRIT_OBJ_PF)
+
+OBJS2	= lineshad.o$(IRIT_OBJ_PF) zbufcrvs.o$(IRIT_OBJ_PF)
+
+OBJS3	= izebra.o$(IRIT_OBJ_PF) zbufcrvs.o$(IRIT_OBJ_PF)
+
+all:	aisoshad$(IRIT_EXE_PF) lineshad$(IRIT_EXE_PF) izebra$(IRIT_EXE_PF)
+
+aisoshad$(IRIT_EXE_PF):	$(OBJS1)
+	$(CC) $(CFLAGS) -o aisoshad$(IRIT_EXE_PF) $(OBJS1) $(IRIT_LIBS) $(IRIT_MORE_LIBS) \
+	$(GRAPOGLLIBS) -lm
+
+lineshad$(IRIT_EXE_PF):	$(OBJS2)
+	$(CC) $(CFLAGS) -o lineshad$(IRIT_EXE_PF) $(OBJS2) $(IRIT_LIBS) $(IRIT_MORE_LIBS) \
+	$(GRAPOGLLIBS) -lm
+
+izebra$(IRIT_EXE_PF):		$(OBJS3)
+	$(CC) $(CFLAGS) -o izebra$(IRIT_EXE_PF) $(OBJS3) $(IRIT_LIBS) $(IRIT_MORE_LIBS) \
+	$(GRAPOGLLIBS) -lm
+
+install: aisoshad$(IRIT_EXE_PF) lineshad$(IRIT_EXE_PF) izebra$(IRIT_EXE_PF)
+	mv -f aisoshad$(IRIT_EXE_PF) lineshad$(IRIT_EXE_PF) izebra$(IRIT_EXE_PF) \
+	$(IRIT_BIN_DIR)
+	cp aisoshad.cfg lineshad.cfg izebra.cfg $(IRIT_BIN_DIR)
+
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

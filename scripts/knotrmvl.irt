@@ -1,0 +1,91 @@
+#
+# A small demo of the knot removal capabilities in IRIT
+#
+#						Gershon Elber, July 1999
+#
+
+pl1 = nil();
+for ( x = 0, 1, 200,
+	snoc(point(x / 100 - 1, sin(x * Pi / 100), 0.0), pl1)
+    );
+free( x );
+
+c1 = cinterp( pl1, 3, 50, PARAM_UNIFORM, false );
+
+c1r1 = knotremove( c1, 1e-3 );
+color( c1r1, magenta );
+adwidth( c1r1, 3 );
+printf( "Size of c1 is %d and c1r1 is %d\\n",
+	list( sizeof( c1 ), sizeof( c1r1 ) ) );
+interact( list( c1r1, c1 ) );
+
+c1r2 = knotremove( c1, 1e-2 );
+color( c1r2, magenta );
+adwidth( c1r2, 3 );
+printf( "Size of c1 is %d and c1r2 is %d\\n",
+	list( sizeof( c1 ), sizeof( c1r2 ) ) );
+interact( list( c1r2, c1 ) );
+
+c1r3 = knotremove( c1, 2e-2 );
+color( c1r3, magenta );
+adwidth( c1r3, 3 );
+printf( "Size of c1 is %d and c1r3 is %d\\n",
+	list( sizeof( c1 ), sizeof( c1r3 ) ) );
+interact( list( c1r3, c1 ) );
+
+save( "crv1rdc", list( c1, c1r1, c1r2, c1r3 ) );
+
+#############################################################################
+
+pl1 = nil();
+for ( x = 0, 1, 200,
+	snoc( ctlpt( e5, x / 100 - 1,
+			 sin(x * Pi / 100),
+			 cos(x * Pi / 100),
+			 sin(x * Pi / 50),
+			 cos(x * Pi / 30) ),
+	      pl1 )
+    );
+free( x );
+
+c1 = cinterp( pl1, 3, 50, PARAM_UNIFORM, false );
+c2 = coerce( c1, e3 );
+
+c1r1 = knotremove( c1, 1e-2 );
+printf( "Size of c1 is %d and c1r1 is %d\\n",
+	list( sizeof( c1 ), sizeof( c1r1 ) ) );
+c1r2 = coerce( c1r1, e3 );
+color( c1r2, magenta );
+adwidth( c1r2, 3 );
+interact( list( c1r2, c2 ) );
+
+save( "crv2rdc", list( c1r2, c2 ) );
+
+#############################################################################
+
+c1 = pcircle( vector( 0, 0, 0 ), 1 );
+c1r1 = crefine( c1, FALSE, list( 0.1, 0.3, 0.7, 1.5, 1.7, 1.7, 1.7, 1.7,
+					   2.3, 2.3, 2.7, 3.5, 3.5, 3.5 ) );
+
+c1r2 = knotclean( c1r1 );
+
+save( "crv3rdc", list( c1r2 == c1, c1r2 ) );
+
+#############################################################################
+
+c1 = circle( vector( 0, 0, 0 ), 1 );
+c1r1 = crefine( c1, FALSE, list( 0.1, 0.3, 0.7, 1.5, 1.7, 1.7, 1.7,
+				 2.3, 2.3, 2.7, 3.5, 3.5, 3.5 ) );
+c1r2 = knotclean( c1r1 );
+
+save( "crv4rdc", list( c1 == c1r2, c1r2 ) );
+
+#############################################################################
+
+free( c1 );
+free( c2 );
+free( c1r1 );
+free( c1r2 );
+free( c1r3 );
+free( pl1 );
+

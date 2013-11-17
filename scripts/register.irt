@@ -1,0 +1,127 @@
+#
+# Registration of points sets and point set agains surface.
+#
+#				Gershon Elber, Aug. 2000
+#
+
+ri = iritstate( "RandomInit", 1964 );  # Seed-initiate the randomizer,
+free( ri );
+
+#
+# Two point sets.
+#
+Pt1 = nil();
+Pt2 = nil();
+for (i = 0, 1, 15,
+    Pt = point( random( -.7, .7 ), random( -.7, .7 ), random( -.7, .7 ) ):
+    snoc( Pt * tx( 0 ), Pt1 ):
+    snoc( Pt * tx( 0 ), Pt2 ) );
+color( Pt2, magenta );
+
+Pt1f = Pt1 * rx( 13 ) * ry( 5 ) * rz( 11 )
+	   * tx( 0.1 ) * ty( 0.03 ) * tz( -0.05 );
+color( Pt1f, cyan );
+
+Tr = ptregister( Pt1f, Pt2, 1, 1e-6 );
+
+Pt1y = Pt1f * Tr;
+color( Pt1y, yellow );
+adwidth( Pt1y, 2 );
+
+save( "registr1", list( Pt1y, Pt1f, Pt2, axes ) );
+
+interact( list( Pt1y, Pt1f, Pt2, axes ) );
+
+#
+# Two point sets with some minor fuzziness.
+#
+Pt1 = nil();
+Pt2 = nil();
+x = 1e-8;
+for (i = 0, 1, 100,
+    Pt = point( random( -.7, .7 ), random( -.7, .7 ), random( -.7, .7 ) ):
+    snoc( Pt * tx( 0 ), Pt1 ):
+    snoc( coerce( Pt + point( random( -x, x ),
+			      random( -x, x ),
+			      random( -x, x ) ),
+	          point_type ),
+	  Pt2 ) );
+color( Pt2, magenta );
+
+Pt1f = Pt1 * rx( 13 ) * ry( 5 ) * rz( 11 )
+	   * tx( 0.1 ) * ty( 0.03 ) * tz( -0.05 );
+color( Pt1f, cyan );
+
+Tr = ptregister( Pt1f, Pt2, 1, 1e-6 );
+
+Pt1y = Pt1f * Tr;
+color( Pt1y, yellow );
+adwidth( Pt1y, 2 );
+
+save( "registr2", list( Pt1y, Pt1f, Pt2, axes ) );
+
+interact( list( Pt1y, Pt1f, Pt2, axes ) );
+
+#############################################################################
+
+
+#
+# Point set against a surface.
+#
+
+comment $
+
+Wiggle = sbspline( 3, 3, 
+        list( list( ctlpt( E3, 0.013501, 0.46333, -1.01136 ),
+                    ctlpt( E3, 0.410664, -0.462427, -0.939545 ),
+                    ctlpt( E3, 0.699477, 0.071974, -0.381915 ) ),
+              list( ctlpt( E3, -0.201925, 1.15706, -0.345263 ),
+                    ctlpt( E3, 0.210717, 0.022708, -0.34285 ),
+                    ctlpt( E3, 0.49953, 0.557109, 0.21478 ) ),
+              list( ctlpt( E3, -0.293521, 0.182036, -0.234382 ),
+                    ctlpt( E3, 0.103642, -0.743721, -0.162567 ),
+                    ctlpt( E3, 0.392455, -0.20932, 0.395063 ) ),
+              list( ctlpt( E3, -0.508947, 0.875765, 0.431715 ),
+                    ctlpt( E3, -0.096305, -0.258586, 0.434128 ),
+                    ctlpt( E3, 0.192508, 0.275815, 0.991758 ) ),
+              list( ctlpt( E3, -0.600543, -0.099258, 0.542596 ),
+                    ctlpt( E3, -0.20338, -1.02502, 0.614411 ),
+                    ctlpt( E3, 0.085433, -0.490614, 1.17204 ) ) ),
+        list( list( kv_open ),
+              list( kv_open ) ) );
+
+Pt1 = nil();
+for ( i = 0, 1, 50,
+    Pt = coerce( seval( Wiggle, random( 0.01, 0.99 ), random( 0.01, 0.99 ) ),
+		 point_type ):
+    snoc( coerce( Pt, point_type ), Pt1 ) );
+color( Pt1, magenta );
+
+Pt1x = Pt1 * rx( 2 ) * ry( 3 ) * rz( 5 )
+	   * tx( 0.002 ) * ty( 0.001 ) * tz( -0.005 );
+color( Pt1x, cyan );
+
+Tr = ptregister( Pt1x, Wiggle, 1, 1e-4 );
+Pt1y = Pt1x * Tr;
+color( Pt1y, yellow );
+adwidth( Pt1y, 2 );
+
+save( "registr3", list( Pt1y, Pt1, Pt1x, Wiggle, axes ) );
+
+interact( list( Pt1y, Pt1, Pt1x, Wiggle, axes ) );
+
+free( Wiggle );
+free( Pt1x );
+
+$
+
+#############################################################################
+
+free( i );
+free( x );
+free( Pt );
+free( Pt1 );
+free( Pt1f );
+free( Pt1y );
+free( Pt2 );
+free( Tr );

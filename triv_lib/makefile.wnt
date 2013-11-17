@@ -1,0 +1,45 @@
+#
+# This is the make file for the triv_lib library.
+#
+#				Gershon Elber, June 1993
+#
+
+# Get the destination directories:
+include ..\makeflag.wnt
+
+OBJS =  geomat4d.$(IRIT_OBJ_PF) \
+	mrchcube.$(IRIT_OBJ_PF) \
+	mrch_run.$(IRIT_OBJ_PF) \
+	mrchtriv.$(IRIT_OBJ_PF) \
+	trinterp.$(IRIT_OBJ_PF) \
+	triv_aux.$(IRIT_OBJ_PF) \
+	triv_dbg.$(IRIT_OBJ_PF) \
+	triv_der.$(IRIT_OBJ_PF) \
+	triv_err.$(IRIT_OBJ_PF) \
+	triv_ftl.$(IRIT_OBJ_PF) \
+	triv_gen.$(IRIT_OBJ_PF) \
+	triv_ref.$(IRIT_OBJ_PF) \
+	triv_sub.$(IRIT_OBJ_PF) \
+	trivcmpt.$(IRIT_OBJ_PF) \
+	trivcoer.$(IRIT_OBJ_PF) \
+	trivcurv.$(IRIT_OBJ_PF) \
+	trivedit.$(IRIT_OBJ_PF) \
+	triveval.$(IRIT_OBJ_PF) \
+	trivextr.$(IRIT_OBJ_PF) \
+	trivmesh.$(IRIT_OBJ_PF) \
+	trivmrph.$(IRIT_OBJ_PF) \
+	trivrais.$(IRIT_OBJ_PF) \
+	trivruld.$(IRIT_OBJ_PF) \
+	trivstrv.$(IRIT_OBJ_PF) \
+	trivtrev.$(IRIT_OBJ_PF)
+
+$(TRIV_LIB): $(OBJS)
+	-del $(TRIV_LIB)
+	$(IRITLIB) -out:$(TRIV_LIB) *.$(IRIT_OBJ_PF)
+
+$(IRIT_LIB_DIR)\$(TRIV_LIB): $(TRIV_LIB)
+	copy $(TRIV_LIB) $(IRIT_LIB_DIR)
+
+install: $(IRIT_LIB_DIR)\$(TRIV_LIB)
+
+# Dependencies starts here - do not touch, generated automatically.

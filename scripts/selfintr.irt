@@ -1,0 +1,700 @@
+#
+# Self and partial intersections' examples
+#
+#					Gershon Elber, October 1995.
+#
+
+save_mat = view_mat;
+save_res = resolution;
+
+ri = iritstate( "RandomInit", 1960 );  # Seed-initiate the randomizer,
+free( ri );
+
+#############################################################################
+
+EvalAntiPodalPtsOnCrv = function( Crv ): Aps: Ap: i: t1: t2: Pt1: Pt2:
+    Diam: DiamLine:
+    Aps = AntiPodal( Crv, 1e-3, -1e-10 ):
+    printf( "%d antipodal points detected\\n", list( sizeof( Aps ) ) ):
+    return = nil():
+    Diam = 0:
+    for ( i = 1, 1, sizeof( Aps ),
+	Ap = nth( Aps, i ):
+	t1 = coord( Ap, 1 ):
+	t2 = coord( Ap, 2 ):
+	Pt1 = ceval( Crv, t1 ):
+	Pt2 = ceval( Crv, t2 ):
+	if ( dstPtPt( coerce( Pt1, point_type ),
+		      coerce( Pt2, point_type ) ) > Diam,
+	    Diam = dstPtPt( coerce( Pt1, point_type ),
+		            coerce( Pt2, point_type ) ):
+	    DiamLine = Pt1 + Pt2 ):
+	snoc( list( Pt1 + Pt2, Pt1 * tx( 0 ), Pt2 * tx( 0 ) ), return ) ):
+    color( return, yellow ):
+    color( DiamLine, cyan ):
+    adwidth( DiamLine, 3 ):
+    snoc( list( DiamLine ), return );
+
+EvalAntiPodalPtsOnSrf = function( Srf ): Aps: Ap: i: u1: v1: u2: v2: Pt1: Pt2:
+    Diam: DiamLine:
+    Aps = AntiPodal( Srf, 1e-3, -1e-12 ):
+    printf( "%d antipodal points detected\\n", list( sizeof( Aps ) ) ):
+    return = nil():
+    Diam = 0:
+    for ( i = 1, 1, sizeof( Aps ),
+	Ap = nth( Aps, i ):
+	u1 = coord( Ap, 1 ):
+	v1 = coord( Ap, 2 ):
+	u2 = coord( Ap, 3 ):
+	v2 = coord( Ap, 4 ):
+	Pt1 = seval( Srf, u1, v1 ):
+	Pt2 = seval( Srf, u2, v2 ):
+	if ( dstPtPt( coerce( Pt1, point_type ),
+		      coerce( Pt2, point_type ) ) > Diam,
+	    Diam = dstPtPt( coerce( Pt1, point_type ),
+		            coerce( Pt2, point_type ) ):
+	    DiamLine = Pt1 + Pt2 ):
+	snoc( list( Pt1 + Pt2, Pt1 * tx( 0 ), Pt2 * tx( 0 ) ), return ) ):
+    color( return, yellow ):
+    color( DiamLine, cyan ):
+    adwidth( DiamLine, 3 ):
+    snoc( list( DiamLine ), return );
+
+MakePolylines = function( ListOfCtlPts ): i: pl:
+    return = nil():
+    for (i = 1, 1, sizeof( ListOfCtlPts ),
+	pl = nth( ListOfCtlPts, i ):
+	if ( sizeof( pl ) > 1,
+	     snoc( poly( nth( ListOfCtlPts, i ), true ),
+	     	   return ) ) );
+
+#############################################################################
+#
+# A non complete intersection between polyhedra.
+#
+v1  = vector( 0.0, 0.0, 0.0);
+v2  = vector( 1.0, 0.0, 0.0);
+v3  = vector( 1.0, 1.0, 0.0);
+v4  = vector( 0.0, 1.0, 0.0);
+
+P = poly( list( v1, v2, v3, v4 ), false );
+free( v1 );
+free( v2 );
+free( v3 );
+free( v4 );
+
+C = cylin( vector( 0.1, 0.5, -0.5 ), vector( 0, 0, 1 ), 0.3, 3 );
+
+#
+# Boolean operation will fail here since the intersection is NOT CLOSED.
+# One is only able to extract the itersection curves then.
+#
+# Cntrs = P + C;
+#
+
+IntrCrv = iritstate( "InterCrv", true );
+Cntrs = P + C;
+attrib( Cntrs, "dwidth", 3 );
+color( Cntrs, red );
+interact( list( C, P, Cntrs ) );
+
+free( C );
+free( P );
+free( Cntrs );
+
+#
+# Simple self intersecting surface.
+#
+c1 = cbspline( 3,
+	       list( ctlpt( E3,  0.0, -1.0, 0.0 ),
+		     ctlpt( E3,  0.0,  1.0, 0.2 ),
+		     ctlpt( E3,  1.0,  0.0, 0.4 ),
+		     ctlpt( E3, -1.0,  0.0, 0.6 ) ),
+	       list( KV_OPEN ) );
+s1 = ruledSrf( c1, c1 * tz( 1.0 ) * rz( 10 ) );
+color( s1, green );
+
+resolution = 30;
+
+#
+# Computing self intersection by a Boolean operation with itself - Parametric.
+#
+dummy = iritstate( "InterCrv", true );
+UVBool = iritstate( "UVBoolean", true );
+s1Inter = s1 + s1;
+color( s1Inter, red );
+attrib( s1Inter, "dwidth", 3 );
+
+ParamDomain = poly( list( vector( 0, 0, 0 ),
+			  vector( 0, 1, 0 ),
+			  vector( 2, 1, 0 ),
+			  vector( 2, 0, 0 ) ), false );
+color( ParamDomain, green );
+
+view_mat = tx( -1.0 ) * sc( 0.6 );
+interact( list( view_mat, ParamDomain, s1Inter ) );
+
+#
+# Computing self intersection by a Boolean operation with itself - Euclidean.
+#
+dummy = iritstate( "InterCrv", true );
+dummy = iritstate( "UVBoolean", false );
+s1Inter = s1 + s1;
+color( s1Inter, red );
+attrib( s1Inter, "dwidth", 5 );
+
+view_mat = save_mat * sc( 0.7 ) * ty( -0.3 );
+interact( list( view_mat, s1, s1Inter ) );
+save( "selfint1", list( s1, s1Inter ) );
+
+free( s1 );
+free( s1Inter );
+
+#
+# A self intersecting offset.
+#
+c1 = cbspline( 4,
+	       list( ctlpt( E3, -1.1, -1,    0 ),
+		     ctlpt( E3, -1,   -0.5,  0.1 ),
+		     ctlpt( E3, -1,   -0.1,  0.1 ),
+		     ctlpt( E3, -1.2,  0.2,  0.1 ),
+		     ctlpt( E3, -1,    0.5,  0.1 ),
+		     ctlpt( E3, -0.9,  1,    0 ) ),
+	       list( KV_OPEN ) );
+c2 = cbspline( 4,
+	       list( ctlpt( E3, -0.7, -0.9,  0 ),
+		     ctlpt( E3, -0.6, -0.4,  0.1 ),
+		     ctlpt( E3, -0.5, -0.0,  0.1 ),
+		     ctlpt( E3, -0.5,  0.3,  0.6 ),
+		     ctlpt( E3, -0.7,  0.7,  0.2 ),
+		     ctlpt( E3, -0.7,  1.1,  0 ) ),
+	       list( KV_OPEN ) );
+c3 = cbspline( 4,
+	       list( ctlpt( E3, -0.1, -1,    0 ),
+		     ctlpt( E3, -0.2, -0.6,  0.1 ),
+		     ctlpt( E3, -0.4,  0.1,  0.1 ),
+		     ctlpt( E3, -0.1,  0.6, -2.0 ),
+		     ctlpt( E3, -0.4,  0.7,  0.2 ),
+		     ctlpt( E3, -0.1,  1.1,  0 ) ),
+	       list( KV_OPEN ) );
+c4 = cbspline( 4,
+	       list( ctlpt( E3,  0.5, -1,    0 ),
+		     ctlpt( E3,  0.4, -0.7,  0.1 ),
+		     ctlpt( E3,  0.6, -0.3,  0.2 ),
+		     ctlpt( E3,  0.4,  0.1, -0.4 ),
+		     ctlpt( E3,  0.5,  0.7,  0.2 ),
+		     ctlpt( E3,  0.7,  1,    0.2 ) ),
+	       list( KV_OPEN ) );
+c5 = cbspline( 4,
+	       list( ctlpt( E3,  1.2, -1,    0.1 ),
+		     ctlpt( E3,  1,   -0.5,  0.1 ),
+		     ctlpt( E3,  1,   -0.2,  0.2 ),
+		     ctlpt( E3,  1.1,  0.3,  0.0 ),
+		     ctlpt( E3,  1,    0.6,  0.1 ),
+		     ctlpt( E3,  0.9,  1,    0 ) ),
+	       list( KV_OPEN ) );
+
+s2 = sFromCrvs( list( c1, c2, c3, c4, c5 ), 3, KV_OPEN );
+
+ref_knots = list( 0.2, 0.2667, 0.4, 0.4667, 0.5333, 0.6, 0.7333, 0.8 );
+s2r = srefine( srefine( s2, row, false, ref_knots ), col, false, ref_knots );
+free( ref_knots );
+
+s2o = offset( s2r, 0.3, 10.0, false );
+color( s2o, green );
+
+resolution = 20;
+
+#
+# Computing self intersection by a Boolean operation with itself - Parametric.
+#
+dummy = iritstate( "InterCrv", true );
+dummy = iritstate( "UVBoolean", true );
+s2oInter = s2o + s2o;
+color( s2oInter, red );
+attrib( s2oInter, "dwidth", 3 );
+
+ParamDomain = poly( list( vector( 0, 0, 0 ),
+			  vector( 0, 1, 0 ),
+			  vector( 1, 1, 0 ),
+			  vector( 1, 0, 0 ) ), false );
+color( ParamDomain, green );
+
+view_mat = tx( -0.5 ) * ty( -0.5 ) * sc( 1 );
+interact( list( view_mat, ParamDomain, s2oInter ) );
+
+#
+# Computing self intersection by a Boolean operation with itself - Euclidean.
+#
+dummy = iritstate( "InterCrv", true );
+dummy = iritstate( "UVBoolean", false );
+s2oInter = s2o + s2o;
+
+color( s2oInter, red );
+attrib( s2oInter, "dwidth", 3 );
+
+view_mat = save_mat;
+interact( list( view_mat, s2o, s2oInter ) );
+save( "selfint2", list( s2o, s2oInter ) );
+
+#############################################################################
+#
+# Antipodal and self intersection points for curves.
+#
+c1 = pcircle( vector( 0.1, 0.2, 0.3 ), 0.7 ) * sy( 0.5 );
+
+ApLine1 = EvalAntiPodalPtsOnCrv( c1 );
+
+interact( list( axes, ApLine1, c1 ) );
+
+c2 = cbspline( 4,
+    list( ctlpt( E2, 0.707, 0.304 ),
+          ctlpt( E2, 0.317, -0.1 ),
+          ctlpt( E2, -0.052, 0.147 ),
+          ctlpt( E2, -0.159, 0.682 ),
+          ctlpt( E2, -0.592, 0.039 ),
+          ctlpt( E2, -0.646, -0.254 ),
+          ctlpt( E2, -0.313, -0.532 ),
+          ctlpt( E2, -0.568, -0.145 ),
+          ctlpt( E2, -0.402, 0.336 ),
+          ctlpt( E2, -0.272, 0.134 ),
+          ctlpt( E2, -0.168, 0.241 ),
+          ctlpt( E2, -0.056, 0.641 ),
+          ctlpt( E2, 0.272, -0.069 ),
+          ctlpt( E2, 0.361, -0.173 ),
+          ctlpt( E2, 0.443, 0.062 ),
+          ctlpt( E2, 0.613, -0.186 ),
+          ctlpt( E2, 0.541, 0.101 ),
+          ctlpt( E2, 0.437, 0.263 ),
+          ctlpt( E2, 0.509, 0.335 ),
+          ctlpt( E2, 0.775, 0.155 ) ),
+    list( kv_periodic ) );
+
+ApLine2 = EvalAntiPodalPtsOnCrv( c2 );
+
+interact( list( axes, ApLine2, c2 ) );
+
+save( "selfint3", list( list( c1, ApLine1 ) * tx( -1 ),
+		        list( c2, ApLine2 ) * tx( 1 ) ) );
+
+#############################################################################
+#
+# Antipodal points for surfaces.
+#
+
+c1 = cbspline( 4,
+    list( ctlpt( E2,  0.7,  0.5 ),
+          ctlpt( E2, -0.4,  0.4 ),
+          ctlpt( E2, -0.4, -0.4 ),
+          ctlpt( E2,  0.7, -0.5 ) ),
+    list( kv_open ) );
+c2 = cbspline( 4,
+    list( ctlpt( E2,  0.7,  0.5 ),
+          ctlpt( E2, -0.4, -0.8 ),
+          ctlpt( E2, -0.4,  0.8 ),
+          ctlpt( E2,  0.7, -0.5 ) ),
+    list( kv_open ) );
+s1 = sFromCrvs( list( c1,
+		      c2 * sc( 1.1 ) * tx( -0.2 ) * tz( 0.2 ),
+		      c2 * sx( 1.1 ) * tx( -0.2 ) * tz( 0.4 ),
+		      c1 * tz( 0.6 ) ),
+		3, kv_open );
+color( s1, red );
+
+ApLine1 = EvalAntiPodalPtsOnSrf( s1 );
+
+interact( list( axes, ApLine1, s1 ) );
+
+
+c1 = cbspline( 4,
+    list( ctlpt( E2,  1.0,  0.15 ),
+          ctlpt( E2, -0.4,  0.4 ),
+          ctlpt( E2, -0.4, -0.4 ),
+          ctlpt( E2,  1.0, -0.15 ) ),
+    list( kv_open ) );
+c2 = cbspline( 4,
+    list( ctlpt( E2,  1.0,   0.1 ),
+          ctlpt( E2,  0.65, -0.2 ),
+          ctlpt( E2, -0.2,   0.25 ),
+          ctlpt( E2, -0.2,  -0.252 ),
+          ctlpt( E2,  0.65,  0.2 ),
+          ctlpt( E2,  1.0,  -0.1 ) ),
+    list( kv_open ) );
+s2 = sFromCrvs( list( c1,
+		      c2 * sc( 1.1 ) * tx( -0.2 ) * tz( 0.2 ),
+		      c2 * sx( 1.1 ) * tx( -0.2 ) * tz( 0.4 ),
+		      c1 * tz( 0.6 ) ),
+		3, kv_open );
+color( s2, red );
+
+ApLine2 = EvalAntiPodalPtsOnSrf( s2 );
+
+interact( list( axes, ApLine2, s2 ) );
+
+save( "selfint4", list( list( s1, ApLine1 ) * tx( -1 ),
+		        list( s2, ApLine2 ) * tx( 1 ) ) );
+
+#############################################################################
+#
+# Self intersecting curves.
+#
+
+c1 = cbspline( 4,
+    list( ctlpt( E2, 0.707, 0.304 ),
+          ctlpt( E2, -0.592, -0.39 ),
+          ctlpt( E2, -0.402, 0.536 ),
+          ctlpt( E2, 0.272, -0.069 ) ),
+    list( kv_open ) );
+color( c1, blue );
+
+si1a = selfinter( c1, 0.01, 1e-10, 90.0, true );
+interact( list( c1, si1a ) );
+
+si1b = selfinter( c1, 0.01, 1e-10, -1.0, true );
+interact( list( c1, si1b ) );
+
+#################################
+
+c2 = cbspline( 4,
+    list( ctlpt( E2, 0.744, 0.416 ),
+          ctlpt( E2, 0.317, -0.1 ),
+          ctlpt( E2, -0.052, 0.147 ),
+          ctlpt( E2, -0.159, 0.682 ),
+          ctlpt( E2, -0.592, 0.039 ),
+          ctlpt( E2, -0.646, -0.254 ),
+          ctlpt( E2, -0.313, -0.532 ),
+          ctlpt( E2, -0.568, -0.145 ),
+          ctlpt( E2, -0.564, 0.42 ),
+          ctlpt( E2, -0.272, 0.134 ),
+          ctlpt( E2, -0.101, 0.245 ),
+          ctlpt( E2, -0.128, 0.744 ),
+          ctlpt( E2, 0.272, -0.069 ),
+          ctlpt( E2, 0.361, -0.173 ),
+          ctlpt( E2, 0.443, 0.062 ),
+          ctlpt( E2, 0.613, -0.186 ),
+          ctlpt( E2, 0.541, 0.101 ),
+          ctlpt( E2, 0.437, 0.263 ),
+          ctlpt( E2, 0.509, 0.335 ),
+          ctlpt( E2, 0.771, 0.074 ) ),
+    list( kv_periodic ) );
+color( c2, blue );
+
+# Note this one misses one of the solutions that has normals that deviate
+# less than 90 degrees.
+si2a = selfinter( c2, 0.001, 1e-10, 90.0, true );
+interact( list( c2, si2a ) );
+
+# While this one works harder to catch it.
+si2a = selfinter( c2, 0.001, 1e-10, 15.0, true );
+interact( list( c2, si2a ) );
+
+si2b = selfinter( c2, 0.001, 1e-10, -1, true );
+interact( list( c2, si2b ) );
+
+#################################
+
+Pts = nil():
+for (i = 0, 1, 100,
+    snoc( ctlpt( E2, random( -1, 1 ), random( -1, 1 ) ),
+	  Pts ) );
+c3 = cbspline( 4, Pts, list( KV_OPEN ) );
+free( pts );
+color( c3, blue );
+
+# While this one works harder to catch it.
+si3a = selfinter( c3, 0.001, -1e-10, 15.0, true );
+interact( list( c3, si3a ) );
+
+si3b = selfinter( c3, 0.001, -1e-10, -1, true );
+interact( list( c3, si3b ) );
+
+save( "selfint5", list( list( c1, si1a, si1b ) * tx( -2 ),
+		        list( c2, si2a, si2b ) * tx( 0 ),
+		        list( c3, si3a, si3b ) * tx( 2 ) ) );
+
+#############################################################################
+#
+# Self intersecting surfaces.
+#
+
+MakePolylines = function( ListOfCtlPts ): i: pl:
+    return = nil():
+    for (i = 1, 1, sizeof( ListOfCtlPts ),
+	pl = nth( ListOfCtlPts, i ):
+	if ( sizeof( pl ) > 1,
+	     snoc( poly( nth( ListOfCtlPts, i ), true ),
+	     	   return ) ) );
+
+si1 = selfinter( s1, 0.01, 1e-10, 90.0, true );
+pSi1a = MakePolylines( si1 );
+color( pSi1a, yellow );
+adwidth( pSi1a, 1 );
+
+interact( list( axes, s1, pSi1a ) );
+
+
+si1 = selfinter( s1, 0.01, -1e-10, -1, true );
+pSi1b = MakePolylines( si1 );
+color( pSi1b, yellow );
+adwidth( pSi1b, 1 );
+
+interact( list( axes, s1, pSi1b ) );
+
+
+si2 = selfinter( s2, 0.01, 1e-10, 90.0, true );
+pSi2a = MakePolylines( si2 );
+color( pSi2a, green );
+adwidth( pSi2a, 1 );
+
+interact( list( axes, s2, pSi2a ) );
+
+
+si2 = selfinter( s2, 0.01, -1e-10, -1, true );
+pSi2b = MakePolylines( si2 );
+color( pSi2b, green );
+adwidth( pSi2b, 2 );
+
+interact( list( axes, s2, pSi2b ) );
+
+#################################
+
+c1 = cbspline( 4,
+    list( ctlpt( E2, 0.566, 0.464 ),
+          ctlpt( E2, 0.423, -0.00924 ),
+          ctlpt( E2, 0.198, -0.192 ),
+          ctlpt( E2, 0.263, 0.376 ),
+          ctlpt( E2, 0.432, 0.478 ),
+          ctlpt( E2, 0.521, -0.0762 ) ),
+    list(  kv_open ) );
+c2 = cbspline( 4,
+    list( ctlpt( E2, 0.546, 0.0652 ),
+          ctlpt( E2, 0.56, -0.164 ),
+          ctlpt( E2, 0.198, -0.192 ),
+          ctlpt( E2, 0.263, 0.376 ),
+          ctlpt( E2, 0.432, 0.478 ),
+          ctlpt( E2, 0.497, 0.254 ) ),
+    list( kv_open ) );
+
+s3 = sFromCrvs( list( c2,
+		      c1 * tz( 0.3 ),
+		      c1 * tz( 0.6 ),
+		      c2 * tz( 0.9 ) ),
+		3, kv_open );
+color( s3, red );
+
+si3 = selfinter( s3, 0.01, -1e-10, 90.0, true );
+printf( "Size of self intersection verification: %d\\n",
+        list( sizeof( si3 ) == 0 ) );
+
+si3 = selfinter( s3, 0.1, -1e-10, 36.0, true ):
+printf( "Size of self intersection verification: %d\\n",
+        list( sizeof( si3 ) == 2 ) );
+
+si3 = selfinter( s3, 0.01, -1e-10, -1, true );
+pSi3a = MakePolylines( si3 );
+printf( "Size of self intersection verification: %d\\n",
+        list( sizeof( pSi3a ) == 2 ) );
+
+color( pSi3a, green );
+adwidth( pSi3a, 2 );
+
+interact( list( axes, s3, pSi3a ) );
+
+si3 = selfinter( s3, 0.1, 1e-10, 25.0, true ):
+printf( "Size of self intersection verification: %d\\n",
+        list( sizeof( si3 ) == 2 ) );
+
+pSi3b = MakePolylines( si3 );
+color( pSi3b, green );
+adwidth( pSi3b, 2 );
+
+interact( list( axes, s3, pSi3b ) );
+
+#################################
+
+save( "selfint6", list( list( s1, pSi1a ) * tx( -5 ),
+		        list( s1, pSi1b ) * tx( -3 ),
+		        list( s2, pSi2a ) * tx( -1 ),
+		        list( s2, pSi2b ) * tx( 1 ),
+		        list( s3, pSi3a ) * tx( 3 ),
+		        list( s3, pSi3b ) * tx( 5 ) ) );
+
+#################################
+
+S4 = sbezier(
+    list( list( ctlpt( E3, -0.051, -0.035, -0.042 ),
+                ctlpt( E3, -0.017, 0.209, -0.009 ),
+                ctlpt( E3, 0.143, 0.132, -0.1 ),
+                ctlpt( E3, 0.141, -0.342, 0.157 ) ),
+          list( ctlpt( E3, -0.009, -0.13, -0.082 ),
+                ctlpt( E3, 0.098, -0.025, -0.042 ),
+                ctlpt( E3, 0.114, 0.011, 0.327 ),
+                ctlpt( E3, 0.47, 0.042, 0.133 ) ),
+          list( ctlpt( E3, 0.056, -0.197, -0.109 ),
+                ctlpt( E3, 0.047, -0.177, 0.247 ),
+                ctlpt( E3, 0.168, -0.204, 0.388 ),
+                ctlpt( E3, 0.253, -0.062, 0.474 ) ),
+          list( ctlpt( E3, 0.146, -0.22, -0.158 ),
+                ctlpt( E3, 0.291, -0.285, 0.025 ),
+                ctlpt( E3, 0.389, -0.308, 0.201 ),
+                ctlpt( E3, 0.429, -0.162, 0.224 ) ) ) ):
+color( S4, red );
+
+si4 = selfinter( s4, 0.01, -1e-10, 90.0, true );
+pSi4a = MakePolylines( si4 );
+color( pSi4a, green );
+adwidth( pSi4a, 2 );
+
+interact( list( axes, s4, pSi4a ) );
+
+
+si4 = selfinter( s4, 0.01, 1e-10, -1.0, true );
+pSi4b = MakePolylines( si4 );
+color( pSi4b, green );
+adwidth( pSi4b, 2 );
+
+interact( list( axes, s4, pSi4b ) );
+
+#################################
+
+S5 = sbezier(
+    list( list( ctlpt( E3, -0.109, -0.073, 0.009 ),
+                ctlpt( E3, -0.017, 0.209, -0.009 ),
+                ctlpt( E3, 0.172, 0.262, -0.052 ),
+                ctlpt( E3, 0.236, -0.341, 0.215 ) ),
+          list( ctlpt( E3, -0.009, -0.13, -0.082 ),
+                ctlpt( E3, 0.098, -0.025, -0.042 ),
+                ctlpt( E3, 0.25, 0.108, 0.35 ),
+                ctlpt( E3, 0.47, 0.042, 0.133 ) ),
+          list( ctlpt( E3, 0.037, -0.224, -0.199 ),
+                ctlpt( E3, -0.037, -0.265, 0.152 ),
+                ctlpt( E3, 0.133, -0.183, 0.43 ),
+                ctlpt( E3, 0.344, -0.017, 0.481 ) ),
+          list( ctlpt( E3, -0.038, 0.106, 0.089 ),
+                ctlpt( E3, 0.221, -0.27, -0.061 ),
+                ctlpt( E3, 0.342, -0.359, 0.172 ),
+                ctlpt( E3, 0.429, -0.162, 0.224 ) ) ) ):
+color( S5, red );
+
+si5 = selfinter( s5, 0.01, -1e-10, 90.0, true );
+pSi5a = MakePolylines( si5 );
+color( pSi5a, green );
+adwidth( pSi5a, 2 );
+
+interact( list( axes, s5, pSi5a ) );
+
+
+si5 = selfinter( s5, 0.01, 1e-10, -1.0, true );
+pSi5b = MakePolylines( si5 );
+color( pSi5b, green );
+adwidth( pSi5b, 2 );
+
+interact( list( axes, s5, pSi5b ) );
+
+#################################
+
+S6 = sbezier(
+    list( list( ctlpt( E3, 0, 0, 0 ),
+                ctlpt( E3, 1, 0, 0 ),
+                ctlpt( E3, 2, 0, 0 ),
+                ctlpt( E3, 3, 0, 0 ),
+                ctlpt( E3, 4, 0, 0 ) ),
+          list( ctlpt( E3, 0, 1, 0 ),
+                ctlpt( E3, 1, 1, 1 ),
+                ctlpt( E3, 2, 1, 1 ),
+                ctlpt( E3, 3, 1, 1 ),
+                ctlpt( E3, 4, 1, 0 ) ),
+          list( ctlpt( E3, 0, 2, 0 ),
+                ctlpt( E3, 1, 2, 1 ),
+                ctlpt( E3, 2, 2, 9 ),
+                ctlpt( E3, 3, 2, 1 ),
+                ctlpt( E3, 4, 2, 0 ) ),
+          list( ctlpt( E3, 0, 3, 0 ),
+                ctlpt( E3, 1, 3, 1 ),
+                ctlpt( E3, 2, 3, 1 ),
+                ctlpt( E3, 3, 3, 1 ),
+                ctlpt( E3, 4, 3, 0 ) ),
+          list( ctlpt( E3, 0, 4, 0 ),
+                ctlpt( E3, 1, 4, 0 ),
+                ctlpt( E3, 2, 4, 0 ),
+                ctlpt( E3, 3, 4, 0 ),
+                ctlpt( E3, 4, 4, 0 ) ) ) ) * sc( 0.25 ) * sx( 0.5 ):
+S6 = coerce( offset( S6, 0.3, 10, true ), bezier_type ) * sx( 2 ):
+color( S6, red );
+
+si6 = selfinter( s6, 0.1, -1e-10, 90.0, true );
+pSi6a = MakePolylines( si6 );
+color( pSi6a, green );
+adwidth( pSi6a, 2 );
+
+interact( list( axes, s6, pSi6a ) );
+
+
+si6 = selfinter( s6, 0.05, -1e-10, -1.0, true );
+pSi6b = MakePolylines( si6 );
+color( pSi6b, green );
+adwidth( pSi6b, 2 );
+
+interact( list( axes, s6, pSi6b ) );
+
+#################################
+
+save( "selfint7", list( list( s4, pSi4a ) * tx( -5 ),
+		        list( s4, pSi4b ) * tx( -3 ),
+		        list( s5, pSi5a ) * tx( -1 ),
+		        list( s5, pSi5b ) * tx( 1 ),
+		        list( s6, pSi6a ) * tx( 3 ),
+		        list( s6, pSi6b ) * tx( 5 ) ) );
+
+#############################################################################
+
+free( i );
+free( c1 );
+free( c2 );
+free( c3 );
+free( c4 );
+free( c5 );
+free( s1 );
+free( s2 );
+free( s2oInter );
+free( s2o );
+free( s2r );
+free( s3 );
+free( s4 );
+free( s5 );
+free( s6 );
+free( ParamDomain );
+free( ApLine1 );
+free( ApLine2 );
+free( si1 );
+free( si1a );
+free( si1b );
+free( pSi1a );
+free( pSi1b );
+free( si2 );
+free( si2a );
+free( si2b );
+free( pSi2a );
+free( pSi2b );
+free( si3 );
+free( si3a );
+free( si3b );
+free( pSi3a );
+free( pSi3b );
+free( si4 );
+free( pSi4a );
+free( pSi4b );
+free( si5 );
+free( pSi5a );
+free( pSi5b );
+free( si6 );
+free( pSi6a );
+free( pSi6b );
+
+resolution = save_res;
+view_mat = save_mat;
+
+dummy = iritstate( "InterCrv", IntrCrv );
+free( IntrCrv );
+dummy = iritstate( "UVBoolean", UVBool );
+free( UVBool );

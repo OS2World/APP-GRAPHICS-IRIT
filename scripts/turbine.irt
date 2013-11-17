@@ -1,0 +1,92 @@
+#
+# A simple turbinee blade, Gershon Elber, Feb 2004
+#
+
+#
+# The Blade
+#
+
+Sec1 = cbspline( 3,
+    list( ctlpt( E3, -0.525, -0.041, 0 ),
+          ctlpt( E2, -0.0935, 0.102 ),
+          ctlpt( E2, 0.487, 0.14 ),
+          ctlpt( E2, 0.882, 0.112 ),
+          ctlpt( E2, 0.878, 0.198 ),
+          ctlpt( E2, 0.559, 0.403 ),
+          ctlpt( E2, -0.183, 0.252 ),
+          ctlpt( E2, -0.525, -0.04 ) ),
+    list( kv_open ) ) * tx( -0.2 ) * ty( -0.2 );
+
+Sec2 = Sec1 * sy( 0.5 ) * sc( 1.2 ) * tz( 2.5 ) * rz( 30 );
+
+BladeSide = ruledSrf( Sec1, Sec2 );
+
+BladeTop = ruledSrf( cregion( Sec2, 0, 0.5 ),
+		     -cregion( Sec2, 0.5, 1 ) );
+
+BladeMain = list( BladeSide, BladeTop ) * tz( 0.2 );
+free( BladeSide );
+free( BladeTop );
+
+BladeFillet = sFromCrvs( list( Sec1 * sc( 1.35 ) * sy( 1.5 ) * tz( -0.1 ),
+			       Sec1,
+			       Sec1 * tz( 0.2 ) ),
+			 3, kv_open );
+free( Sec1 );
+free( Sec2 );
+
+Blade = list( BladeMain, BladeFillet )
+	* tx( 0.1 ) * ry( 90 ) * sc( 0.285 ) * tx( 0.636 ) * rx( 20 );
+attrib( Blade, "rgb", "128,128,128" );
+
+free( BladeMain );
+free( BladeFillet );
+
+#
+# The Base
+#
+
+BaseSec = cbspline( 3,
+    list( ctlpt( E2, 0.1,   0.055 ),
+          ctlpt( E2, 0.4,   0.052 ),
+          ctlpt( E2, 0.435, 0.06 ),
+          ctlpt( E2, 0.44,  0.24 ),
+          ctlpt( E2, 0.47,  0.3 ),
+          ctlpt( E2, 0.62,  0.29 ),
+          ctlpt( E2, 0.648, 0.26 ),
+          ctlpt( E2, 0.648,-0.26 ),
+          ctlpt( E2, 0.62, -0.29 ),
+          ctlpt( E2, 0.47, -0.3 ),
+          ctlpt( E2, 0.44, -0.24 ),
+          ctlpt( E2, 0.435,-0.06 ),
+          ctlpt( E2, 0.4,  -0.052 ),
+          ctlpt( E2, 0.1,  -0.055 ),
+          ctlpt( E2, 0.1,  -0.055 ) ),
+    list( kv_open ) ) +
+    ctlpt( E2, 0.1,   0.055 );
+
+Base = surfRev( -BaseSec * rx( 90 ) );
+free( BaseSec );
+
+#
+# Place n blade on the base:
+#
+
+n = 30;
+Blades = nil();
+for ( i = 1, 1, n,
+    snoc( Blade * rz( 360 * i / n ),
+	  Blades ) );
+free( i );
+free( n );
+free( Blade );
+
+All = list( Base, Blades );
+free( Base );
+free( Blades );
+
+save( "turbine", All );
+
+view( All, 1 );
+
+free( All );

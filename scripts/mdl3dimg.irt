@@ -1,0 +1,131 @@
+#
+# Creates 3D models by combining images together.
+#
+#				Created by Gershon Elber,	Feb 2010
+#
+#
+# BlobSpread / DitherSpread -
+#	       1: Random, 2, 3: Diag Plane, 4,5,6: Anti Diag Plane,
+#              7: Discont 2 plan, 8: Discont 4 plane.
+#
+# BlobColor  - 1: No color, 2: Gray Level, 3: Full color.
+#
+
+p = poly( list( point( 0, 0, 0 ),
+		point( 0, 1, 0 ),
+		point( 1, 1, 0 ),
+		point( 1, 0, 0 ) ),
+	  false );
+
+Blob1 = mergePoly( list( p * rx( 90 ),
+	                 p * ry( -90 ),
+			 p * tx( 0 ) ) );
+
+Blob2 = list( p * rx( 90 ),
+	      p * ry( -90 ),
+	      p * tx( 0 ) );
+
+free( p );
+
+save_res = resolution;
+
+ri = iritstate( "RandomInit", 1960 );  # Seed-initiate the randomizer,
+
+#############################################################################
+
+M1 = MFrom2Img( "../data/BenGurion.ppm", "../data/Herzel.ppm", FALSE,
+		FALSE, 1, 1, 35, FALSE, 1.0, 0.01, 1 );
+interact( M1 );
+
+M2 = MFrom2Img( "../data/BenGurion.ppm", "../data/Herzel.ppm", FALSE,
+		Blob1, 4, 1, 45, FALSE, 1.0, 0.01, 1 );
+interact( M2 );
+
+M3 = MFrom2Img( "../data/BenGurion.ppm", "../data/Herzel.ppm", FALSE,
+		FALSE, 1, 2, 40, FALSE, 1.0, 0.01, 1 );
+interact( M3 );
+
+M4 = MFrom2Img( "../data/BenGurion.ppm", "../data/Herzel.ppm", FALSE,
+		Blob2, 1, 3, 30, FALSE, 1.0, 0.01, 1 );
+interact( M4 );
+
+save( "mdl3dim1", list( M1 * tz( -1 ),
+		        M2 * tz( 0 ),
+		        M3 * tz( 1 ),
+		        M4 * tz( 2 ) ) );
+
+#############################################################################
+
+M1 = MFrom3Img( "../data/BenGurion.ppm", "../data/Herzel.ppm",
+	        "../data/Rabin.ppm",
+	        FALSE, FALSE, 1, 1, 40, FALSE, 1.0, 0.01, 1 );
+interact( M1 );
+
+M2 = MFrom3Img( "../data/BenGurion.ppm", "../data/Herzel.ppm",
+		"../data/Rabin.ppm",
+		FALSE, Blob1, 1, 1, 40, FALSE, 1.0, 0.01, 1 );
+interact( M2 );
+
+M3 = MFrom3Img( "../data/BenGurion.ppm", "../data/Herzel.ppm",
+	        "../data/Rabin.ppm",
+	        FALSE, Blob2, 2, 3, 35, FALSE, 1.0, 0.01, 1 );
+interact( M3 );
+
+save( "mdl3dim2", list( M1 * tz( -1 ) * tx( -1 ),
+		        M2 * tz( 0 ),
+		        M3 * tz( 1 ) * tx( 1 ) ) );
+
+#############################################################################
+# BFrom2Img( Image1Name, Image2Name, DitherSize, MatchWidth,
+#	     Negate, AugmentContrast, SpreadMethod, SphereRad)
+
+M1 = BFrom2Img( "../data/BenGurion.ppm", "../data/Herzel.ppm",
+	        3, 8, TRUE, 3, 2, 0.0 ) * sc( 0.003 );
+sizeof( M1 );
+attrib( M1, "rgb", "10, 10, 10" );
+interact( list( axes, M1 ) );
+
+save( "mdl3dim3", M1 );
+
+M2 = BFrom2Img( "../data/BenGurion.ppm", "../data/Herzel.ppm",
+	        2, 168, FALSE, 3, 1, 0.0 ) * sc( 0.005 ):
+sizeof( M2 );
+interact( list( axes, M2 ) );
+
+save( "mdl3dim4", M2 );
+
+printf( "Sizes of micro-blobs are %d %d\\n",
+	list( sizeof( M1 ), sizeof( M2 ) ) );
+
+#############################################################################
+
+M1 = BFrom3Img( "../data/BenGurion.ppm", "../data/Herzel.ppm",
+	        "../data/Rabin.ppm", 2, 1000, FALSE, 0, 1, 0 ) * sc( 0.003 );
+sizeof( M1 );
+attrib( M1, "rgb", "255, 255, 255" );
+interact( list( axes, M1 ) );
+
+save( "mdl3dim5", M1 );
+
+M2 = BFrom3Img( "../data/BenGurion.ppm", "../data/Herzel.ppm",
+	        "../data/Rabin.ppm", 3, 150, FALSE, 0, 2, 0 ) * sc( 0.002 );
+sizeof( M2 );
+attrib( M2, "rgb", "255, 255, 255" );
+interact( list( axes, M2 ) );
+
+save( "mdl3dim6", M2 );
+
+#############################################################################
+
+ri = iritstate( "RandomInit", ri );  # Seed-initiate the randomizer,
+free( ri );
+
+resolution = save_res;
+
+free( M1 );
+free( M2 );
+free( M3 );
+free( M4 );
+free( Blob1 );
+free( Blob2 );
+

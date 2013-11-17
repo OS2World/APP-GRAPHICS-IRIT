@@ -1,0 +1,147 @@
+#
+# This script presents the result of cutting a cube using three circular
+# cuts - quite unbelievably complex!
+#
+#						Gershon Elber, June 2002
+#
+
+save_res = resolution;
+
+ClipXY = function( x ):
+    return = nth( planeclip( x, plane( 1, 0, 0, 0 ) ), 1 ):
+    return = nth( planeclip( return, plane( 0, 1, 0, 0 ) ), 1 );
+ClipXYZ = function( x ):
+    return = ClipXY( x ):
+    return = nth( planeclip( return, plane( 0, 0, 1, 0 ) ), 1 );
+Dup8Vrtices = function( o ): ox: oy:
+    ox = list( o, o * sx( -1 ) ):
+    oy = list( ox, ox * sy( -1 ) ):
+    return = list( oy, oy * sz( -1 ) );
+Dup12Edges = function( o ): ol:
+    ol = list( o, o * rz( 90 ), o * rz( 180 ), o * rz( 270 ) ):
+    return = list( ol, ol * rx( 90 ), ol * ry( 90 ) );
+Dup6Faces = function( o ):
+    return = list( o, o * rz( 90 ), o * rz( 180 ), o * rz( 270 ),
+		   o * rx( 90 ), o * rx( -90 ) );
+BoxWire = function():
+    return = list( poly( list( point( -1, -1, -1 ),
+			       point( -1,  1, -1 ),
+			       point(  1,  1, -1 ),
+			       point(  1, -1, -1 ),
+			       point( -1, -1, -1 ),
+			       point( -1, -1,  1 ),
+			       point( -1,  1,  1 ),
+			       point(  1,  1,  1 ),
+			       point(  1, -1,  1 ),
+			       point( -1, -1,  1 ) ), true ),
+		   poly( list( point( -1,  1, -1 ),
+			       point( -1,  1,  1 ) ), true ),
+		   poly( list( point(  1, -1, -1 ),
+			       point(  1, -1,  1 ) ), true ),
+		   poly( list( point(  1,  1, -1 ),
+			       point(  1,  1,  1 ) ), true ) );
+		    
+bw = BoxWire();
+attrib( bw, "rgb", "50, 50, 50" );
+
+#############################################################################
+
+x = box( vector( -1, -1, -1 ), 2, 2, 2 );
+
+resolution = 64;
+c1 = cylin( vector( 0, 0, 2 ), vector( 0, 0, -4 ), 1.001, 0 );
+c2 = c1 * ry( 90 );
+c3 = c1 * rx( 90 );
+
+x1 = x * c1 * ( c2 * sc( 1.0001 ) ) * ( c3 * sc( 0.9999 ) );
+color( x1, green );
+
+x2 = x - c1 - c2 - c3;
+x2c = ClipXYZ( x2 );
+color( x2c, red );
+
+x3 = x * c3 * ( c2 * sc( 1.0001 ) ) - ( c1 * sc( 0.9999 ) );
+x3c = ClipXY( x3 );
+color( x3c, yellow );
+
+x4 = x * c3 - ( c2 * sc( 1.0001 ) ) - ( c1 * sc( 0.9999 ) );
+x4c = nth( planeclip( x4, plane( 0, 1, 0, 0 ) ), 1 );
+color( x4c, blue );
+
+free( x );
+free( c1 );
+free( c2 );
+free( c3 );
+
+AllX2 = Dup8Vrtices( x2c );
+color( AllX2, red );
+
+AllX3 = Dup12Edges( x3c );
+color( AllX3, yellow );
+
+AllX4 = Dup6Faces( x4c );
+color( AllX4, blue );
+
+
+All1 = list( x1, bw, axes * sc( 1.5 ) );
+interact( All1 );
+
+All2 = list( x1, AllX2, bw, axes * sc( 1.5 ) );
+interact( All2 );
+
+All3 = list( x1, AllX2, AllX3, bw, axes * sc( 1.5 ) );
+interact( All3 );
+
+All4 = list( x1, AllX2, AllX3, AllX4, bw, axes * sc( 1.5 ) );
+interact( All4 );
+
+save("cub3cut1", All4 );
+
+#############################################################################
+#
+# Exploded views:
+#
+
+AllX2 = Dup8Vrtices( x2c * trans( vector( 1, 1, 1 ) ) );
+color( AllX2, red );
+
+AllX3 = Dup12Edges( x3c * trans( vector( 1, 1, 0 ) ) );
+color( AllX3, yellow );
+
+AllX4 = Dup6Faces( x4c * trans( vector( 0, 1.5, 0 ) ) );
+color( AllX4, blue );
+
+
+All1 = list( x1, bw, axes * sc( 1.5 ) );
+interact( All1 );
+
+All2 = list( x1, AllX2, bw, axes * sc( 1.5 ) );
+interact( All2 );
+
+All3 = list( x1, AllX2, AllX3, bw, axes * sc( 1.5 ) );
+interact( All3 );
+
+All4 = list( x1, AllX2, AllX3, AllX4, bw, axes * sc( 1.5 ) );
+interact( All4 );
+
+save("cub3cut2", All4 );
+
+#############################################################################
+
+resolution = save_res;
+
+free( bw );
+free( x1 );
+free( x2 );
+free( x3 );
+free( x4 );
+free( x2c );
+free( x3c );
+free( x4c );
+free( AllX2 );
+free( AllX3 );
+free( AllX4 );
+free( All1 );
+free( All2 );
+free( All3 );
+free( All4 );

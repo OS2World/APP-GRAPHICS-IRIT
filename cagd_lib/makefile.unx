@@ -1,0 +1,83 @@
+#
+# This is the make file for the cagd_lib library.
+#
+#				Gershon Elber, Aug 1990
+#
+
+#
+# This library has a large table of I Choose K in cbzrtbl2.c.  If your
+# compiler fails to compile this file, try to replace it by cbzrtbl1.c
+# and change CAGD_MAX_BEZIER_CACHE_ORDER accordingly in cagd_lib.h
+#
+
+include ../makeflag.unx
+
+OBJS =  afd_cube.o$(IRIT_OBJ_PF) \
+	bez_clip.o$(IRIT_OBJ_PF) \
+	blossom.o$(IRIT_OBJ_PF) \
+	bsp2poly.o$(IRIT_OBJ_PF) \
+	bsp_gen.o$(IRIT_OBJ_PF) \
+	bsp_knot.o$(IRIT_OBJ_PF) \
+	bspboehm.o$(IRIT_OBJ_PF) \
+	bspcoxdb.o$(IRIT_OBJ_PF) \
+	bzr2poly.o$(IRIT_OBJ_PF) \
+	bzr_gen.o$(IRIT_OBJ_PF) \
+	bzr_intr.o$(IRIT_OBJ_PF) \
+	bzr_pwr.o$(IRIT_OBJ_PF) \
+	cagd2ply.o$(IRIT_OBJ_PF) \
+	cagd2pl2.o$(IRIT_OBJ_PF) \
+	cagd_arc.o$(IRIT_OBJ_PF) \
+	cagd_aux.o$(IRIT_OBJ_PF) \
+	cagd_cci.o$(IRIT_OBJ_PF) \
+	cagd_cnc.o$(IRIT_OBJ_PF) \
+	cagd_dbg.o$(IRIT_OBJ_PF) \
+	cagd_err.o$(IRIT_OBJ_PF) \
+	cagd_ftl.o$(IRIT_OBJ_PF) \
+	cagd1gen.o$(IRIT_OBJ_PF) \
+	cagd2gen.o$(IRIT_OBJ_PF) \
+	cagdbbox.o$(IRIT_OBJ_PF) \
+	cagdbsum.o$(IRIT_OBJ_PF) \
+	cagdcmpt.o$(IRIT_OBJ_PF) \
+	cagdcmrg.o$(IRIT_OBJ_PF) \
+	cagdcoer.o$(IRIT_OBJ_PF) \
+	cagdcsrf.o$(IRIT_OBJ_PF) \
+	cagdedit.o$(IRIT_OBJ_PF) \
+	cagdextr.o$(IRIT_OBJ_PF) \
+	cagdmesh.o$(IRIT_OBJ_PF) \
+	cagdoslo.o$(IRIT_OBJ_PF) \
+	cagdprim.o$(IRIT_OBJ_PF) \
+	cagdruld.o$(IRIT_OBJ_PF) \
+	cagdsmrg.o$(IRIT_OBJ_PF) \
+	cagdsrev.o$(IRIT_OBJ_PF) \
+	cagdswep.o$(IRIT_OBJ_PF) \
+	cbsp_aux.o$(IRIT_OBJ_PF) \
+	cbsp_fit.o$(IRIT_OBJ_PF) \
+	cbsp_int.o$(IRIT_OBJ_PF) \
+	cbspeval.o$(IRIT_OBJ_PF) \
+	cbzr_aux.o$(IRIT_OBJ_PF) \
+	cbzr_tbl.o$(IRIT_OBJ_PF) \
+	cbzr2tbl.o$(IRIT_OBJ_PF) \
+	cbzreval.o$(IRIT_OBJ_PF) \
+	cpwr_aux.o$(IRIT_OBJ_PF) \
+	crvmatch.o$(IRIT_OBJ_PF) \
+	hermite.o$(IRIT_OBJ_PF) \
+	mshplanr.o$(IRIT_OBJ_PF) \
+	nrmleval.o$(IRIT_OBJ_PF) \
+	poly_err.o$(IRIT_OBJ_PF) \
+	sbsp_aux.o$(IRIT_OBJ_PF) \
+	sbsp_int.o$(IRIT_OBJ_PF) \
+	sbspeval.o$(IRIT_OBJ_PF) \
+	sbzr_aux.o$(IRIT_OBJ_PF) \
+	sbzreval.o$(IRIT_OBJ_PF)
+
+all:	libIritCagd$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+
+libIritCagd$(IRIT_LIB_PF).$(IRIT_LIB_SFX): $(OBJS)
+	rm -f libIritCagd$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+	$(IRIT_LIB_MAKE) libIritCagd$(IRIT_LIB_PF).$(IRIT_LIB_SFX) *.o$(IRIT_OBJ_PF)
+	-$(IRIT_LIB_RAN) libIritCagd$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+
+install: libIritCagd$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+	mv -f libIritCagd$(IRIT_LIB_PF).$(IRIT_LIB_SFX) $(IRIT_LIB_DIR)
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

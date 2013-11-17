@@ -1,0 +1,95 @@
+#############################################################################
+#
+# Warping polyhedral models using trivariates.
+#
+#						Gershon Elber, Oct 1999.
+#
+
+save_res = resolution;
+save_mat2 = view_mat;
+view_mat = rotx( 0 );
+
+#
+# Get a model.
+#
+
+resolution = 20;
+s = ruledSrf( ctlpt( E3, 0.0, 0.0, 0.0 ) + ctlpt( E3, 1.0, 0.0, 0.0 ),
+	      ctlpt( E3, 0.0, 1.0, 0.0 ) + ctlpt( E3, 1.0, 1.0, 0.0 ) );
+Pls = MaxEdgeLen( triangl( gpolygon( s, on ), 0 ), 0.2 );
+
+#
+# Define the trivarate warping function.
+#
+
+s1 = ruledSrf( ctlpt( E3, -0.0, 0.0,  0.01 ) +
+	       ctlpt( E3,  0.5, 0.0, -0.01 ) +
+	       ctlpt( E3,  1.0, 0.0,  0.01 ),
+	       ctlpt( E3, -0.0, 1.0,  0.01 ) +
+	       ctlpt( E3,  0.5, 1.0, -0.01 ) +
+	       ctlpt( E3,  1.0, 1.0,  0.01 ) );
+Tv = TFromSrfs( list( s1 * tz( -0.5 ),
+		      s1 * sc( 0.96 ) * tx( 0.02 ) * tz( 0.5 ) ),
+		2, kv_open );
+Tv = treparam( treparam( Tv, col, 0, 1 ), depth, -0.5, 0.5 );
+awidth( Tv, 0.001 );
+free( s1 );
+
+#
+# Define our warping function.
+#
+
+WarpSurface = function( Pls, Tv ): Pl: i: j: v: Vec: x: y: z:
+    return = nil():
+    for ( i = 0, 1, sizeof( Pls ) - 1,
+	Pl = coord( Pls, i ):
+	v = nil():
+	for ( j = 0, 1, sizeof( Pl ) - 1,
+	    Vec = coord( Pl, j ):
+	    x = coord( Vec, 0 ):
+	    y = coord( Vec, 1 ):
+	    z = coord( Vec, 2 ):
+	    Vec = coerce( teval( Tv, x, y, z ), vector_type ):
+	    snoc( Vec, v ) ):
+	snoc( poly( v, false ), return ) ):
+    return = mergePoly( return );
+
+for ( i = 1, 1, 10,
+    Pls = WarpSurface( Pls, Tv ):
+    view( Pls, 1 ) );
+
+save( "warp1ply", WarpSurface( Pls, Tv ) );
+
+#############################################################################
+
+gcross = cbspline( 3,
+		   list( ctlpt( E3, 0.3,  0.0, 0.0 ),
+		         ctlpt( E3, 0.2,  0.0, 0.05 ),
+		         ctlpt( E3, 0.05, 0.0, 0.05 ),
+		         ctlpt( E3, 0.05, 0.0, 0.4 ),
+		         ctlpt( E3, 0.4,  0.0, 0.4 ),
+		         ctlpt( E3, 0.3,  0.0, 0.8 ) ),
+		   list( KV_OPEN ) );
+color( gcross, white );
+
+glass = surfprev( gcross ) * sc( 0.8 ) * ry( 90 ) * tx( 0.25 ) * ty( 0.5 );
+resolution = 10;
+Pls = gpolygon( glass, on );
+free( glass );
+free( gcross );
+
+for ( i = 1, 1, 10,
+    Pls = WarpSurface( Pls, Tv ):
+    view( Pls, 1 ) );
+
+save( "warp2ply", WarpSurface( Pls, Tv ) );
+
+#############################################################################
+
+view_mat = save_mat2;
+resolution = save_res;
+
+free( Pls );
+free( s );
+free( i );
+free( Tv );

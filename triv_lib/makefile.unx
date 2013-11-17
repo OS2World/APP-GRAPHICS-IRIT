@@ -1,0 +1,45 @@
+#
+# This is the make file for the triv_lib library.
+#
+#                               Gershon Elber, Aug 1990
+#
+
+include ../makeflag.unx
+
+OBJS =  geomat4d.o$(IRIT_OBJ_PF) \
+	mrchcube.o$(IRIT_OBJ_PF) \
+	mrch_run.o$(IRIT_OBJ_PF) \
+	mrchtriv.o$(IRIT_OBJ_PF) \
+	trinterp.o$(IRIT_OBJ_PF) \
+	triv_aux.o$(IRIT_OBJ_PF) \
+	triv_dbg.o$(IRIT_OBJ_PF) \
+	triv_der.o$(IRIT_OBJ_PF) \
+	triv_err.o$(IRIT_OBJ_PF) \
+	triv_ftl.o$(IRIT_OBJ_PF) \
+	triv_gen.o$(IRIT_OBJ_PF) \
+	triv_ref.o$(IRIT_OBJ_PF) \
+	triv_sub.o$(IRIT_OBJ_PF) \
+	trivcmpt.o$(IRIT_OBJ_PF) \
+	trivcoer.o$(IRIT_OBJ_PF) \
+	trivcurv.o$(IRIT_OBJ_PF) \
+	trivedit.o$(IRIT_OBJ_PF) \
+	triveval.o$(IRIT_OBJ_PF) \
+	trivextr.o$(IRIT_OBJ_PF) \
+	trivmesh.o$(IRIT_OBJ_PF) \
+	trivmrph.o$(IRIT_OBJ_PF) \
+	trivrais.o$(IRIT_OBJ_PF) \
+	trivruld.o$(IRIT_OBJ_PF) \
+	trivstrv.o$(IRIT_OBJ_PF) \
+	trivtrev.o$(IRIT_OBJ_PF)
+
+all:	libIritTriv$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+
+libIritTriv$(IRIT_LIB_PF).$(IRIT_LIB_SFX): $(OBJS)
+	rm -f libIritTriv$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+	$(IRIT_LIB_MAKE) libIritTriv$(IRIT_LIB_PF).$(IRIT_LIB_SFX) *.o$(IRIT_OBJ_PF)
+	-$(IRIT_LIB_RAN) libIritTriv$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+
+install: libIritTriv$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+	mv -f libIritTriv$(IRIT_LIB_PF).$(IRIT_LIB_SFX) $(IRIT_LIB_DIR)
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

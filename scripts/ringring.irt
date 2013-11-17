@@ -1,0 +1,127 @@
+#
+# Examples of ring ring surface intersection approximations.
+#
+#					Gershon Elber, April 2000
+#
+
+save_res = resolution;
+save_mat = view_mat;
+
+view_mat = view_mat * sc( 0.3 );
+viewobj( view_mat );
+
+view_mat = save_mat;
+
+#############################################################################
+#
+# Cylinder-Cylinder intersection
+#
+
+s1 = cylinSrf( 4, 1 ) * tz( -2 );
+color( s1, red );
+c1 = cbezier( list( ctlpt( E3, 0.0, 0.0, -1.0 ),
+		    ctlpt( E3, 0.0, 0.0,  1.0 ) ) );
+r1 = cbezier( list( ctlpt( E1, 1.0 ) ) );
+
+s2 = cylinSrf( 4, 1 ) * tz( -2 ) * rx( 90 ) * tx( 0.5 );
+color( s2, magenta );
+c2 = cbezier( list( ctlpt( E3, 0.5, -1.0, 0.0 ),
+		    ctlpt( E3, 0.5,  1.0, 0.0 ) ) );
+r2 = cbezier( list( ctlpt( E1, 1.0 ) ) );
+
+ZeroSetSrf = coerce( gginter( c1, r1, c2, r2, 10, true ), e3 )
+						* rotx( -90 ) * roty( -90 );
+resolution = 100;
+ZeroSet = contour( ZeroSetSrf, plane( 0, 0, 1, 0 ) );
+color( ZeroSet, green );
+adwidth( ZeroSet, 3 );
+interact( list( ZeroSetSrf * sz( 0.1 ), ZeroSet, axes ) * sc( 3 ) );
+
+c = nth( gginter( c1, r1, c2, r2, 100, false ), 1 );
+interact( list( s1, s2, c ) );
+
+save( "rngrng1", list( ZeroSetSrf, s1, s2, c ) );
+
+for ( a = 0.9, -0.1, 0.05,
+    s2 = cylinSrf( 4, 1 ) * tz( -2 ) * rx( 90 ) * tx( a ):
+    color( s2, magenta ):
+    c2 = cbezier( list( ctlpt( E3, a, -1.0, 0.0 ),
+		        ctlpt( E3, a,  1.0, 0.0 ) ) ):
+    r2 = cbezier( list( ctlpt( E1, 1.0 ) ) ):
+
+    c = nth( gginter( c1, r1, c2, r2, 100, false ), 1 ):
+    color( c, green ):
+    adwidth( c, 3 ):
+    view( list( s1, s2, c ), 1 ) );
+
+for ( r = 0.1, 0.025, 0.6,
+    s2 = cylinSrf( 4, r ) * tz( -2 ) * rx( 90 ) * tx( 0.5 ):
+    color( s2, magenta ):
+    c2 = cbezier( list( ctlpt( E3, 0.5, -1.0, 0.0 ),
+		        ctlpt( E3, 0.5,  1.0, 0.0 ) ) ):
+    r2 = cbezier( list( ctlpt( E1, r ) ) ):
+
+    c = nth( gginter( c1, r1, c2, r2, 100, false ), 1 ):
+    color( c, green ):
+    adwidth( c, 3 ):
+    view( list( s1, s2, c ), 1 ) );
+
+#############################################################################
+#
+# Cylinder-Cone intersection
+#
+
+s1 = cylinSrf( 4, 1 ) * tz( -2 );
+color( s1, red );
+c1 = cbezier( list( ctlpt( E3, 0.0, 0.0, -1.0 ),
+		    ctlpt( E3, 0.0, 0.0,  1.0 ) ) );
+r1 = cbezier( list( ctlpt( E1, 1.0 ) ) );
+
+s2 = coneSrf( 4, 1 ) * tz( -2 ) * rx( 90 ) * tx( 0.5 );
+color( s2, magenta );
+c2 = cbezier( list( ctlpt( E3, 0.5, -2.0, 0.0 ),
+		    ctlpt( E3, 0.5,  2.0, 0.0 ) ) );
+r2 = cbezier( list( ctlpt( E1, 0.0 ), ctlpt( E1, 1.0 ) ) );
+
+ZeroSetSrf = coerce( gginter( c1, r1, c2, r2, 10, true ), e3 )
+						* rotx( -90 ) * roty( -90 );
+resolution = 100;
+ZeroSet = contour( ZeroSetSrf, plane( 0, 0, 1, 0 ) );
+color( ZeroSet, green );
+adwidth( ZeroSet, 3 );
+interact( list( ZeroSetSrf * sz( 0.01 ), ZeroSet, axes ) * sc( 3 ) );
+
+# c = nth( gginter( c1, r1, c2, r2, 200, false ), 1 ); is more singular
+c = nth( gginter( c2, r2, c1, r1, 200, false ), 1 );
+interact( list( s1, s2, c ) );
+
+save( "rngrng2", list( ZeroSetSrf, s1, s2, c ) );
+
+for ( a = 0.9, -0.1, 0.15,
+    s2 = coneSrf( 4, 1 ) * tz( -2 ) * rx( 90 ) * tx( a ):
+    color( s2, magenta ):
+    c2 = cbezier( list( ctlpt( E3, a, -2.0, 0.0 ),
+		        ctlpt( E3, a,  2.0, 0.0 ) ) ):
+    r2 = cbezier( list( ctlpt( E1, 0.0 ), ctlpt( E1, 1.0 ) ) ):
+
+    c = nth( gginter( c2, r2, c1, r1, 150, false ), 1 ):
+    color( c, green ):
+    adwidth( c, 3 ):
+    view( list( s1, s2, c ), 1 ) );
+
+#############################################################################
+
+free( a );
+free( c );
+free( r );
+free( c1 );
+free( c2 );
+free( r1 );
+free( r2 );
+free( s1 );
+free( s2 );
+free( ZeroSetSrf );
+free( ZeroSet );
+
+resolution = save_res;
+

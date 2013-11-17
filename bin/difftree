@@ -1,0 +1,55 @@
+#!/bin/csh -f
+#
+# Compares two source trees
+#
+# Usage: "difftree src-tree dst-tree",
+#
+#			 			Gershon Elber, Jan 1996.
+#
+
+set reverse = 0
+if ("$1" == "-r") then
+	shift
+	set reverse = 1
+endif
+
+if ( $#argv != 2 ) then
+	echo "Usage: difftree src-tree dst-tree"
+	exit 1
+endif
+
+set src = $1
+set dest = $2
+
+if ( ! -e $src ) then
+	echo "Source directory does not exists"
+	exit 1
+endif
+if ( ! -e $dest ) then
+	echo "Destination directory does not exists"
+	exit 1
+endif
+
+diff -rq $src $dest | awk \
+	'BEGIN {	\
+	} \
+	(($1 == "Files") && ($3 == "and") && ($5 == "differ")) { \
+		if ( $reverse ) { \
+			printf("echo ===================================\n"); \
+			printf("echo cp %s %s\n", $2, $4); \
+			printf("echo ===================================\n"); \
+			printf("diff %s %s\n", $2, $4); \
+		} \
+		else { \
+			printf("echo ===================================\n"); \
+			printf("echo cp %s %s\n", $4, $2); \
+			printf("echo ===================================\n"); \
+			printf("diff %s %s\n", $4, $2); \
+		} \
+	} \
+	{ \
+	}' > /tmp/difftree.tmp.$$
+
+csh /tmp/difftree.tmp.$$
+
+rm /tmp/difftree.tmp.$$

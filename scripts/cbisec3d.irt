@@ -1,0 +1,267 @@
+#
+# Some examples of 3d bisector computations of 3-space freeform curves.
+#
+#			Gershon Elber, August 1996.
+#
+
+#
+# Set states.
+#
+save_mat = view_mat;
+view_mat = view_mat * sc( 0.35 );
+viewobj( view_mat );
+
+# Faster product using Bezier decomposition.
+IntProd = iritstate( "BspProdMethod", 0 );
+
+#############################################################################
+#
+# Two linear curves
+#
+c1 = cbezier( list( ctlpt( E3,  0.0,  0.1, -1.0 ),
+		    ctlpt( E3,  0.0,  0.1,  1.0 ) ) );
+c2 = cbezier( list( ctlpt( E3, -1.0, -0.1,  0.0 ),
+		    ctlpt( E3,  1.0, -0.1,  0.0 ) ) );
+color( c1, red );
+adwidth( c1, 3 );
+color( c2, red );
+adwidth( c2, 3 );
+
+BisectSrf = cbisector3d( list( c1, c2 ), 1 );
+color( BisectSrf, green );
+
+interact( list( c1, c2, BisectSrf ) );
+
+#############################################################################
+#
+# Two linear curves animated
+#
+
+for ( b = 2.0, -0.02, 0.0,
+    c1 = cbezier( list( ctlpt( E3,  0.0, -0.1 - b, -1.0 ),
+		        ctlpt( E3,  0.0, -0.1 - b,  1.0 ) ) ):
+    c2 = cbezier( list( ctlpt( E3, -1.0,  0.1 + b,  0.0 ),
+		        ctlpt( E3,  1.0,  0.1 + b,  0.0 ) ) ):
+    color( c1, red ):
+    adwidth( c1, 3 ):
+    color( c2, red ):
+    adwidth( c2, 3 ):
+    BisectSrf = cbisector3d( list( c1, c2 ), 1 ):
+    color( BisectSrf, green ):
+    view( list( c1, c2, BisectSrf ), true ) );
+
+pause();
+
+#############################################################################
+#
+# Two quadratic curves
+#
+c1 = cbezier( list( ctlpt( E3,  0.0,  0.5, -1.0 ),
+		    ctlpt( E3,  0.0,  0.1,  0.0 ),
+		    ctlpt( E3,  0.0,  0.5,  1.0 ) ) );
+c2 = cbezier( list( ctlpt( E3, -1.0,  1.0,  0.0 ),
+		    ctlpt( E3,  0.0, -1.5,  0.0 ),
+		    ctlpt( E3,  1.0,  1.0,  0.0 ) ) );
+color( c1, red );
+adwidth( c1, 3 );
+color( c2, red );
+adwidth( c2, 3 );
+
+BisectSrf = cbisector3d( list( c1, c2 ), 1 );
+color( BisectSrf, green );
+
+interact( list( c1, c2, BisectSrf ) );
+save( "cbise3d1", list( c1, c2, BisectSrf ) );
+
+#############################################################################
+#
+# A line and a (approximation of a) circle.
+#
+c1 = cbezier( list( ctlpt( E3,  0.0,  0.0, -1.0 ),
+		    ctlpt( E3,  0.0,  0.0,  1.0 ) ) );
+c2 = pcircle( vector( 0.0, 0.0, 0.0 ), 1 );
+color( c1, red );
+adwidth( c1, 3 );
+color( c2, red );
+adwidth( c2, 3 );
+
+BisectSrf = cbisector3d( list( c1, c2 ), 1 );
+color( BisectSrf, green );
+
+interact( list( c1, c2, BisectSrf ) );
+save( "cbise3d2", list( c1, c2, BisectSrf ) );
+
+#############################################################################
+#
+# A line and a (approximation of a) circle.
+#
+c1 = pcircle( vector( 0.0, 0.0, 0.0 ), 1 );
+c2 = cbezier( list( ctlpt( E3, -1.0, 0.0,  1.0 ),
+		    ctlpt( E3,  1.0, 0.0, -1.0 ) ) );
+color( c1, red );
+adwidth( c1, 3 );
+color( c2, red );
+adwidth( c2, 3 );
+
+BisectSrf = cbisector3d( list( c1, c2 ), 1 );
+color( BisectSrf, green );
+
+interact( list( c1, c2, BisectSrf ) );
+save( "cbise3d3", list( c1, c2, BisectSrf ) );
+
+#############################################################################
+#
+# A line and a (approximation of a) circle.
+#
+c1 = creparam( pcircle( vector( 0.0, 0.0, 0.0 ), 1 ), 0, 1 );
+c2 = cbezier( list( ctlpt( E3, -2.0, 0.0,  1.0 ),
+		    ctlpt( E3, -2.0, 0.0, -1.0 ) ) );
+color( c1, red );
+adwidth( c1, 3 );
+color( c2, red );
+adwidth( c2, 3 );
+
+BisectSrf = cbisector3d( list( c1, c2 ), 1 );
+BisectSrf1 = sregion( BisectSrf, col, 0.0, 0.3 );
+BisectSrf2 = sregion( BisectSrf, col, 0.7, 1.0 );
+BisectSrf3 = sregion( BisectSrf, col, 0.36, 0.64 );
+color( BisectSrf1, green );
+color( BisectSrf2, green );
+color( BisectSrf3, green );
+
+interact( list( c1, c2, BisectSrf1, BisectSrf2, BisectSrf3 ) );
+save( "cbise3d4", list( c1, c2, BisectSrf1, BisectSrf2, BisectSrf3 ) );
+
+#############################################################################
+#
+# A quadratic Bezier and a (exact rational) ellipse.
+#
+
+c1 = cbezier( list( ctlpt( E3, -2.0,  0.0, -1.0 ),
+		    ctlpt( E3, -3.0,  0.0,  0.0 ),
+		    ctlpt( E3, -2.0,  0.0,  1.0 ) ) );
+c2 = circle( vector( 0.0, 0.0, 0.0 ), 1 ) * sy( 2 );
+color( c1, red );
+adwidth( c1, 3 );
+color( c2, red );
+adwidth( c2, 3 );
+
+BisectSrf = cbisector3d( list( c1, c2 ), 1 );
+color( BisectSrf, green );
+
+interact( list( c1, c2, BisectSrf ) );
+save( "cbise3d5", list( c1, c2, BisectSrf ) );
+
+#############################################################################
+#
+# A tilted line and a (exact rational) circle.
+#
+c1 = cbezier( list( ctlpt( E3, -2.0,  0.0, -1.0 ),
+		    ctlpt( E3, -2.5,  0.0,  1.0 ) ) );
+c2 = circle( vector( 0.0, 0.0, 0.0 ), 1 );
+color( c1, red );
+adwidth( c1, 3 );
+color( c2, red );
+adwidth( c2, 3 );
+
+BisectSrf = cbisector3d( list( c1, c2 ), 1 );
+color( BisectSrf, green );
+
+interact( list( c1, c2, BisectSrf ) );
+save( "cbise3d6", list( c1, c2, BisectSrf ) );
+
+#############################################################################
+#
+# A cubic curve and a point
+#
+c1 = cbezier( list( ctlpt( E3, -0.8,  0.4,  0.2 ),
+		    ctlpt( E3, -0.2, -0.3,  0.5 ),
+		    ctlpt( E3,  0.3,  0.4, -0.5 ),
+		    ctlpt( E3,  0.7, -0.4,  0.4 ) ) );
+color( c1, red );
+adwidth( c1, 3 );
+
+pt = point( 0, 1, 0 );
+color( pt, yellow );
+adwidth( Pt, 3 );
+
+BisectSrf = cbisector3d( list( c1, pt ), 1 );
+color( BisectSrf, green );
+
+interact( list( c1, pt, BisectSrf ) );
+save( "cbise3d7", list( c1, pt, BisectSrf ) );
+
+#############################################################################
+#
+# A circle and a point
+#
+c1 = pcircle( vector( 0, 0, 0 ), 1 );
+color( c1, red );
+adwidth( c1, 3 );
+
+pt = point( 0, 0, 1 );
+color( pt, yellow );
+adwidth( Pt, 3 );
+
+BisectSrf = cbisector3d( list( c1, pt ), 1 );
+color( BisectSrf, green );
+
+interact( list( c1, pt, BisectSrf ) );
+
+c1 = circle( vector( 0, 0, 0 ), 1 );
+color( c1, red );
+adwidth( c1, 3 );
+
+pt = point( 0, 0, 1 );
+color( pt, yellow );
+adwidth( Pt, 3 );
+
+BisectSrf = cbisector3d( list( c1, pt ), 1 );
+color( BisectSrf, green );
+
+interact( list( c1, pt, BisectSrf ) );
+save( "cbise3d8", list( c1, pt, BisectSrf ) );
+
+#############################################################################
+#
+# A helix and a point
+#
+
+Helix = pcircle( vector( 0.0, 0.0, 0.0 ), 1 ) * rz( 90 ) * ry( -90 );
+for ( i = 0, 1, sizeof( Helix ) - 1,
+    PtH = coord( Helix, i ):
+    Helix = cEditPt( Helix,
+		     ctlpt( E3, i / 5, coord( PtH, 2 ), coord( PtH, 3 ) ),
+		     i ) );
+Helix = ( Helix + Helix * tx( 1.8 ) ) * sx( 0.5 );
+color( Helix, red );
+adwidth( Helix, 3 );
+
+pt = point( 0.9, 0, 0 );
+color( pt, yellow );
+adwidth( Pt, 3 );
+
+BisectSrf = cbisector3d( list( Helix, pt ), 1 );
+color( BisectSrf, green );
+
+interact( list( Helix, pt, BisectSrf ) );
+save( "cbise3d9", list( Helix, pt, BisectSrf ) );
+
+#############################################################################
+
+IntProd = iritstate( "BspProdMethod", IntProd );
+free( IntProd );
+
+view_mat = save_mat;
+
+free( Helix );
+free( c1 );
+free( c2 );
+free( BisectSrf );
+free( BisectSrf1 );
+free( BisectSrf2 );
+free( BisectSrf3 );
+free( Pt );
+free( PtH );
+free( i );
+free( b );

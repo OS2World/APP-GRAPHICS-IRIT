@@ -1,0 +1,23 @@
+#
+# Makefile for the IRENDER scan converter.
+#
+
+include ../makeflag.unx
+
+OBJS	= main.o$(IRIT_OBJ_PF) \
+	config.o$(IRIT_OBJ_PF) \
+	parser.o$(IRIT_OBJ_PF)
+
+all:	irender$(IRIT_EXE_PF)
+
+
+irender$(IRIT_EXE_PF):	$(OBJS)
+	$(CC) $(CFLAGS) $(IRIT_MORE_FLAGS) -o irender$(IRIT_EXE_PF) $(OBJS) \
+	$(MOREOBJS) $(IRIT_LIBS) -lm $(IRIT_MORE_LIBS)
+
+install: irender$(IRIT_EXE_PF)
+	mv -f irender$(IRIT_EXE_PF) $(IRIT_BIN_DIR)
+	cp irender.cfg $(IRIT_BIN_DIR)
+
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

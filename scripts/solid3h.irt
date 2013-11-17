@@ -1,0 +1,53 @@
+#
+# Yet another mechanical part (?)
+# This one is probably not for the IBM PC version (too big...).
+#
+
+t = time( true );
+free( t );
+
+save_mat = view_mat;
+save_res = resolution;
+
+resolution = 32;
+
+B1 = box(vector( -0.5, -0.2, 0.0), 1.0, 0.4, 0.15);
+B2 = box(vector(-0.25, -0.3, 0.1), 0.5, 0.6, 0.5);
+
+M1 = B1 - B2;
+free(B1);
+free(B2);
+
+interact(list(view_mat, M1));
+
+C1 = sphere(vector( 0.0, 0.0, 0.2), 0.181);
+view(C1, false);
+
+M2 = M1 - C1;
+free(M1);
+free(C1);
+view(M2, true);
+
+C2 = circle(vector( 0.55, 0.0, 0.0), 0.12);
+C2 = extrude(C2, vector(-0.2, 0.0, 0.2), 0);
+C2 = C2 * circpoly(vector( 0.0, 0.0, 1.0), vector( 0.55, 0.0, 0.05), 0.25);
+C3 = circle(vector(-0.55, 0.0, 0.0), 0.12);
+C3 = extrude(C3, vector( 0.2, 0.0, 0.2), 0);
+C3 = C3 * circpoly(vector( 0.0, 0.0, 1.0), vector( -0.55, 0.0, 0.05), 0.25);
+view(list(C2, C3), false);
+
+M3 = M2 - C2 - C3;
+free(M2);
+free(C2);
+free(C3);
+final = convex(M3);
+free(M3);
+
+printf( "Total Time = %f\\n", list( time( false ) ) ); # In Seconds
+
+interact(final);
+
+save("solid3h", final);
+free(final);
+resolution = save_res;
+view_mat = save_mat;

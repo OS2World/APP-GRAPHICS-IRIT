@@ -1,0 +1,261 @@
+#
+# Some routines to test the bspline curve fitting functions.
+#
+
+ri = iritstate( "RandomInit", 1960 );  # Seed-initiate the randomizer,
+free( ri );
+
+#############################################################################
+
+ptList = nil();
+for ( i = 0, 0.1, 2 * pi,
+   snoc( point( cos( i ) + random( -0.01, 0.01 ),
+		sin( i ) + random( -0.01, 0.01 ), 0 ),
+	 ptList ) );
+color( ptList, red );
+
+c1 = cbsp_fit( ptList, list( 10, 3, true ), 1, list( 20, 1e-4 ) );
+color( c1, cyan );
+
+c2 = cbsp_fit( ptList, list( 10, 3, true ), 2, list( 20, 1e-4 ) );
+color( c2, yellow );
+
+All1 = list( ptList, c1, c2 );
+interact( All1 );
+
+c1a = cbsp_fit( ptList, c1, 1, list( 3, 0, 0, 0 ) );
+color( c1a, cyan );
+
+c2a = cbsp_fit( ptList, c2, 2, list( 3, 0, 0, 0 ) );
+color( c2a, yellow );
+
+All2 = list( ptList, c1a, c2a );
+interact( All2 );
+
+save( "cbsp1fit", list( All1, All2 ) );
+
+#############################################################################
+
+ptList = nil();
+for ( i = 0, 0.01, 2 * pi,
+   snoc( point( cos( i ) + random( -0.1, 0.1 ),
+	        sin( i ) * 0.5 + random( -0.1, 0.1 ), 0 ),
+	 ptList ) );
+color( ptList, red );
+
+c1 = cbsp_fit( ptList, list( 6, 3, true ), 2, nil() );
+color( c1, cyan );
+
+interact( list( ptList, c1 ) );
+
+c1a = cbsp_fit( ptList, c1, 2, list( 2, 0, 0, 0 ) );
+color( c1a, yellow );
+
+interact( list( ptList, c1a ) );
+
+save( "cbsp2fit", list( ptList, c1, c1a ) );
+
+#############################################################################
+
+ptList = nil();
+for ( i = 0, 0.01, 1.5 * pi,
+   snoc( point( cos( i ) + cos( i * 3 ) / 10 + random( -i / 100, i / 100 ),
+	        sin( i ) + sin( i * 3 ) / 10 + random( -i / 70, i / 70 ), 0 ),
+	 ptList ) );
+color( ptList, red );
+
+view( ptList, 1 );
+
+c1 = cbsp_fit( ptList, list( 8, 4, false ), 2, nil() );
+color( c1, cyan );
+
+interact( list( ptList, c1 ) );
+
+c1a = cbsp_fit( ptList, c1, 2, list( 3, 0, 0, 1e-5 ) );
+color( c1a, yellow );
+
+interact( list( ptList, c1a ) );
+
+save( "cbsp3fit", list( ptList, c1, c1a ) );
+
+#############################################################################
+
+ptList = nil();
+for ( i = 0, 0.01, pi,
+   snoc( point( cos( i ) + cos( i * 6 ) / 10 + random( -0.01, 0.01 ),
+	        sin( i ) + sin( i * 6 ) / 10 + random( -0.01, 0.01 ), 0 ),
+	 ptList ) );
+color( ptList, red );
+
+view( ptList, 1 );
+
+c1 = cbsp_fit( ptList, list( 16, 4, false ), 2, nil() );
+color( c1, cyan );
+
+interact( list( ptList, c1 ) );
+
+c1a = cbsp_fit( ptList, c1, 2, list( 2, 0, 0, 0 ) );
+color( c1a, yellow );
+
+interact( list( ptList, c1a ) );
+
+save( "cbsp4fit", list( ptList, c1, c1a ) );
+
+#############################################################################
+
+ptList = nil();
+for ( i = 0, 0.01, 1.55 * pi,
+   snoc( point( cos( i ) * 0.6 + cos( i * 5 ) / 3 + random( -0.05, 0.05 ),
+	        sin( i ) * 0.6 + sin( i * 5 ) / 3 + random( -0.05, 0.05 ), 0 ),
+	 ptList ) );
+color( ptList, red );
+
+view( ptList, 1 );
+
+c1 = cbsp_fit( ptList, list( 18, 4, false ), 2, nil() );
+color( c1, cyan );
+
+interact( list( ptList, c1 ) );
+
+c1a = cbsp_fit( ptList, c1, 2, list( 2, 0, 0, 0 ) );
+color( c1a, yellow );
+
+interact( list( ptList, c1a ) );
+
+save( "cbsp5fit", list( ptList, c1, c1a ) );
+
+#############################################################################
+
+c0 = cbspline( 4,
+    list( ctlpt( E2, -0.324, -0.29 ),
+          ctlpt( E2, 0.882, -0.07 ),
+          ctlpt( E2, -0.803, 0.414 ),
+          ctlpt( E2, 0.347, 0.347 ),
+          ctlpt( E2, 0.431, 0.899 ),
+          ctlpt( E2, 0.082, 0.978 ),
+          ctlpt( E2, -0.335, 1. ),
+          ctlpt( E2, -0.403, 0.132 ),
+          ctlpt( E2, -0.521, -0.984 ) ),
+    list( kv_open ) );
+c0 = creparam( carclen( c0, 1e-4, 3 ), 0, 1 );
+
+ptList = nil();
+for (i = 0, 1, 600,
+   snoc( coerce( coerce( ceval( c0, random( 0, 1 ) ), point_type ) +
+	         vector( random( -0.02, 0.02 ), random( -0.02, 0.02 ), 0 ),
+	         point_type ),
+	 ptList ) );
+color( ptList, red );
+
+view( ptList, 1 );
+
+c1 = cbspline( 3,
+    list( ctlpt( E2, -0.324, -0.29 ),
+          ctlpt( E2,  0.1, 0.414 ),
+          ctlpt( E2, 0.431, 0.899 ),
+          ctlpt( E2, 0.082, 0.978 ),
+          ctlpt( E2, -0.403, 0.132 ),
+          ctlpt( E2, -0.521, -0.984 ) ),
+    list( kv_open ) );
+color( c1, cyan );
+interact( list( ptList, c1 ) );
+
+c1 = cbsp_fit( ptList, c1, 2, list( 5, 0, 0, 1e-3 ) );
+c1 = creparam( c1, 0, 1 );
+color( c1, cyan );
+
+interact( list( ptList, c1 ) );
+
+c1a = crefine( c1, false, list( 1/8, 3/8, 5/8, 7/8 ) );
+
+c1a = cbsp_fit( ptList, c1a, 2, list( 15, 0, 0, 5e-5 ) );
+color( c1a, yellow );
+
+interact( list( ptList, c1a ) );
+
+save( "cbsp6fit", list( ptList, c1, c1a ) );
+
+#############################################################################
+# Slower examples
+#############################################################################
+comment $
+#############################################################################
+
+ptList = nil();
+for ( i = 0, 0.01, 2 * pi,
+   snoc( point( cos( i ) * 0.8 + cos( i * 5 ) / 10 + random( -0.03, 0.03 ),
+	        sin( i ) * 0.8 + sin( i * 5 ) / 10 + random( -0.03, 0.03 ),
+	        0 ),
+	 ptList ) );
+color( ptList, red );
+
+view( ptList, 1 );
+
+c1 = cbsp_fit( ptList, list( 16, 3, true ), 2, list( 6, 1e-4, 1e-6, 5e-5 ) );
+color( c1, cyan );
+
+interact( list( ptList, c1 ) );
+
+c1a = cbsp_fit( ptList, c1, 2, list( 10, 0, 0, 1e-5 ) );
+color( c1a, yellow );
+
+interact( list( ptList, c1a ) );
+
+#############################################################################
+
+c0 = cbspline( 4,
+    list( ctlpt( E2, 0.059, 0.691 ),
+          ctlpt( E2, 0.561, 0.888 ),
+          ctlpt( E2, 0.984, 0.448 ),
+          ctlpt( E2, 0.882, -0.595 ),
+          ctlpt( E2, 0.38, -0.905 ),
+          ctlpt( E2, -0.178, -0.781 ),
+          ctlpt( E2, -0.166, -0.544 ),
+          ctlpt( E2, -0.037, -0.437 ),
+          ctlpt( E2, 0.228, -0.471 ),
+          ctlpt( E2, 0.279, -0.178 ),
+          ctlpt( E2, 0.127, -0.375 ),
+          ctlpt( E2, -0.183, -0.234 ),
+          ctlpt( E2, -0.048, -0.093 ),
+          ctlpt( E2, -0.516, -0.161 ),
+          ctlpt( E2, -0.116, 0.178 ),
+          ctlpt( E2, -0.031, 0.38 ) ),
+    list( kv_periodic ) );
+
+ptList = nil();
+for (i = 0, 1, 600,
+   snoc( coerce( coerce( ceval( c0, random( 0, 1 ) ), point_type ) +
+	         vector( random( -0.05, 0.05 ), random( -0.05, 0.05 ), 0 ),
+	         point_type ),
+	 ptList ) );
+color( ptList, red );
+
+view( ptList, 1 );
+
+c1 = cbsp_fit( ptList, list( 12, 3, true ), 2, list( 8, 0, 0, 1e-3 ) );
+c1 = creparam( c1, 0, 1 );
+color( c1, cyan );
+
+interact( list( ptList, c1 ) );
+
+c1a = crefine( c1, false, list( 1/24, 3/24, 5/24, 7/24, 9/24, 11/24,
+				13/24, 15/24, 17/24, 19/24, 21/24, 23/24 ) );
+
+c1a = cbsp_fit( ptList, c1a, 2, list( 10, 0, 0, 1e-5 ) );
+color( c1a, cyan );
+
+interact( list( ptList, c1a ) );
+
+#############################################################################
+$
+#############################################################################
+
+free( i );
+free( c0 );
+free( c1 );
+free( c1a );
+free( c2 );
+free( c2a );
+free( All1 );
+free( All2 );
+free( ptList );

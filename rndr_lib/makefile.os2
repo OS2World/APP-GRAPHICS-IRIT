@@ -1,0 +1,34 @@
+#
+# This is the make file for the rndr. lib subdirectory (OS2, gcc 2.1, gnumake).
+#
+#				Gershon Elber, Aug 2003
+#
+
+include ..\makeflag.os2
+
+OBJS =  color.o \
+	fstalloc.o \
+	interpol.o \
+	lights.o \
+	nc_zbufr.o \
+	object.o \
+	polyline.o \
+	report.o \
+	rndr_lib.o \
+	scene.o \
+	stencil.o \
+	texture.o \
+	triangle.o \
+	vis_maps.o \
+	zbuffer.o \
+	zbufr_1d.o
+
+librndr.a: $(OBJS)
+	-$(RM) librndr.a
+	ar rc librndr.a $(OBJS)
+
+install: librndr.a
+	$(CP) librndr.a $(IRIT_LIB_DIR)
+	ar s $(IRIT_LIB_DIR)/librndr.a
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

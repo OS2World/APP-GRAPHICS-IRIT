@@ -1,0 +1,74 @@
+                                Licensing 
+				=========
+
+BECAUSE IRIT AND ITS SUPPORTING TOOLS AS DOCUMENTED IN THIS DOCUMENT
+ARE LICENSED FREE OF CHARGE FOR NON COMMERCIAL USE, I PROVIDE
+ABSOLUTELY NO WARRANTY, TO THE EXTENT PERMITTED BY APPLICABLE STATE
+LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING, I GERSHON ELBER PROVIDE
+THE IRIT PROGRAM AND ITS SUPPORTING TOOLS "AS IS" WITHOUT WARRANTY OF
+ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO,
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE.  THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THESE
+PROGRAMS IS WITH YOU. SHOULD THE IRIT PROGRAMS PROVE DEFECTIVE, YOU
+ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
+
+IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW WILL GERSHON ELBER, BE
+LIABLE TO YOU FOR DAMAGES, INCLUDING ANY LOST PROFITS, LOST MONIES, OR
+OTHER SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE
+USE OR INABILITY TO USE (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR
+A FAILURE OF THE PROGRAMS TO OPERATE WITH PROGRAMS NOT DISTRIBUTED BY
+GERSHON ELBER) THE PROGRAMS, EVEN IF YOU HAVE BEEN ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY.
+
+IRIT is a freeware solid modeler. It is not public domain since we
+hold copyrights on it. However, unless you are to sell or attempt to
+make money from any part of this code and/or any model you made with
+this solid modeler, you are free to make anything you want with it. In
+order to use IRIT commercially, you must license it first - contact us
+is such a case.
+
+
+                                DISCLAIMER
+                                ==========
+   I make no warranty of any kind, express or implied, including without
+limitation, any warranties of merchantability and/or fitness for a particular
+purpose.  I shall not be liable for any damages, whether direct, indirect,
+special or consequential arising from a failure of this program to operate in
+the manner desired by the user.  I shall not be liable for any damage to data
+or property which may be caused directly or indirectly by the use of this
+program.
+   IN NO EVENT WILL I BE LIABLE TO YOU FOR ANY DAMAGES, INCLUDING ANY LOST
+PROFITS,  LOST SAVINGS OR OTHER INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING
+OUT OF YOUR USE OR INABILITY TO USE THE PROGRAM, OR FOR ANY CLAIM BY ANY
+OTHER PARTY.
+
+   When you decide to use this package, you automatically agree for the
+following conditions:
+
+1. I hold copyrights for these sources, and my name must be left intact, even
+   if only part of source file is used.
+2. The sources can be used to create any new software which if redistributed
+   will be redistributed FREE only (as IRIT executable). You dont have to
+   release your sources, but if you do, they must be free as well.
+3. No part of the sources, will be used for commercial purposes.
+4. All the sources here can be redistributed FREE only, and exactly as they
+   are provided to you - the exact same files. You may alter the archive
+   program if you prefer (i.e. to zoo format for example), but thats it!
+5. Although stated in 4, you may charge for the distribution reasonable amount
+   of money (not more that $10).
+
+  I decided to release these sources, mainly for educational purposes. Many
+peoples point out, they can learn from the sources, so here is your chance.
+  I certainly would like to see this set of programs continue to expand
+in two main direction:
+1. Improving and/or fixing problems/bugs.
+2. Porting these set of program to different environments.
+
+Gershon Elber
+
+Email:  gershon@cs.technion.ac.il
+
+mail:   Computer Science Department
+	Technion, Israel Institute of Technology
+	Haifa 32000
+	Israel

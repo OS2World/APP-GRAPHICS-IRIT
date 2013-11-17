@@ -1,0 +1,97 @@
+#
+# Alpha sectors between linear entities.
+#
+#
+#				Gershon Elber, December 1999
+
+#
+# Point-Plane alpha sector,
+#
+
+Pt = sphereSrf( 0.1 ) * tx( 1 );
+l = 2;
+Pln = ruledSrf( ctlpt( E3, 0, -l, -l ) + ctlpt( E3, 0, -l,  l ),
+		ctlpt( E3, 0,  l, -l ) + ctlpt( E3, 0,  l,  l ) );
+
+MakeAlpha = function( a, clr ):AA: Alp: Alp1: Alp2:
+    AA = (2 * a - 1) / (a * a):
+    #                      A    B    C    D    E    F    G    H    I    J
+    Alp = quadric( list(  AA,   1,   1,   0,   0,   0,  -2,   0,   0,   1 ) ):
+    if ( a < 0.5,
+        Alp1 = sregion( sregion( Alp, row, 0, 1 ), col, 0, 0.7 ):
+        Alp1 = smoebius( smoebius( Alp1, 0, col ), 0, row ),
+        Alp1 = Alp * tx( 0 ) ):
+    return = list( Alp1,
+		   Alp1 * rx( 90 ),
+		   Alp1 * rx( 180 ),
+		   Alp1 * rx( 270 ) ):
+    color( return, clr ):
+    adwidth( return, 3 );
+
+for ( a = 0.01, 0.02, 0.99,
+    AlpAll = MakeAlpha( a, green ):
+    view( list( Pt, Pln, AlpAll ), on ) );
+pause();
+
+Samps = list( MakeAlpha( 0.1, blue ),
+	      MakeAlpha( 0.25, yellow ),
+	      MakeAlpha( 0.4, cyan ),
+	      MakeAlpha( 0.6, magenta ),
+	      MakeAlpha( 0.7, green ),
+	      MakeAlpha( 0.9, red ) );
+interact( list( axes, Pt, Pln, Samps ) );
+
+save( "alphsc21", list( axes, Pt, Pln, Samps ) );
+
+free( a );
+free( l );
+free( Pt );
+free( Pln );
+free( Samps );
+free( AlpAll );
+
+#
+# Alpha sector of two lines orthogonal to each other,
+#
+
+l = 3;
+Ln1 = ctlpt( E3, 1, -l, 0 ) + ctlpt( E3, 1, l, 0 );
+Ln2 = ctlpt( E3, 0, 0, -l ) + ctlpt( E3, 0, 0, l );
+
+MakeAlpha = function( a, clr ):AA:BB: Alp: Alp1: Alp2:
+    AA = (2 * a - 1) / (a * a):
+    BB = -sqr((1-a)/ a):
+    #                      A    B    C    D    E    F    G    H    I    J
+    Alp = quadric( list(  AA,  BB,   1,   0,   0,   0,  -2,   0,   0,   1 ) ):
+
+    Alp1 = sregion( sregion( Alp, row, -5, 0.45 ), col, 0, 200 ):
+    Alp1 = smoebius( smoebius( Alp1, 0, col ), 0, row ):
+
+    Alp2 = sregion( sregion( Alp, row, -5, 0.45 ), col, -200, 0 ):
+    Alp2 = smoebius( smoebius( Alp2, 0, col ), 0, row ):
+
+    return = list( Alp1, Alp2 ):
+    color( return, clr ):
+    adwidth( return, 3 );
+
+for ( a = 0.01, 0.01, 0.99,
+    AlpAll = MakeAlpha( a, green ):
+    view( list( Ln1, Ln2, AlpAll ), on ) );
+pause();
+
+Samps = list( MakeAlpha( 0.1, blue ),
+	      MakeAlpha( 0.3, yellow ),
+	      MakeAlpha( 0.45, cyan ),
+	      MakeAlpha( 0.55, magenta ),
+	      MakeAlpha( 0.7, green ),
+	      MakeAlpha( 0.9, red ) );
+interact( list( Ln1, Ln2, Samps ) );
+
+save( "alphsc22", list(  Ln1, Ln2, Samps ) );
+
+free( a );
+free( l );
+free( Ln1 );
+free( Ln2 );
+free( Samps );
+free( AlpAll );

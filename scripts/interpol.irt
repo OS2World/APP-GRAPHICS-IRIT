@@ -1,0 +1,754 @@
+#
+# Interpolation/least square approximation of curves and surfaces.
+#
+#					Gershon Elber, March 1994
+#
+#############################################################################
+
+save_mat = view_mat;
+
+view_mat = scale( vector( 0.6, 0.6, 0.6 ) );
+viewobj( view_mat );
+viewstate( "PolyAprx", 1 );
+
+ri = iritstate( "RandomInit", 1964 );  # Seed-initiate the randomizer,
+free( ri );
+
+CreateGeomPlane = function( PlnEqn, Scl ): N:
+    N = vector( Coord( PlnEqn, 0 ),
+		Coord( PlnEqn, 1 ),
+	        Coord( PlnEqn, 2 ) ):
+    return =  planeSrf( -1, -1, 1, 1 ) * sc( Scl ) 
+				     * tz( -Coord( PlnEqn, 3 ) ) * RotZ2V( N );
+
+#############################################################################
+
+Len = 1.0;
+NumPts = 50;
+
+pl1 = nil();
+for ( i = 1, 1, NumPts,
+      Pt = ctlpt( E3, ( Random( -3.5, 3.5 ) + Len * i * 2 ) / NumPts,
+		      ( Random( -3.5, 3.5 ) + Len * i * -5 ) / NumPts,
+		      ( Random( -3.5, 3.5 ) + Len * i * Pi ) / NumPts ):
+      snoc( Pt, pl1 ) );
+
+LnFit = linterp( pl1 );
+c1 = coerce( nth( LnFit, 1 ) + nth( LnFit, 2 ) * 10, e3 ) +
+     coerce( nth( LnFit, 1 ) + nth( LnFit, 2 ) * -10, e3 );
+color( c1, red );
+interact( list( c1, pl1 ) * sc( 0.2 ) );
+
+pl1 = nil();
+for ( i = 1, 1, NumPts,
+      Pt = ctlpt( E3, ( Random( -10, 10 ) + Len * i * -6 ) / NumPts,
+		      ( Random( -10, 10 ) + Len * i * -1 ) / NumPts,
+		      ( Random( -10, 10 ) + Len * i * Pi / 2 ) / NumPts ):
+      snoc( Pt, pl1 ) );
+
+LnFit = linterp( pl1 );
+c1 = coerce( nth( LnFit, 1 ) + nth( LnFit, 2 ) * 10, e3 ) +
+     coerce( nth( LnFit, 1 ) + nth( LnFit, 2 ) * -10, e3 );
+color( c1, red );
+interact( list( c1, pl1 ) * sc( 0.2 ) );
+
+free( pl1 );
+free( LnFit );
+free( c1 );
+free( Len );
+free( NumPts );
+
+#############################################################################
+
+Len = 1.0;
+NumPts = 50;
+
+pl1 = nil();
+for ( i = 1, 1, NumPts,
+      Pt = ctlpt( E3, Random( -1.5, 1.5 ),
+		      Random( -1.5, 1.5 ),
+		      Random( -0.02, 0.02 )):
+      snoc( Pt, pl1 ) );
+pl1 = pl1 * rx( 37 ) * ry( 49 ) * tx( -0.15 );
+
+PlnFit = pinterp( pl1 );
+
+interact( list( axes, Pl1, CreateGeomPlane( nth( plnfit, 1 ), 2 ) ) );
+
+pl1 = nil();
+for ( i = 1, 1, NumPts,
+      Pt = ctlpt( E3, Random( -1.0, 1.0 ),
+		      Random( -1.0, 1.0 ),
+		      Random( -0.1, 0.1 )):
+      snoc( Pt, pl1 ) );
+
+pl1 = pl1 * rx( 33 ) * ry( 21 ) * tz( 0.3 );
+
+PlnFit = pinterp( pl1 );
+
+interact( list( axes, Pl1, CreateGeomPlane( nth( plnfit, 1 ), 1 ) ) );
+
+free( pl1 );
+free( PlnFit );
+free( Len );
+free( NumPts );
+
+#############################################################################
+
+pl1 = list( ctlpt( P3, 3.0, -0.5, -0.5, 0.0 ),
+	    ctlpt( P3, 1.0,  0.7,  0.5, 0.1 ),
+	    ctlpt( P3, 1.0, -0.2, -0.5, 0.2 ),
+	    ctlpt( P3, 0.8,  0.9,  0.5, 0.3 ),
+	    ctlpt( P3, 2.0,  0.1, -0.5, 0.4 ) );
+
+c1 = cinterp( pl1, 3, 3, PARAM_UNIFORM, false );
+interact( list( c1, pl1 ) );
+
+c1 = cinterp(  pl1, 3, 4, PARAM_UNIFORM, false );
+interact( list( c1, pl1 ) );
+
+c1 = cinterp(  pl1, 3, 5, PARAM_UNIFORM, false );
+interact( list( c1, pl1 ) );
+
+c1 = cinterp(  pl1, 4, 4, PARAM_UNIFORM, false );
+interact( list( c1, pl1 ) );
+
+c1 = cinterp(  pl1, 4, 0, PARAM_UNIFORM, false );
+interact( list( c1, pl1 ) );
+
+c1 = cinterp(  pl1, 5, 5, PARAM_UNIFORM, false );
+interact( list( c1, pl1 ) );
+
+c1 = cinterp(  pl1, 5, 7, PARAM_UNIFORM, false );
+interact( list( c1, pl1 ) );
+
+save( "interpl1", list( c1, pl1 ) );
+
+free( c1 );
+free( pl1 );
+
+#############################################################################
+
+ppl1 = nil();
+Len = 1.0;
+NumPts = 10;
+for ( i = 1, 1, NumPts,
+      R = random( 0.5, 0.9 ):
+      Pt = ctlpt( E2, Len * R * cos( i * 2 * pi / NumPts ),
+		      Len * R * sin( i * 2 * pi / NumPts ) ):
+      snoc( Pt, ppl1 ) );
+
+c1 = cinterp( ppl1, 3, 3, PARAM_UNIFORM, true );
+interact( list( c1, ppl1 ) );
+
+c1 = cinterp(  ppl1, 3, 4, PARAM_UNIFORM, true );
+interact( list( c1, ppl1 ) );
+
+c1 = cinterp(  ppl1, 3, 5, PARAM_UNIFORM, true );
+interact( list( c1, ppl1 ) );
+
+c1 = cinterp(  ppl1, 4, 4, PARAM_UNIFORM, true );
+interact( list( c1, ppl1 ) );
+
+c1 = cinterp(  ppl1, 4, 0, PARAM_UNIFORM, true );
+interact( list( c1, ppl1 ) );
+
+c1 = cinterp(  ppl1, 5, 5, PARAM_UNIFORM, true );
+interact( list( c1, ppl1 ) );
+
+c1 = cinterp(  ppl1, 5, 7, PARAM_UNIFORM, true );
+interact( list( c1, ppl1 ) );
+
+c1 = cinterp(  ppl1, 4, 10, PARAM_UNIFORM, true );
+interact( list( c1, ppl1 ) );
+save( "interpl2", list( c1, ppl1 ) );
+
+ppl1 = nil();
+Len = 1.0;
+NumPts = 50;
+for ( i = 1, 1, NumPts,
+      R = random( 0.5, 0.9 ):
+      Pt = ctlpt( P2, 0.5 + R,
+		      Len * R * cos( i * 2 * pi / NumPts ),
+		      Len * R * sin( i * 2 * pi / NumPts ) ):
+      snoc( Pt, ppl1 ) );
+free( pt );
+free( i );
+free( R );
+
+c1 = cinterp( ppl1, 2, 20, PARAM_UNIFORM, true );
+interact( list( c1, ppl1 ) );
+
+c1 = cinterp( ppl1, 3, 15, PARAM_UNIFORM, true );
+interact( list( c1, ppl1 ) );
+
+c1 = cinterp(  ppl1, 4, 30, PARAM_UNIFORM, true );
+interact( list( c1, ppl1 ) );
+
+c1 = cinterp(  ppl1, 4, 50, PARAM_UNIFORM, true );
+interact( list( c1, ppl1 ) );
+save( "interpl3", list( c1, ppl1 ) );
+
+free( c1 );
+free( ppl1 );
+free( NumPts );
+free( Len );
+
+#############################################################################
+
+pl2 = nil();
+for ( x = 0, 1, 20,
+	snoc(point(x / 10 - 1, sin(x * Pi / 5), 0.0), pl2)
+    );
+free( x );
+
+c2 = cinterp( pl2, 3, 5, PARAM_UNIFORM, false );
+interact( list( c2, pl2 ) );
+
+c2 = cinterp( pl2, 3, 7, PARAM_UNIFORM, false );
+interact( list( c2, pl2 ) );
+
+c2 = cinterp( pl2, 3, 10, PARAM_UNIFORM, false );
+interact( list( c2, pl2 ) );
+
+c2 = cinterp( pl2, 4, 5, PARAM_UNIFORM, false );
+interact( list( c2, pl2 ) );
+
+c2 = cinterp( pl2, 4, 7, PARAM_UNIFORM, false );
+interact( list( c2, pl2 ) );
+
+c2 = cinterp( pl2, 4, 10, PARAM_UNIFORM, false );
+interact( list( c2, pl2 ) );
+
+c2 = cinterp( pl2, 4, 15, PARAM_UNIFORM, false );
+interact( list( c2, pl2 ) );
+
+c2 = cinterp( pl2, 4, 20, PARAM_UNIFORM, false );
+interact( list( c2, pl2 ) );
+
+c2 = cinterp( pl2, 10, 10, PARAM_UNIFORM, false );
+interact( list( c2, pl2 ) );
+
+c2 = cinterp( pl2, 10, 20, PARAM_UNIFORM, false );
+interact( list( c2, pl2 ) );
+save( "interpl4", list( c2, pl2 ) );
+
+free( c2 );
+free( pl2 );
+
+#############################################################################
+
+view_mat = roty(30) * rotx(50) * scale( vector( 0.5, 0.5, 0.5 ) );
+viewobj(view_mat);
+
+pl3 = nil();
+for ( x = 0, 1, 30,
+	snoc( point( ( x / 15 - 1 ) * cos( x ),
+		     ( x / 15 - 1 ) * sin( x ),
+		     x / 15 - 1 ),
+	      pl3 )
+    );
+free( x );
+
+c3a = cinterp( pl3, 3, 5, PARAM_UNIFORM, false );
+color(c3a, magenta);
+c3b = cinterp( pl3, 3, 5, PARAM_CHORD, false );
+color(c3b, red);
+c3c = cinterp( pl3, 3, 5, PARAM_CENTRIP, false );
+color(c3c, cyan);
+c3d = cinterp( pl3, 3, 5, PARAM_NIELFOL, false );
+color(c3d, yellow);
+interact( list( c3a, c3b, c3c, c3d, pl3 ) );
+
+c3a = cinterp( pl3, 3, 10, PARAM_UNIFORM, false );
+color(c3a, magenta);
+c3b = cinterp( pl3, 3, 10, PARAM_CHORD, false );
+color(c3b, red);
+c3c = cinterp( pl3, 3, 10, PARAM_CENTRIP, false );
+color(c3c, cyan);
+c3d = cinterp( pl3, 3, 10, PARAM_NIELFOL, false );
+color(c3d, yellow);
+interact( list( c3a, c3b, c3c, c3d, pl3 ) );
+
+c3a = cinterp( pl3, 3, 20, PARAM_UNIFORM, false );
+color(c3a, magenta);
+c3b = cinterp( pl3, 3, 20, PARAM_CHORD, false );
+color(c3b, red);
+c3c = cinterp( pl3, 3, 20, PARAM_CENTRIP, false );
+color(c3c, cyan);
+c3d = cinterp( pl3, 3, 20, PARAM_NIELFOL, false );
+color(c3d, yellow);
+interact( list( c3a, c3b, c3c, c3d, pl3 ) );
+
+c3a = cinterp( pl3, 5, 5, PARAM_UNIFORM, false );
+color(c3a, magenta);
+c3b = cinterp( pl3, 5, 5, PARAM_CHORD, false );
+color(c3b, red);
+c3c = cinterp( pl3, 5, 5, PARAM_CENTRIP, false );
+color(c3c, cyan);
+c3d = cinterp( pl3, 5, 5, PARAM_NIELFOL, false );
+color(c3d, yellow);
+interact( list( c3a, c3b, c3c, c3d, pl3 ) );
+
+c3a = cinterp( pl3, 5, 10, PARAM_UNIFORM, false );
+color(c3a, magenta);
+c3b = cinterp( pl3, 5, 10, PARAM_CHORD, false );
+color(c3b, red);
+c3c = cinterp( pl3, 5, 10, PARAM_CENTRIP, false );
+color(c3c, cyan);
+c3d = cinterp( pl3, 5, 10, PARAM_NIELFOL, false );
+color(c3d, yellow);
+interact( list( c3a, c3b, c3c, c3d, pl3 ) );
+
+c3a = cinterp( pl3, 5, 20, PARAM_UNIFORM, false );
+color(c3a, magenta);
+c3b = cinterp( pl3, 5, 20, PARAM_CHORD, false );
+color(c3b, red);
+c3c = cinterp( pl3, 5, 20, PARAM_CENTRIP, false );
+color(c3c, cyan);
+c3d = cinterp( pl3, 5, 20, PARAM_NIELFOL, false );
+color(c3d, yellow);
+interact( list( c3a, c3b, c3c, c3d, pl3 ) );
+
+c3a = cinterp( pl3, 5, 25, PARAM_UNIFORM, false );
+color(c3a, magenta);
+c3b = cinterp( pl3, 5, 25, PARAM_CHORD, false );
+color(c3b, red);
+c3c = cinterp( pl3, 5, 25, PARAM_CENTRIP, false );
+color(c3c, cyan);
+#c3d = cinterp( pl3, 5, 25, PARAM_NIELFOL, false );
+color(c3d, yellow);
+interact( list( c3a, c3b, c3c, c3d, pl3 ) );
+
+save( "interpl5", list( c3a, c3b, c3c, c3d, pl3 ) );
+
+free( c3a );
+free( c3b );
+free( c3c );
+free( c3d );
+free( pl3 );
+
+#############################################################################
+
+pl4 = nil();
+for ( x = 0, 1, 100,
+	snoc(point(cos(x / 5), sin(x / 5), x / 50 - 1), pl4)
+    );
+free( x );
+
+c4 = cinterp( pl4, 3, 5, PARAM_UNIFORM, false );
+interact( list( c4, pl4 ) );
+
+c4 = cinterp( pl4, 3, 10, PARAM_UNIFORM, false );
+interact( list( c4, pl4 ) );
+
+c4 = cinterp( pl4, 3, 21, PARAM_UNIFORM, false );
+interact( list( c4, pl4 ) );
+
+c4 = cinterp( pl4, 5, 5, PARAM_UNIFORM, false );
+interact( list( c4, pl4 ) );
+
+c4 = cinterp( pl4, 5, 10, PARAM_UNIFORM, false );
+interact( list( c4, pl4 ) );
+
+c4 = cinterp( pl4, 5, 21, PARAM_UNIFORM, false );
+interact( list( c4, pl4 ) );
+save( "interpl6", list( c4, pl4 ) );
+
+free( c4 );
+free( pl4 );
+
+#############################################################################
+
+view_mat = scale( vector( 0.7, 0.7, 0.7 ) );
+viewobj( view_mat );
+
+pl5 = nil();
+for ( x = 0, 1, 4,
+	t = ( x / 2 ) - 1:
+	snoc( point( t * t * t, t * t * t * t * t, 0.0 ), pl5 )
+    );
+free( x );
+free( t );
+
+c5a = cinterp( pl5, 3, 3, PARAM_UNIFORM, false );
+color(c5a, magenta);
+c5b = cinterp( pl5, 3, 3, PARAM_CHORD, false );
+color(c5b, red);
+c5c = cinterp( pl5, 3, 3, PARAM_CENTRIP, false );
+color(c5c, cyan);
+c5d = cinterp( pl5, 3, 3, PARAM_NIELFOL, false );
+color(c5d, yellow);
+interact( list( c5a, c5b, c5c, c5d, pl5 ) );
+
+c5a = cinterp( pl5, 3, 4, PARAM_UNIFORM, false );
+color(c5a, magenta);
+c5b = cinterp( pl5, 3, 4, PARAM_CHORD, false );
+color(c5b, red);
+c5c = cinterp( pl5, 3, 4, PARAM_CENTRIP, false );
+color(c5c, cyan);
+c5d = cinterp( pl5, 3, 4, PARAM_NIELFOL, false );
+color(c5d, yellow);
+interact( list( c5a, c5b, c5c, c5d, pl5 ) );
+
+c5a = cinterp( pl5, 3, 5, PARAM_UNIFORM, false );
+color(c5a, magenta);
+c5b = cinterp( pl5, 3, 5, PARAM_CHORD, false );
+color(c5b, red);
+c5c = cinterp( pl5, 3, 5, PARAM_CENTRIP, false );
+color(c5c, cyan);
+c5d = cinterp( pl5, 3, 5, PARAM_NIELFOL, false );
+color(c5d, yellow);
+interact( list( c5a, c5b, c5c, c5d, pl5 ) );
+save( "interpl7", list( c5a, c5b, c5c, c5d, pl5 ) );
+
+free( c5a );
+free( c5b );
+free( c5c );
+free( c5d );
+free( pl5 );
+
+#############################################################################
+
+view_mat = scale( vector( 0.7, 0.7, 0.7 ) );
+viewobj( view_mat );
+
+cbzr = cbezier( list( ctlpt( E3, -0.5,  0.7,  0.2 ),
+		      ctlpt( E3, -0.3, -0.8,  1.0 ),
+		      ctlpt( E3,  0.1, -0.9, -2.0 ),
+		      ctlpt( E3,  0.3,  0.9,  1.0 ),
+		      ctlpt( E3,  0.6,  0.1,  0.1 ) ) );
+color( cbzr, green );
+
+pl6 = nil();
+for ( x = 0, 1, 4,
+	snoc(ceval(cbzr, x / 4), pl6)
+    );
+
+c6a = cinterp( pl6, 5, 5, list( list( 0, 0.25, 0.5, 0.75, 1 ),
+			        list( kv_open ) ), false );
+color(c6a, magenta);
+c6b = cinterp( pl6, 5, 5, list( list( 0, 0.2, 0.3, 0.5, 1 ),
+			        list( kv_open ) ), false );
+color(c6b, red);
+c6c = cinterp( pl6, 5, 5, list( list( 0, 0.3, 0.7, 0.9, 1 ),
+			        list( kv_open ) ), false );
+color(c6c, cyan);
+c6d = cinterp( pl6, 5, 5, list( list( 0, 0.2, 0.3, 0.4, 0.5 ),
+			        list( kv_open ) ), false );
+color(c6d, yellow);
+interact( list( cbzr, c6a, c6b, c6c, c6d, pl6 ) );
+save( "interpl8", list( cbzr, c6a, c6b, c6c, c6d, pl6 ) );
+
+
+c6a = cinterp( pl6, 5, 5, list( list( 0, 0.25, 0.5, 0.75, 1 ),
+			        list( kv_open ) ), false );
+color(c6a, magenta);
+c6b = cinterp( pl6, 5, 5, list( list( 0, 0.25, 0.5, 0.75, 1 ),
+			        list( -4, -3, -2, -1, 0, 1, 2, 3, 4, 5 ) ), false );
+color(c6b, magenta);
+c6c = cinterp( pl6, 3, 5, list( list( 0, 0.25, 0.5, 0.75, 1 ),
+			        list( 0, 0, 0, 1/3, 2/3, 1, 1, 1 ) ), false );
+color(c6c, cyan);
+c6d = cinterp( pl6, 3, 5, list( list( 0, 0.25, 0.5, 0.75, 1 ),
+			        list( 0, 0, 0, 0.2, 0.8, 1, 1, 1 ) ), false );
+color(c6d, yellow);
+interact( list( cbzr, c6a, c6b, c6c, c6d, pl6 ) );
+save( "interpl9", list( cbzr, c6a, c6b, c6c, c6d, pl6 ) );
+
+c6a = cinterp( pl6, 3, 3, PARAM_UNIFORM, false );
+color(c6a, magenta);
+c6b = cinterp( pl6, 3, 3, PARAM_CHORD, false );
+color(c6b, red);
+c6c = cinterp( pl6, 3, 3, PARAM_CENTRIP, false );
+color(c6c, cyan);
+c6d = cinterp( pl6, 3, 3, PARAM_NIELFOL, false );
+color(c6d, yellow);
+interact( list( cbzr, c6a, c6b, c6c, c6d, pl6 ) );
+
+c6a = cinterp( pl6, 3, 4, PARAM_UNIFORM, false );
+color(c6a, magenta);
+c6b = cinterp( pl6, 3, 4, PARAM_CHORD, false );
+color(c6b, red);
+c6c = cinterp( pl6, 3, 4, PARAM_CENTRIP, false );
+color(c6c, cyan);
+c6d = cinterp( pl6, 3, 4, PARAM_NIELFOL, false );
+color(c6d, yellow);
+interact( list( cbzr, c6a, c6b, c6c, c6d, pl6 ) );
+
+c6a = cinterp( pl6, 3, 5, PARAM_UNIFORM, false );
+color(c6a, magenta);
+c6b = cinterp( pl6, 3, 5, PARAM_CHORD, false );
+color(c6b, red);
+c6c = cinterp( pl6, 3, 5, PARAM_CENTRIP, false );
+color(c6c, cyan);
+c6d = cinterp( pl6, 3, 5, PARAM_NIELFOL, false );
+color(c6d, yellow);
+interact( list( cbzr, c6a, c6b, c6c, c6d, pl6 ) );
+
+c6a = cinterp( pl6, 5, 5, PARAM_UNIFORM, false );
+color(c6a, magenta);
+c6b = cinterp( pl6, 5, 5, PARAM_CHORD, false );
+color(c6b, red);
+c6c = cinterp( pl6, 5, 5, PARAM_CENTRIP, false );
+color(c6c, cyan);
+c6d = cinterp( pl6, 5, 5, PARAM_NIELFOL, false );
+color(c6d, yellow);
+interact( list( cbzr, c6a, c6b, c6c, c6d, pl6 ) );
+save( "interp10", list( cbzr, c6a, c6b, c6c, c6d, pl6 ) );
+
+free( cbzr );
+free( c6a );
+free( c6b );
+free( c6c );
+free( c6d );
+free( pl6 );
+
+#############################################################################
+EchoSrc = iritState( "EchoSource", false );
+include( "gersktch" );
+EchoSrc = iritState( "EchoSource", EchoSrc );
+free( EchoSrc );
+color( gershon, red );
+
+gershon_a = cinterp( gershon, 3, 3, PARAM_UNIFORM, false );
+color(gershon_a, green);
+interact( list( gershon, gershon_a ) );
+
+gershon_b = cinterp( gershon, 3, 6, PARAM_UNIFORM, false );
+color(gershon_b, green);
+interact( list( gershon, gershon_b ) );
+
+gershon_c = cinterp( gershon, 3, 12, PARAM_UNIFORM, false );
+color(gershon_c, green);
+interact( list( gershon, gershon_c ) );
+
+gershon_d = cinterp( gershon, 3, 24, PARAM_UNIFORM, false );
+color(gershon_d, green);
+interact( list( gershon, gershon_d ) );
+
+gershon_e = cinterp( gershon, 3, 48, PARAM_UNIFORM, false );
+color(gershon_e, green);
+interact( list( gershon, gershon_e ) );
+
+gershon_f = cinterp( gershon, 3, 96, PARAM_UNIFORM, false );
+color(gershon_f, green);
+interact( list( gershon, gershon_f ) );
+save( "interp11", list( gershon, gershon_f ) );
+
+free( gershon );
+free( gershon_a );
+free( gershon_b );
+free( gershon_c );
+free( gershon_d );
+free( gershon_e );
+free( gershon_f );
+
+#############################################################################
+
+DerivPt1 = ctlpt( E2,  1, 0 );
+DerivPt2 = ctlpt( E2,  5, 5 );
+attrib( DerivPt1, "derivative", 1 );
+attrib( DerivPt2, "derivative", 1 );
+pll = list( ctlpt( E2, -0.5,  0.7 ),
+	    ctlpt( E2, -0.3, -0.8 ),
+	    Pt1 = ctlpt( E2,  0.0,  0.0 ),
+	    ctlpt( E2,  0.3,  0.9 ),
+	    Pt2 = ctlpt( E2,  0.6,  0.1 ),
+	    DerivPt1,
+	    DerivPt2 );
+c7 = cinterp( pll, 5, 7, list( list( 0, 0.15, 0.5, 0.87, 1.0, 0.5, 1.0 ),
+			       list( kv_open ) ), false );
+
+DeriveVecs = list( arrow3d( Pt1, coerce( DerivPt1, vector_type ),
+		   0.2, 0.005, 0.05, 0.015 ),
+		   arrow3d( Pt2, coerce( DerivPt2, vector_type ),
+		   0.5, 0.01, 0.1, 0.03 ) );
+color( DeriveVecs, red );
+interact( list( c7, Pll, DeriveVecs ) );
+save( "interp12", list( c7, Pll, DeriveVecs ) );
+
+free( DeriveVecs );
+free( DerivPt1 );
+free( DerivPt2 );
+free( Pt1 );
+free( Pt2 );
+free( Pll );
+free( c7 );
+
+#############################################################################
+
+view_mat = rotz(50) * rotx(-60) * scale( vector( 0.2, 0.2, 0.2 ) );
+viewobj(view_mat);
+
+pl = nil();
+pll = nil();
+for ( x = -5, 1, 5,
+      pl = nil():
+      for ( y = -5, 1, 5,
+	    snoc( point( x, y, sin( x * Pi / 2 ) * cos( y * Pi / 2 ) ),
+		  pl )
+	  ):
+      snoc( pl, pll ) );
+free( x );
+free( y );
+
+s1 = -sinterp( pll, 3, 3, 3, 3, PARAM_UNIFORM );
+interact( list( pll, s1 ) );
+
+s1 = -sinterp( pll, 3, 3, 0, 0, PARAM_UNIFORM );
+interact( list( pll, s1 ) );
+
+s1 = -sinterp( pll, 3, 3, 4, 11, PARAM_UNIFORM );
+interact( list( pll, s1 ) );
+
+s1 = -sinterp( pll, 3, 3, 11, 11, PARAM_UNIFORM );
+interact( list( pll, s1 ) );
+
+save( "interp13", list( pll, s1 ) );
+
+free( pl );
+free( pll );
+free( s1 );
+
+#############################################################################
+
+view_mat = rotz(50) * rotx(-60) * scale( vector( 0.7, 0.7, 0.7 ) );
+viewobj(view_mat);
+
+pl = nil();
+pll = nil();
+for ( x = -5, 1, 5,
+      pl = nil():
+      xx = x * Pi / 5:
+      for ( y = -5, 1, 5,
+	    yy = y * Pi / 10:
+	    snoc( point( cos( xx ) * cos( yy ),
+		         sin( xx ) * cos( yy ),
+		         sin( yy ) ),
+		 pl)
+	  ):
+      snoc( pl, pll ) );
+free( x );
+free( xx );
+free( y );
+free( yy );
+
+s2 = -sinterp( pll, 3, 3, 6, 6, PARAM_UNIFORM );
+interact( list( pll, s2 ) );
+
+s2 = -sinterp( pll, 3, 3, 11, 11, PARAM_UNIFORM );
+interact( list( pll, s2 ) );
+
+save( "interp14", list( pll, s2 ) );
+
+free( pl );
+free( pll );
+free( s2 );
+
+#############################################################################
+
+pl = nil();
+pll = nil();
+for ( x = -10, 1, 10,
+      pl = nil():
+      xx = x * Pi / 10:
+      for ( y = -10, 1, 10,
+	    yy = y * Pi / 20:
+	    snoc( point( cos( xx )^3 * cos( yy )^3,
+		         sin( xx )^3 * cos( yy )^3,
+		         sin( yy )^3 ),
+		 pl)
+	  ):
+      snoc( pl, pll ) );
+free( x );
+free( xx );
+free( y );
+free( yy );
+
+s3 = -sinterp( pll, 3, 3, 11, 11, PARAM_UNIFORM );
+interact( list( pll, s3 ) );
+
+s3 = -sinterp( pll, 3, 3, 21, 21, PARAM_UNIFORM );
+interact( list( pll, s3 ) );
+
+save( "interp15", list( pll, s3 ) );
+
+free( pl );
+free( pll );
+free( s3 );
+
+#############################################################################
+# Scattered Data Interpolation.
+#############################################################################
+
+pl = list( ctlpt( E3, 0, 0, 0 ),
+	   ctlpt( E3, 0, 1, 0 ),
+	   ctlpt( E3, 1, 0, 0 ),
+	   ctlpt( E3, 1, 1, 0 ) );
+for ( x = 0, 90, 270,
+    xx = x * Pi / 180:
+    snoc( ctlpt( E3, 0.3 * cos( xx ) + 0.5, 0.3 * sin( xx ) + 0.5, 1.0 ), pl ) );
+free( x );
+free( xx );
+
+s4 = coerce( sinterp( pl, 3, 3, 3, 3, PARAM_UNIFORM ), e3 )
+	* rotx( -90 ) * roty( -90 );
+
+interact( list( axes, s4, pl ) );
+save( "interp16", list( axes, s4, pl ) );
+
+free( s4 );
+free( pl );
+
+#############################################################################
+
+size = 8;
+pl = nil();
+for ( x = -size, 2, size,
+    for ( y = -size, 2, size,
+	snoc( ctlpt( E3, (x + size) / (2 * size), (y + size) / (2 * size),
+		     cos( x / 5 ) * sin( y / 5 ) ),
+	      pl ) ) );
+
+free( size );
+free( x );
+free( y );
+
+s5 = coerce( sinterp( pl, 3, 3, 6, 6, PARAM_UNIFORM ), e3 )
+	* rotx( -90 ) * roty( -90 );
+interact( list( pl, s5 ) );
+save( "interp17", list( pl, s5 ) );
+
+free( s5 );
+free( pl );
+
+#############################################################################
+
+pl = nil();
+for ( teta = -5, 1, 5,
+    t = teta * Pi / 10:
+    for ( phi = 0, 1, 9,
+	p = phi * 2 * Pi / 9:
+	snoc( ctlpt( E5, (teta + 5) / 10,
+		         phi / 9,
+		         cos( t ) * cos( p ),
+		         cos( t ) * sin( p ),
+			 sin( t ) ),
+	      pl ) ) );
+
+free( p );
+free( phi );
+free( t );
+free( teta );
+
+s6 = -sinterp( pl, 3, 3, 7, 7, PARAM_UNIFORM );
+interact( s6 ); # We cannot view pl as it is in E5 space (u, v, x, y, z)
+save( "interp18", list( s6 ) );
+
+free( s6 );
+free( pl );
+
+#############################################################################
+
+view_mat = save_mat;

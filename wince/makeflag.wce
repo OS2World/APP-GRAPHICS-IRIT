@@ -1,0 +1,149 @@
+#
+# To execute this make file do:
+# 1. Run wce*.bat to set the cl environment of the proper palm.
+#    Typical location "Program Files\Microsoft eMbedded Tools\EVC\WCE300\BIN"
+#    for example wcearm.bat for the arm platform.
+# 2. Copy makeflag.wce makeflag.wnt (keep a copy of the later at a safe place)
+
+# include <ntwin32.mak>
+
+MAKE = nmake
+
+#
+# The XXX_DIR variables below MUST have ABSOLUTE path. Since this file
+# is sourced from several directories relative path specification will
+# be simple wrong.
+#
+SRC_DIR = e:\irit\irit
+
+#
+# All libraries created will be installed into the LIB_DIR directory.
+#
+LIB_DIR = $(SRC_DIR)\libce\arm
+
+#
+# All includes files associated with the installed libraries will be
+# installed into the INC_DIR directory.
+#
+INC_DIR = $(SRC_DIR)\include
+
+#
+# All binaries created will be installed into the BIN_DIR directory.
+#
+BIN_DIR = $(SRC_DIR)\ntbin
+
+#
+# Quiet strings
+#
+# QUIET_STR = -DIRIT_QUIET_STRINGS
+
+#
+# Support for RLE image read/write using the Utah Raster Toolkit (URT) library.
+# You can ftp it in cs.utah.edu.
+#
+#   Make these empty if you would like to give up on irender's compilation.
+#
+# URT = d:\c\urt
+# URT_INC = -I$(URT)\include
+# URT_LIB = $(URT)\lib\rle.lib
+# URT_FLAGS = -DHAVE_URT_RLE
+
+#
+# Support for GIF image read/write using the giflib toolkit library.
+# You can ftp it from 
+#
+# GIF = d:\c\giflib
+# GIF_INC = -I$(GIF)\lib
+# GIF_LIB = $(GIF)\lib\libgif.lib
+# GIF_FLAGS = -DHAVE_GIF_LIB
+
+#############################################################################
+# Flags for Mircosoft C compiler, Windows CE
+#
+
+#
+# For x86 simulator
+#
+DFLAGS_HW = -DX86 -D_X86_=1_ -DUNDER_CE=300 -D_WIN32_WCE=300
+IRITCC = cl
+
+#
+# For ARM, WCE 3 platform
+#
+#DFLAGS_HW = -DARM -D_ARM_ -DUNDER_CE=300 -D_WIN32_WCE=300
+#IRITCC = clarm
+
+#
+# For MIPS, WCE 3 platform
+#
+#DFLAGS_HW = -DMIPS -D_MIPS_ -DUNDER_CE=300 -D_WIN32_WCE=300
+#IRITCC = clmips
+
+DFLAGS = $(QUIET_STR) -D__WINCE__ -D_WIN32_WCE_EMULATION $(DFLAGS_HW) -D_MT -DRAND -W3 -nologo
+IRITLIB = lib
+IRITOBJ = ceobj
+IRITDLL = $(link)
+IRITCONLINK = $(link) /dll
+
+# **** NON DEBUG ****
+#CFLAGS = -O1 -Oi -Gy $(DFLAGS) $(URT_INC) $(GIF_INC)
+#IRITCONLINK = $(link) $(conflags)
+#IRITGUILINK = $(link) $(guiflags)
+#IRITLIBPF =
+
+# **** DEBUG ****
+CFLAGS = -Zi -Od $(DFLAGS) $(URT_INC) $(GIF_INC)
+IRITCONLINK = $(link) $(conflags) $(linkdebug)
+IRITGUILINK = $(link) $(guiflags) $(linkdebug) # -entry:mainCRTStartup
+IRITLIBPF = D
+
+#############################################################################
+# IRIT Libraries to use:
+#
+# For using regular libraries.
+#
+CIRCLINK = $(SRC_DIR)/circlink/circlink.obj
+LIBS = $(CIRCLINK) $(USER_LIB) $(BOOL_LIB) $(PRSR_LIB) \
+	$(MVAR_LIB) $(TRIM_LIB) $(TRIV_LIB) $(TRNG_LIB) $(SYMB_LIB) \
+	$(CAGD_LIB) $(GEOM_LIB) $(MISC_LIB) $(XTRA_LIB) $(URT_LIB) $(GIF_LIB)
+DO_IRIT_LIB = circlink_dir
+
+#
+# For using Dynamically Linked Library
+#
+# LIBS = $(LIB_DIR)\irit.lib $(URT_LIB) $(GIF_LIB)
+# DO_IRIT_LIB = irit.dll
+
+#############################################################################
+# Display devices to support
+#
+GRAPDRVS = nuldrvs.exe wntdrvs.exe wntgdrvs.exe 
+
+#
+# Default rule for compilation.
+#
+.c.$(IRITOBJ):
+	$(IRITCC) $(URT_FLAGS) $(GIF_FLAGS) $(MORE_FLAGS) $(CFLAGS) -I. -I$(INC_DIR) -Fo$*.$(IRITOBJ) -c $<
+
+
+PRSR_LIB = $(LIB_DIR)\IritPrsr$(IRITLIBPF).lib
+USER_LIB = $(LIB_DIR)\IritUser$(IRITLIBPF).lib
+GEOM_LIB = $(LIB_DIR)\IritGeom$(IRITLIBPF).lib
+CAGD_LIB = $(LIB_DIR)\IritCagd$(IRITLIBPF).lib
+SYMB_LIB = $(LIB_DIR)\IritSymb$(IRITLIBPF).lib
+TRIM_LIB = $(LIB_DIR)\IritTrim$(IRITLIBPF).lib
+TRIV_LIB = $(LIB_DIR)\IritTriv$(IRITLIBPF).lib
+TRNG_LIB = $(LIB_DIR)\IritTrng$(IRITLIBPF).lib
+MVAR_LIB = $(LIB_DIR)\IritMvar$(IRITLIBPF).lib
+MISC_LIB = $(LIB_DIR)\IritMisc$(IRITLIBPF).lib
+XTRA_LIB = $(LIB_DIR)\IritXtra$(IRITLIBPF).lib
+BOOL_LIB = $(LIB_DIR)\IritBool$(IRITLIBPF).lib
+
+
+GLOBINGCON = setargv.obj
+OPENGLLIBS = opengl32.lib glu32.lib glaux.lib
+W32CONLIBS = wsock32.lib $(GLOBINGCON) $(conlibs)
+W32CONMTLIBS = wsock32.lib $(GLOBINGCON) $(conlibsmt)
+W32GUILIBS = wsock32.lib $(GLOBINGGUCON) $(guilibs) comctl32.lib
+W32GUIMTLIBS = wsock32.lib $(GLOBINGCON) $(guilibsmt) comctl32.lib
+W32GUIOGLLIBS = wsock32.lib $(GLOBINGCON) $(OPENGLLIBS) $(guilibsmt) comctl32.lib

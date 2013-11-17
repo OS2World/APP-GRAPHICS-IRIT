@@ -1,0 +1,19 @@
+#
+# Makefile for the IHIDDEN hidden line remover.
+#
+
+include ../makeflag.ami
+
+OBJS	= ihidden.o rsi.o cci.o
+
+all:	ihidden
+
+ihidden:	$(OBJS)
+	$(CC) $(CFLAGS) -o ihidden $(OBJS) $(IRIT_LIBS) -lm $(IRIT_MORE_LIBS)
+
+install: ihidden
+	mv -f ihidden $(IRIT_BIN_DIR)
+	cp ihidden.cfg $(IRIT_BIN_DIR)
+
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

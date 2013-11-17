@@ -1,0 +1,416 @@
+#
+# Examples of ruled ruled surface intersection approximations.
+#
+#					Gershon Elber, February 1998
+#
+
+GenAxes = list( ctlpt( E3, 0, 0, 0 )+ ctlpt( E3, 0.0, 0.0, 0.4 ),
+		ctlpt( E3, 0, 0, 0 )+ ctlpt( E3, 0.0, 1.1, 0.0 ),
+		ctlpt( E3, 0, 0, 0 )+ ctlpt( E3, 1.1, 0.0, 0.0 ) );
+awidth( GenAxes, 0.005 );
+color( GenAxes, green );
+
+EvalUVtoE3 = function( Srf, UVs, clr ): UV: i:
+    return = nil():
+    for ( i = 1, 1, sizeof( UVs ),
+	UV = nth( UVs, i ):
+	snoc( seval( Srf, coord( UV, 1 ), coord( UV, 2 ) ), return ) ):
+    color( return, clr );
+
+#############################################################################
+#
+# Case 1
+#
+
+c1 = cbezier( list( ctlpt( E3, -1.0, 0.0, -1.0 ),
+	            ctlpt( E3,  0.0, 1.0, -1.0 ),
+		    ctlpt( E3,  0.3, 0.0, -1.0 ),
+		    ctlpt( E3,  1.0, 0.0, -1.0 ) ) );
+
+c2 = cbezier( list( ctlpt( E3, -1.0, 0.0,  1.0 ),
+		    ctlpt( E3,  0.0, 1.0,  1.0 ),
+		    ctlpt( E3,  0.3, 1.0,  1.0 ),
+		    ctlpt( E3,  1.0, 0.0,  1.0 ) ) );
+
+r1 = ruledSrf( c1, c2 );
+
+r2 = r1 * rx( 90 );
+
+c = nth( rrinter( cMesh( r1, row, 0 ),
+	          cMesh( r1, row, 1 ),
+	          cMesh( r2, row, 0 ),
+	          cMesh( r2, row, 1 ),
+	          10, false ), 1);
+
+color( c, red );
+adwidth( c, 3 );
+
+interact( list( r1, r2, c ) );
+
+zeroSetSrf = rrinter( cMesh( r1, row, 0 ),
+		      cMesh( r1, row, 1 ),
+		      cMesh( r2, row, 0 ),
+		      cMesh( r2, row, 1 ),
+		      10, true );
+zeroSetSrfE3 = coerce( zeroSetSrf, e3 )
+				* rotx( -90 ) * roty( -90 ) * sz( 0.1 );
+zeroSet = contour( zeroSetSrfE3, plane( 0, 0, 1, 0.00001 ) );
+color( zeroSet, red );
+adwidth( zeroSet, 3 );
+
+interact( list( axes, zeroSetSrfE3, zeroSet ) );
+
+#############################################################################
+#
+# Case 2
+#
+
+c1 = cbezier( list( ctlpt( E3, -1.0, 0.0, -1.0 ),
+	            ctlpt( E3,  0.0, 1.0, -1.0 ),
+		    ctlpt( E3,  0.3, 0.0, -1.0 ),
+		    ctlpt( E3,  1.0, 0.0, -1.0 ) ) );
+
+c2 = cbezier( list( ctlpt( E3, -1.0, 0.0,  1.0 ),
+		    ctlpt( E3,  0.0, 1.0,  1.0 ),
+		    ctlpt( E3,  0.3, 1.0,  1.0 ),
+		    ctlpt( E3,  1.0, 0.0,  1.0 ) ) );
+
+r1 = ruledSrf( c1, c2 );
+
+r2 = r1 * rx( 90 ) * sc( 0.9 );
+
+c = nth( rrinter( cMesh( r1, row, 0 ),
+	          cMesh( r1, row, 1 ),
+	          cMesh( r2, row, 0 ),
+	          cMesh( r2, row, 1 ),
+	          10, false ), 1 );
+color( c, red );
+adwidth( c, 3 );
+
+interact( list( r1, r2, c ) );
+
+
+zeroSetSrf = rrinter( cMesh( r1, row, 0 ),
+		      cMesh( r1, row, 1 ),
+		      cMesh( r2, row, 0 ),
+		      cMesh( r2, row, 1 ),
+		      10, true );
+zeroSetSrfE3 = coerce( zeroSetSrf, e3 )
+				* rotx( -90 ) * roty( -90 ) * sz( 0.1 );
+zeroSet = contour( zeroSetSrfE3, plane( 0, 0, 1, 0.00001 ) );
+color( zeroSet, red );
+adwidth( zeroSet, 3 );
+
+interact( list( axes, zeroSetSrfE3, zeroSet ) );
+
+#############################################################################
+#
+# Case 3
+#
+
+c1 = cbezier( list( ctlpt( E3, -1.0, -1.0, -1.0 ),
+	            ctlpt( E3, -0.5,  1.0, -1.0 ),
+		    ctlpt( E3,  0.3, -2.0, -1.0 ),
+		    ctlpt( E3,  0.5,  1.0, -1.0 ),
+		    ctlpt( E3,  1.0, -1.0, -1.0 ) ) );
+
+c2 = c1 * sc( 0.7 ) * tz( 1.7 );
+
+r1 = ruledSrf( c1, c2 );
+
+c1 = cbezier( list( ctlpt( E3, -1.0, 0.0, -1.0 ),
+	            ctlpt( E3,  0.0, 1.0, -1.0 ),
+		    ctlpt( E3,  0.3, 0.0, -1.0 ),
+		    ctlpt( E3,  1.0, 0.0, -1.0 ) ) );
+
+c2 = cbezier( list( ctlpt( E3, -1.0, 0.0,  1.0 ),
+		    ctlpt( E3,  0.0, 1.0,  1.0 ),
+		    ctlpt( E3,  0.3, 1.0,  1.0 ),
+		    ctlpt( E3,  1.0, 0.0,  1.0 ) ) );
+
+r2 = ruledSrf( c1, c2 ) * rx( 90 );
+
+c = nth( rrinter( cMesh( r1, row, 0 ),
+	          cMesh( r1, row, 1 ),
+	          cMesh( r2, row, 0 ),
+	          cMesh( r2, row, 1 ),
+	          10, false ), 1 );
+color( c, red );
+adwidth( c, 3 );
+
+interact( list( r1, r2, c ) );
+
+
+zeroSetSrf = rrinter( cMesh( r1, row, 0 ),
+		      cMesh( r1, row, 1 ),
+		      cMesh( r2, row, 0 ),
+		      cMesh( r2, row, 1 ),
+		      10, true );
+zeroSetSrfE3 = coerce( zeroSetSrf, e3 )
+				* rotx( -90 ) * roty( -90 ) * sz( 0.1 );
+zeroSet = contour( zeroSetSrfE3, plane( 0, 0, 1, 0.00001 ) );
+color( zeroSet, red );
+adwidth( zeroSet, 3 );
+
+interact( list( axes, zeroSetSrfE3, zeroSet ) );
+
+#############################################################################
+#
+# Case 4
+#
+
+c1 = cbezier( list( ctlpt( E3, -1.0,  -1.0, -1.0 ),
+	            ctlpt( E3, -0.5,   8.0, -1.0 ),
+		    ctlpt( E3,  0.3, -15.0, -1.0 ),
+		    ctlpt( E3,  0.5,   8.0, -1.0 ),
+		    ctlpt( E3,  1.0,  -1.0, -1.0 ) ) );
+
+c2 = c1 * sc( 0.7 ) * tz( 1.7 );
+
+r1 = ruledSrf( c1, c2 );
+
+c1 = cbezier( list( ctlpt( E3, -1.0, 0.0, -1.0 ),
+	            ctlpt( E3,  0.0, 1.0, -1.0 ),
+		    ctlpt( E3,  0.3, 0.0, -1.0 ),
+		    ctlpt( E3,  1.0, 0.0, -1.0 ) ) );
+
+c2 = cbezier( list( ctlpt( E3, -1.0, 0.0,  1.0 ),
+		    ctlpt( E3,  0.0, 1.0,  1.0 ),
+		    ctlpt( E3,  0.3, 1.0,  1.0 ),
+		    ctlpt( E3,  1.0, 0.0,  1.0 ) ) );
+
+r2 = ruledSrf( c1, c2 ) * rx( 90 );
+
+c = nth( rrinter( cMesh( r1, row, 0 ),
+	          cMesh( r1, row, 1 ),
+	          cMesh( r2, row, 0 ),
+	          cMesh( r2, row, 1 ),
+	          20, false ), 1 );
+color( c, red );
+adwidth( c, 3 );
+
+interact( list( r1, r2, c ) );
+
+c = nth( rrinter( cMesh( r1, row, 0 ),
+	     cMesh( r1, row, 1 ),
+	     cMesh( r2, row, 0 ),
+	     cMesh( r2, row, 1 ),
+	     -20, false ), 1 );
+color( c, red );
+adwidth( c, 3 );
+
+interact( list( r1, r2, c ) );
+
+
+zeroSetSrf = rrinter( cMesh( r1, row, 0 ),
+		      cMesh( r1, row, 1 ),
+		      cMesh( r2, row, 0 ),
+		      cMesh( r2, row, 1 ),
+		      10, true );
+zeroSetSrfE3 = coerce( zeroSetSrf, e3 )
+				* rotx( -90 ) * roty( -90 ) * sz( 0.1 );
+zeroSet = contour( zeroSetSrfE3, plane( 0, 0, 1, 0.00001 ) );
+color( zeroSet, red );
+adwidth( zeroSet, 3 );
+
+interact( list( axes, zeroSetSrfE3, zeroSet ) );
+
+#############################################################################
+#
+# Case 5
+#
+
+c1 = cbezier( list( ctlpt( E3, -1.0,  -1.0, -1.0 ),
+	            ctlpt( E3, -0.5,   8.0, -1.0 ),
+		    ctlpt( E3,  0.0, -15.0, -1.0 ),
+		    ctlpt( E3,  0.5,   8.0, -1.0 ),
+		    ctlpt( E3,  1.0,  -1.0, -1.0 ) ) );
+
+c2 = c1 * sc( 0.7 ) * tz( 1.7 );
+
+r1 = ruledSrf( c1, c2 );
+awidth( r1, 0.007 );
+
+c1 = pcircle( vector( 0, 0, 0 ), 0.3 ) * tz( 2 );
+
+c2 = c1 * sc( 0.5 ) * tz ( -3 );
+
+r2 = ruledSrf( c1, c2 ) * ry( 90 );
+awidth( r2, 0.007 );
+
+c = nth( rrinter( cMesh( r1, row, 0 ),
+	          cMesh( r1, row, 1 ),
+	          cMesh( r2, row, 0 ),
+	          cMesh( r2, row, 1 ),
+	          50, false ), 1 );
+color( c, red );
+adwidth( c, 3 );
+awidth( c, 0.02 );
+attrib( c, "gray", 0.5 );
+
+interact( list( r1, r2, c ) );
+
+save( "rrint5a", list( r1, r2, c ) );
+
+zeroSetSrf = rrinter( cMesh( r1, row, 0 ),
+		      cMesh( r1, row, 1 ),
+		      cMesh( r2, row, 0 ),
+		      cMesh( r2, row, 1 ),
+		      25, true );
+zeroSetSrfE3 = coerce( zeroSetSrf, e3 )
+				* rotx( -90 ) * roty( -90 ) * sz( 0.02 );
+awidth( zeroSetSrfE3, 0.007 );
+
+zeroSet = contour( zeroSetSrfE3, plane( 0, 0, 1, 0.00001 ) );
+color( zeroSet, red );
+adwidth( zeroSet, 3 );
+awidth( zeroSet, 0.02 );
+
+interact( list( GenAxes, zeroSetSrfE3, zeroSet ) );
+
+save( "rrint5b", list( GenAxes, zeroSetSrfE3, zeroSet ) );
+
+#############################################################################
+#
+# Case 6
+#
+
+c1 = pcircle( vector( 0, 0, 0 ), 0.3 ) * tz( 1 );
+
+c2 = c1 * tz( -2 );
+
+r1 = ruledSrf( c1, c2 );
+awidth( r1, 0.007 );
+
+r2 = r1 * ry( 10 ) ;
+awidth( r2, 0.007 );
+
+c = nth( rrinter( cMesh( r1, row, 0 ),
+	          cMesh( r1, row, 1 ),
+	          cMesh( r2, row, 0 ),
+	          cMesh( r2, row, 1 ),
+	          10, false ), 1 );
+color( c, red );
+adwidth( c, 3 );
+awidth( c, 0.02 );
+attrib( c, "gray", 0.5 );
+
+interact( list( r1, r2, c ) );
+
+save( "rrint6a", list( r1, r2, c ) );
+
+
+r2 = r1 * ry( 1 ) ;
+awidth( r2, 0.007 );
+
+c = nth( rrinter( cMesh( r1, row, 0 ),
+	 	  cMesh( r1, row, 1 ),
+	          cMesh( r2, row, 0 ),
+	          cMesh( r2, row, 1 ),
+	          10, false ), 1 );
+color( c, red );
+adwidth( c, 3 );
+awidth( c, 0.02 );
+attrib( c, "gray", 0.5 );
+
+interact( list( r1, r2, c ) );
+
+save( "rrint6b", list( r1, r2, c ) );
+
+
+r2 = r1 * ry( 0.1 ) ;
+awidth( r2, 0.007 );
+
+c = nth( rrinter( cMesh( r1, row, 0 ),
+	          cMesh( r1, row, 1 ),
+	          cMesh( r2, row, 0 ),
+	          cMesh( r2, row, 1 ),
+	          10, false ), 1 );
+color( c, red );
+adwidth( c, 3 );
+awidth( c, 0.02 );
+attrib( c, "gray", 0.5 );
+
+interact( list( r1, r2, c ) );
+
+save( "rrint6c", list( r1, r2, c ) );
+
+
+r2 = r1 * ry( 0.01 ) ;
+awidth( r2, 0.007 );
+
+c = nth( rrinter( cMesh( r1, row, 0 ),
+	          cMesh( r1, row, 1 ),
+	          cMesh( r2, row, 0 ),
+	          cMesh( r2, row, 1 ),
+	          10, false ), 1 );
+color( c, red );
+adwidth( c, 3 );
+awidth( c, 0.02 );
+attrib( c, "gray", 0.5 );
+
+interact( list( r1, r2, c ) );
+
+save( "rrint6d", list( r1, r2, c ) );
+
+
+r2 = r1 * ry( 10 ) ;
+awidth( r2, 0.007 );
+
+zeroSetSrf = rrinter( cMesh( r1, row, 0 ),
+		      cMesh( r1, row, 1 ),
+		      cMesh( r2, row, 0 ),
+		      cMesh( r2, row, 1 ),
+		      10, true );
+zeroSetSrfE3 = coerce( zeroSetSrf, e3 )
+				* rotx( -90 ) * roty( -90 ) * sz( 0.3 );
+awidth( zeroSetSrfE3, 0.007 );
+
+zeroSet = contour( zeroSetSrfE3, plane( 0, 0, 1, 0.00001 ) );
+color( zeroSet, red );
+adwidth( zeroSet, 3 );
+awidth( zeroSet, 0.02 );
+
+interact( list( GenAxes, zeroSetSrfE3, zeroSet ) );
+
+save( "rrint6u", list( GenAxes, zeroSetSrfE3, zeroSet ) );
+
+
+r2 = r1 * ry( 0.01 ) ;
+awidth( r2, 0.007 );
+
+zeroSetSrf = rrinter( cMesh( r1, row, 0 ),
+		      cMesh( r1, row, 1 ),
+		      cMesh( r2, row, 0 ),
+		      cMesh( r2, row, 1 ),
+		      10, true );
+zeroSetSrfE3 = coerce( zeroSetSrf, e3 )
+				* rotx( -90 ) * roty( -90 ) * sz( 1 );
+awidth( zeroSetSrfE3, 0.007 );
+
+zeroSet = contour( zeroSetSrfE3, plane( 0, 0, 1, 1e-8 ) );
+color( zeroSet, red );
+adwidth( zeroSet, 3 );
+awidth( zeroSet, 0.02 );
+
+UExtreme = EvalUVtoE3( zeroSetSrfE3, 
+		       ciextreme( zeroSetSrf, col, 0.01, -1e-9 ),
+		       yellow );
+adwidth( UExtreme, 2 );
+
+interact( list( GenAxes, zeroSetSrfE3, zeroSet, UExtreme ) );
+
+save( "rrint6v", list( GenAxes, zeroSetSrfE3, zeroSet, UExtreme ) );
+
+#############################################################################
+
+free( UExtreme );
+free( GenAxes );
+free( c );
+free( c1 );
+free( c2 );
+free( r1 );
+free( r2 );
+free( zeroSet );
+free( zeroSetSrf );
+free( zeroSetSrfE3 );

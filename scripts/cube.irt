@@ -1,0 +1,108 @@
+#
+# Somewhat exotic cubes.
+#
+#				Gershon Elber, October 1995
+#
+
+MakeNormal = function(V):
+    return = coord(V, 0) + "," + coord(V, 1) + "," + coord(V, 2);
+
+MakeRGB = function(V):
+    return = (coord(V, 0) + 1.0) * 127 + ","
+           + (coord(V, 1) + 1.0) * 127 + ","
+           + (coord(V, 2) + 1.0) * 127;
+
+V1 = vector( -1, -1, -1 );
+V2 = vector( -1, -1,  1 );
+V3 = vector( -1,  1, -1 );
+V4 = vector( -1,  1,  1 );
+V5 = vector(  1, -1, -1 );
+V6 = vector(  1, -1,  1 );
+V7 = vector(  1,  1, -1 );
+V8 = vector(  1,  1,  1 );
+
+F1 = poly( list( V1, V2, V4, V3 ), false );
+F2 = poly( list( V5, V6, V8, V7 ), false );
+F3 = poly( list( V1, V2, V6, V5 ), false );
+F4 = poly( list( V2, V4, V8, V6 ), false );
+F5 = poly( list( V4, V3, V7, V8 ), false );
+F6 = poly( list( V3, V1, V5, V7 ), false );
+a = pattrib( F6, 0, "Authored by", "IRIT" );
+
+cube1 = mergePoly( list( F1, F2, F3, F4, F5, F6 ) );
+save( "cube1", cube1 );
+interact( cube1 );
+
+attrib( V1, "normal", MakeNormal( V1 ) );
+attrib( V2, "normal", MakeNormal( V2 ) );
+attrib( V3, "normal", MakeNormal( V3 ) );
+attrib( V4, "normal", MakeNormal( V4 ) );
+attrib( V5, "normal", MakeNormal( V5 ) );
+attrib( V6, "normal", MakeNormal( V6 ) );
+attrib( V7, "normal", MakeNormal( V7 ) );
+attrib( V8, "normal", MakeNormal( V8 ) );
+
+F1 = poly( list( V1, V2, V4, V3 ), false );
+F2 = poly( list( V5, V6, V8, V7 ), false );
+F3 = poly( list( V1, V2, V6, V5 ), false );
+F4 = poly( list( V2, V4, V8, V6 ), false );
+F5 = poly( list( V4, V3, V7, V8 ), false );
+F6 = poly( list( V3, V1, V5, V7 ), false );
+a = pattrib( F6, 0, "Authored by", "IRIT" );
+
+cube2 = mergePoly( list( F1, F2, F3, F4, F5, F6 ) );
+save( "cube2", cube2 );
+interact( cube2 );
+
+V1 = vector( -1, -1, -1 );
+V2 = vector( -1, -1,  1 );
+V3 = vector( -1,  1, -1 );
+V4 = vector( -1,  1,  1 );
+V5 = vector(  1, -1, -1 );
+V6 = vector(  1, -1,  1 );
+V7 = vector(  1,  1, -1 );
+V8 = vector(  1,  1,  1 );
+
+attrib( V1, "rgb", MakeRGB( V1 ) );
+attrib( V2, "rgb", MakeRGB( V2 ) );
+attrib( V3, "rgb", MakeRGB( V3 ) );
+attrib( V4, "rgb", MakeRGB( V4 ) );
+attrib( V5, "rgb", MakeRGB( V5 ) );
+attrib( V6, "rgb", MakeRGB( V6 ) );
+attrib( V7, "rgb", MakeRGB( V7 ) );
+attrib( V8, "rgb", MakeRGB( V8 ) );
+
+F1 = poly( list( V1, V2, V4, V3 ), false );
+F2 = poly( list( V5, V6, V8, V7 ), false );
+F3 = poly( list( V1, V2, V6, V5 ), false );
+F4 = poly( list( V2, V4, V8, V6 ), false );
+F5 = poly( list( V4, V3, V7, V8 ), false );
+F6 = poly( list( V3, V1, V5, V7 ), false );
+a = pattrib( F6, 0, "Authored by", "IRIT" );
+
+cube3 = mergePoly( list( F1, F2, F3, F4, F5, F6 ) );
+attrib( cube3, "PATTRIB_TEST", pattrib( F5, 3, "rgb", nil() ) );
+
+save( "cube3", cube3 );
+interact( cube3 );
+
+free(a);
+free(V1);
+free(V2);
+free(V3);
+free(V4);
+free(V5);
+free(V6);
+free(V7);
+free(V8);
+
+free(F1);
+free(F2);
+free(F3);
+free(F4);
+free(F5);
+free(F6);
+
+free(cube1);
+free(cube2);
+free(cube3);

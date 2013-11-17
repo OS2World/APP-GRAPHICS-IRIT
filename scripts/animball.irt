@@ -1,0 +1,238 @@
+#
+# Simple animation demo
+#
+#			Zvika Zilberman and Haggay Dagan
+#
+
+save_mat = view_mat;
+save_res = resolution;
+
+view_mat = view_mat * sc( 0.1 );
+viewobj( view_mat );
+
+a = sphere( vector(  0.99, 0, 0 ), 1.0 );
+b = sphere( vector( -0.99, 0, 0 ), 1.0 );
+
+pt0 =  ctlpt( e3,  0.0,  0.0, 0.0 );
+pt1 =  ctlpt( e3,  1.0,  1.0, 0.0 );
+pt2 =  ctlpt( e3,  2.0,  2.0, 0.0 );
+pt4 =  ctlpt( e3,  4.0,  4.0, 0.0 );
+pt5 =  ctlpt( e3, -1.0, -1.0, 0.0 );
+pt6 =  ctlpt( e3, -2.0, -2.0, 0.0 );
+pt7 =  ctlpt( e3, -4.0, -4.0, 0.0 );
+pt8 =  ctlpt( e3,  0.4,  0.4, 0.0 );
+pt9 =  ctlpt( e3,  2.0,  2.0, 0.0 );
+pt11 = ctlpt( e2,  3.0,  3.0 );
+pt12 = ctlpt( e2, -3.0, -3.0 );
+pt13 = ctlpt( e2,  1.5,  1.5 );
+pt14 = ctlpt( e2, -1.5, -1.5 );
+pt15 = ctlpt( e2,  3.6,  3.6 );
+pt16 = ctlpt( e2, -0.9, -0.9 );
+pt17 = ctlpt( e2, -3.6, -3.6 );
+pt18 = ctlpt( e2,  0.9,  0.9 );
+
+mov_x   = creparam( cbezier( list( pt0, pt1, pt2, pt4, pt2, pt1, pt0 ) ),
+                    0.0, 2.0 );
+scl_x   = creparam( cbezier( list( pt1, pt8, pt1 ) ), 2.0, 3.0 );
+scl_y   = creparam( cbezier( list( pt1, pt9, pt1 ) ), 2.0, 3.0 );
+visible = creparam( cbezier( list( pt11, pt14 ) ), 0.0, 4.5 );
+attrib( a, "animation", list( visible, mov_x, scl_x, scl_y ) );
+color( a, magenta );
+
+free( mov_x );
+free( scl_x );
+
+mov_x = creparam( cbezier( list( pt0, pt5, pt6, pt7, pt6, pt5, pt0 ) ),
+                  0.0, 2.0 );
+scl_x = creparam( cbezier( list( pt1, pt8, pt1 ) ), 2.0, 3.0 );
+attrib( b, "animation", list( visible, mov_x, scl_x, scl_y ) );
+color( b, magenta );
+
+ball = list( a, b );
+
+free( mov_x );
+free( scl_x );
+free( scl_y );
+free( visible );
+free( a );
+free( b );
+
+a = sphere( vector(  0.99, 0, 0 ), 1.0 );
+b = sphere( vector( -0.99, 0, 0 ), 1.0 );
+
+mov_x = creparam( cbezier( list( pt0, pt1, pt2, pt1, pt0 ) ), 3.0, 4.5 );
+visible = creparam( cbezier( list( pt12, pt13 ) ), 0.0, 4.5 );
+attrib( a, "animation", list( visible, mov_x ) );
+color( a, magenta );
+
+free( mov_x );
+
+mov_x = creparam( cbezier( list( pt0, pt5, pt6, pt5, pt0 ) ), 3.0, 4.5 );
+attrib( b, "animation", list( visible, mov_x ) );
+color( b, magenta );
+
+balla = list( a, b );
+
+free( mov_x );
+free( visible );
+free( a );
+free( b );
+
+a = sphere( vector(  0.99, 2.5, 0 ), 1.0 );
+b = sphere( vector( -0.99, 2.5, 0 ), 1.0 );
+mov_x = creparam( cbezier( list( pt0, pt1, pt2, pt4, pt2, pt1, pt0 ) ), 0.6, 2.6 );
+scl_x = creparam( cbezier( list( pt1, pt8, pt1 ) ), 2.6, 3.6 );
+scl_y = creparam( cbezier( list( pt1, pt9, pt1 ) ), 2.6, 3.6 );
+visible = creparam( cbezier( list( pt15, pt16 ) ), 0.0, 4.5 );
+attrib( a, "animation", list( mov_x, scl_x, scl_y, visible ) );
+color( a, blue );
+
+free( mov_x );
+free( scl_x );
+
+mov_x = creparam( cbezier( list( pt0, pt5, pt6, pt7, pt6, pt5, pt0 ) ), 0.6, 2.6 );
+scl_x = creparam( cbezier( list( pt1, pt8, pt1 ) ), 2.6, 3.6 );
+attrib( b, "animation", list( mov_x, scl_x, scl_y, visible ) );
+color( b, blue );
+
+ball1 = list( a, b );
+
+free( mov_x );
+free( scl_x );
+free( scl_y );
+free( visible );
+free( a );
+free( b );
+
+a = sphere( vector(  0.99, 2.5, 0 ), 1.0 );
+b = sphere( vector( -0.99, 2.5, 0 ), 1.0 );
+mov_x = creparam( cbezier( list( pt0, pt1, pt2, pt1, pt0 ) ), 0.6, 2.6 );
+visible = creparam( cbezier( list( pt17, pt18 ) ), 0.0, 4.5 );
+attrib( a, "animation", list( mov_x, visible ) );
+color( a, blue );
+
+free( mov_x );
+
+mov_x = creparam( cbezier( list( pt0, pt5, pt6, pt5, pt0 ) ), 0.6, 2.6 );
+attrib( b, "animation", list( mov_x, visible ) );
+color( b, blue );
+
+ball1a = list( a, b );
+
+free( mov_x );
+free( visible );
+free( a );
+free( b );
+
+
+a = sphere( vector(  0.99, -2.5, 0 ), 1.0 );
+b = sphere( vector( -0.99, -2.5, 0 ), 1.0 );
+mov_x = creparam( cbezier( list( pt0, pt1, pt2, pt4, pt2, pt1, pt0 ) ), 0.6, 2.6 );
+scl_x = creparam( cbezier( list( pt1, pt8, pt1 ) ), 2.6, 3.6 );
+scl_y = creparam( cbezier( list( pt1, pt9, pt1 ) ), 2.6, 3.6 );
+attrib( a, "animation", list( mov_x, scl_x, scl_y ) );
+color( a, red );
+
+free( mov_x );
+free( scl_x );
+
+mov_x = creparam( cbezier( list( pt0, pt5, pt6, pt7, pt6, pt5, pt0 ) ), 0.6, 2.6 );
+scl_x = creparam( cbezier( list( pt1, pt8, pt1 ) ), 2.6, 3.6 );
+attrib( b, "animation", list( mov_x, scl_x, scl_y ) );
+color( b, red );
+
+ball2 = list( a, b );
+
+free( mov_x );
+free( scl_x );
+free( scl_y );
+free( a );
+free( b );
+
+
+a = sphere( vector( 0.99, 5.0, 0 ), 1.0 );
+b = sphere( vector( -0.99, 5.0, 0 ), 1.0 );
+mov_x = creparam( cbezier( list( pt0, pt1, pt2, pt4, pt2, pt1, pt0 ) ), 1.5, 3.5 );
+scl_x = creparam( cbezier( list( pt1, pt8, pt1 ) ), 3.5, 4.5 );
+scl_y = creparam( cbezier( list( pt1, pt9, pt1 ) ), 3.5, 4.5 );
+attrib( a, "animation", list( mov_x, scl_x, scl_y ) );
+color( a, yellow );
+
+free( mov_x );
+free( scl_x );
+
+mov_x = creparam( cbezier( list( pt0, pt5, pt6, pt7, pt6, pt5, pt0 ) ), 1.5, 3.5 );
+scl_x = creparam( cbezier( list( pt1, pt8, pt1 ) ), 3.5, 4.5 );
+attrib( b, "animation", list( mov_x, scl_x, scl_y ) );
+color( b, yellow );
+
+ball3 = list( a, b );
+
+free( mov_x );
+free( scl_x );
+free( scl_y );
+free( a );
+free( b );
+
+a = sphere( vector(  0.99, -5.0, 0 ), 1.0 );
+b = sphere( vector( -0.99, -5.0, 0 ), 1.0 );
+mov_x = creparam( cbezier( list( pt0, pt1, pt2, pt4, pt2, pt1, pt0 ) ), 1.5, 3.5 );
+scl_x = creparam( cbezier( list( pt1, pt8, pt1 ) ), 3.5, 4.5 );
+scl_y = creparam( cbezier( list( pt1, pt9, pt1 ) ), 3.5, 4.5 );
+attrib( a, "animation", list( mov_x, scl_x, scl_y ) );
+color( a, green );
+
+free( mov_x );
+free( scl_x );
+
+mov_x = creparam( cbezier( list( pt0, pt5, pt6, pt7, pt6, pt5, pt0 ) ), 1.5, 3.5 );
+scl_x = creparam( cbezier( list( pt1, pt8, pt1 ) ), 3.5, 4.5 );
+attrib( b, "animation", list( mov_x, scl_x, scl_y ) );
+color( b, green );
+
+ball4 = list( a, b );
+
+free( mov_x );
+free( scl_x );
+free( scl_y );
+free( a );
+free( b );
+
+demo = list( ball, balla, ball1, ball1a, ball2, ball3, ball4 );
+attrib( demo, "refract", 1.4 );
+attrib( demo, "specpow", 1.5 );
+
+interact( demo );
+viewanim( 0, 4.5, 0.05 );
+
+save( "animball", demo );
+
+free( ball );
+free( ball1 );
+free( ball1a );
+free( balla );
+free( ball2 );
+free( ball3 );
+free( ball4 );
+free( demo );
+
+free( pt0 );
+free( pt1 );
+free( pt2 );
+free( pt4 );
+free( pt5 );
+free( pt6 );
+free( pt7 );
+free( pt8 );
+free( pt9 );
+free( pt11 );
+free( pt12 );
+free( pt13 );
+free( pt14 );
+free( pt15 );
+free( pt16 );
+free( pt17 );
+free( pt18 );
+
+resolution = save_res;
+view_mat = save_mat;

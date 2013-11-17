@@ -1,0 +1,237 @@
+//DDM In Hardware Implementation 1.0
+//Written by Eran Karpen December 2004
+
+//Should be compiled ONLY with profile vp40
+
+struct Input
+{
+	float4 VPosition			: POSITION;  // Vertex Position
+	float4 VNormal				: NORMAL;    // Vertex Normal
+	float4 VColor				: COLOR0;    // Vertex Color
+	float4 VTextureUV			: TEXCOORD0; // Vertex Texture
+	float4 VCompatiblePosition	: TEXCOORD1; // Vertex posittion of compatible tile
+	float4 VCompatibleNormal	: TEXCOORD2; // Vertex normal of compatible tile
+	float4 VCompatibleColor		: TEXCOORD3; // Vertex color of compatible tile
+	float4 VP1					: TEXCOORD4; // Vertex P1 for calulating normal
+	float4 VP2					: TEXCOORD5; // Vertex P2 for calulating normal
+};
+
+struct DdmOutput
+{
+	float4 HPosition			: POSITION;  // Vertex Position
+	float4 HColor				: COLOR;     // Vertex Color
+	float4 HTextureUV			: TEXCOORD0; // Vertex Texture Coordiante
+};
+
+float4 CalculateObject (float3 Vertex,
+						float2 Step,
+						float2 TileUV,
+						float2 TexDim,
+						float2 Sampling, 
+						sampler2D OCoord, 
+						sampler2D ONormal,
+						float Scale,
+						float ConstScale);
+float3 CalculateNormal (float3 Vertex,
+						float3 VertexP1,
+						float3 VertexP2,
+						float2 Step,
+						float2 TileUV,
+						float2 TexDim,
+						float2 Sampling, 
+						sampler2D OCoord, 
+						sampler2D ONormal,
+						float Scale,
+						float ConstScale); 
+float4 CalculateColor (float4 ObjectNormal, 
+					   float4 Color,
+					   float3 LightSource0,
+					   float3 LightSource1,
+					   float3 Ambient,
+					   float3 Diffuse,
+					   float3 Specular,
+					   float Shininess);
+
+DdmOutput DdmVertexShader (Input In,
+		uniform float2 TileUV,
+		uniform float2 TexDim,
+		uniform float2 Sampling, 
+		uniform sampler2D OCoord: TEXUNIT1,
+		uniform sampler2D ONormal: TEXUNIT2,
+		uniform float Scale, 
+		uniform float ConstScale,
+		uniform float Morph,
+		uniform float Move,
+		uniform float4x4 ModelViewProjMatrix, 
+		uniform float4x4 ModelViewMatrix, 
+		uniform float4x4 MiscMatrix,
+		uniform float3 Ambient, 
+		uniform float3 Diffuse, 
+		uniform float3 Specular, 
+		uniform float Shininess,
+		uniform float3 LightSource0,
+		uniform float3 LightSource1,
+		uniform float Shaded,
+		uniform float CalcNormalsMethod)
+{
+
+	const float epsilon = 0.001; // for calculating normals with offset object
+	DdmOutput Out;
+	
+	const float t = Morph;
+	
+	float4 VPosition = float4(lerp(In.VCompatiblePosition.xyz, In.VPosition.xyz, t),0);
+	float4 VNormal = float4(normalize(lerp(In.VCompatibleNormal, In.VNormal, t).xyz),0);
+	
+	VPosition = mul(VPosition, MiscMatrix);
+	VNormal = mul(VNormal, MiscMatrix);
+
+///////////////////////////////////////////////////////////////
+// Calculating Object
+///////////////////////////////////////////////////////////////
+	float2 Step = 1.0/TexDim;	
+	float4 Objectpos = CalculateObject(VPosition.xyz, Step, TileUV, TexDim, Sampling, OCoord, ONormal, Scale, ConstScale);
+
+///////////////////////////////////////////////////////////////
+// Calculating Normal Object
+///////////////////////////////////////////////////////////////   
+	float4 Objectnormal = float4(1,1,1,0);
+
+	if (CalcNormalsMethod == 0){ // Calculate with offset object
+		float4 OffsetObject = VPosition + epsilon * float4(normalize(VNormal.xyz),0);
+		float4 Offsetpos = CalculateObject(OffsetObject.xyz, Step, TileUV, TexDim, Sampling, OCoord, ONormal, Scale, ConstScale);
+		Objectnormal = float4(normalize(Offsetpos.xyz - Objectpos.xyz),0);
+	}
+
+	else {
+		Objectnormal.xyz = CalculateNormal(Objectpos.xyz, In.VP1.xyz, In.VP2.xyz, Step, TileUV, TexDim, Sampling, OCoord, ONormal, Scale, ConstScale);
+	}		
+	Objectnormal.xyz = normalize(mul(ModelViewMatrix,Objectnormal).xyz);
+
+///////////////////////////////////////////////////////////////
+// Light
+///////////////////////////////////////////////////////////////
+	if (Shaded == 1){
+		float4 Color = In.VColor;
+		if (In.VCompatibleColor.w != -1) Color.xyz = lerp(In.VCompatibleColor.xyz, In.VColor.xyz, t);
+		Out.HColor =CalculateColor(Objectnormal, Color, LightSource0, LightSource1, Ambient, Diffuse, Specular, Shininess);
+	}
+	else 
+	    Out.HColor = In.VColor;
+	
+	
+///////////////////////////////////////////////////////////////
+// Returning Values
+///////////////////////////////////////////////////////////////
+
+	Objectpos = mul(ModelViewProjMatrix, Objectpos);
+	Out.HPosition = Objectpos;
+	Out.HTextureUV = In.VTextureUV;
+	return Out;
+
+}
+
+float4 CalculateObject (float3 Vertex,
+						float2 Step,
+						float2 TileUV,
+						float2 TexDim,
+						float2 Sampling,
+						sampler2D OCoord, 
+						sampler2D ONormal,
+						float Scale,
+						float ConstScale)
+{
+	float2 Corner = floor(TileUV*TexDim + Vertex.xy*Sampling) * Step;
+	float2 LCoord = (TileUV*TexDim + Vertex.xy*Sampling) - 
+	                 floor(TileUV*TexDim + Vertex.xy*Sampling);
+
+  	float4 P00 = tex2D(OCoord, Corner);
+	float4 P01 = tex2D(OCoord, Corner + float2(Step.x,0));
+	float4 P10 = tex2D(OCoord, Corner + float2(0,Step.y));
+	float4 P11 = tex2D(OCoord, Corner + Step);
+	float4 t1 = lerp(P00, P01, LCoord.x);
+	float4 t2 = lerp(P10, P11, LCoord.x);
+	float4 Objectpos = lerp (t1,t2,LCoord.y);
+
+	float4 N00 = tex2D(ONormal, Corner);
+	float4 N01 = tex2D(ONormal, Corner + float2(Step.x,0));
+	float4 N10 = tex2D(ONormal, Corner + float2(0,Step.y));
+	float4 N11 = tex2D(ONormal, Corner + Step);
+	float4 T1 = normalize(lerp(N00, N01, LCoord.x));
+	float4 T2 = normalize(lerp(N10, N11, LCoord.x));
+	T1 = (lerp(N00, N01, LCoord.x));
+	T2 = (lerp(N10, N11, LCoord.x));  
+	float4 Objectnormal = normalize(lerp (T1,T2,LCoord.y));	
+	
+	Objectpos.xyz += ConstScale * Scale * Objectnormal.xyz * Vertex.zzz;
+	
+	return Objectpos;
+}
+float3 CalculateNormal (float3 Vertex,
+						float3 VertexP1,
+						float3 VertexP2,
+						float2 Step,
+						float2 TileUV,
+						float2 TexDim,
+						float2 Sampling, 
+						sampler2D OCoord, 
+						sampler2D ONormal,
+						float Scale,
+						float ConstScale)
+{
+	float4 P1 = CalculateObject(VertexP1.xyz, Step, TileUV, TexDim, Sampling, OCoord, ONormal, Scale, ConstScale);
+	float4 P2 = CalculateObject(VertexP2.xyz, Step, TileUV, TexDim, Sampling, OCoord, ONormal, Scale, ConstScale);
+	
+	return normalize(cross ((Vertex - P1.xyz), (Vertex - P2.xyz)));
+}
+
+float4 CalculateColor (float4 ObjectNormal, 
+					   float4 Color,
+					   float3 LightSource0,
+					   float3 LightSource1,
+					   float3 Ambient,
+					   float3 Diffuse,
+					   float3 Specular,
+					   float Shininess)
+{
+		float3 ambient = Color.xyz;
+		float3 diffuseMaterial = Color.xyz;
+		float3 specularMaterial = float3(1,1,1);
+		float3 lightVec0 = -(LightSource0);
+		float3 lightVec1 = -(LightSource1);	
+		float3 eyeVec = -float3(0,0,1);
+
+		float3 halfVec0 = normalize(lightVec0 + eyeVec);
+		float3 halfVec1 = normalize(lightVec1 + eyeVec);
+    	
+		float3 diffuse = max(dot(ObjectNormal.xyz, lightVec0) * diffuseMaterial,0) +
+			max(dot(ObjectNormal.xyz, lightVec1) * diffuseMaterial,0);
+		float3 specular0 = max(dot(ObjectNormal.xyz, halfVec0),0);
+		float3 specular1 = max(dot(ObjectNormal.xyz, halfVec1),0);
+    	
+		float3 specular = (pow(specular0.x,Shininess) + pow(specular1.x,Shininess)) * specularMaterial;
+
+		float4 Out;
+		Out.rgb = Ambient * ambient +  Diffuse * diffuse + Specular * specular;
+		Out.a = Color.a;
+		
+		return Out;
+}
+
+/////////////////// FRAGMENT SHADER SECTION
+
+
+struct FragIn
+{
+	float4 Color : COLOR;
+	float3 TextureUV : TEXCOORD0; 
+};
+
+float4 PixelShader (FragIn In,
+	uniform sampler2D PTexture):COLOR
+{
+	float4 OutColor = tex2D(PTexture, In.TextureUV.xy);
+	OutColor = OutColor * In.Color;
+	
+	return OutColor;
+}

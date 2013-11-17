@@ -1,0 +1,74 @@
+#
+# A test of intersection of three orthogonal cylinders.
+#
+#				Gershon Elber, April 94.
+#
+
+save_mat = view_mat;
+save_res = resolution;
+
+length = 0.7;
+radius = 0.2;
+resolution = 40;
+
+c1 = cylin( vector( -length / 2, 0, 0 ), vector( length, 0, 0 ), radius, 3 );
+c2 = cylin( vector( 0, -length / 2, 0 ), vector( 0, length, 0 ), radius, 3 );
+c3 = cylin( vector( 0, 0, -length / 2 ), vector( 0, 0, length ), radius, 3 );
+free( radius );
+free( length );
+attrib( c1, "width", 0.0001 );
+attrib( c2, "width", 0.0001 );
+attrib( c3, "width", 0.0001 );
+
+c12 = c1 * c2;
+c123 = c12 * c3;
+free( c12 );
+attrib( c123, "width", 0.005 );
+color( c123, red );
+adwidth( c123, 3 );
+
+all = list( c123, c1, c2, c3 );
+free( c1 );
+free( c2 );
+free( c3 );
+
+view_mat = sc( 1.1 );
+viewobj( view_mat );
+
+tr = 0.4;
+Proj1 = all * trans( vector( -tr, tr, 0.0 ) );
+Proj2 = all * rotx( 90 ) * trans( vector( tr, tr, 0.0 ) );
+Proj3 = all * roty( 90 ) * trans( vector( -tr, -tr, 0.0 ) );
+Proj4 = all * roty( 30 ) * rotx( 20 ) * trans( vector( tr, -tr, 0.0 ) );
+free( tr );
+free( all );
+
+AllProj = list( Proj1, Proj2, Proj3, Proj4 );
+free( Proj1 );
+free( Proj2 );
+free( Proj3 );
+free( Proj4 );
+
+save( "cylin3a", AllProj );
+interact( AllProj );
+
+free( AllProj );
+
+c123a = c123 * roty( 30 ) * rotx( 20 ) * scale( vector( 3, 3, 3 ) );
+attrib( c123a, "width", 0.015 );
+save( "cylin3b", c123a );
+interact( c123a );
+
+free( c123a );
+
+c123b = c123 * roty( 60 ) * rotx( 65 ) * scale( vector( 3, 3, 3 ) );
+free( c123 );
+
+attrib( c123b, "width", 0.015 );
+save( "cylin3c", c123b );
+interact( c123b );
+
+free( c123b );
+
+view_mat = save_mat;
+resolution = save_res;

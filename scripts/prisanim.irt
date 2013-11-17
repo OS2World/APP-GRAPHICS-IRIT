@@ -1,0 +1,317 @@
+#
+# Some tests for the PRISA (planar layout) code.
+#
+
+save_res = resolution;
+save_mat = view_mat;
+SampPerCrv = 64;
+viewobj(view_mat);
+
+ViewState( "NumIsos", 0 );
+ViewState( "NumIsos", 0 );
+
+#############################################################################
+#
+# Layout (prisa) of a sphere - several resolutions/directions.
+#
+view_mat3d = rotx(-90) * roty(135) * rotx(-30) * scale(vector(0.5, 0.5, 0.5));
+view_mat2d = scale( vector( 0.15,  0.15, 0.15 ) ) *
+	     trans( vector( 0.0, -0.8, 0.0 ) );
+
+s45 = sin(pi/4);
+
+halfcirc = cbspline( 3,
+		     list( ctlpt( P3, 1.0,  0.0, 0.0,  1.0 ),
+		           ctlpt( P3, s45, -s45, 0.0,  s45 ),
+		           ctlpt( P3, 1.0, -1.0, 0.0,  0.0 ),
+		           ctlpt( P3, s45, -s45, 0.0, -s45 ),
+			   ctlpt( P3, 1.0,  0.0, 0.0, -1.0 ) ),
+		     list( 0, 0, 0, 1, 1, 2, 2, 2 ) );
+sp = surfrev( halfcirc );
+color( sp, yellow );
+free( halfcirc );
+
+interact( list( view_mat3d, sp ) );
+
+sp_prisa = prisa( sp, SampPerCrv, -0.6, COL, vector( 0, 0.1, 0.0 ), false );
+color( sp_prisa, yellow );
+interact( list( view_mat3d, sp_prisa ) );
+
+sp_prisa = prisa( sp, SampPerCrv, 0.6, COL, vector( 0, 0.1, 0.0 ), false );
+interact( list( view_mat2d, sp_prisa ) );
+
+sp_prisa = prisa( sp, SampPerCrv, -0.3, COL, vector( 0, 0.1, 0.0 ), false );
+color( sp_prisa, yellow );
+interact( list( view_mat3d, sp_prisa ) );
+
+sp_prisa = prisa( sp, SampPerCrv, 0.3, COL, vector( 0, 0.1, 0.0 ), false );
+interact( list( view_mat2d, sp_prisa ) );
+
+sp_prisa = prisa( sp, SampPerCrv, -0.1, COL, vector( 0, 0.1, 0.0 ), false );
+color( sp_prisa, yellow );
+interact( list( view_mat3d, sp_prisa ) );
+
+sp_prisa = prisa( sp, SampPerCrv, 0.1, COL, vector( 0, 0.1, 0.0 ), false );
+interact( list( view_mat2d, sp_prisa ) );
+
+sp_prisa = prisa( sp, SampPerCrv, -0.3, ROW, vector( 0, 0.1, 0.0 ), false );
+color( sp_prisa, yellow );
+interact( list( view_mat3d, sp_prisa ) );
+
+sp_prisa = prisa( sp, SampPerCrv, 0.3, ROW, vector( 0, 0.1, 0.0 ), false );
+interact( list( view_mat2d, sp_prisa ) );
+
+free( sp_prisa );
+free( sp );
+
+#############################################################################
+#
+# Layout (prisa) of a wine glass.
+#
+view_mat3d = rotx(-90) * roty(130) * rotx(-35) *
+		scale(vector(0.5, 0.5, 0.5)) * trans(vector(0.0, -0.5, 0.0));
+view_mat2d = scale( vector( 0.1,  0.1, 0.1 ) ) *
+	     trans( vector( 0.0, -0.8, 0.0 ) );
+
+cross = cbspline( 3,
+		  list( ctlpt( E3, 0.7, 0.0, 0. ),
+			ctlpt( E3, 0.7, 0.0, 0.06 ),
+			ctlpt( E3, 0.1, 0.0, 0.1 ),
+			ctlpt( E3, 0.1, 0.0, 0.6 ),
+			ctlpt( E3, 0.6, 0.0, 0.6 ),
+			ctlpt( E3, 0.8, 0.0, 0.8 ),
+			ctlpt( E3, 0.8, 0.0, 1.4 ),
+			ctlpt( E3, 0.6, 0.0, 1.6 ) ),
+		  list( KV_OPEN ) );
+wglass = surfprev( cross * scale( vector( 1.6, 1.6, 1.6 ) ) );
+color( wglass, yellow );
+
+interact( list( view_mat3d, wglass ) );
+
+wgl_prisa = prisa( wglass, SampPerCrv, -0.1, COL,
+		   vector( 0, 0.25, 0.0 ), false );
+color( wgl_prisa, yellow );
+interact( list( view_mat3d, wgl_prisa ) );
+
+wgl_prisa = prisa( wglass, SampPerCrv, 0.1, COL,
+		   vector( 0, 0.25, 0.0 ), false );
+interact( list( view_mat2d, wgl_prisa ) );
+
+# Animate:
+
+wgl_prisa3d = prisa( wglass, SampPerCrv, -0.1, COL,
+		     vector( 0, 0.25, 0.0 ), false );
+color( wgl_prisa3d, magenta );
+
+wgl_prisa2d = prisa( wglass, SampPerCrv, 0.1, COL, vector( 0, 0, 0 ), false ) *
+		scale( vector( 0.8, 0.8, 0.8 ) ) *
+		trans( vector( 0, -5, 5.5 ) );
+color( wgl_prisa2d, red );
+
+view_mat3d = rotx(-90) * roty(130) * rotx(-35) *
+		scale(vector(0.2, 0.2, 0.2)) * trans(vector(0.0, -0.5, 0.0));
+
+built_gl = nil();
+iter_gl = nil();
+morph_step = 0.2;
+
+
+ViewState( "NumIsos", 0 );
+ViewState( "NumIsos", 0 );
+
+view( list( view_mat3d, wgl_prisa2d, wgl_prisa3d ), on );
+for ( i = 1, 1, sizeof( wgl_prisa3d ),
+    min_gl = nth( wgl_prisa2d, 1 + sizeof( wgl_prisa3d ) - i ):
+    max_gl = nth( wgl_prisa3d, i ):
+    ffcompat( min_gl, max_gl ):
+    for ( t = 0.0, morph_step, 1.0,
+	iter_gl = smorph( min_gl, max_gl, t ):
+	color( iter_gl, yellow ):
+	viewobj( iter_gl ) ):
+    snoc( max_gl, built_gl ):
+    color( built_gl, white ):
+    view( list( wgl_prisa2d, wgl_prisa3d, built_gl ), on ) );
+viewclear();
+
+ViewState( "NumIsos", 1 );
+ViewState( "NumIsos", 1 );
+
+#############################################################################
+#
+# Layout (prisa) Fuselage of b58 model.
+#
+c1 = circle( vector( 0.0, 0.0, 0.0 ), 0.01 ) *
+     roty( 90 ) *
+     trans( vector( -1.0, 0.0, 0.1 ) );
+c2 = circle( vector( 0.0, 0.0, 0.0 ), 0.025 ) *
+     roty( 90 ) *
+     trans( vector( 0.0, 0.0, 0.1 ) );
+c3 = circle( vector( 0.0, 0.0, 0.0 ), 0.03 ) *
+     roty( 90 ) *
+     trans( vector( 0.1, 0.0, 0.1 ) );
+c4 = cbspline( 3,
+	       list( ctlpt( P3, 1,     2.5,   0.0,   -0.1 ),
+		     ctlpt( P3, 0.707, 1.77,  0.283, -0.071 ),
+		     ctlpt( P3, 1,     2.5,   0.4,    0.0 ),
+		     ctlpt( P3, 0.707, 1.77,  0.283,  0.283 ),
+		     ctlpt( P3, 1,     2.5,   0.0,    0.4 ),
+		     ctlpt( P3, 0.707, 1.77, -0.283,  0.283 ),
+		     ctlpt( P3, 1,     2.5,  -0.4,    0.0 ),
+		     ctlpt( P3, 0.707, 1.77, -0.283, -0.071 ),
+		     ctlpt( P3, 1,     2.5,   0.0,   -0.1 ) ),
+	       list( 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 4 ) ) *
+     trans( vector( -1.5, 0.0, 0.0 ) );
+c5 = cbspline( 3,
+	       list( ctlpt( P3, 1,     2.5,   0.0,   -0.1 ),
+		     ctlpt( P3, 0.707, 1.77,  0.283, -0.071 ),
+		     ctlpt( P3, 1,     2.5,   0.4,    0.0 ),
+		     ctlpt( P3, 0.707, 1.77,  0.283,  0.6 ),
+		     ctlpt( P3, 1,     2.5,   0.0,    0.5 ),
+		     ctlpt( P3, 0.707, 1.77, -0.283,  0.6 ),
+		     ctlpt( P3, 1,     2.5,  -0.4,    0.0 ),
+		     ctlpt( P3, 0.707, 1.77, -0.283, -0.071 ),
+		     ctlpt( P3, 1,     2.5,   0.0,   -0.1 ) ),
+	       list( 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 4 ) ) *
+     trans( vector( 0.0, 0.0, 0.0 ) );
+
+fuseFront = sFromCrvs( list( c1, c2, c3, c4, c5 ), 3, KV_OPEN );
+color( fuseFront, yellow );
+
+c1 = cbspline( 3,
+	       list( ctlpt( P3, 1,     2.5,   0.0,   -0.1 ),
+		     ctlpt( P3, 0.707, 1.77,  0.283, -0.071 ),
+		     ctlpt( P3, 1,     2.5,   0.4,    0.0 ),
+		     ctlpt( P3, 0.707, 1.77,  0.283,  0.566 ),
+		     ctlpt( P3, 1,     2.5,   0.0,    0.8 ),
+		     ctlpt( P3, 0.707, 1.77, -0.283,  0.566 ),
+		     ctlpt( P3, 1,     2.5,  -0.4,    0.0 ),
+		     ctlpt( P3, 0.707, 1.77, -0.283, -0.071 ),
+		     ctlpt( P3, 1,     2.5,   0.0,   -0.1 ) ),
+	       list( 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 4 ) ) *
+     trans( vector( 0.0, 0.0, 0.0 ) );
+c2 = c1 * scale( vector( 1.05, 1.05, 1.05 ) ) *
+          trans( vector( 0.3, 0.0, 0.0 ) );
+c3 = c1 * scale( vector( 0.95, 0.95, 0.95 ) ) *
+	  trans( vector( 1.7, 0.0, -0.02 ) );
+c4 = circle( vector( 0.0, 0.0, 0.0 ), 0.35 ) *
+     roty( 90 ) *
+     trans( vector( 5.0, 0.0, 0.2 ) );
+c5 = c4 * trans( vector( 0.2, 0.0, 0.0 ) );
+c6 = circle( vector( 0.0, 0.0, 0.0 ), 0.3 ) *
+     roty( 90 ) *
+     trans( vector( 10.5, 0.0, 0.2 ) );
+c7 = circle( vector( 0.0, 0.0, 0.0 ), 0.01 ) *
+     roty( 90 ) *
+     trans( vector( 11.0, 0.0, 0.25 ) );
+
+fuseBack = sFromCrvs( list( c1, c2, c3, c4, c5, c6, c7 ), 3, KV_OPEN );
+color( fuseBack, yellow );
+
+view_mat3d = rotx(-90) * roty(130) * rotx(-35) *
+		scale(vector(0.2, 0.2, 0.2)) * trans(vector(0.7, 0.2, 0.0));
+view_mat2d = scale( vector( 0.1,  0.1, 0.1 ) ) *
+	     trans( vector( 0.0, -0.8, 0.0 ) );
+interact( list( view_mat3d, fuseBack, fuseFront ) );
+
+front_prisa = prisa( fuseFront, SampPerCrv, -0.05, COL,
+		     vector( -2.0, 0.2, 0.0 ), false );
+back_prisa = prisa( fuseBack, SampPerCrv, -0.05, COL,
+		    vector( 2.0, 0.2, 0.0 ), false );
+color(front_prisa, yellow);
+color(back_prisa, yellow);
+interact( list( view_mat3d, front_prisa, back_prisa ) );
+
+front_prisa = prisa( fuseFront, SampPerCrv, 0.05, COL,
+		     vector( -2.0, 0.2, 0.0 ), false );
+back_prisa = prisa( fuseBack, SampPerCrv, 0.05, COL,
+		    vector( 2.0, 0.2, 0.0 ), false );
+
+view_mat2d = scale( vector( 0.15,  0.15, 0.15 ) ) *
+	     trans( vector( 0.0, -0.8, 0.0 ) );
+interact( list( view_mat2d, front_prisa, back_prisa ) );
+
+# Animate:
+
+b58_prisa2d = 
+    prisa( fuseBack, SampPerCrv, 0.05, COL, vector( 0, 0.1, 0 ), false ) *
+	trans( vector( 0, 4.4, 0 ) ) +
+    prisa( fuseFront, SampPerCrv, 0.05, COL, vector( 0, 0.1, 0 ), false );
+color( b58_prisa2d, red );
+
+b58_prisa3d = ( prisa( fuseFront, SampPerCrv, -0.05, COL,
+		       vector( 0, 0, 0 ), false ) +
+	        prisa( fuseBack, SampPerCrv, -0.05, COL,
+		       vector( 0, 0, 0 ), false ) )
+	      * rotz( 90 ) * trans( vector( 0, 1, 3 ) );
+color( b58_prisa3d, magenta );
+
+view_mat = rotx(-90) * roty(130) * rotx(-35) *
+		scale(vector(0.18, 0.18, 0.18)) *
+                trans(vector(0.9, -0.9, 0.0));
+
+built_b58 = nil();
+iter_b58 = nil();
+morph_step = 0.2;
+
+
+ViewState( "NumIsos", 0 );
+ViewState( "NumIsos", 0 );
+
+view( list( view_mat, b58_prisa2d, b58_prisa3d ), on );
+for ( i = 1, 1, sizeof( b58_prisa3d ),
+    min_b58 = nth( b58_prisa2d, 1 + sizeof( b58_prisa3d ) - i ):
+    max_b58 = nth( b58_prisa3d, i ):
+    ffcompat( min_b58, max_b58 ):
+    for ( t = 0.0, morph_step, 1.0,
+	iter_b58 = smorph( min_b58, max_b58, t ):
+	color( iter_b58, yellow ):
+	viewobj( iter_b58 ) ):
+    snoc( max_b58, built_b58 ):
+    color( built_b58, white ):
+    view( list( b58_prisa2d, b58_prisa3d, built_b58 ), on ) );
+
+viewclear();
+
+ViewState( "NumIsos", 1 );
+ViewState( "NumIsos", 1 );
+
+#############################################################################
+
+ViewState( "NumIsos", 1 );
+ViewState( "NumIsos", 1 );
+
+view_mat = save_mat;
+resolution = save_res;
+
+free( view_mat2d );
+free( view_mat3d );
+free( b58_prisa2d );
+free( b58_prisa3d );
+free( morph_step );
+free( min_b58 );
+free( max_b58 );
+free( iter_b58 );
+free( built_b58 );
+free( back_prisa );
+free( front_prisa );
+free( fuseBack );
+free( fuseFront );
+free( SampPerCrv );
+free( min_gl );
+free( max_gl );
+free( iter_gl );
+free( built_gl );
+free( cross );
+free( s45 );
+free( c1 );
+free( c2 );
+free( c3 );
+free( c4 );
+free( c5 );
+free( c6 );
+free( c7 );
+free( i );
+free( wgl_prisa2d );
+free( wgl_prisa3d );
+free( wgl_prisa );
+free( wglass );

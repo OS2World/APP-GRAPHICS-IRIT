@@ -1,0 +1,247 @@
+#
+# This makeflag is the main makefile setup of the IRIT solid modeller and its
+# auxilary tools, under CYGWIN and GNU COMPILER/MAKE.  Copy this file to
+# makeflag.unx ("cp makeflag.cygwin makeflag.unx") and invoke make on
+# makefile.unx
+#
+#				Gershon Elber, Nov. 2003
+#
+# The IRIT_SRC_DIR variables below MUST have ABSOLUTE path. Since this file
+# is sourced from several directories relative path specification will
+# be simple wrong.
+#
+
+IRIT_SRC_DIR = c:/irit/irit
+
+#
+# All libraries created will be installed into the IRIT_LIB_DIR directory.
+#
+IRIT_LIB_DIR = $(IRIT_SRC_DIR)/lib
+
+#
+# All includes files associated with the installed libraries will be
+# installed into the IRIT_INC_DIR directory.
+#
+IRIT_INC_DIR = $(IRIT_SRC_DIR)/include
+
+#
+# All binaries created will be installed into the IRIT_BIN_DIR directory.
+#
+IRIT_BIN_DIR = $(IRIT_SRC_DIR)/bin
+
+#
+# Invoke this make file as 'make CFG=Rel makefile.unx' for release mode:
+#
+ifeq ($(CFG), Rel)
+	IRIT_OBJ_PF =
+	IRIT_LIB_PF = 
+	IRIT_EXE_PF = .exe
+	IRIT_STRIP_EXE = strip
+
+else
+	IRIT_OBJ_PF = D
+	IRIT_LIB_PF = D
+	IRIT_EXE_PF = D.exe
+	IRIT_STRIP_EXE = ls
+endif
+
+#
+# Location of object file to resolve circularities in libraries.
+#
+IRIT_CIRCLINK = $(IRIT_SRC_DIR)/circlink/circlink.o$(IRIT_OBJ_PF)
+
+#
+# Support for IRIT_GZIP image read/write using the gzip toolkit library.
+# You can ftp it from http://www.gzip.org/zlib/
+#
+# IRIT_GZIP = /cygdriver/c/zlib
+# IRIT_GZIP_INC = -I$(IRIT_GZIP)
+# IRIT_GZIP_LIB = $(IRIT_GZIP)/zlib.lib
+# IRIT_GZIP_FLAGS = -DIRIT_HAVE_GZIP_LIB
+
+#
+# Support for compressed binary files. 
+# This option also requires -DIRIT_HAVE_GZIP_LIB.
+#
+# IPC_COMP = -DIPC_BIN_COMPRESSION
+
+#
+# The scan converter (irender) needs the Utah Raster Toolkit (IRIT_URT) library
+# to read/write image data. You can ftp it in cs.utah.edu.
+#
+#   Make these empty if you would like to give up on irender's compilation.
+#
+#IRIT_URT = /b/d2/gershon/urt/onyx64
+#IRIT_URT_INC = -I$(IRIT_URT)/include
+#IRIT_URT_LIB = -L$(IRIT_URT)/lib -lrle
+#IRIT_URT_FLAGS = -DIRIT_HAVE_URT_RLE -DIRIT_URT_OLD_COMPAT
+
+#
+# Support for IRIT_GIF image read/write using the giflib toolkit library.
+# You can ftp it from http://catb.org/~esr/giflib/doc/gif_lib.html
+#
+#IRIT_GIF = /b/d2/gershon/gif_lib
+#IRIT_GIF_INC = -I$(IRIT_GIF)/lib
+#IRIT_GIF_LIB = $(IRIT_GIF)/onyx64/lib/libgif.a
+#IRIT_GIF_FLAGS = -DIRIT_HAVE_GIF_LIB
+
+#
+# If you would like to use Mesa emulation of Open GL and compile Open GL
+# code using it (see http://www.mesa3d.org for info on Mesa), define 
+# the following:
+#
+# IRIT_MESA_INC = -I/nx4-labs/cggc/gershon/c/mesa/MesaLib-2.4/include -D__IRIT_MESA__ -D__OPENGL__
+# IRIT_MESA_LIB = -L/nx4-labs/cggc/gershon/c/mesa/MesaLib-2.4/lib -lGLU -lGL
+
+#
+# Support of (shared) libraries.  You will need to set the proper suffix
+# of the libraries (IRIT_LIB_SFX) and the proper method to create a (shared)
+# library (IRIT_LIB_MAKE). IRIT_LIB_RAN is optional to optimize the archive (ranlib).
+# Remember you will have to update the LD_LIBRARY_PATH environment variable.
+#
+# Default is no shared libraries:
+#
+IRIT_LIB_SFX = a
+IRIT_LIB_MAKE = ar rcv
+IRIT_LIB_RAN = ranlib
+
+#
+# Uncomment the correct set of variables to be used or modify it for
+# your system.
+#
+# -D flags:
+#
+# -D__GL__ - if your system supports gl graphics library (SGI 4d & IBM R6000).
+#
+# -D__X11__ - if your system supports X11. Only one of __GL__ or __X11__ should
+#	be used.
+#
+#  Emulation to the following function are available by defining the
+#  following. Look at misc_lib/xgeneral.c/h for implementation.
+# -DGETCWD - if getcwd is not defined in this system.
+# -DSTRSTR - if strstr is not defined in this system.
+# -DSTRDUP - if strdup is not defined in this system.
+# -DSTRICMP - if niether strcasecmp nor stricmp are defined in this system.
+#
+# -DTIMES - if times is defined in your system, otherwise uses time.
+#
+# -DRANDOM_IRIT - Use irit internal random numbers generator (default).
+# -DRAND - if the (s)rand random number generator exists.
+# -DRAND48 - if (s)rand48 random number generators exists.
+#	If non of RAND or RAND48 are defined, (s)random is used.
+#
+# Unfortunately, there is no one Unix function to do subseconds' sleep.
+# -DUSLEEP - if usleep is defined in the system.
+# -DSGINAP - on sgi systems instead of usleep.
+# -DUSLEEP_SELECT - do the usleep using the 'select' unix call.
+# -DITIMERVAL - when all the above fails, try this.
+#
+# -DNO_VOID_PTR - if your C compiler does not support (void *).
+#
+# -DUSE_VARARGS - if your system does not have stdarg.h and have the old
+#	varargs.h.
+#
+# -DNO_CONCAT_STR - if 'char *p = "This is" "one string";' is illegal.
+#
+# -DGRAPDRVS - any combination of of 'xgldrvs', 'xgladap', 'x11drvs', etc.
+#
+# -DMAKE_REAL_FLOAT - force real number to be float and not double.
+#               Expect problems as it is not really tested.
+#
+# -DIRIT_URT_INC and -DIRIT_URT_LIB - library and include of the
+#		utah raster toolkit.
+# -DIRIT_HAVE_URT_RLE - if IRIT can use the IRIT_URT RLE package.
+#		That is IRIT_URT_INC/IRIT_URT_LIB are properly set.
+#
+# -DIRIT_GIF_INC and -DIRIT_GIF_LIB - library and include of the
+#		giflib toolkit.
+# -DIRIT_HAVE_GIF_LIB - if IRIT can use the IRIT_GIFLIB package.
+#		That is IRIT_GIF_INC/IRIT_GIF_LIB are properly set.
+# 
+# -DIRIT_PNG_INC and -DIRIT_PNG_LIB - library and include of the
+#		pnglib toolkit.
+# -DIRIT_HAVE_PNG_LIB - if IRIT can use the IRIT_PNGLIB package.
+#		That is IRIT_PNG_INC/IRIT_PNG_LIB are properly set.
+#  The png lib also requires zlib!
+# 
+# -DIRIT_GZIP_INC and -DIRIT_GZIP_LIB - library and include of the
+#		giflib toolkit.
+# -DIRIT_HAVE_GZIP_LIB - if IRIT can use the IRIT_GZIPLIB package.
+#		That is IRIT_GZIP_INC/IRIT_GZIP_LIB are properly set.
+#
+# -DIPC_BIN_COMPRESSION - if support for binary compressed files is to
+#		to be provided (*.icd files).
+#  This option also requires -DIRIT_HAVE_GZIP_LIB.
+# 
+# -DIRIT_QUIET_STRINGS - minimal print outs.
+#
+# Other, possibly useful defines (for c code development):
+#
+# -DDEBUG - for some debugging functions in the code (that can be invoked
+#		from a debugger).
+#
+# -DDEBUG_IRIT_MALLOC - for extensive malloc debugging facility.  See
+#               misc_lib/imalloc.c and the idynmem irit interpreter function.
+#
+
+#
+# Flags for x86 using gcc/X11R6
+#
+CC = gcc
+DFLAGS = -D__CYGWIN__ -D__UNIX__ -DX11R6 -D__X11__ -DUSLEEP -DRANDOM_IRIT -I/usr/include -I/usr/X11R6/include  $(IPC_COMP)
+
+ifeq ($(CFG), Rel)
+	CFLAGS = -O3 -pipe -DNDEBUG -fomit-frame-pointer  $(DFLAGS)
+else
+	CFLAGS = -g -pg -DDEBUG $(DFLAGS)
+endif
+IRIT_MORE_LIBS =  -lc 
+GRAPX11LIBS = -L/usr/X11R6/lib -lX11 -lSM -lICE
+GRAPXMTLIBS = -L/usr/X11R6/lib -lXm -lXt -lX11 -lSM -lICE
+GRAPOGLLIBS = -lGLU -lGL $(GRAPXMTLIBS)
+GRAPDRVS = nuldrvs$(IRIT_EXE_PF) x11drvs$(IRIT_EXE_PF) xmtdrvs$(IRIT_EXE_PF) xogldrvs$(IRIT_EXE_PF)
+
+#
+# For shared libraries add:
+#
+#IRIT_LIB_SFX = so
+#IRIT_LIB_MAKE = gcc -shared -o 
+#IRIT_LIB_RAN = echo
+#
+# Static libraries
+#
+IRIT_LIB_SFX = a
+
+
+
+#
+# Default rule for compilation.
+#
+
+%.o$(IRIT_OBJ_PF): %.c
+	$(CC) $(CFLAGS) $(IRIT_URT_FLAGS) $(IRIT_GIF_FLAGS) $(IRIT_PNG_FLAGS) $(IRIT_GZIP_FLAGS) $(IRIT_MORE_FLAGS) -I. -I$(IRIT_INC_DIR) $(IRIT_URT_INC) $(IRIT_GIF_INC) $(IRIT_PNG_INC) $(IRIT_GZIP_INC) $(IRIT_MORE_INC) -o $@ -c $<
+
+%.o$(IRIT_OBJ_PF): %.cpp
+	$(CC) $(CFLAGS) $(IRIT_URT_FLAGS) $(IRIT_GIF_FLAGS) $(IRIT_PNG_FLAGS) $(IRIT_GZIP_FLAGS) $(IRIT_MORE_FLAGS) -I. -I$(IRIT_INC_DIR) $(IRIT_URT_INC) $(IRIT_GIF_INC) $(IRIT_PNG_INC) $(IRIT_GZIP_INC) $(IRIT_MORE_INC) -o $@ -c $<
+
+#
+# All libraries.
+#
+IRIT_LIBS = $(IRIT_CIRCLINK) $(IRIT_MORE_LIBS) \
+	$(IRIT_LIB_DIR)/libIritExt$(IRIT_LIB_PF).$(IRIT_LIB_SFX) \
+	$(IRIT_LIB_DIR)/libIritGrap$(IRIT_LIB_PF).$(IRIT_LIB_SFX) \
+	$(IRIT_LIB_DIR)/libIritUser$(IRIT_LIB_PF).$(IRIT_LIB_SFX) \
+	$(IRIT_LIB_DIR)/libIritRndr$(IRIT_LIB_PF).$(IRIT_LIB_SFX) \
+	$(IRIT_LIB_DIR)/libIritBool$(IRIT_LIB_PF).$(IRIT_LIB_SFX) \
+	$(IRIT_LIB_DIR)/libIritPrsr$(IRIT_LIB_PF).$(IRIT_LIB_SFX) \
+	$(IRIT_LIB_DIR)/libIritMdl$(IRIT_LIB_PF).$(IRIT_LIB_SFX) \
+	$(IRIT_LIB_DIR)/libIritMvar$(IRIT_LIB_PF).$(IRIT_LIB_SFX) \
+	$(IRIT_LIB_DIR)/libIritTrim$(IRIT_LIB_PF).$(IRIT_LIB_SFX) \
+	$(IRIT_LIB_DIR)/libIritTriv$(IRIT_LIB_PF).$(IRIT_LIB_SFX) \
+	$(IRIT_LIB_DIR)/libIritTrng$(IRIT_LIB_PF).$(IRIT_LIB_SFX) \
+	$(IRIT_LIB_DIR)/libIritSymb$(IRIT_LIB_PF).$(IRIT_LIB_SFX) \
+	$(IRIT_LIB_DIR)/libIritCagd$(IRIT_LIB_PF).$(IRIT_LIB_SFX) \
+	$(IRIT_LIB_DIR)/libIritGeom$(IRIT_LIB_PF).$(IRIT_LIB_SFX) \
+	$(IRIT_LIB_DIR)/libIritMisc$(IRIT_LIB_PF).$(IRIT_LIB_SFX) \
+	$(IRIT_LIB_DIR)/libIritXtra$(IRIT_LIB_PF).$(IRIT_LIB_SFX) \
+	$(IRIT_URT_LIB) $(IRIT_GIF_LIB) $(IRIT_PNG_LIB) $(IRIT_GZIP_LIB)

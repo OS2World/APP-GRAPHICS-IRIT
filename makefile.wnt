@@ -1,0 +1,467 @@
+#
+# This make file is the main make file of the IRIT solid modeller and its
+# auxilary tools.
+#
+#				Gershon Elber, June 1993
+#
+
+include makeflag.wnt
+
+all: create_dirs libs \
+	$(DO_IRIT_LIB) irit_dir grapdrvs_dir aisoshad_dir \
+	poly3d-h_dir irender_dir ihidden_dir illustrt_dir \
+	filters_dir test_dir docs_dir irit$(IRIT_LIB_PF).dll \
+	epilog
+
+all2:
+	nmake -f makefile.wnt all
+	nmake CFG=Rel -f makefile.wnt all
+
+libs:   xtra_lib_dir misc_lib_dir grap_lib_dir cagd_lib_dir symb_lib_dir \
+	trim_lib_dir mdl_lib_dir triv_lib_dir trng_lib_dir mvar_lib_dir \
+	user_lib_dir prsr_lib_dir geom_lib_dir bool_lib_dir rndr_lib_dir \
+	ext_lib_dir 
+
+irit: create_dirs libs \
+	$(DO_IRIT_LIB) irit_dir 
+
+grapdrvs: create_dirs libs \
+	$(DO_IRIT_LIB) grapdrvs_dir 
+
+wntgdrvs: create_dirs libs \
+	$(DO_IRIT_LIB) wntgdrvs_dir 
+
+create_dirs:
+    if not exist "$(IRIT_LIB_DIR)" mkdir "$(IRIT_LIB_DIR)"
+    if not exist "$(IRIT_BIN_DIR)" mkdir "$(IRIT_BIN_DIR)"
+
+#
+# Print info regarding setup of the environment.
+#
+epilog:
+	type <<make_wnt.tmp
+Before executing the test suite and/or any usage of this package
+you will have to issue the following command:
+
+Path = %Path%;$(IRIT_BIN_DIR)
+set IRIT_PATH=$(IRIT_BIN_DIR)\
+set IRIT_DISPLAY=wntgdrvs -s-
+
+and optionally the following commands:
+
+set IRIT_BIN_IPC=1
+set IRIT_SERVER_HOST=`name of this machine'
+set IRIT_SERVER_PORT=5432
+
+or similar.
+<<KEEP
+	del make_wnt.tmp
+
+#
+# Create one big dll
+#
+irit$(IRIT_LIB_PF).dll: libs
+	$(IRITDLL) /dll /def:irit$(IRIT_LIB_PF).def \
+		/out:irit$(IRIT_LIB_PF).dll /subsystem:console,5.0 \
+		$(IRIT_LIBS) $(IRIT_MORE_LIBS) $(W32GUIMTOGLLIBS)
+	copy irit$(IRIT_LIB_PF).dll $(IRIT_BIN_DIR)
+	copy irit$(IRIT_LIB_PF).lib $(IRIT_LIB_DIR)
+	del irit$(IRIT_LIB_PF).dll
+	del irit$(IRIT_LIB_PF).lib
+
+#
+# irit.def should be copied from iritD.def and manually editted to remove
+# all references to *Dbg* and IritMalloc/Free.
+#   One cannot create irit.def directly as the link time objects creation
+# create *.objs that dumpbin fails to process.
+#
+
+ALL_LIB_OBJS = 	xtra_lib/*.$(IRIT_OBJ_PF) misc_lib/*.$(IRIT_OBJ_PF) \
+	        grap_lib/*.$(IRIT_OBJ_PF) cagd_lib/*.$(IRIT_OBJ_PF) \
+		symb_lib/*.$(IRIT_OBJ_PF) \
+		trng_lib/*.$(IRIT_OBJ_PF) triv_lib/*.$(IRIT_OBJ_PF) \
+		trim_lib/*.$(IRIT_OBJ_PF) mdl_lib/*.$(IRIT_OBJ_PF) \
+		mvar_lib/*.$(IRIT_OBJ_PF) rndr_lib/*.$(IRIT_OBJ_PF) \
+		prsr_lib/*.$(IRIT_OBJ_PF) geom_lib/*.$(IRIT_OBJ_PF) \
+		bool_lib/*.$(IRIT_OBJ_PF) user_lib/*.$(IRIT_OBJ_PF) \
+		ext_lib/*.$(IRIT_OBJ_PF)
+
+iritD.def:	$(ALL_LIB_OBJS)
+	-del misc_lib\miscatt2.$(IRIT_OBJ_PF) misc_lib\miscatt3.$(IRIT_OBJ_PF) \
+	     geom_lib\zbuf_ogl.$(IRIT_OBJ_PF)
+	echo LIBRARY      irit$(IRIT_LIB_PF) > irit$(IRIT_LIB_PF).def
+	echo DESCRIPTION  'IRIT Solid Modeller' >> irit$(IRIT_LIB_PF).def
+	echo EXPORTS >> irit$(IRIT_LIB_PF).def
+	.\bin\nt_mkdef xtra_lib irit$(IRIT_LIB_PF).def $(IRIT_OBJ_PF)
+	.\bin\nt_mkdef misc_lib irit$(IRIT_LIB_PF).def $(IRIT_OBJ_PF)
+	.\bin\nt_mkdef grap_lib irit$(IRIT_LIB_PF).def $(IRIT_OBJ_PF)
+	.\bin\nt_mkdef cagd_lib irit$(IRIT_LIB_PF).def $(IRIT_OBJ_PF)
+	.\bin\nt_mkdef symb_lib irit$(IRIT_LIB_PF).def $(IRIT_OBJ_PF)
+	.\bin\nt_mkdef trng_lib irit$(IRIT_LIB_PF).def $(IRIT_OBJ_PF)
+	.\bin\nt_mkdef triv_lib irit$(IRIT_LIB_PF).def $(IRIT_OBJ_PF)
+	.\bin\nt_mkdef trim_lib irit$(IRIT_LIB_PF).def $(IRIT_OBJ_PF)
+	.\bin\nt_mkdef mdl_lib irit$(IRIT_LIB_PF).def  $(IRIT_OBJ_PF)
+	.\bin\nt_mkdef mvar_lib irit$(IRIT_LIB_PF).def $(IRIT_OBJ_PF)
+	.\bin\nt_mkdef prsr_lib irit$(IRIT_LIB_PF).def $(IRIT_OBJ_PF)
+	.\bin\nt_mkdef geom_lib irit$(IRIT_LIB_PF).def $(IRIT_OBJ_PF)
+	.\bin\nt_mkdef bool_lib irit$(IRIT_LIB_PF).def $(IRIT_OBJ_PF)
+	.\bin\nt_mkdef user_lib irit$(IRIT_LIB_PF).def $(IRIT_OBJ_PF)
+	.\bin\nt_mkdef rndr_lib irit$(IRIT_LIB_PF).def $(IRIT_OBJ_PF)
+	.\bin\nt_mkdef ext_lib irit$(IRIT_LIB_PF).def $(IRIT_OBJ_PF)
+
+#
+# Uncomment the following variable to only see the actions taken.
+#
+# VIEW_ONLY = -n
+
+xtra_lib_dir:
+	cd xtra_lib
+	-$(MAKE) $(VIEW_ONLY) -f makefile.wnt install
+	cd ..
+
+misc_lib_dir:
+	cd misc_lib
+	-$(MAKE) $(VIEW_ONLY) -f makefile.wnt install
+	cd ..
+
+grap_lib_dir:
+	cd grap_lib
+	-$(MAKE) $(VIEW_ONLY) -f makefile.wnt install
+	cd ..
+
+user_lib_dir:
+	cd user_lib
+	-$(MAKE) $(VIEW_ONLY) -f makefile.wnt install
+	cd ..
+
+rndr_lib_dir:
+	cd rndr_lib
+	-$(MAKE) $(VIEW_ONLY) -f makefile.wnt install
+	cd ..
+
+prsr_lib_dir:
+	cd prsr_lib
+	-$(MAKE) $(VIEW_ONLY) -f makefile.wnt install
+	cd ..
+
+geom_lib_dir:
+	cd geom_lib
+	-$(MAKE) $(VIEW_ONLY) -f makefile.wnt install
+	cd ..
+
+cagd_lib_dir:
+	cd cagd_lib
+	-$(MAKE) $(VIEW_ONLY) -f makefile.wnt install
+	cd ..
+
+symb_lib_dir:
+	cd symb_lib
+	-$(MAKE) $(VIEW_ONLY) -f makefile.wnt install
+	cd ..
+
+trim_lib_dir:
+	cd trim_lib
+	-$(MAKE) $(VIEW_ONLY) -f makefile.wnt install
+	cd ..
+
+mdl_lib_dir:
+	cd mdl_lib
+	-$(MAKE) $(VIEW_ONLY) -f makefile.wnt install
+	cd ..
+
+triv_lib_dir:
+	cd triv_lib
+	-$(MAKE) $(VIEW_ONLY) -f makefile.wnt install
+	cd ..
+
+trng_lib_dir:
+	cd trng_lib
+	-$(MAKE) $(VIEW_ONLY) -f makefile.wnt install
+	cd ..
+
+mvar_lib_dir:
+	cd mvar_lib
+	-$(MAKE) $(VIEW_ONLY) -f makefile.wnt install
+	cd ..
+
+bool_lib_dir:
+	cd bool_lib
+	-$(MAKE) $(VIEW_ONLY) -f makefile.wnt install
+	cd ..
+
+ext_lib_dir:
+	cd ext_lib
+	-$(MAKE) $(VIEW_ONLY) -f makefile.wnt install
+	cd ..
+
+grapdrvs_dir:
+	cd grapdrvs
+	-$(MAKE) $(VIEW_ONLY) -f makefile.wnt install
+	cd ..
+
+wntgdrvs_dir:
+	cd grapdrvs
+	-$(MAKE) $(VIEW_ONLY) -f makefile.wnt wntgdrvs$(IRIT_EXE_PF).exe
+	copy *$(IRIT_EXE_PF).exe $(IRIT_BIN_DIR)
+	copy *.cg $(IRIT_BIN_DIR)
+	del *$(IRIT_EXE_PF).exe
+	copy wntdrvs.cfg $(IRIT_BIN_DIR)
+	cd ..
+
+circlink_dir:
+	cd circlink
+	-$(MAKE) $(VIEW_ONLY) -f makefile.wnt install
+	cd ..
+
+irit_dir:
+	cd irit
+	-$(MAKE) $(VIEW_ONLY) -f makefile.wnt install install-lib
+	cd ..\docs
+	-$(MAKE) $(VIEW_ONLY) -f makefile.wnt install
+	cd ..
+
+aisoshad_dir:
+	cd aisoshad
+	-$(MAKE) $(VIEW_ONLY) -f makefile.wnt install
+	cd ..
+
+poly3d-h_dir:
+	cd poly3d-h
+	-$(MAKE) $(VIEW_ONLY) -f makefile.wnt install
+	cd ..
+
+irender_dir:
+	cd irender
+	-$(MAKE) $(VIEW_ONLY) -f makefile.wnt install
+	cd ..
+
+ihidden_dir:
+	cd ihidden
+	-$(MAKE) $(VIEW_ONLY) -f makefile.wnt install
+	cd ..
+
+illustrt_dir:
+	cd illustrt
+	-$(MAKE) $(VIEW_ONLY) -f makefile.wnt install
+	cd ..
+
+filters_dir:
+	cd filters
+	-$(MAKE) $(VIEW_ONLY) -f makefile.wnt install
+	cd ..
+
+test_dir:
+	cd test
+	-$(MAKE) $(VIEW_ONLY) -f makefile.wnt
+	cd ..
+
+clean:
+	-rm aisoshad\*.map aisoshad\*.bak aisoshad\*.old aisoshad\*.sym
+	-rm poly3d-h\*.map poly3d-h\*.bak poly3d-h\*.old poly3d-h\*.hdn poly3d-h\*.sym
+	-rm irender\*.map irender\*.bak irender\*.old irender\*.hdn irender\*.sym
+	-rm ihidden\*.map ihidden\*.bak ihidden\*.old ihidden\*.hdn ihidden\*.sym
+	-rm illustrt\*.map illustrt\*.bak illustrt\*.old illustrt\*.sym
+	-rm filters\*.map filters\*.bak filters\*.old filters\*.sym
+	-rm cagd_lib\*.map cagd_lib\*.bak cagd_lib\*.sym
+	-rm symb_lib\*.map symb_lib\*.bak symb_lib\*.sym
+	-rm trng_lib\*.map trng_lib\*.bak trng_lib\*.sym
+	-rm trim_lib\*.map trim_lib\*.bak trim_lib\*.sym
+	-rm mdl_lib\*.map  mdl_lib\*.bak  mdl_lib\*.sym
+	-rm mvar_lib\*.map mvar_lib\*.bak mvar_lib\*.sym
+	-rm user_lib\*.map user_lib\*.bak user_lib\*.sym
+	-rm prsr_lib\*.map prsr_lib\*.bak prsr_lib\*.sym
+	-rm geom_lib\*.map geom_lib\*.bak geom_lib\*.sym
+	-rm grap_lib\*.map grap_lib\*.bak grap_lib\*.sym
+	-rm misc_lib\*.map misc_lib\*.bak misc_lib\*.sym
+	-rm ext_lib\*.map ext_lib\*.bak ext_lib\*.sym
+	-rm rndr_lib\*.map rndr_lib\*.bak rndr_lib\*.sym
+	-rm xtra_lib\*.map xtra_lib\*.bak xtra_lib\*.sym
+	-rm bool_lib\*.map bool_lib\*.bak bool_lib\*.sym
+	-rm grapdrvs\*.map grapdrvs\*.bak grapdrvs\*.sym
+	-rm circlink\*.map circlink\*.bak circlink\*.sym
+	-rm xtra_lib\*.map xtra_lib\*.bak xtra_lib\*.sym
+	-rm irit\*.map irit\*.bak irit\*.old irit\*.sym irit\*.dat
+	-rm docs\irithlp.exe
+
+cleanobj:
+	-rm aisoshad\*.$(IRIT_OBJ_PF) poly3d-h\*.$(IRIT_OBJ_PF) irender\*.$(IRIT_OBJ_PF) \
+	    ihidden\*.$(IRIT_OBJ_PF) illustrt\*.$(IRIT_OBJ_PF) irit\*.$(IRIT_OBJ_PF) \
+	    filters\*.$(IRIT_OBJ_PF) cagd_lib\*.$(IRIT_OBJ_PF) symb_lib\*.$(IRIT_OBJ_PF)
+	-rm misc_lib\*.$(IRIT_OBJ_PF) xtra_lib\*.$(IRIT_OBJ_PF) grap_lib\*.$(IRIT_OBJ_PF) \
+	    trim_lib\*.$(IRIT_OBJ_PF) triv_lib\*.$(IRIT_OBJ_PF) trng_lib\*.$(IRIT_OBJ_PF) \
+	    ext_lib\*.$(IRIT_OBJ_PF) grapdrvs\*.$(IRIT_OBJ_PF)
+	-rm mvar_lib\*.$(IRIT_OBJ_PF) bool_lib\*.$(IRIT_OBJ_PF) circlink\*.$(IRIT_OBJ_PF) \
+	    user_lib\*.$(IRIT_OBJ_PF) prsr_lib\*.$(IRIT_OBJ_PF) geom_lib\*.$(IRIT_OBJ_PF)
+	-rm mdl_lib\*.$(IRIT_OBJ_PF) rndr_lib\*.$(IRIT_OBJ_PF)
+	-rm docs\*.$(IRIT_OBJ_PF) docs\irithlp.exe
+
+#
+# Make hardcopy documentation.
+#
+docs_dir:
+	cd docs
+	-$(MAKE) $(VIEW_ONLY) -f makefile.wnt irit.tex irit.doc
+	cd ..
+
+#
+# Test some of the above programs. Make sure $(IRIT_BIN_DIR) is in your path
+#
+test:
+	cd irit
+	-irit demo
+	cd ..\aisoshad
+	-test-wnt
+	cd ..\poly3d-h
+	-test-wnt
+	cd ..\irender
+	-test-wnt
+	cd ..\ihidden
+	-test-wnt
+	cd ..\illustrt
+	-test-wnt
+	cd ..\filters
+	-test-wnt
+	cd ..
+
+#
+# Generate dependencies for the source tree.
+#
+depend:
+	cd irit
+	-makedpnd -u -I ../include -m makefile.unx *.c
+	-makedpnd -u -I ../include -m makefile.os2 *.c
+	-makedpnd    -I ../include -m makefile.wnt *.c
+	cd ..\aisoshad
+	-makedpnd -u -I ../include -m makefile.unx *.c
+	-makedpnd -u -I ../include -m makefile.os2 *.c
+	-makedpnd    -I ../include -m makefile.djg *.c
+	-makedpnd    -I ../include -m makefile.wnt *.c
+	cd ..\poly3d-h
+	-makedpnd -u -I ../include -m makefile.unx *.c
+	-makedpnd -u -I ../include -m makefile.os2 *.c
+	-makedpnd    -I ../include -m makefile.djg *.c
+	-makedpnd    -I ../include -m makefile.wnt *.c
+	cd ..\irender
+	-makedpnd -u -I ../include -m makefile.unx *.c
+	-makedpnd -u -I ../include -m makefile.os2 *.c
+	-makedpnd    -I ../include -m makefile.djg *.c
+	-makedpnd    -I ../include -m makefile.wnt *.c
+	cd ..\ihidden
+	-makedpnd -u -I ../include -m makefile.unx *.c
+	-makedpnd -u -I ../include -m makefile.os2 *.c
+	-makedpnd    -I ../include -m makefile.djg *.c
+	-makedpnd    -I ../include -m makefile.wnt *.c
+	cd ..\illustrt
+	-makedpnd -u -I ../include -m makefile.unx *.c
+	-makedpnd -u -I ../include -m makefile.os2 *.c
+	-makedpnd    -I ../include -m makefile.djg *.c
+	-makedpnd    -I ../include -m makefile.wnt *.c
+	cd ..\filters
+	-makedpnd -u -I ../include -m makefile.unx *.c
+	-makedpnd -u -I ../include -m makefile.os2 *.c
+	-makedpnd    -I ../include -m makefile.djg *.c
+	-makedpnd    -I ../include -m makefile.wnt *.c
+	cd ..\cagd_lib
+	-makedpnd -u -I ../include -m makefile.unx *.c
+	-makedpnd -u -I ../include -m makefile.os2 *.c
+	-makedpnd    -I ../include -m makefile.djg *.c
+	-makedpnd    -I ../include -m makefile.wnt *.c
+	-makedpnd    -I ../include -m makefile.wce *.c
+	cd ..\symb_lib
+	-makedpnd -u -I ../include -m makefile.unx *.c
+	-makedpnd -u -I ../include -m makefile.os2 *.c
+	-makedpnd    -I ../include -m makefile.djg *.c
+	-makedpnd    -I ../include -m makefile.wnt *.c
+	-makedpnd    -I ../include -m makefile.wce *.c
+	cd ..\trim_lib
+	-makedpnd -u -I ../include -m makefile.unx *.c
+	-makedpnd -u -I ../include -m makefile.os2 *.c
+	-makedpnd    -I ../include -m makefile.djg *.c
+	-makedpnd    -I ../include -m makefile.wnt *.c
+	-makedpnd    -I ../include -m makefile.wce *.c
+	cd ..\mdl_lib
+	-makedpnd -u -I ../include -m makefile.unx *.c
+	-makedpnd -u -I ../include -m makefile.os2 *.c
+	-makedpnd    -I ../include -m makefile.djg *.c
+	-makedpnd    -I ../include -m makefile.wnt *.c
+	-makedpnd    -I ../include -m makefile.wce *.c
+	cd ..\triv_lib
+	-makedpnd -u -I ../include -m makefile.unx *.c
+	-makedpnd -u -I ../include -m makefile.os2 *.c
+	-makedpnd    -I ../include -m makefile.djg *.c
+	-makedpnd    -I ../include -m makefile.wnt *.c
+	-makedpnd    -I ../include -m makefile.wce *.c
+	cd ..\trng_lib
+	-makedpnd -u -I ../include -m makefile.unx *.c
+	-makedpnd -u -I ../include -m makefile.os2 *.c
+	-makedpnd    -I ../include -m makefile.djg *.c
+	-makedpnd    -I ../include -m makefile.wnt *.c
+	-makedpnd    -I ../include -m makefile.wce *.c
+	cd ..\mvar_lib
+	-makedpnd -u -I ../include -m makefile.unx *.c
+	-makedpnd -u -I ../include -m makefile.os2 *.c
+	-makedpnd    -I ../include -m makefile.djg *.c
+	-makedpnd    -I ../include -m makefile.wnt *.c
+	-makedpnd    -I ../include -m makefile.wce *.c
+	cd ..\grap_lib
+	-makedpnd -u -I ../include -m makefile.unx *.c
+	-makedpnd -u -I ../include -m makefile.os2 *.c
+	-makedpnd    -I ../include -m makefile.djg *.c
+	-makedpnd    -I ../include -m makefile.wnt *.c
+	-makedpnd    -I ../include -m makefile.wce *.c
+	cd ..\xtra_lib
+	-makedpnd -u -I ../include -m makefile.unx *.c
+	-makedpnd -u -I ../include -m makefile.os2 *.c
+	-makedpnd    -I ../include -m makefile.djg *.c
+	-makedpnd    -I ../include -m makefile.wnt *.c
+	-makedpnd    -I ../include -m makefile.wce *.c
+	cd ..\misc_lib
+	-makedpnd -u -I ../include -m makefile.unx *.c
+	-makedpnd -u -I ../include -m makefile.os2 *.c
+	-makedpnd    -I ../include -m makefile.djg *.c
+	-makedpnd    -I ../include -m makefile.wnt *.c
+	-makedpnd    -I ../include -m makefile.wce *.c
+	cd ..\ext_lib
+	-makedpnd -u -I ../include -m makefile.unx *.c
+	-makedpnd -u -I ../include -m makefile.os2 *.c
+	-makedpnd    -I ../include -m makefile.djg *.c
+	-makedpnd    -I ../include -m makefile.wnt *.c
+	-makedpnd    -I ../include -m makefile.wce *.c
+	cd ..\rndr_lib
+	-makedpnd -u -I ../include -m makefile.unx *.c
+	-makedpnd -u -I ../include -m makefile.os2 *.c
+	-makedpnd    -I ../include -m makefile.djg *.c
+	-makedpnd    -I ../include -m makefile.wnt *.c
+	-makedpnd    -I ../include -m makefile.wce *.c
+	cd ..\geom_lib
+	-makedpnd -u -I ../include -m makefile.unx *.c
+	-makedpnd -u -I ../include -m makefile.os2 *.c
+	-makedpnd    -I ../include -m makefile.djg *.c
+	-makedpnd    -I ../include -m makefile.wnt *.c
+	-makedpnd    -I ../include -m makefile.wce *.c
+	cd ..\user_lib
+	-makedpnd -u -I ../include -m makefile.unx *.c
+	-makedpnd -u -I ../include -m makefile.os2 *.c
+	-makedpnd    -I ../include -m makefile.djg *.c
+	-makedpnd    -I ../include -m makefile.wnt *.c
+	-makedpnd    -I ../include -m makefile.wce *.c
+	cd ..\prsr_lib
+	-makedpnd -u -I ../include -m makefile.unx *.c
+	-makedpnd -u -I ../include -m makefile.os2 *.c
+	-makedpnd    -I ../include -m makefile.djg *.c
+	-makedpnd    -I ../include -m makefile.wnt *.c
+	-makedpnd    -I ../include -m makefile.wce *.c
+	cd ..\geom_lib
+	-makedpnd -u -I ../include -m makefile.unx *.c
+	-makedpnd -u -I ../include -m makefile.os2 *.c
+	-makedpnd    -I ../include -m makefile.djg *.c
+	-makedpnd    -I ../include -m makefile.wnt *.c
+	-makedpnd    -I ../include -m makefile.wce *.c
+	cd ..\bool_lib
+	-makedpnd -u -I ../include -m makefile.unx *.c
+	-makedpnd -u -I ../include -m makefile.os2 *.c
+	-makedpnd    -I ../include -m makefile.djg *.c
+	-makedpnd    -I ../include -m makefile.wnt *.c
+	-makedpnd    -I ../include -m makefile.wce *.c
+	cd ..
+

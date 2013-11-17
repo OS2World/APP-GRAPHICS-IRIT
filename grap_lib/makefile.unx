@@ -1,0 +1,31 @@
+#
+# This is the make file for the grap_lib library.
+#
+#				Gershon Elber, Aug 2006
+#
+
+include ../makeflag.unx
+
+OBJS =  draw_crv.o$(IRIT_OBJ_PF) \
+	draw_mdl.o$(IRIT_OBJ_PF) \
+	draw_srf.o$(IRIT_OBJ_PF) \
+	draw_str.o$(IRIT_OBJ_PF) \
+	drawpoly.o$(IRIT_OBJ_PF) \
+	drawtris.o$(IRIT_OBJ_PF) \
+	drawtriv.o$(IRIT_OBJ_PF) \
+	drawtsrf.o$(IRIT_OBJ_PF) \
+	grap_gen.o$(IRIT_OBJ_PF) \
+	oglcgdmy.o$(IRIT_OBJ_PF) \
+	sketches.o$(IRIT_OBJ_PF)
+
+all:	libIritGrap$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+
+libIritGrap$(IRIT_LIB_PF).$(IRIT_LIB_SFX): $(OBJS)
+	rm -f libIritGrap$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+	$(IRIT_LIB_MAKE) libIritGrap$(IRIT_LIB_PF).$(IRIT_LIB_SFX) *.o$(IRIT_OBJ_PF)
+	-$(IRIT_LIB_RAN) libIritGrap$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+
+install: libIritGrap$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+	mv -f libIritGrap$(IRIT_LIB_PF).$(IRIT_LIB_SFX) $(IRIT_LIB_DIR)
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

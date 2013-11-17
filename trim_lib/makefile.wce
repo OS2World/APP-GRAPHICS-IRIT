@@ -1,0 +1,24 @@
+#
+# This is the make file for the trim_lib library.
+#
+#				Gershon Elber, June 1993
+#
+
+# Get the destination directories:
+include ..\makeflag.wce
+
+OBJS =  tr_prisa.$(IRIT_OBJ_PF) trim_aux.$(IRIT_OBJ_PF) trim_dbg.$(IRIT_OBJ_PF) \
+	trim_err.$(IRIT_OBJ_PF) trim_ftl.$(IRIT_OBJ_PF) \
+	trim_gen.$(IRIT_OBJ_PF) trim_iso.$(IRIT_OBJ_PF) trim_sub.$(IRIT_OBJ_PF) \
+	trim2pl2.$(IRIT_OBJ_PF) trim2ply.$(IRIT_OBJ_PF) trimcntr.$(IRIT_OBJ_PF)
+
+$(TRIM_LIB): $(OBJS)
+	-del $(TRIM_LIB)
+	$(IRITLIB) -out:$(TRIM_LIB) $(OBJS)
+
+$(IRIT_LIB_DIR)\$(TRIM_LIB): $(TRIM_LIB)
+	copy $(TRIM_LIB) $(IRIT_LIB_DIR)
+
+install: $(IRIT_LIB_DIR)\$(TRIM_LIB)
+
+# Dependencies starts here - do not touch, generated automatically.

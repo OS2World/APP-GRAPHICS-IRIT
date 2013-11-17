@@ -1,0 +1,150 @@
+#
+# Module to print IRIT objects to stdout.
+#
+#						Gershon Elber, Dec 2004.
+#
+
+#
+# Print names of objects in a object hierarchy
+#
+PrintObjectHierarchyAux = procedure( Obj, Indent ): dummy;
+PrintObjectHierarchyAux = procedure( Obj, Indent ): i: j:
+    if ( thisobj("Obj") == list_type,
+	for ( i = 1, 1, sizeof( Obj ),
+	    for ( j = 1, 1, Indent,
+		printf( "    ", nil() ) ):
+	    printf( "%s\\n", list( GetName( Obj, i ) ) ):
+	    PrintObjectHierarchyAux( nref( Obj, i ), Indent + 1 ) ) );
+
+PrintObjectHierarchy = procedure( Obj ):
+    PrintObjectHierarchyAux( Obj, 0 );
+
+#
+# Extract a new list that exludes the head of this list.
+#
+GetListProduct = function( Lst ): i:
+    return = 1.0:
+    for ( i = 1, 1, sizeof( Lst ),
+	return = return * nth( Lst, i ) );
+GetListWithoutFirst = function( Lst ): i:
+    return = nil():
+    for ( i = 2, 1, sizeof( Lst ),
+	snoc( nth( Lst, i ), return ) );
+GetListWithoutLast = function( Lst ): i:
+    return = nil():
+    for ( i = 1, 1, sizeof( Lst ) - 1,
+	snoc( nth( Lst, i ), return ) );
+GetListLast = function( Lst ):
+    return = nth( Lst, sizeof( Lst ) );
+
+GetPointType = function( CPt ): s: PType:
+    s = sizeof( CPt ):
+    if ( s < 0,
+	PType = "P",
+	PType = "E" ):
+    return = PType + abs( s );
+ 
+PrintCtlPoint = procedure( CPt ): s: i:
+    s = sizeof( CPt ):
+    if ( s < 0,
+	printf( "\\t[W=%-9.6lg ", list( coord( Cpt, 0 ) ) ):
+	s = -s,
+	printf( "\\t[", nil() ) ):
+    for ( i = 1, 1, s,
+	printf( "%9.6lg ", list( coord( Cpt, i ) ) ) ):
+    printf( "]\\n", nil() );
+
+PrintCtlMeshAux = procedure( Mesh, Ofst, Dims ): dummy;
+PrintCtlMeshAux = procedure( Mesh, Ofst, Dims ): d1: d2: i: DimsL:
+    if ( sizeof( Dims ) == 1,
+	for ( i = 1, 1, nth( Dims, 1 ),
+	    PrintCtlPoint( nth( Mesh, i + Ofst ) ) ):
+	printf( "\\n", nil() ),
+	DimsL = GetListWithoutLast( Dims ):
+	d1 = GetListLast( Dims ):
+	d2 = GetListProduct( DimsL ):
+	for ( i = 1, 1, d1,
+	    PrintCtlMeshAux( Mesh, Ofst + d2 * ( i - 1 ), DimsL ) ) );
+
+PrintCtlMesh = procedure( Ff ): Mesh: Dims:
+    Mesh = FFCtlPts( Ff ):
+    Dims = FfMSize( Ff ):
+    printf( "    [\\n", nil() ):
+    PrintCtlMeshAux( Mesh, 0, Dims ):
+    printf( "    ]\\n", nil() );
+
+PrintKnotVector = procedure( Str, KV ): i:
+    printf( "    [%sKnotVector:", list( Str ) ):
+    for ( i = 1, 1, sizeof( KV ),
+	printf( " %-.6lg", list( nth( KV, i ) ) ) ):
+    printf( "]\\n", nil() );
+
+#############################################################################
+
+PrintCurve = procedure( Crv ): Orders: MSize: KVs:
+    Orders = FFOrder( Crv ):
+    MSize = FFMSize( Crv ):
+    printf( "Curve of order %d, poly size %d and point type %s\\n",
+	 Orders + MSize + list( GetPointType( coord( Crv, 0 ) ) ) ):
+    printf( "Control Polygon:\\n", nil() ):
+    PrintCtlMesh( Crv ):
+    if ( 1,
+	KVs = ffKntVec( Crv ):
+	PrintKnotVector( "U ", nth( Kvs, 1 ) ) );
+
+PrintSurface = procedure( Srf ): Orders: MSize: KVs:
+    Orders = FFOrder( Srf ):
+    MSize = FFMSize( Srf ):
+    printf( "Surface of orders %d x %d, mesh size %d x %d and point type %s\\n",
+	Orders + MSize + list( GetPointType( coord( Srf, 0 ) ) ) ):
+    printf( "Control Mesh:\\n", nil() ):
+    PrintCtlMesh( Srf ):
+    if ( 1,
+	KVs = ffKntVec( Srf ):
+	PrintKnotVector( "U ", nth( Kvs, 1 ) ):
+	PrintKnotVector( "V ", nth( Kvs, 2 ) ) );
+
+PrintTrivar = procedure( Tv ): Orders: MSize: KVs:
+    Orders = FFOrder( Tv ):
+    MSize = FFMSize( Tv ):
+    printf( "Trivar of orders %d x %d x %d mesh size %d x %d x %d and point type %s\\n",
+	Orders + MSize + list( GetPointType( coord( Tv, 0 ) ) ) ):
+    printf( "Control Mesh:\\n", nil() ):
+    PrintCtlMesh( Tv ):
+    if ( 1,
+	KVs = ffKntVec( Tv ):
+	PrintKnotVector( "U ", nth( Kvs, 1 ) ):
+	PrintKnotVector( "V ", nth( Kvs, 2 ) ):
+	PrintKnotVector( "W ", nth( Kvs, 3 ) ) );
+
+PrintMultivar = procedure( Mv ): Orders: MSize: KVs: i:
+    Orders = FFOrder( Mv ):
+    MSize = FFMSize( Mv ):
+    printf( "Multivariate of orders", nil() ):
+    for ( i = 1, 1, sizeof( Orders ),
+	printf( " %d", list( nth( Orders, i ) ) ) ):
+    printf( ", mesh size", nil() ):
+    for ( i = 1, 1, sizeof( MSize ),
+	printf( " %d", list( nth( MSize, i ) ) ) ):
+    printf( " and point type %s\\n",
+	list( GetPointType( coord( Mv, 0 ) ) ) ):
+    printf( "Control Mesh:\\n", nil() ):
+    PrintCtlMesh( Mv ):
+    KVs = ffKntVec( Mv ):
+    for ( i = 1, 1, sizeof( KVs ),
+	PrintKnotVector( "", nth( Kvs, i ) ) );
+
+c = pcircle( vector( 0, 0, 0 ), 1 );
+s = sphereSrf( 1 );
+t = RuledTV( coerce( s, E3 ), coerce( s, E3 ) * tx( 2 ) );
+m = coerce( t, multivar_type );
+
+PrintCurve( c );
+PrintSurface( s );
+PrintTrivar( t );
+PrintMultivar( m );
+
+free( c );
+free( s );
+free( t );
+free( m );

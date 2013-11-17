@@ -1,0 +1,113 @@
+#
+# The XXX_DIR variables below MUST have ABSOLUTE path. Since this file
+# is sourced from several directories relative path specification will
+# be simple wrong.
+#
+
+IRIT_SRC_DIR = Work:T/irit70/src
+
+#
+# All libraries created will be installed into the IRIT_LIB_DIR directory.
+#
+IRIT_LIB_DIR = $(IRIT_SRC_DIR)/lib
+
+#
+# All includes files associated with the installed libraries will be
+# installed into the IRIT_INC_DIR directory.
+#
+IRIT_INC_DIR = $(IRIT_SRC_DIR)/include
+
+#
+# All binaries created will be installed into the IRIT_BIN_DIR directory.
+#
+IRIT_BIN_DIR = $(IRIT_SRC_DIR)/bin
+
+#
+# Location of object file to resolve circularities in libraries.
+#
+IRIT_CIRCLINK = $(IRIT_SRC_DIR)/circlink/circlink.o
+
+#
+# The scan converter (irender) needs the Utah Raster Toolkit (IRIT_URT) library
+# to read/write image data. You can ftp it in cs.utah.edu.
+#
+#   Make these empty if you would like to give up on irender's compilation.
+# IRIT_URT = /usr/local/apps/urt/urt3.0
+# IRIT_URT_INC = -I$(IRIT_URT)/include
+IRIT_URT_LIB = -lrle
+IRIT_URT_FLAGS = -DHAVE_IRIT_URT_RLE -DIRIT_URT_OLD_COMPAT
+
+#
+# Uncomment the correct set of variables to be used or modify it for
+# your system.
+#
+# -D flags:
+#
+# -D__GL__ - if your system supports gl graphics library (SGI 4d & IBM R6000).
+#
+# -D__X11__ - if your system supports X11. Only one of __GL__ or __X11__ should
+#	be used.
+#
+#  Emulation to the following function are available by defining the
+#  following. Look at misc_lib/xgeneral.c/h for implementation.
+# -DGETCWD - if getcwd is not defined in this system.
+# -DSTRSTR - if strstr is not defined in this system.
+# -DSTRDUP - if strdup is not defined in this system.
+# -DSTRICMP - if stricmp and strincmp are not defined in this system.
+#
+# -DTIMES - if times is defined in your system, otherwise uses time.
+#
+# -DRANDOM_IRIT - Use irit internal random numbers generator (default).
+# -DRAND - if the (s)rand random number generator exists.
+# -DRAND48 - ?rand48 random number generators exists.
+#	If non of RAND or RAND48 are defined, (s)random is used.
+#
+# Unfortunately, there is no one Unix function to do subseconds' sleep.
+# -DUSLEEP - if usleep is defined in the system.
+# -DSGINAP - on sgi systems instead of usleep.
+# -DUSLEEP_SELECT - do the usleep using the 'select' unix call.
+# -DITIMERVAL - when all the above fails, try this.
+#
+# -DNO_VOID_PTR - if your C compiler does not support (void *).
+#
+# -DUSE_VARARGS - if your system does not have stdarg.h and have the old
+#	varargs.h.
+#
+# -DNO_CONCAT_STR - if 'char *p = "This is" "one string";' is illegal.
+#
+# -DGRAPDRVS - any combination of of 'xgldrvs', 'xgladap', 'x11drvs'.
+#
+# -DMAKE_REAL_FLOAT - force real number to be float and not double.
+#               Expect problems as it is not really tested.
+#
+# -DIRIT_URT_INC and -DIRIT_URT_LIB - library and include of the utah raster toolkit.
+#               This library is used by irender to save images in rle format.
+# -DHAVE_IRIT_URT_RLE - if irender can use the IRIT_URT RLE package. That is IRIT_URT_INC/
+#               IRIT_URT_LIB are properly set.
+#
+# Other, possibly useful defines (for c code development):
+#
+# -DDEBUG - for some debugging functions in the code (that can be invoked
+#		from a debugger).
+#
+
+#
+# Flags for Amiga using gcc
+#
+CC = gcc
+DFLAGS = -DRANDOM_IRIT -DUSLEEP -DGRAPDRVS=amidrvs
+CPUFLAGS = -m68040 -m68881
+CFLAGS = $(DFLAGS) $(CPUFLAGS) -noixemul -mstackextend -O2 -fomit-frame-pointer
+MOREFLAGS =
+IRIT_MORE_LIBS = $(CPUFLAGS) -s -noixemul
+
+#
+# Default rule for compilation.
+#
+.c.o:
+	$(CC) $(CFLAGS) $(IRIT_URT_FLAGS) $(IRIT_MORE_FLAGS) -I. -I$(IRIT_INC_DIR) $(IRIT_URT_INC) -c $<
+
+#
+# All libraries.
+#
+IRIT_LIBS = $(IRIT_CIRCLINK) $(IRIT_URT_LIB) -L$(IRIT_LIB_DIR) -lext -lgrap -luser -lrndr -lbool -lprsr -lmdl -lmvar -ltrim -ltriv -ltrng -lsymb -lcagd -lgeom -lmisc -lxtra -lamg #-lgif

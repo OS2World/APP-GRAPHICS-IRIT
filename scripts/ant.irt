@@ -1,0 +1,245 @@
+#
+# A model of an ant,		Gershon Elber, Oct 2002
+#
+
+AntBody = function(): c: Eye1: Eye1Cut: Eye2: Eye2Cut: Body: BodyCut: save_res:
+    save_res = resolution:
+    c = pcircle( vector( 0, 0, 0 ), 1 ):
+    Body = sfromCrvs(
+	list( c * sc( 1e-6 ) * ty( -0.1 ) * tz( 0.19 ),
+	      c * sy( 0.8 ) * sc( 0.07 ) * ty( -0.1 ) * tz( 0.19 ),
+	      c * sy( 0.8 ) * sc( 0.11 ) * ty( -0.1 ) * tz( 0.21 ),
+	      c * sy( 0.8 ) * sc( 0.14 ) * ty( -0.1 ) * tz( 0.23 ),
+	      c * sy( 0.8 ) * sc( 0.14 ) * ty( -0.1 ) * tz( 0.26 ),
+	      c * sy( 0.8 ) * sc( 0.11 ) * ty( -0.1 ) * tz( 0.28 ),
+	      c * sy( 0.8 ) * sc( 0.11 ) * ty( -0.1 ) * tz( 0.29 ),
+	      c * sy( 0.8 ) * sc( 0.24 ) * ty( -0.05 ) * tz( 0.31 ),
+	      c * sy( 0.8 ) * sc( 0.27 ) * ty( -0.05 ) * tz( 0.41 ),
+	      c * sy( 0.8 ) * sc( 0.19 ) * ty( -0.05 ) * tz( 0.44 ),
+	      c * sy( 0.8 ) * sc( 0.19 ) * ty( -0.05 ) * tz( 0.45 ),
+	      c * sy( 0.8 ) * sc( 0.3 )  * ty( -0.035 ) * tz( 0.47 ),
+	      c * sy( 0.8 ) * sc( 0.32 ) * ty( -0.035 ) * tz( 0.59 ),
+	      c * sy( 0.8 ) * sc( 0.24 ) * ty( -0.035 ) * tz( 0.62 ),
+	      c * sy( 0.8 ) * sc( 0.24 ) * ty( -0.035 ) * tz( 0.63 ),
+	      c * sy( 0.8 ) * sc( 0.3 )  * ty( -0.03 ) * tz( 0.65 ),
+	      c * sy( 0.8 ) * sc( 0.28 ) * ty( -0.03 ) * tz( 0.76 ),
+	      c * sy( 0.8 ) * sc( 0.07 )  * ty( -0.1 ) * tz( 0.85 ),
+	      c * sy( 0.8 ) * sc( 0.07 )  * ty( -0.1 ) * tz( 0.87 ),
+	      c * sy( 0.8 ) * sc( 0.18 ) * ty( -0.1 ) * tz( 0.93 ),
+	      c * sy( 0.8 ) * sc( 0.18 ) * ty( -0.1 ) * tz( 1.03 ),
+	      c * sy( 0.8 ) * sc( 0.07 )  * ty( -0.1 ) * tz( 1.1 ),
+	      c * sy( 0.8 ) * sc( 0.07 )  * ty( -0.1 ) * tz( 1.12 ),
+	      c * sy( 0.8 ) * sc( 0.18 ) * ty( -0.06 ) * tz( 1.18 ),
+	      c * sy( 0.8 ) * sc( 0.18 ) * ty( -0.03 ) * tz( 1.32 ),
+	      c * sy( 0.8 ) * sc( 0.07 )  * ty( -0.0 ) * tz( 1.41 ),
+	      c * sy( 0.8 ) * sc( 0.07 )  * ty( -0.0 ) * tz( 1.43 ),
+	      c * sy( 0.8 ) * sc( 0.22 ) * ty(  0.05 ) * tz( 1.5 ),
+	      c * sy( 0.8 ) * sc( 0.2 )  * ty( -0.0 ) * tz( 1.66 ),
+	      c * sy( 0.8 ) * sc( 0.05 ) * ty( -0.22 ) * tz( 1.85 ),
+	      c * sy( 0.8 ) * sc( 1e-6 ) * ty( -0.22 ) * tz( 1.86 ) ),
+			3, kv_open ):
+
+    resolution = 15:
+
+    Eye1 = sphere( vector( 0, 0, 0 ), 0.08 )
+		 * rx( 20 ) * ry( -20 ) * trans( vector( 0.15, 0.05, 1.59 ) ):
+    Eye2 = Eye1 * sx( -1 ):
+
+    resolution = 20:
+
+    BodyCut = Body / (Eye1 ^ Eye2):
+    attrib( BodyCut, "rgb", "255,50,50" ):
+
+    Eye1Cut = Eye1 / Body:
+    attrib( Eye1Cut, "reflection", "0.85" ):
+    attrib( Eye1Cut, "rgb", "15,15,15" ):
+
+    Eye2Cut = Eye2 / Body:
+    attrib( Eye2Cut, "reflection", "0.85" ):
+    attrib( Eye2Cut, "rgb", "15,15,15" ):
+
+    resolution = save_res:
+
+    return = list( BodyCut, list( Eye1Cut, Eye2Cut ) );
+
+AntLeg = function(): c:
+    c = pcircle( vector( 0, 0, 0 ), 0.03 ) * ry( 90 ):
+    return = sfromCrvs(
+	list( c * ty( -0.15 ),
+	      c * sy( 1.4 ) * rz( 45 ) * tx( 0.1 ) * ty( -0.15 ),
+	      c * rz( 45 )  * tx( 0.2 ) * ty( 0.2 ),
+	      c * sy( 1.4 ) * tx( 0.3 ) * ty( 0.4 ),
+	      c * rz( -55 ) * tx( 0.4 ) * ty( 0.15 ),
+	      c * sc( 0.7 ) * rz( -55 ) * tx( 0.4 ) * ty( 0.15 ),
+	      c * sc( 0.8 ) * rz( -40 ) * tx( 0.47 ) * ty( -0.1 ),
+	      c * sc( 0.8 ) * rz( -35 ) * tx( 0.53 ) * ty( -0.18),
+	      c * sc( 0.65 ) * rz( -35 ) * tx( 0.61 ) * ty( -0.22 ),
+	      c * sc( 0.75 ) * rz( -20 ) * tx( 0.63 ) * ty( -0.23 ),
+	      c * sc( 0.75 ) * rz( -15 ) * tx( 0.7 ) * ty( -0.24 ),
+	      c * sc( 0.001 ) * rz( -15 ) * tx( 0.7 ) * ty( -0.24 ) ),
+	3, kv_open ):
+    attrib( return, "rgb", "255,50,50" );
+
+AntAntenna = function(): c:
+    c = pcircle( vector( 0, 0, 0 ), 0.03 ) * ry( 90 ):
+    return = sfromCrvs(
+	list( c * sy( 1.4 ) * rz( 45 ) * tx( 0.1 ) * ty( -0.15 ),
+	      c * rz( 45 )  * tx( 0.2 ) * ty( 0.2 ),
+	      c * sy( 1.4 ) * tx( 0.3 ) * ty( 0.4 ),
+	      c * rz( -55 ) * tx( 0.4 ) * ty( 0.15 ),
+	      c * sc( 0.8 ) * rz( -45 ) * tx( 0.5 ) * ty( -0.1 ),
+	      c * sc( 0.65 ) * rz( -45 ) * tx( 0.58 ) * ty( -0.22 ),
+	      c * sc( 0.001 ) * rz( -45 ) * tx( 0.58 ) * ty( -0.22 ) ),
+	3, kv_open ):
+    attrib( return, "rgb", "255,50,50" );
+
+Ant = function( Scl ): BodyAll: Body: Eyes: Leg: LLegs: Antennas: save_res:
+    save_res = resolution:
+
+    BodyAll = AntBody():
+    Body = nth( BodyAll, 1 ):
+    Eyes = nth( BodyAll, 2 ):
+    Leg = AntLeg():
+    LLegs = list( Leg * sc( 1.1 ) * sx( 1.3 ) * ry( -45 )
+					* trans( vector( 0.1, 0.0, 1.02 ) ),
+		  Leg * sc( 1.3 ) * ry( 10 )
+					* trans( vector( 0.1, 0.05, 1.0 ) ),
+		  Leg * sc( 1.2 ) * sx( 1.4 ) * ry( 40 )
+					* trans( vector( 0.1, 0.02, 0.95 ) ) ):
+
+    resolution = 20:
+    attrprop( LLegs, "u_resolution", 0.2 ):
+
+    Antennas =
+	list( AntAntenna() * ry( -110 ) * trans( vector( -0.02, 0.2, 1.6 ) ),
+	      AntAntenna() * ry( -70 ) * trans( vector( 0.02, 0.2, 1.6 ) ) ):
+    attrprop( Antennas, "u_resolution", 0.2 ):
+
+    Body = Body + gpolygon( LLegs, 1 ) 
+		+ gpolygon( LLegs, 1 ) * sx( -1 )
+		+ gpolygon( Antennas, 1 ):
+    attrib( Body, "rgb", "255,50,50" ):
+
+    resolution = save_res:
+
+    return = list( Body, Eyes )
+	* ( sz( 1.3 ) * sc( 1 ) * ty( 0.28785 ) * rx( 90 ) );
+
+#############################################################################
+
+b = -planeSrf( -6, -6, 6, 6 );
+
+All = list( planeSrf( 6, 6, -6, -6 ), Ant( 1 ) );
+
+view( All, 1 );
+save("ant.itd.gz", All );
+
+#############################################################################
+
+#
+# s: 1 or -1 based on leg timing.
+#
+
+AntLLegAnim = function( s ): rot_z: rot_y: t:
+    return = AntLeg():
+    t = 0.2 * ( s + 1 ) / 2:
+
+    rot_y = creparam( cbspline( 2,
+		 		list( ctlpt( E1, -13 * s ),
+				      ctlpt( E1,  13 * s ),
+			 	      ctlpt( E1,  13 * s ),
+				      ctlpt( E1, -13 * s ) ),
+			        list( 0, 0, 1.3, 1.7, 3, 3 ) ),
+		      0 + t, 1 + t ):
+    rot_z = creparam( cbspline( 2,
+		 	        list( ctlpt( E1,   0 ),
+				      ctlpt( E1,  -7 - 7 * s ),
+				      ctlpt( E1,   0 ),
+				      ctlpt( E1,   0 ),
+				      ctlpt( E1,  -7 + 7 * s ),
+				      ctlpt( E1,   0 ) ),
+			        list( kv_open ) ),
+		      0 + t, 1 + t ):
+    attrib( return, "animation", list( rot_z, rot_y ) );
+
+AntRLegAnim = function( s ): rot_z: rot_y: t:
+    return = AntLeg() * ry( 180 ):
+    t = 0.2 * ( s + 1 ) / 2:
+
+    rot_y = creparam( cbspline( 2,
+		 		list( ctlpt( E1,  13 * s ),
+				      ctlpt( E1, -13 * s ),
+			 	      ctlpt( E1, -13 * s ),
+				      ctlpt( E1,  13 * s ) ),
+			        list( 0, 0, 1.3, 1.7, 3, 3 ) ),
+		      0 + t, 1 + t ):
+    rot_z = creparam( cbspline( 2,
+		 	        list( ctlpt( E1,  0 ),
+				      ctlpt( E1,  7 + 7 * s ),
+				      ctlpt( E1,  0 ),
+				      ctlpt( E1,  0 ),
+				      ctlpt( E1,  7 - 7 * s ),
+				      ctlpt( E1,  0 ) ),
+			        list( kv_open ) ),
+		      0 + t, 1 + t ):
+    attrib( return, "animation", list( rot_z, rot_y ) );
+
+AntAnim = function( Scl ): BodyAll: Body: Eyes: LLegs: RLegs: 
+    Antennas: save_res: mov_y:
+
+    save_res = resolution:
+
+    BodyAll = AntBody():
+    Body = nth( BodyAll, 1 ):
+    Eyes = nth( BodyAll, 2 ):
+
+    LLegs = list( AntLLegAnim( 1 ) * sc( 1.1 ) * sx( 1.3 ) * ry( -45 )
+					* trans( vector( 0.1, 0.0, 1.02 ) ),
+		  AntLLegAnim( -1 ) * sc( 1.3 ) * ry( 10 )
+					* trans( vector( 0.1, 0.05, 1.0 ) ),
+		  AntLLegAnim( 1 ) * sc( 1.2 ) * sx( 1.4 ) * ry( 40 )
+					* trans( vector( 0.1, 0.02, 0.95 ) ) ):
+
+    RLegs = list( AntRLegAnim( -1 ) * sc( 1.1 ) * sx( 1.3 ) * ry( 45 )
+					* trans( vector( -0.1, 0.0, 1.02 ) ),
+		  AntRLegAnim( 1 ) * sc( 1.3 ) * ry( -10 )
+					* trans( vector( -0.1, 0.05, 1.0 ) ),
+		  AntRLegAnim( -1 ) * sc( 1.2 ) * sx( 1.4 ) * ry( -40 )
+				       * trans( vector( -0.1, 0.02, 0.95 ) ) ):
+
+    resolution = 20:
+    Antennas =
+	list( AntAntenna() * ry( -110 ) * trans( vector( -0.02, 0.2, 1.6 ) ),
+	      AntAntenna() * ry( -70 ) * trans( vector( 0.02, 0.2, 1.6 ) ) ):
+    attrprop( Antennas, "u_resolution", 0.2 ):
+    Body = Body + gpolygon( Antennas, 1 ):
+    attrib( Body, "rgb", "255,50,50" ):
+
+    resolution = save_res:
+
+    return = list( Body, LLegs, RLegs, Eyes )
+	* ( sz( 1.3 ) * sc( 1 ) * ty( 0.28785 ) * rx( 90 ) ):
+    mov_y = creparam( ctlpt( E1, 0 ) + ctlpt( E1, -1 ),
+		      0, 1.2 ):
+    attrib( return, "animation", mov_y );
+
+#############################################################################
+
+    BodyAll = AntBody():
+    Body = nth( BodyAll, 1 ):
+    Eyes = nth( BodyAll, 2 );
+
+view( Body, 1 );
+
+
+
+b = -planeSrf( -6, -6, 6, 6 );
+
+All = list( b, axes, AntAnim( 1 ) );
+
+view( All, 1 );
+
+save("ant_anim.itd", All );
+
+free( b );
+free( All );

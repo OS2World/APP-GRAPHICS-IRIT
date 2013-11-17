@@ -1,0 +1,175 @@
+#
+# Simple examples for the Freeform comparison code.
+#
+#					Diana Pekerman, Dec 2004.
+
+#############################################################################
+#
+# Example 1
+# 
+
+E1_C1 = cbezier( list( ctlpt( E3, 0.0, 0.0, 0.0 ),
+	               ctlpt( E3, 0.0, 0.0, 0.0 ),
+	               ctlpt( E3, 0.0, 0.0, 0.0 ),
+                       ctlpt( E3, 8.0, 12.0, 13.0 ) ) );
+# Modifying E1_C1
+
+E1_C1 = coerce( E1_C1, bspline_type );
+E1_C1 = cregion( E1_C1, 0.1, 0.9 );
+E1_C1 = crefine( E1_C1, FALSE, list( 0.25, 0.4, 0.45, 0.8 ) );
+E1_C1 = craise( E1_C1, 2 + NREF( fforder( E1_C1 ), 1 ) );
+
+E1_C2 = cbezier( list( ctlpt( E3, 0.0, 0.0, 0.0 ),
+	 	       ctlpt( E3, 0.0, 0.0, 0.0 ),
+	               ctlpt( E3, 0.0, 0.0, 0.0 ),
+                       ctlpt( E3, 8.0, 12.0, 13.0 ) ) );
+# Modifying E1_C2
+
+E1_C2 = coerce( E1_C2, bspline_type );
+E1_C2 = cregion( E1_C2, 0.3, 0.6 );
+E1_C2 = crefine( E1_C2, FALSE, list( 0.35, 0.4, 0.55 ) );
+E1_C2 = craise( E1_C2, 1 + NREF( fforder( E1_C2 ), 1 ) );
+
+# Overlapping with domain [0.3, 0.6] for both curves E1_C1 and E1_C2.
+Res1 = FfCmpCrvs( E1_C1, E1_C2, 1e-6 );
+
+# Modifying E1_C1 and E1_C2 again
+
+E1_C1 = cregion( E1_C1, 0.1, 0.5 );
+E1_C2 = cregion( E1_C2, 0.4, 0.6 );
+
+# Overlapping with domain [0.4, 0.5] for both curves E1_C1 and E1_C2.
+# E1_C1;
+# E1_C2;
+Res2 = FfCmpCrvs( E1_C1, E1_C2, 1e-6 ); 
+
+save( "ffcmpcr1", list( Res1, Res2 ) );
+
+#############################################################################
+#
+# Example 2
+#
+
+E2_C1 = cbezier( list( ctlpt( E2, 0.0, 0.0 ),
+	 	       ctlpt( E2, 10.0, 6.0 ),
+	 	       ctlpt( E2, 4.0, 5.0 ),
+                       ctlpt( E2, 8.0, 12.0 ) ) );
+
+E2_C2 = cbezier( list( ctlpt( E1, 0.0 ),
+	 	       ctlpt( E1, 0.125 ),
+                       ctlpt( E1, 1.0 ) ) );   
+
+E2_C3 = cbezier( list( ctlpt( E2, 0.0, 0.0 ),
+	 	       ctlpt( E2, 10.0, 6.0 ),
+	 	       ctlpt( E2, 4.0, 5.0 ),
+                       ctlpt( E2, 8.0, 12.0 ) ) );
+
+# Modifying E2_C1
+
+E2_C1 = coerce( E2_C1, bspline_type );
+E2_C1 = crefine( E2_C1, FALSE, list( 0.2, 0.33, 0.7 ) );
+E2_C1 = compose( E2_C1, E2_C2 );
+E2_C1 = craise( E2_C1, 1 + NREF( fforder( E2_C1 ), 1 ) );
+
+# Modifying E2_C3
+
+E2_C3 = coerce( E2_C3, bspline_type );
+E2_C3 = cregion( E2_C3, 0.3, 0.8 );
+E2_C3 = crefine( E2_C3, FALSE, list( 0.35, 0.4 ) );
+E2_C3 = craise( E2_C3, 1 + NREF( fforder( E2_C3 ), 1 ) );
+
+# Overlapping domain for E2_C1 is [0.4874, 0.8795] and [0.3, 0.8] for E2_C3.
+Res1 = FfCmpCrvs( E2_C1, E2_C3, 1e-6 );
+
+save( "ffcmpcr2", list( Res1 ) );
+
+#############################################################################
+#
+# Example 3
+#
+
+E3_C1 = cbezier( list( ctlpt( E1, 0.0 ),
+                     ctlpt( E1, 0.25 ),
+                     ctlpt( E1, 1.0 ) ) );
+
+E3_C2 = cpower( list( ctlpt( E1, 0.0 ),
+                    ctlpt( E1, 0.4 ),
+                    ctlpt( E1, 0.6 ) ) );
+
+E3_C3 = cbezier( list( ctlpt( E1, 0.0 ),
+                     ctlpt( E1, 0.25 ),
+                     ctlpt( E1, 1.0 ) ) );
+
+# Modifying E3_C1
+
+E3_C1 = coerce( E3_C1, bspline_type );
+E3_C2 = coerce( E3_C2, bspline_type );
+E3_C1 = compose( E3_C1, E3_C2 );
+E3_C1 = compose( E3_C1, E3_C2 );
+E3_C1 = compose( E3_C1, E3_C2 );
+E3_C1 = craise( E3_C1, 1 + NREF( fforder( E3_C1 ), 1 ) );
+
+# Modifying E3_C3
+
+E3_C3 = cregion( E3_C3, 0.2, 0.8 );
+
+# Overlapping domain for E3_C1 is [0.6239, 0.945817] and [0, 1] for E3_C3.
+Res1 = FfCmpCrvs( E3_C1, E3_C3, 1e-6 );
+
+save( "ffcmpcr3", list( Res1) );
+
+#############################################################################
+#
+# Example 4
+#
+
+E4_C1 = cbezier( list( ctlpt( E1, 0.0 ),
+                     ctlpt( E1, 0.25 ),
+                     ctlpt( E1, 1.0 ) ) );
+
+E4_C2 = cpower( list( ctlpt( E1, 0.0 ),
+                    ctlpt( E1, 0.4 ),
+                    ctlpt( E1, 0.6 ) ) );
+
+E4_C3 = cbezier( list( ctlpt( E1, 0.0 ),
+                     ctlpt( E1, 0.25 ),
+                     ctlpt( E1, 1.0 ) ) );
+
+# There curves are different
+Res1 = FfCmpCrvs( E4_C1, E4_C2, 1e-6 );
+
+# Modifying E4_C1
+
+E4_C1 = coerce( E4_C1, bspline_type );
+E4_C2 = coerce( E4_C2, bspline_type );
+E4_C1 = compose( E4_C1, E4_C2 );
+E4_C1 = compose( E4_C1, E4_C2 );
+E4_C1 = compose( E4_C1, E4_C2 );
+E4_C1 = craise( E4_C1, 1 + NREF( fforder( E4_C1 ), 1 ) );
+E4_C1 = crefine( E4_C1, FALSE, list( 0.3, 0.4) );
+E4_C1 = cregion( E4_C1, 0, 0.7 );
+
+# Modifying E4_C3
+
+E4_C3 = cregion( E4_C3, 0.5, 1);
+
+# There is no overlapping domain for two curves.
+Res2 = FfCmpCrvs( E4_C1, E4_C3, 1e-6 );
+
+save( "ffcmpcr4", list( Res1, Res2) );
+
+#############################################################################
+
+free( E1_C1 );
+free( E1_C2 );
+free( E2_C1 );
+free( E2_C2 );
+free( E2_C3 );
+free( E3_C1 );
+free( E3_C2 );
+free( E3_C3 );
+free( E4_C1 );
+free( E4_C2 );
+free( E4_C3 );
+free( Res1 );
+free( Res2 );

@@ -1,0 +1,66 @@
+#
+# Conic section's constructor.
+#
+#					Gershon Elber, 1998
+#
+
+save_mat = view_mat;
+view_mat = sc( 0.7 );
+
+Circ1 = ConicSec( list( 1, 0, 1, 0, 0, -1.2 ), 0.1, off, off );
+Circ2 = ConicSec( list( 1, 0, 1, 0, -0.5, -1 ), 0.0, off, off );
+color( Circ1, white );
+color( Circ2, yellow );
+
+Elp1 = ConicSec( list( 1, 2, 4, 0.5, 2, -0.2 ), 0.0, off, off );
+Elp2 = ConicSec( list( 1, 0, 4, 0, 0, -1 ), -0.1, off, off );
+color( Elp1, red );
+color( Elp2, magenta );
+
+Hyp1 = ConicSec( list( -1, 2,  4, 0.5, 2, -0.2 ), 0.0, off, off );
+Hyp2 = ConicSec( list(  1, 0, -4, 0, 0, -1 ), -0.1, off, off );
+color( Hyp1, cyan );
+color( Hyp2, green );
+
+interact( list( axes, Elp1, Elp2, Circ1, Circ2, Hyp1, Hyp2, view_mat ) );
+
+#############################################################################
+
+Hyp1a = cmoebius( cregion( Hyp1, -2, 0.4 ), 0 );
+color( Hyp1a, cyan );
+Hyp1b = cmoebius( cregion( Hyp1,  0.6, 3 ), 0 );
+color( Hyp1b, cyan );
+
+Hyp2a = cmoebius( cregion( Hyp2, -2, 0.4 ), 0 );
+color( Hyp2a, green );
+Hyp2b = cmoebius( cregion( Hyp2,  0.6, 3 ), 0 );
+color( Hyp2b, green );
+
+interact( list( axes, Hyp1a, Hyp1b, Hyp2a, Hyp2b, view_mat ) );
+
+#############################################################################
+
+Prb1 = ConicSec( list( 0.0, 0, 0.3, 0.3, 0.05, 0 ), 0.2, off, off );
+Prb2 = ConicSec( list( 0.5, 0, 0.0, 0, 1, -1 ), 0.1, off, off );
+color( Prb1, cyan );
+color( Prb2, green );
+
+interact( list( axes, Prb1, Prb2 ) );
+
+save( "conics", list( Circ1, Circ2, Elp1, Elp2, Hyp1, Hyp2, Prb1, Prb2 ) );
+
+view_mat = save_mat;
+
+free( Circ1 );
+free( Circ2 );
+free( Elp1 );
+free( Elp2 );
+free( Hyp1 );
+free( Hyp2 );
+free( Hyp1A );
+free( Hyp1B );
+free( Hyp2A );
+free( Hyp2B );
+free( Prb1 );
+free( Prb2 );
+

@@ -1,0 +1,136 @@
+#
+# Makefile for the adapshad/lineshad program.
+#
+#					Gershon Elber, June 1997
+#
+
+#-----
+#
+# The XXX_DIR variables below MUST have ABSOLUTE path. Since this file
+# is sourced from several directories relative path specification will
+# be simple wrong.
+#
+
+IRIT_SRC_DIR = Work:T/Irit
+#
+# All libraries created will be installed into the IRIT_LIB_DIR directory.
+#
+IRIT_LIB_DIR = $(IRIT_SRC_DIR)/lib
+
+#
+# All includes files associated with the installed libraries will be
+# installed into the IRIT_INC_DIR directory.
+#
+IRIT_INC_DIR = $(IRIT_SRC_DIR)/inc
+
+#
+# All binaries created will be installed into the IRIT_BIN_DIR directory.
+#
+IRIT_BIN_DIR = $(IRIT_SRC_DIR)/bin
+
+#
+# Uncomment the correct set of variables to be used or modify it for
+# your system.
+#
+# -D flags:
+#
+# -D__GL__ - if your system supports gl graphics library (SGI 4d & IBM R6000).
+#
+# -D__X11__ - if your system supports X11. Only one of __GL__ or __X11__ should
+#	be used.
+#
+#  Emulation to the following function are available by defining the
+#  following. Look at misc_lib/xgeneral.c/h for implementation.
+# -DGETCWD - if getcwd is not defined in this system.
+# -DSTRSTR - if strstr is not defined in this system.
+# -DSTRDUP - if strdup is not defined in this system.
+# -DSTRICMP - if stricmp and strincmp are not defined in this system.
+#
+# -DTIMES - if times is defined in your system, otherwise uses time.
+#
+# -DRAND - if the (s)rand random number generator exists.
+# -DRAND48 - ?rand48 random number generators exists.
+#	If non of RAND or RAND48 are defined, (s)random is used.
+#
+# -DNO_VOID_PTR - if your C compiler does not support (void *).
+#
+# -DUSE_VARARGS - if your system does not have stdarg.h and have the old
+#	varargs.h.
+#
+# -DNO_CONCAT_STR - if 'char *p = "This is" "one string";' is illegal.
+#
+# -DGRAPDRVS - any combination of of 'amidrvs', 'nuldrvs'.
+#
+# Other, possibly useful defines (for c code development):
+#
+# -DDEBUG - for some debugging functions in the code (that can be invoked
+#		from a debugger).
+#
+
+#
+# Flags for Amiga using SAS/C
+#
+# Use DEFINE=M68881 if you have a 68881/68882/68040
+# Use DEFINE=MIEEE if you want to use the IEEE math library
+# Use DEFINE=MFFP if you want to use the FFP math library
+#
+CC = sc
+DFLAGS = DEFINE=M68881 DEFINE=RAND48
+CFLAGS = $(DFLAGS) CPU=68040 MATH=68882 NOSTACKCHECK STRMERGE IGNORE=79
+IRIT_MORE_LIBS = 
+GRAPDRVS =nuldrvs amidrvs
+
+#
+# Default rule for compilation.
+#
+.c.o:
+	$(CC) $(CFLAGS) IDIR= IDIR=$(IRIT_INC_DIR) IDIR=$(IRIT_SRC_DIR)/amigalib $<
+
+#
+# All libraries.
+IRIT_LIBS = -L$(IRIT_LIB_DIR) -lgeom -lprsr -lcagd -lmisc #-lgif
+#-----
+
+GD = ..\grapdrvs
+
+OBJS1	= aisoshad.o zbufcrvs.o
+
+OBJS2	= lineshad.o zbufcrvs.o
+
+OBJS3	= izebra.o zbufcrvs.o
+
+aisoshad:	$(OBJS1)
+	$(CC) $(CFLAGS) -s -o aisoshad $(OBJS1) $(IRIT_LIBS) $(IRIT_MORE_LIBS) -lm
+
+lineshad:	$(OBJS2)
+	$(CC) $(CFLAGS) -s -o lineshad $(OBJS2) $(IRIT_LIBS) $(IRIT_MORE_LIBS) -lm
+
+izebra:		$(OBJS3)
+	$(CC) $(CFLAGS) -s -o izebra $(OBJS3) $(IRIT_LIBS) $(IRIT_MORE_LIBS) -lm
+
+install: aisoshad lineshad izebra
+	Copy aisoshad lineshad izebra $(IRIT_BIN_DIR)
+	Delete aisoshad lineshad izebra
+	Copy aisoshad.cfg lineshad.cfg izebra.cfg $(IRIT_BIN_DIR)
+
+# Dependencies starts here - do not touch, generated automatically.
+# DO NOT DELETE
+
+aisoshad.o: ../include/irit_sm.h ../include/misc_lib.h ../include/iritgrap.h
+aisoshad.o: ../include/iritprsr.h ../include/cagd_lib.h ../include/miscattr.h
+aisoshad.o: ../include/symb_lib.h ../include/trim_lib.h ../include/triv_lib.h
+aisoshad.o: ../include/trng_lib.h ../include/mdl_lib.h ../include/mvar_lib.h
+aisoshad.o: ../include/geom_lib.h ../include/attribut.h ../include/allocate.h
+aisoshad.o: ../include/obj_dpnd.h ../include/ip_cnvrt.h program.h
+lineshad.o: ../include/irit_sm.h ../include/misc_lib.h ../include/iritgrap.h
+lineshad.o: ../include/iritprsr.h ../include/cagd_lib.h ../include/miscattr.h
+lineshad.o: ../include/symb_lib.h ../include/trim_lib.h ../include/triv_lib.h
+lineshad.o: ../include/trng_lib.h ../include/mdl_lib.h ../include/mvar_lib.h
+lineshad.o: ../include/geom_lib.h ../include/attribut.h ../include/allocate.h
+lineshad.o: ../include/obj_dpnd.h ../include/ip_cnvrt.h program.h
+zbufcrvs.o: ../include/irit_sm.h ../include/misc_lib.h ../include/geom_lib.h
+zbufcrvs.o: ../include/iritprsr.h ../include/cagd_lib.h ../include/miscattr.h
+zbufcrvs.o: ../include/symb_lib.h ../include/trim_lib.h ../include/triv_lib.h
+zbufcrvs.o: ../include/trng_lib.h ../include/mdl_lib.h ../include/mvar_lib.h
+zbufcrvs.o: ../include/attribut.h ../include/allocate.h ../include/obj_dpnd.h
+zbufcrvs.o: ../include/iritgrap.h program.h

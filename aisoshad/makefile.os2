@@ -1,0 +1,49 @@
+
+#
+# Makefile for the aisoshad/lineshad program for OS2.
+#
+
+include ../makeflag.os2
+
+GD = ../grapdrvs
+
+OBJS1	= aisoshad.o zbufcrvs.o
+
+OBJS2	= lineshad.o zbufcrvs.o
+
+OBJS3	= izebra.o zbufcrvs.o
+
+all:	aisoshad.exe lineshad.exe izebra.exe
+
+aisoshad.exe: $(OBJS1)
+
+lineshad.exe: $(OBJS2)
+
+izebra.exe: $(OBJS3)
+
+install: aisoshad.exe lineshad.exe izebra.exe
+	$(CP) -f aisoshad.exe lineshad.exe izebra.exe $(IRIT_BIN_DIR)
+	$(RM) aisoshad.exe lineshad.exe izebra.exe
+	$(CP) -f aisoshad.cfg lineshad.cfg izebra.cfg $(IRIT_BIN_DIR)
+
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.
+
+aisoshad.o: ../include/irit_sm.h ../include/misc_lib.h ../include/iritgrap.h
+aisoshad.o: ../include/iritprsr.h ../include/cagd_lib.h ../include/miscattr.h
+aisoshad.o: ../include/symb_lib.h ../include/trim_lib.h ../include/triv_lib.h
+aisoshad.o: ../include/trng_lib.h ../include/mdl_lib.h ../include/mvar_lib.h
+aisoshad.o: ../include/geom_lib.h ../include/attribut.h ../include/allocate.h
+aisoshad.o: ../include/obj_dpnd.h ../include/ip_cnvrt.h program.h
+lineshad.o: ../include/irit_sm.h ../include/misc_lib.h ../include/iritgrap.h
+lineshad.o: ../include/iritprsr.h ../include/cagd_lib.h ../include/miscattr.h
+lineshad.o: ../include/symb_lib.h ../include/trim_lib.h ../include/triv_lib.h
+lineshad.o: ../include/trng_lib.h ../include/mdl_lib.h ../include/mvar_lib.h
+lineshad.o: ../include/geom_lib.h ../include/attribut.h ../include/allocate.h
+lineshad.o: ../include/obj_dpnd.h ../include/ip_cnvrt.h program.h
+zbufcrvs.o: ../include/irit_sm.h ../include/misc_lib.h ../include/geom_lib.h
+zbufcrvs.o: ../include/iritprsr.h ../include/cagd_lib.h ../include/miscattr.h
+zbufcrvs.o: ../include/symb_lib.h ../include/trim_lib.h ../include/triv_lib.h
+zbufcrvs.o: ../include/trng_lib.h ../include/mdl_lib.h ../include/mvar_lib.h
+zbufcrvs.o: ../include/attribut.h ../include/allocate.h ../include/obj_dpnd.h
+zbufcrvs.o: ../include/iritgrap.h program.h

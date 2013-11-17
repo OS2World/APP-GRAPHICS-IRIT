@@ -1,0 +1,266 @@
+#
+# Approximation of curves using piecewise cubic/quadratic polynomials
+#
+#################################
+
+crv = cbspline( 6,
+	        list( ctlpt( E2,  0.5, -1.0 ),
+		      ctlpt( E2, -1.5, -0.5 ),
+		      ctlpt( E2,  0.5,  0.0 ),
+		      ctlpt( E2, -0.15,  2.0 ),
+		      ctlpt( E2, -1.5,  2.0 ),
+		      ctlpt( E2, -0.5,  1.0 ),
+		      ctlpt( E2,  0.5,  2.0 ) ),
+		list( KV_OPEN ) );
+color( crv, white );
+attrib( crv, "width", 0.02 );
+
+q1 = QuadCrvs( Crv, 0.02, -1 );
+color( q1, yellow );
+printf( "%d quadratic segements\\n", list( sizeof( q1 ) ) );
+
+q2 = QuadCrvs( Crv, 0.1, -1 );
+color( q2, cyan );
+printf( "%d quadratic segements\\n", list( sizeof( q2 ) ) );
+
+q3 = CubicCrvs( Crv, 0.02, -1 );
+color( q3, magenta );
+printf( "%d cubic segements\\n", list( sizeof( q3 ) ) );
+
+q4 = CubicCrvs( Crv, 0.1, -1 );
+color( q4, green );
+printf( "%d cubic segements\\n", list( sizeof( q4 ) ) );
+
+All = list( crv,
+	    q1 * tz( 0.1 ), q2 * tz( 0.2 ),
+	    q3 * tz( 0.3 ), q4 * tz( 0.4 ) );
+
+interact( All );
+
+save( "pp1apprx", All );
+
+#################################
+
+crv = cbspline( 5,
+	        list( ctlpt( E2,  0.5, -1.0 ),
+		      ctlpt( E2, -1.5, -0.5 ),
+		      ctlpt( E2,  0.5,  0.0 ),
+		      ctlpt( E2, -0.15,  2.0 ),
+		      ctlpt( E2, -1.5,  2.0 ),
+		      ctlpt( E2, -0.5,  1.0 ),
+		      ctlpt( E2,  0.5,  2.0 ) ),
+		list( KV_OPEN ) );
+color( crv, white );
+attrib( crv, "width", 0.02 );
+
+q1 = QuadCrvs( Crv, 0.02, -1 );
+color( q1, yellow );
+printf( "%d quadratic segements\\n", list( sizeof( q1 ) ) );
+
+q2 = QuadCrvs( Crv, 0.1, -1 );
+color( q2, cyan );
+printf( "%d quadratic segements\\n", list( sizeof( q2 ) ) );
+
+q3 = CubicCrvs( Crv, 0.02, -1 );
+color( q3, magenta );
+printf( "%d cubic segements\\n", list( sizeof( q3 ) ) );
+
+q4 = CubicCrvs( Crv, 0.1, -1 );
+color( q4, green );
+printf( "%d cubic segements\\n", list( sizeof( q4 ) ) );
+
+All = list( crv,
+	    q1 * tz( 0.1 ), q2 * tz( 0.2 ),
+	    q3 * tz( 0.3 ), q4 * tz( 0.4 ) );
+
+interact( All );
+
+save( "pp2apprx", All );
+
+#################################
+
+crv = cbspline( 8,
+	        list( ctlpt( E2,  0.5, -1.0 ),
+		      ctlpt( E2, -1.5, -0.5 ),
+		      ctlpt( E2, -1.5,  0.5 ),
+		      ctlpt( E2,  0.5,  0.0 ),
+		      ctlpt( E2, -0.15,  2.0 ),
+		      ctlpt( E2, -1.5,  2.0 ),
+		      ctlpt( E2, -2.5, -2.0 ),
+		      ctlpt( E2, -0.5,  1.0 ),
+		      ctlpt( E2,  0.5,  2.0 ) ),
+		list( KV_OPEN ) );
+color( crv, white );
+attrib( crv, "width", 0.02 );
+
+q1 = QuadCrvs( Crv, 0.02, -1 );
+color( q1, yellow );
+printf( "%d quadratic segements\\n", list( sizeof( q1 ) ) );
+
+q2 = QuadCrvs( Crv, 0.1, -1 );
+color( q2, cyan );
+printf( "%d quadratic segements\\n", list( sizeof( q2 ) ) );
+
+q3 = CubicCrvs( Crv, 0.02, -1 );
+color( q3, magenta );
+printf( "%d cubic segements\\n", list( sizeof( q3 ) ) );
+
+q4 = CubicCrvs( Crv, 0.1, -1 );
+color( q4, green );
+printf( "%d cubic segements\\n", list( sizeof( q4 ) ) );
+
+All = list( crv,
+	    q1 * tz( 0.1 ), q2 * tz( 0.2 ),
+	    q3 * tz( 0.3 ), q4 * tz( 0.4 ) );
+
+interact( All );
+
+save( "pp3apprx", All );
+
+#################################
+
+crv = cbspline( 8,
+    list( ctlpt( E2, 0.5, -1 ),
+          ctlpt( E2, -0.6858, -0.3272 ),
+          ctlpt( E2, -0.8991, 0.4234 ),
+          ctlpt( E2, -0.8438, 0.9607 ),
+          ctlpt( E2, -0.7055, 1.395 ),
+          ctlpt( E2, -0.4487, 1.818 ),
+          ctlpt( E2, -0.08109, 2.209 ),
+          ctlpt( E2, 0.2427, 2.145 ),
+          ctlpt( E2, 0.5, 2 ) ),
+    list( kv_open ) );
+color( crv, white );
+attrib( crv, "width", 0.02 );
+
+q1 = QuadCrvs( Crv, 0.01, -1 );
+color( q1, yellow );
+printf( "%d quadratic segements\\n", list( sizeof( q1 ) ) );
+
+q2 = QuadCrvs( Crv, 0.1, -1 );
+color( q2, cyan );
+printf( "%d quadratic segements\\n", list( sizeof( q2 ) ) );
+
+q3 = CubicCrvs( Crv, 0.01, -1 );
+color( q3, magenta );
+printf( "%d cubic segements\\n", list( sizeof( q3 ) ) );
+
+q4 = CubicCrvs( Crv, 0.1, -1 );
+color( q4, green );
+printf( "%d cubic segements\\n", list( sizeof( q4 ) ) );
+
+All = list( crv,
+	    q1 * tz( 0.1 ), q2 * tz( 0.2 ),
+	    q3 * tz( 0.3 ), q4 * tz( 0.4 ) );
+
+interact( All );
+
+save( "pp4apprx", All );
+
+#################################
+
+crv = craise( cbspline( 2,
+			list( ctlpt( E2, 0.35, -1 ),
+			      ctlpt( E2, 0.85, 2 ) ),
+			list( kv_open ) ),
+	      8 );
+color( crv, white );
+attrib( crv, "width", 0.02 );
+
+q1 = QuadCrvs( Crv, 0.02, -1 );
+color( q1, yellow );
+printf( "%d quadratic segements\\n", list( sizeof( q1 ) ) );
+
+q2 = QuadCrvs( Crv, 0.1, -1 );
+color( q2, cyan );
+printf( "%d quadratic segements\\n", list( sizeof( q2 ) ) );
+
+q3 = CubicCrvs( Crv, 0.02, -1 );
+color( q3, magenta );
+printf( "%d cubic segements\\n", list( sizeof( q3 ) ) );
+
+q4 = CubicCrvs( Crv, 0.1, -1 );
+color( q4, green );
+printf( "%d cubic segements\\n", list( sizeof( q4 ) ) );
+
+All = list( crv,
+	    q1 * tz( 0.1 ), q2 * tz( 0.2 ),
+	    q3 * tz( 0.3 ), q4 * tz( 0.4 ) );
+
+interact( All );
+
+save( "pp5apprx", All );
+
+#################################
+
+crv = craise( cbspline( 3,
+			list( ctlpt( E2,  0.35, -1 ),
+			      ctlpt( E2, -0.35, 0 ),
+			      ctlpt( E2,  0.85, 2 ) ),
+			list( kv_open ) ),
+	      10 );
+color( crv, white );
+attrib( crv, "width", 0.02 );
+
+q1 = QuadCrvs( Crv, 0.02, -1 );
+color( q1, yellow );
+printf( "%d quadratic segements\\n", list( sizeof( q1 ) ) );
+
+q2 = QuadCrvs( Crv, 0.1, -1 );
+color( q2, cyan );
+printf( "%d quadratic segements\\n", list( sizeof( q2 ) ) );
+
+q3 = CubicCrvs( Crv, 0.02, -1 );
+color( q3, magenta );
+printf( "%d cubic segements\\n", list( sizeof( q3 ) ) );
+
+q4 = CubicCrvs( Crv, 0.1, -1 );
+color( q4, green );
+printf( "%d cubic segements\\n", list( sizeof( q4 ) ) );
+
+All = list( crv,
+	    q1 * tz( 0.1 ), q2 * tz( 0.2 ),
+	    q3 * tz( 0.3 ), q4 * tz( 0.4 ) );
+
+interact( All );
+
+save( "pp6apprx", All );
+
+#################################
+
+crv = craise( circle( vector( 0, 0, 0 ), 0.9 ), 12 );
+color( crv, white );
+attrib( crv, "width", 0.02 );
+
+q1 = QuadCrvs( Crv, 0.02, -1 );
+color( q1, yellow );
+printf( "%d quadratic segements\\n", list( sizeof( q1 ) ) );
+
+q2 = QuadCrvs( Crv, 0.1, -1 );
+color( q2, cyan );
+printf( "%d quadratic segements\\n", list( sizeof( q2 ) ) );
+
+q3 = CubicCrvs( Crv, 0.02, -1 );
+color( q3, magenta );
+printf( "%d cubic segements\\n", list( sizeof( q3 ) ) );
+
+q4 = CubicCrvs( Crv, 0.1, -1 );
+color( q4, green );
+printf( "%d cubic segements\\n", list( sizeof( q4 ) ) );
+
+All = list( crv,
+	    q1 * tz( 0.1 ), q2 * tz( 0.2 ),
+	    q3 * tz( 0.3 ), q4 * tz( 0.4 ) );
+
+interact( All );
+
+save( "pp7apprx", All );
+
+#################################
+
+free( crv );
+free( q1 );
+free( q2 );
+free( q3 );
+free( q4 );
+free( all );

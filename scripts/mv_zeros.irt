@@ -1,0 +1,1387 @@
+#
+# A test suite for examining the multivariate solver.
+#
+#					Gershon Elber, 2006
+#
+# Based on a suite contributed by Tom Grandine, Boeing.
+#
+
+EvalAnswers2 = procedure( s, a ): i: s1: s2: ans: a1: a2:
+    s1 = nth( s, 1 ):
+    s2 = nth( s, 2 ):
+    for ( i = 1, 1, sizeof( a ),
+	ans = nth( a, i ):
+	a1 = meval( s1, list( coord( ans, 1 ), coord( ans, 2 ) ) ):
+	a2 = meval( s2, list( coord( ans, 1 ), coord( ans, 2 ) ) ):
+	printf( "Eval at %-.13f %-.13f = %-.13f %-.13f\\n",
+		list( coord( ans, 1 ), coord( ans, 2 ),
+		      coord( a1, 1 ), coord( a2, 1 ) ) ) ):
+    pause();
+
+ViewInput2Srfs = procedure( s, a ): s1: s2:
+    s1 = nth( s, 1 ):
+    s2 = nth( s, 2 ):
+    s1 = coerce( coerce( s1, surface_type ), e3 ) * rotx( -90 ) * roty( -90 ):
+    color( s1, yellow ):
+    s2 = coerce( coerce( s2, surface_type ), e3 ) * rotx( -90 ) * roty( -90 ):
+    color( s2, cyan ):
+    view( list( s1, s2, a, axes ), 1 ):
+    EvalAnswers2( s, a );
+
+ViewInput2 = procedure( s, a ): s1c: s2c: s1: s2:
+    s1 = nth( s, 1 ):
+    s2 = nth( s, 2 ):
+    s1 = coerce( coerce( s1, surface_type ), e3 ) * rotx( -90 ) * roty( -90 ):
+    color( s1, yellow ):
+    s1c = contour( s1, plane( 0, 0, 1, 0 ), s1 ):
+    if ( thisobj( "s1c" ) == poly_type,
+	 color( s1c, red ),
+	 s1c = 0.0 ):
+    s2 = coerce( coerce( s2, surface_type ), e3 ) * rotx( -90 ) * roty( -90 ):
+    color( s2, cyan ):
+    s2c = contour( s2, plane( 0, 0, 1, 0 ), s1 ):
+    if ( thisobj( "s2c" ) == poly_type,
+	 color( s2c, green ),
+	 s2c = 0.0 ):
+    view( list( s1, s2, s1c, s2c, a, axes ), 1 ):
+    EvalAnswers2( s, a );
+
+EvalAnswers3 = procedure( s, a ): i: s1: s2: s3: ans: a1: a2: a3:
+    s1 = nth( s, 1 ):
+    s2 = nth( s, 2 ):
+    s3 = nth( s, 2 ):
+    for ( i = 1, 1, sizeof( a ),
+	ans = nth( a, i ):
+	a1 = meval( s1, list( coord( ans, 1 ), coord( ans, 2 ), coord( ans, 3 ) ) ):
+	a2 = meval( s2, list( coord( ans, 1 ), coord( ans, 2 ), coord( ans, 3 ) ) ):
+	a3 = meval( s3, list( coord( ans, 1 ), coord( ans, 2 ), coord( ans, 3 ) ) ):
+	printf( "Eval at %-.10f %-.10f %-.10f = %-.6g %-.6g %-.6g\\n",
+		list( coord( ans, 1 ), coord( ans, 2 ), coord( ans, 3 ),
+		      coord( a1, 1 ), coord( a2, 1 ), coord( a3, 1 ) ) ) );
+
+ViewInput3Tvs = procedure( s, a ): s1: s2: s3:
+    s1 = nth( s, 1 ):
+    s2 = nth( s, 2 ):
+    s3 = nth( s, 3 ):
+    s1 = coerce( coerce( s1, trivar_type ), e3 ) * rotx( -90 ) * roty( -90 ):
+    color( s1, yellow ):
+    s2 = coerce( coerce( s2, trivar_type ), e3 ) * rotx( -90 ) * roty( -90 ):
+    color( s2, cyan ):
+    s3 = coerce( coerce( s3, trivar_type ), e3 ) * rotx( -90 ) * roty( -90 ):
+    color( s3, magenta ):
+    view( list( s1, s2, s3, a, axes ), 1 ):
+    EvalAnswers3( s, a );
+
+TestSols = function( s, SubTol, NumTol ):
+    return = mzero( s, SubTol, NumTol );
+
+##################################################################
+#
+# original answers are saved in 'o'.  Ours in 'a'
+#
+##################################################################
+save_res = resolution;
+resolution = 500;
+LastFloatFrmt = iritstate( "FloatFrmt", "%-.18g" );
+Solutions = nil();
+
+##################################################################
+o = list( ctlpt( e2, 5.9791732793705432e-01, 5.9791732793705432e-01 ) );
+
+s1 = Extrude(
+    cbspline( 4,
+        list( ctlpt( E1, 1 ),
+              ctlpt( E1, 2 ),
+              ctlpt( E1, -1 ),
+              ctlpt( E1, -1 ) ),
+        list( kv_open ) ),
+    vector( 0, 0, 0 ), 0 );
+s1 = coerce( s1, multivar_type );
+
+s2 = SReverse( Extrude(
+    cbspline( 4,
+        list( ctlpt( E1, 2 ),
+              ctlpt( E1, 4 ),
+              ctlpt( E1, -2 ),
+              ctlpt( E1, -2 ) ),
+        list( kv_open ) ),
+    vector( 0, 0, 0 ), 0 ) );
+s2 = coerce( s2, multivar_type );
+
+s = list( s1, s2 );  # s00
+
+a = TestSols( s, 1e-5, 1e-14 );
+ViewInput2( s, a );
+
+##################################################################
+o = list( ctlpt( e2, 5.9791732793705432e-01, 0.0000000000000000e+00 ),
+          ctlpt( e2, 6.1833123684675062e-01, 7.6677788492405197e-01 ) );
+
+s1 = sbspline( 4, 4, 
+    list( list( ctlpt( E1, 1 ),
+                ctlpt( E1, 2 ),
+                ctlpt( E1, -1 ),
+                ctlpt( E1, -1 ) ),
+          list( ctlpt( E1, 1 ),
+                ctlpt( E1, 2 ),
+                ctlpt( E1, -1 ),
+                ctlpt( E1, -1 ) ),
+          list( ctlpt( E1, 1 ),
+                ctlpt( E1, 2 ),
+                ctlpt( E1, -1 ),
+                ctlpt( E1, -1 ) ),
+          list( ctlpt( E1, 1 ),
+                ctlpt( E1, 2 ),
+                ctlpt( E1, -1 ),
+                ctlpt( E1, -1 ) ),
+          list( ctlpt( E1, 1 ),
+                ctlpt( E1, 1 ),
+                ctlpt( E1, 1 ),
+                ctlpt( E1, 1 ) ) ),
+    list( list( kv_open ),
+          list( 0, 0, 0, 0, 0.599999999999999978, 1, 1, 1, 1 ) ) );
+s1 = coerce( s1, multivar_type );
+
+s2 = sbspline( 4, 4, 
+    list( list( ctlpt( E1, 2 ),
+                ctlpt( E1, 4 ),
+                ctlpt( E1, -2 ),
+                ctlpt( E1, -2 ) ),
+          list( ctlpt( E1, 2 ),
+                ctlpt( E1, 4 ),
+                ctlpt( E1, -1 ),
+                ctlpt( E1, -2 ) ),
+          list( ctlpt( E1, 2 ),
+                ctlpt( E1, 4 ),
+                ctlpt( E1, -2 ),
+                ctlpt( E1, -2 ) ),
+          list( ctlpt( E1, 2 ),
+                ctlpt( E1, 4 ),
+                ctlpt( E1, -1 ),
+                ctlpt( E1, -2 ) ),
+          list( ctlpt( E1, -2 ),
+                ctlpt( E1, -2 ),
+                ctlpt( E1, -2 ),
+                ctlpt( E1, -2 ) ) ),
+    list( list( kv_open ),
+          list( 0, 0, 0, 0, 0.599999999999999978, 1, 1, 1, 1 ) ) );
+s2 = coerce( s2, multivar_type );
+
+s = list( s1, s2 );  # s01
+
+a = TestSols( s, 1e-5, 1e-14 );
+ViewInput2( s, a );
+
+##################################################################
+o = list( ctlpt( e2, 3.8762756430420564e-01, 3.8762756430420542e-01 ),
+	  ctlpt( e2, 1.6123724356957945e+00, 1.6123724356957947e+00 ) );
+
+s1 = sbspline( 3, 3, 
+    list( list( ctlpt( E1, 1.25 ),
+                ctlpt( E1, -0.75 ),
+                ctlpt( E1, 1.25 ) ),
+          list( ctlpt( E1, -0.75 ),
+                ctlpt( E1, -2.75 ),
+                ctlpt( E1, -0.75 ) ),
+          list( ctlpt( E1, 1.25 ),
+                ctlpt( E1, -0.75 ),
+                ctlpt( E1, 1.25 ) ) ),
+    list( list( kv_open ),
+          list( kv_open ) ) );
+s1 = coerce( s1, multivar_type );
+
+s2 = RuledSrf(
+    ctlpt( E1, 0 ) + ctlpt( E1, 200000000 ),
+    ctlpt( E1, -200000000 ) + ctlpt( E1, 0 ) );
+s2 = coerce( coerce( s2, bspline_type ), multivar_type );
+
+s = list( s1, s2 );  # s02
+
+a = TestSols( s, 1e-5, 1e-14 );
+ViewInput2( s, a );
+
+##################################################################
+o = list( ctlpt( e2, 0.0000000000000000e+00, 5.0000000000000000e-01 ), # Tang.
+	  ctlpt( e2, 6.3397459621556140e-01, 5.0000000000000000e-01 ) );
+
+s1 = SReverse( Extrude(
+    cbspline( 4,
+        list( ctlpt( E1, -8 ),
+              ctlpt( E1, 8 ),
+              ctlpt( E1, -8 ),
+              ctlpt( E1, 8 ) ),
+        list( kv_open ) ),
+    vector( 0, 0, 0 ), 0 ) );
+s1 = coerce( s1, multivar_type );
+
+s2 = sbspline( 4, 4, 
+    list( list( ctlpt( E1, 48 ),
+                ctlpt( E1, 48 ),
+                ctlpt( E1, 48 ),
+                ctlpt( E1, 48 ) ),
+          list( ctlpt( E1, -16 ),
+                ctlpt( E1, -15 ),
+                ctlpt( E1, -16 ),
+                ctlpt( E1, -16 ) ),
+          list( ctlpt( E1, -16 ),
+                ctlpt( E1, -16 ),
+                ctlpt( E1, -16 ),
+                ctlpt( E1, -17 ) ),
+          list( ctlpt( E1, 48 ),
+                ctlpt( E1, 48 ),
+                ctlpt( E1, 48 ),
+                ctlpt( E1, 48 ) ) ),
+    list( list( kv_open ),
+          list( kv_open ) ) );
+s2 = coerce( s2, multivar_type );
+
+s = list( s1, s2 );  # s03
+
+a = TestSols( s, 1e-5, 1e-14 );
+ViewInput2( s, a );
+
+##################################################################
+o = list( ctlpt( e2, 1.4881186405965191e-01, 5.2489825853816030e-01 ),
+	  ctlpt( e2, 8.5118813594034792e-01, 4.7510174146183970e-01 ) );
+
+s1 = sbspline( 4, 4, 
+    list( list( ctlpt( E1, 1 ),
+                ctlpt( E1, 1 ),
+                ctlpt( E1, 1 ),
+                ctlpt( E1, 1 ) ),
+          list( ctlpt( E1, 1 ),
+                ctlpt( E1, -2 ),
+                ctlpt( E1, -3 ),
+                ctlpt( E1, 1 ) ),
+          list( ctlpt( E1, 1 ),
+                ctlpt( E1, -3 ),
+                ctlpt( E1, -2 ),
+                ctlpt( E1, 1 ) ),
+          list( ctlpt( E1, 1 ),
+                ctlpt( E1, 1 ),
+                ctlpt( E1, 1 ),
+                ctlpt( E1, 1 ) ) ),
+    list( list( kv_open ),
+          list( kv_open ) ) );
+s1 = coerce( s1, multivar_type );
+
+s2 = sbspline( 4, 4, 
+    list( list( ctlpt( E1, 0 ),
+                ctlpt( E1, -9 ),
+                ctlpt( E1, -12 ),
+                ctlpt( E1, 0 ) ),
+          list( ctlpt( E1, 0 ),
+                ctlpt( E1, -5 ),
+                ctlpt( E1, -2 ),
+                ctlpt( E1, 0 ) ),
+          list( ctlpt( E1, 0 ),
+                ctlpt( E1, 2 ),
+                ctlpt( E1, 5 ),
+                ctlpt( E1, 0 ) ),
+          list( ctlpt( E1, 0 ),
+                ctlpt( E1, 12 ),
+                ctlpt( E1, 9 ),
+                ctlpt( E1, 0 ) ) ),
+    list( list( kv_open ),
+          list( kv_open ) ) );
+s2 = coerce( s2, multivar_type );
+
+s = list( s1, s2 );  # s04
+
+a = TestSols( s, 1e-5, 1e-14 );
+ViewInput2( s, a );
+
+##################################################################
+o = list( ctlpt( e2, 4.9999999303061998e-01, 5.0000000000000000e-01 ),
+	  ctlpt( e2, 5.0000000671586253e-01, 5.0000000000000000e-01 ) );
+
+
+s1 = sbspline( 4, 4, 
+    list( list( ctlpt( E1, 0 ),
+                ctlpt( E1, 0 ),
+                ctlpt( E1, 0 ),
+                ctlpt( E1, 0 ) ),
+          list( ctlpt( E1, 9 ),
+                ctlpt( E1, 1 ),
+                ctlpt( E1, 1 ),
+                ctlpt( E1, 9 ) ),
+          list( ctlpt( E1, 9 ),
+                ctlpt( E1, -11 ),
+                ctlpt( E1, -11 ),
+                ctlpt( E1, 9 ) ),
+          list( ctlpt( E1, 9 ),
+                ctlpt( E1, 9 ),
+                ctlpt( E1, 9 ),
+                ctlpt( E1, 9 ) ) ),
+    list( list( kv_open ),
+          list( kv_open ) ) );
+s1 = coerce( s1, multivar_type );
+
+s2 = sbspline( 4, 4, 
+    list( list( ctlpt( E1, 27 ),
+                ctlpt( E1, 3 ),
+                ctlpt( E1, 3 ),
+                ctlpt( E1, 27 ) ),
+          list( ctlpt( E1, 9 ),
+                ctlpt( E1, -23 ),
+                ctlpt( E1, -23 ),
+                ctlpt( E1, 9 ) ),
+          list( ctlpt( E1, 0 ),
+                ctlpt( E1, -4 ),
+                ctlpt( E1, -4 ),
+                ctlpt( E1, 0 ) ),
+          list( ctlpt( E1, 0 ),
+                ctlpt( E1, 60 ),
+                ctlpt( E1, 60 ),
+                ctlpt( E1, 0 ) ) ),
+    list( list( kv_open ),
+          list( kv_open ) ) );
+s2 = coerce( s2, multivar_type );
+
+s = list( s1, s2 );  # s05
+
+a = TestSols( s, 1e-5, 1e-14 );
+ViewInput2( s, a );
+
+##################################################################
+o = list( ctlpt( e3, 2.1176929491869592e-01, 5.0000000000000000e-01, 6.9390958150756998e-01 ) );
+
+s1 = tbspline( 4, 4, 4,
+    list( list( list( ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.800000000000000044 ),
+                      ctlpt( E1, -1.19999999999999996 ),
+                      ctlpt( E1, -1.5 ) ),
+                list( ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.800000000000000044 ),
+                      ctlpt( E1, -1.19999999999999996 ),
+                      ctlpt( E1, -1.5 ) ),
+                list( ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.800000000000000044 ),
+                      ctlpt( E1, -1.19999999999999996 ),
+                      ctlpt( E1, -1.5 ) ),
+                list( ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.800000000000000044 ),
+                      ctlpt( E1, -1.19999999999999996 ),
+                      ctlpt( E1, -1.5 ) ) ),
+          list( list( ctlpt( E1, -0.200000000000000011 ),
+                      ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.900000000000000022 ),
+                      ctlpt( E1, -1.19999999999999996 ) ),
+                list( ctlpt( E1, -0.200000000000000011 ),
+                      ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.900000000000000022 ),
+                      ctlpt( E1, -1.19999999999999996 ) ),
+                list( ctlpt( E1, -0.200000000000000011 ),
+                      ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.900000000000000022 ),
+                      ctlpt( E1, -1.19999999999999996 ) ),
+                list( ctlpt( E1, -0.200000000000000011 ),
+                      ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.900000000000000022 ),
+                      ctlpt( E1, -1.19999999999999996 ) ) ),
+          list( list( ctlpt( E1, 0.200000000000000011 ),
+                      ctlpt( E1, -0.100000000000000006 ),
+                      ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.800000000000000044 ) ),
+                list( ctlpt( E1, 0.200000000000000011 ),
+                      ctlpt( E1, -0.100000000000000006 ),
+                      ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.800000000000000044 ) ),
+                list( ctlpt( E1, 0.200000000000000011 ),
+                      ctlpt( E1, -0.100000000000000006 ),
+                      ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.800000000000000044 ) ),
+                list( ctlpt( E1, 0.200000000000000011 ),
+                      ctlpt( E1, -0.100000000000000006 ),
+                      ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.800000000000000044 ) ) ),
+          list( list( ctlpt( E1, 0.5 ),
+                      ctlpt( E1, 0.200000000000000011 ),
+                      ctlpt( E1, -0.200000000000000011 ),
+                      ctlpt( E1, -0.5 ) ),
+                list( ctlpt( E1, 0.5 ),
+                      ctlpt( E1, 0.200000000000000011 ),
+                      ctlpt( E1, -0.200000000000000011 ),
+                      ctlpt( E1, -0.5 ) ),
+                list( ctlpt( E1, 0.5 ),
+                      ctlpt( E1, 0.200000000000000011 ),
+                      ctlpt( E1, -0.200000000000000011 ),
+                      ctlpt( E1, -0.5 ) ),
+                list( ctlpt( E1, 0.5 ),
+                      ctlpt( E1, 0.200000000000000011 ),
+                      ctlpt( E1, -0.200000000000000011 ),
+                      ctlpt( E1, -0.5 ) ) ) ),
+    list( list( kv_open ),
+          list( kv_open ),
+          list( kv_open ) ) );
+s1 = coerce( s1, multivar_type );
+
+s2 = tbspline( 4, 4, 4,
+    list( list( list( ctlpt( E1, 0.5 ),
+                      ctlpt( E1, 0.5 ),
+                      ctlpt( E1, 0.5 ),
+                      ctlpt( E1, 0.5 ) ),
+                list( ctlpt( E1, 0.200000000000000011 ),
+                      ctlpt( E1, 0.200000000000000011 ),
+                      ctlpt( E1, 0.200000000000000011 ),
+                      ctlpt( E1, 0.200000000000000011 ) ),
+                list( ctlpt( E1, -0.200000000000000011 ),
+                      ctlpt( E1, -0.200000000000000011 ),
+                      ctlpt( E1, -0.200000000000000011 ),
+                      ctlpt( E1, -0.200000000000000011 ) ),
+                list( ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ) ) ),
+          list( list( ctlpt( E1, 0.5 ),
+                      ctlpt( E1, 0.5 ),
+                      ctlpt( E1, 0.5 ),
+                      ctlpt( E1, 0.5 ) ),
+                list( ctlpt( E1, 0.200000000000000011 ),
+                      ctlpt( E1, 0.200000000000000011 ),
+                      ctlpt( E1, 0.200000000000000011 ),
+                      ctlpt( E1, 0.200000000000000011 ) ),
+                list( ctlpt( E1, -0.200000000000000011 ),
+                      ctlpt( E1, -0.200000000000000011 ),
+                      ctlpt( E1, -0.200000000000000011 ),
+                      ctlpt( E1, -0.200000000000000011 ) ),
+                list( ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ) ) ),
+          list( list( ctlpt( E1, 0.5 ),
+                      ctlpt( E1, 0.5 ),
+                      ctlpt( E1, 0.5 ),
+                      ctlpt( E1, 0.5 ) ),
+                list( ctlpt( E1, 0.200000000000000011 ),
+                      ctlpt( E1, 0.200000000000000011 ),
+                      ctlpt( E1, 0.200000000000000011 ),
+                      ctlpt( E1, 0.200000000000000011 ) ),
+                list( ctlpt( E1, -0.200000000000000011 ),
+                      ctlpt( E1, -0.200000000000000011 ),
+                      ctlpt( E1, -0.200000000000000011 ),
+                      ctlpt( E1, -0.200000000000000011 ) ),
+                list( ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ) ) ),
+          list( list( ctlpt( E1, 0.5 ),
+                      ctlpt( E1, 0.5 ),
+                      ctlpt( E1, 0.5 ),
+                      ctlpt( E1, 0.5 ) ),
+                list( ctlpt( E1, 0.200000000000000011 ),
+                      ctlpt( E1, 0.200000000000000011 ),
+                      ctlpt( E1, 0.200000000000000011 ),
+                      ctlpt( E1, 0.200000000000000011 ) ),
+                list( ctlpt( E1, -0.200000000000000011 ),
+                      ctlpt( E1, -0.200000000000000011 ),
+                      ctlpt( E1, -0.200000000000000011 ),
+                      ctlpt( E1, -0.200000000000000011 ) ),
+                list( ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ) ) ) ),
+    list( list( kv_open ),
+          list( kv_open ),
+          list( kv_open ) ) );
+s2 = coerce( s2, multivar_type );
+
+s3 = tbspline( 4, 4, 4,
+    list( list( list( ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ) ),
+                list( ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ) ),
+                list( ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ) ),
+                list( ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -1.5 ) ) ),
+          list( list( ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ) ),
+                list( ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ) ),
+                list( ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ) ),
+                list( ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -1.5 ) ) ),
+          list( list( ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ) ),
+                list( ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ) ),
+                list( ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ) ),
+                list( ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -1.5 ) ) ),
+          list( list( ctlpt( E1, 1 ),
+                      ctlpt( E1, 1 ),
+                      ctlpt( E1, 1 ),
+                      ctlpt( E1, 1 ) ),
+                list( ctlpt( E1, 1 ),
+                      ctlpt( E1, 1 ),
+                      ctlpt( E1, 1 ),
+                      ctlpt( E1, 1 ) ),
+                list( ctlpt( E1, 1 ),
+                      ctlpt( E1, 1 ),
+                      ctlpt( E1, 1 ),
+                      ctlpt( E1, 1 ) ),
+                list( ctlpt( E1, 1 ),
+                      ctlpt( E1, 1 ),
+                      ctlpt( E1, 1 ),
+                      ctlpt( E1, 0 ) ) ) ),
+    list( list( kv_open ),
+          list( kv_open ),
+          list( kv_open ) ) );
+s3 = coerce( s3, multivar_type );
+
+s = list( s1, s2, s3 );  # s06
+
+a = TestSols( s, 1e-5, 1e-14 );
+ViewInput3TVs( s, a );
+
+##################################################################
+o = list( ctlpt( e2, 4.9048765188665133e-01, 5.2978240065909576e-01 ), # Tang.
+	  ctlpt( e2, 5.1662336581039081e-01, 4.4017423863484673e-01 ) );
+
+s1 = sbspline( 4, 4, 
+    list( list( ctlpt( E1, 1 ),
+                ctlpt( E1, 1 ),
+                ctlpt( E1, 1 ),
+                ctlpt( E1, 1 ) ),
+          list( ctlpt( E1, -1 ),
+                ctlpt( E1, -1 ),
+                ctlpt( E1, -2 ),
+                ctlpt( E1, 1 ) ),
+          list( ctlpt( E1, -1 ),
+                ctlpt( E1, 2 ),
+                ctlpt( E1, 1 ),
+                ctlpt( E1, 1 ) ),
+          list( ctlpt( E1, -1 ),
+                ctlpt( E1, -1 ),
+                ctlpt( E1, -1 ),
+                ctlpt( E1, -1 ) ) ),
+    list( list( kv_open ),
+          list( kv_open ) ) );
+s1 = coerce( s1, multivar_type );
+
+s2 = RuledSrf(
+    ctlpt( E1, -0.619207217995729975 ) + ctlpt( E1, 0.34079278200426999 ),
+    ctlpt( E1, -0.339207217995730004 ) + ctlpt( E1, 0.620792782004270016 ) );
+s2 = coerce( coerce(s2, bspline_type ), multivar_type );
+
+s = list( s1, s2 );  # s07
+
+a = TestSols( s, 1e-5, 1e-14 );
+ViewInput2( s, a );
+
+##################################################################
+o = list( ctlpt( e2, 4.9048764694730485e-01, 5.2978241759399625e-01 ),
+	  ctlpt( e2, 5.0951235305269515e-01, 4.7021758240600364e-01 ) );
+
+s1 = sbspline( 4, 4, 
+    list( list( ctlpt( E1, 1 ),
+                ctlpt( E1, 1 ),
+                ctlpt( E1, 1 ),
+                ctlpt( E1, 1 ) ),
+          list( ctlpt( E1, -1 ),
+                ctlpt( E1, -1 ),
+                ctlpt( E1, -2 ),
+                ctlpt( E1, 1 ) ),
+          list( ctlpt( E1, -1 ),
+                ctlpt( E1, 2 ),
+                ctlpt( E1, 1 ),
+                ctlpt( E1, 1 ) ),
+          list( ctlpt( E1, -1 ),
+                ctlpt( E1, -1 ),
+                ctlpt( E1, -1 ),
+                ctlpt( E1, -1 ) ) ),
+    list( list( kv_open ),
+          list( kv_open ) ) );
+s1 = coerce( s1, multivar_type );
+
+s2 = sbspline( 4, 4, 
+    list( list( ctlpt( E1, -5.75999999999999979 ),
+                ctlpt( E1, -5.75999999999999979 ),
+                ctlpt( E1, -8.64000000000000057 ),
+                ctlpt( E1, 0 ) ),
+          list( ctlpt( E1, -1.91999999999999993 ),
+                ctlpt( E1, 4.40000000000000036 ),
+                ctlpt( E1, 2.60000000000000009 ),
+                ctlpt( E1, -2.52000000000000002 ) ),
+          list( ctlpt( E1, -2.52000000000000002 ),
+                ctlpt( E1, 2.60000000000000009 ),
+                ctlpt( E1, 4.40000000000000036 ),
+                ctlpt( E1, -1.91999999999999993 ) ),
+          list( ctlpt( E1, 0 ),
+                ctlpt( E1, -8.64000000000000057 ),
+                ctlpt( E1, -5.75999999999999979 ),
+                ctlpt( E1, -5.75999999999999979 ) ) ),
+    list( list( kv_open ),
+          list( kv_open ) ) );
+s2 = coerce( s2, multivar_type );
+
+s = list( s1, s2 );  # s08
+
+a = TestSols( s, 1e-5, 1e-14 );
+ViewInput2( s, a );
+
+##################################################################
+o = list( ctlpt( e2, 2.5298793195594671e-01, 4.7650635040384548e-01 ), # Tang.
+	  ctlpt( e2, 4.6750021203714293e-01, 1.9048997696225023e-01 ) );
+
+s1 = sbspline( 4, 4, 
+    list( list( ctlpt( E1, 1 ),
+                ctlpt( E1, 1 ),
+                ctlpt( E1, 1 ),
+                ctlpt( E1, 1 ) ),
+          list( ctlpt( E1, -1 ),
+                ctlpt( E1, -1 ),
+                ctlpt( E1, -4 ),
+                ctlpt( E1, 1 ) ),
+          list( ctlpt( E1, -1 ),
+                ctlpt( E1, 4 ),
+                ctlpt( E1, 1 ),
+                ctlpt( E1, 1 ) ),
+          list( ctlpt( E1, -1 ),
+                ctlpt( E1, -1 ),
+                ctlpt( E1, -1 ),
+                ctlpt( E1, -1 ) ) ),
+    list( list( kv_open ),
+          list( kv_open ) ) );
+s1 = coerce( s1, multivar_type );
+
+s2 = RuledSrf(
+    ctlpt( E1, -0.488294155807059982 ) + ctlpt( E1, 0.311705844192940007 ),
+    ctlpt( E1, 0.111705844192939996 ) + ctlpt( E1, 0.911705844192939985 ) );
+s2 = coerce( coerce( s2, bspline_type ), multivar_type );
+
+s = list( s1, s2 );  # s09
+
+a = TestSols( s, 1e-5, 1e-14 );
+ViewInput2( s, a );
+
+##################################################################
+o = list( ctlpt( e2, 2.5298793346238035e-01, 4.7650634839526695e-01 ),
+	  ctlpt( e2, 7.4701206653761965e-01, 5.2349365160473293e-01 ) );
+
+s1 = sbspline( 4, 4, 
+    list( list( ctlpt( E1, 1 ),
+                ctlpt( E1, 1 ),
+                ctlpt( E1, 1 ),
+                ctlpt( E1, 1 ) ),
+          list( ctlpt( E1, -1 ),
+                ctlpt( E1, -1 ),
+                ctlpt( E1, -4 ),
+                ctlpt( E1, 1 ) ),
+          list( ctlpt( E1, -1 ),
+                ctlpt( E1, 4 ),
+                ctlpt( E1, 1 ),
+                ctlpt( E1, 1 ) ),
+          list( ctlpt( E1, -1 ),
+                ctlpt( E1, -1 ),
+                ctlpt( E1, -1 ),
+                ctlpt( E1, -1 ) ) ),
+    list( list( kv_open ),
+          list( kv_open ) ) );
+s1 = coerce( s1, multivar_type );
+
+s2 = sbspline( 4, 4, 
+    list( list( ctlpt( E1, -4.79999999999999982 ),
+                ctlpt( E1, -4.79999999999999982 ),
+                ctlpt( E1, -12 ),
+                ctlpt( E1, 0 ) ),
+          list( ctlpt( E1, -1.60000000000000009 ),
+                ctlpt( E1, 10 ),
+                ctlpt( E1, 4.59999999999999964 ),
+                ctlpt( E1, -9 ) ),
+          list( ctlpt( E1, -9 ),
+                ctlpt( E1, 4.59999999999999964 ),
+                ctlpt( E1, 10 ),
+                ctlpt( E1, -1.60000000000000009 ) ),
+          list( ctlpt( E1, 0 ),
+                ctlpt( E1, -12 ),
+                ctlpt( E1, -4.79999999999999982 ),
+                ctlpt( E1, -4.79999999999999982 ) ) ),
+    list( list( kv_open ),
+          list( kv_open ) ) );
+s2 = coerce( s2, multivar_type );
+
+s = list( s1, s2 );  # s10
+
+a = TestSols( s, 1e-5, 1e-14 );
+ViewInput2( s, a );
+
+##################################################################
+o = list( ctlpt( e2, 5.0019708111234884e-01, 5.0010064950142574e-01 ), # Tang.
+	  ctlpt( e2, 6.4605977055026464e-01, 0.0000000000000000e+00 ) );
+
+s1 = sbspline( 4, 4, 
+    list( list( ctlpt( E1, 0 ),
+                ctlpt( E1, 0 ),
+                ctlpt( E1, 0 ),
+                ctlpt( E1, 0 ) ),
+          list( ctlpt( E1, 9 ),
+                ctlpt( E1, 1 ),
+                ctlpt( E1, 1 ),
+                ctlpt( E1, 9 ) ),
+          list( ctlpt( E1, 9 ),
+                ctlpt( E1, -11.0000099999999996 ),
+                ctlpt( E1, -11 ),
+                ctlpt( E1, 9 ) ),
+          list( ctlpt( E1, 9 ),
+                ctlpt( E1, 9 ),
+                ctlpt( E1, 9 ),
+                ctlpt( E1, 9 ) ) ),
+    list( list( kv_open ),
+          list( kv_open ) ) );
+s1 = coerce( s1, multivar_type );
+
+s2 = RuledSrf(
+    ctlpt( E1, -0.620217379728249973 ) + ctlpt( E1, 0.339782620271749991 ),
+    ctlpt( E1, -0.340217379728250002 ) + ctlpt( E1, 0.619782620271750018 ) );
+s2 = coerce( coerce( s2, bspline_type ), multivar_type );
+
+s = list( s1, s2 );  # s11
+
+a = TestSols( s, 1e-5, 1e-14 );
+ViewInput2( s, a );
+
+##################################################################
+o = list( ctlpt( e2, 4.9980283335072551e-01, 4.9989941536166016e-01 ), # Tang.
+	  ctlpt( e2, 6.4560682949787629e-01, 0.0000000000000000e+00 ) );
+
+s1 = sbspline( 4, 4, 
+    list( list( ctlpt( E1, 0 ),
+                ctlpt( E1, 0 ),
+                ctlpt( E1, 0 ),
+                ctlpt( E1, 0 ) ),
+          list( ctlpt( E1, 9 ),
+                ctlpt( E1, 1 ),
+                ctlpt( E1, 1 ),
+                ctlpt( E1, 9 ) ),
+          list( ctlpt( E1, 9 ),
+                ctlpt( E1, -11.0000099999999996 ),
+                ctlpt( E1, -11 ),
+                ctlpt( E1, 9 ) ),
+          list( ctlpt( E1, 9 ),
+                ctlpt( E1, 9 ),
+                ctlpt( E1, 9 ),
+                ctlpt( E1, 9 ) ) ),
+    list( list( kv_open ),
+          list( kv_open ) ) );
+s1 = coerce( s1, multivar_type );
+
+s2 = RuledSrf(
+    ctlpt( E1, -0.619782556317959976 ) + ctlpt( E1, 0.340217443682039988 ),
+    ctlpt( E1, -0.339782556317960005 ) + ctlpt( E1, 0.620217443682040015 ) );
+s2 = coerce( coerce( s2, bspline_type ), multivar_type );
+
+s = list( s1, s2 );  # s12
+
+a = TestSols( s, 1e-5, 1e-14 );
+ViewInput2( s, a );
+
+##################################################################
+o = list( ctlpt( e2, 3.7499896880258593e-01, 5.0000353553399113e-01 ),
+	  ctlpt( e2, 3.7500103119741413e-01, 4.9999646446600882e-01 ) );
+
+s1 = RuledSrf(
+    ctlpt( E1, -0.5 ) + ctlpt( E1, 0.46000000000000002 ),
+    ctlpt( E1, -0.220000000000000001 ) + ctlpt( E1, 0.739999999999999991 ) );
+s1 = coerce( coerce( s1, bspline_type ), multivar_type );
+
+s2 = SReverse( Extrude(
+    cbspline( 3,
+        list( ctlpt( E1, 1 ),
+              ctlpt( E1, -1.00000000010000001 ),
+              ctlpt( E1, 1 ) ),
+        list( kv_open ) ),
+    vector( 0, 0, 0 ), 0 ) );
+s2 = coerce( s2, multivar_type );
+
+s = list( s1, s2 );  # s15
+
+a = TestSols( s, 1e-5, 1e-14 );
+ViewInput2( s, a );
+
+##################################################################
+o = list( ctlpt( e2,-1.0000000000000000e+00,-1.0000000000000000e+00 ),
+	  ctlpt( e2,-5.0000000000000000e-01,-3.7500000000000000e-01 ),
+	  ctlpt( e2, 0.0000000000000000e+00, 0.0000000000000000e+00 ) );
+
+s1 = sbspline( 4, 2, 
+    list( list( ctlpt( E1, 0 ),
+                ctlpt( E1, -3.33333333333330017 ),
+                ctlpt( E1, 1.33333333333329995 ),
+                ctlpt( E1, -2 ) ),
+          list( ctlpt( E1, 6 ),
+                ctlpt( E1, 0 ),
+                ctlpt( E1, 2 ),
+                ctlpt( E1, -4 ) ) ),
+    list( list( kv_open ),
+          list( kv_open ) ) );
+s1 = coerce( s1, multivar_type );
+
+s2 = Extrude(
+    cbspline( 3,
+        list( ctlpt( E1, 0 ),
+              ctlpt( E1, -3 ),
+              ctlpt( E1, -2 ) ),
+        list( kv_open ) ),
+    vector( 4, 0, 0 ), 0 );
+s2 = coerce( s2, multivar_type );
+
+s = list( s1, s2 );  # s16
+
+a = TestSols( s, 1e-5, 1e-14 );
+ViewInput2( s, a );
+
+##################################################################
+o = list( ctlpt( e2,-1.0000000000000000e+00,-1.0000000000000000e+00 ),
+	  ctlpt( e2,-5.0000000000000000e-01, 3.7500000000000000e-01 ),
+	  ctlpt( e2, 0.0000000000000000e+00, 0.0000000000000000e+00 ) );
+
+s1 = sbspline( 4, 3, 
+    list( list( ctlpt( E1, 0 ),
+                ctlpt( E1, -1.66666666666670005 ),
+                ctlpt( E1, -1.33333333333329995 ),
+                ctlpt( E1, -1 ),
+                ctlpt( E1, -0.66666666666666996 ),
+                ctlpt( E1, -0.333333333333329984 ),
+                ctlpt( E1, -2 ) ),
+          list( ctlpt( E1, 1.5 ),
+                ctlpt( E1, -0.5 ),
+                ctlpt( E1, -0.5 ),
+                ctlpt( E1, -0.5 ),
+                ctlpt( E1, -0.5 ),
+                ctlpt( E1, -0.5 ),
+                ctlpt( E1, -2.5 ) ),
+          list( ctlpt( E1, 3 ),
+                ctlpt( E1, 0.66666666666666996 ),
+                ctlpt( E1, 0.333333333333329984 ),
+                ctlpt( E1, 0 ),
+                ctlpt( E1, -0.333333333333329984 ),
+                ctlpt( E1, -0.66666666666666996 ),
+                ctlpt( E1, -3 ) ),
+          list( ctlpt( E1, 4.5 ),
+                ctlpt( E1, 1.83333333333329995 ),
+                ctlpt( E1, 1.16666666666670005 ),
+                ctlpt( E1, 0.5 ),
+                ctlpt( E1, -0.166666666666669988 ),
+                ctlpt( E1, -0.83333333333333004 ),
+                ctlpt( E1, -3.5 ) ),
+          list( ctlpt( E1, 6 ),
+                ctlpt( E1, 3 ),
+                ctlpt( E1, 2 ),
+                ctlpt( E1, 1 ),
+                ctlpt( E1, 0 ),
+                ctlpt( E1, -1 ),
+                ctlpt( E1, -4 ) ) ),
+    list( list( kv_disc_open ),
+          list( kv_disc_open ) ) );
+s1 = coerce( s1, multivar_type );
+
+s2 = Extrude(
+    cbspline( 3,
+        list( ctlpt( E1, 0 ),
+              ctlpt( E1, -1.5 ),
+              ctlpt( E1, -2 ),
+              ctlpt( E1, -2.5 ),
+              ctlpt( E1, -2 ) ),
+        list( kv_disc_open ) ),
+    vector( 4, 0, 0 ), 0 );
+s2 = coerce( s2, multivar_type );
+
+s = list( s1, s2 );  # s17
+
+a = TestSols( s, 1e-5, 1e-14 );
+ViewInput2( s, a );
+
+##################################################################
+o = list( ctlpt( e2, 0.0000000000000000e+00, 0.0000000000000000e+00 ),
+	  ctlpt( e2, 6.1040823969634887e-02, 3.6992404674194451e-01 ),
+	  ctlpt( e2, 7.0423719379562766e-02, 4.3244779643447401e-01 ),
+	  ctlpt( e2, 1.2221928696593909e-01, 7.5632813600288573e-01 ),
+	  ctlpt( e2, 1.4232753181726324e-01, 8.5767246818273690e-01 ),
+	  ctlpt( e2, 2.4367186399711430e-01, 8.7778071303406080e-01 ),
+	  ctlpt( e2, 2.6796649913733661e-01, 7.3203350086266339e-01 ),
+	  ctlpt( e2, 3.0357932287541756e-01, 4.7316654260487506e-01 ),
+	  ctlpt( e2, 3.2393258325901131e-01, 3.2393258325901131e-01 ),
+	  ctlpt( e2, 3.6992404674194457e-01, 6.1040823969634908e-02 ),
+	  ctlpt( e2, 4.3244779643447406e-01, 7.0423719379562807e-02 ),
+	  ctlpt( e2, 4.7316654260487501e-01, 3.0357932287541761e-01 ),
+	  ctlpt( e2, 5.0000000000000000e-01, 5.0000000000000000e-01 ),
+	  ctlpt( e2, 5.2683345739512477e-01, 6.9642067712458255e-01 ),
+	  ctlpt( e2, 5.6755220356552594e-01, 9.2957628062043718e-01 ),
+	  ctlpt( e2, 6.3007595325805577e-01, 9.3895917603036505e-01 ),
+	  ctlpt( e2, 6.7606741674098880e-01, 6.7606741674098880e-01 ),
+	  ctlpt( e2, 6.9642067712458267e-01, 5.2683345739512477e-01 ),
+	  ctlpt( e2, 7.3203350086266350e-01, 2.6796649913733667e-01 ),
+	  ctlpt( e2, 7.5632813600288584e-01, 1.2221928696593912e-01 ),
+	  ctlpt( e2, 8.5767246818273690e-01, 1.4232753181726329e-01 ),
+	  ctlpt( e2, 8.7778071303406102e-01, 2.4367186399711430e-01 ),
+	  ctlpt( e2, 9.2957628062043729e-01, 5.6755220356552605e-01 ),
+	  ctlpt( e2, 9.3895917603036527e-01, 6.3007595325805554e-01 ),
+	  ctlpt( e2, 1.0000000000000000e+00, 1.0000000000000000e+00 ) );
+
+s1 = SReverse( Extrude(
+    cbspline( 4,
+        list( ctlpt( E1, 0 ),
+              ctlpt( E1, -0.333333333333329984 ),
+              ctlpt( E1, -1 ),
+              ctlpt( E1, -1 ),
+              ctlpt( E1, 0 ),
+              ctlpt( E1, 0 ),
+              ctlpt( E1, -1 ),
+              ctlpt( E1, -1 ),
+              ctlpt( E1, 0 ),
+              ctlpt( E1, 0 ),
+              ctlpt( E1, -0.66666666666666996 ),
+              ctlpt( E1, -1 ) ),
+        list( 0, 0, 0, 0, 0.200000000000000011, 0.200000000000000011,
+	      0.400000000000000022, 0.400000000000000022, 0.599999999999999978,
+	      0.599999999999999978, 0.800000000000000044, 0.800000000000000044,
+	      1, 1, 1, 1 ) ),
+    vector( 1, 0, 0 ), 0 ) );
+s1 = coerce( s1, multivar_type );
+
+s2 = Extrude(
+    cbspline( 4,
+        list( ctlpt( E1, 0 ),
+              ctlpt( E1, 0.333333333333329984 ),
+              ctlpt( E1, 1 ),
+              ctlpt( E1, 1 ),
+              ctlpt( E1, 0 ),
+              ctlpt( E1, 0 ),
+              ctlpt( E1, 1 ),
+              ctlpt( E1, 1 ),
+              ctlpt( E1, 0 ),
+              ctlpt( E1, 0 ),
+              ctlpt( E1, 0.66666666666666996 ),
+              ctlpt( E1, 1 ) ),
+        list( 0, 0, 0, 0, 0.200000000000000011, 0.200000000000000011,
+	      0.400000000000000022, 0.400000000000000022, 0.599999999999999978,
+	      0.599999999999999978, 0.800000000000000044, 0.800000000000000044,
+	      1, 1, 1, 1 ) ),
+    vector( -1, 0, 0 ), 0 );
+s2 = coerce( s2, multivar_type );
+
+s = list( s1, s2 );  # s19
+
+a = TestSols( s, 1e-5, 1e-14 );
+ViewInput2( s, a );
+
+##################################################################
+# o has many solutions, all aong the diagonal - an underdetermined system here.
+
+s1 = RuledSrf(
+    ctlpt( E1, 0 ) + ctlpt( E1, 1 ),
+    ctlpt( E1, -1 ) + ctlpt( E1, 0 ) );
+s1 = coerce( s1, multivar_type );
+
+s2 = RuledSrf(
+    ctlpt( E1, 0 ) + ctlpt( E1, 0 ),
+    ctlpt( E1, 0 ) + ctlpt( E1, 0 ) );
+s2 = coerce( s2, multivar_type );
+
+s = list( s1, s2 );  # s21
+
+a = TestSols( s, 1e-2, 1e-14 );
+ViewInput2Srfs( s, a );
+
+##################################################################
+o = list( ctlpt( e3, 2.5001668494755153e-01, 1.0000000000000000e+00, 1.0000000000000000e+00 ) );
+
+s1 = tbspline( 2, 4, 4,
+    list( list( list( ctlpt( E1, 0.024435110672009 ),
+                      ctlpt( E1, 0.0223359096566010003 ) ),
+                list( ctlpt( E1, 0.0216292236863270017 ),
+                      ctlpt( E1, 0.0195300226709189985 ) ),
+                list( ctlpt( E1, 0.0136693043511800002 ),
+                      ctlpt( E1, 0.0115701033357720005 ) ),
+                list( ctlpt( E1, 0.00569708280399380037 ),
+                      ctlpt( E1, 0.00359788178858580021 ) ),
+                list( ctlpt( E1, 0.000524835278891580049 ),
+                      ctlpt( E1, -0.00157436573651640005 ) ) ),
+          list( list( ctlpt( E1, 0.0244122251186030016 ),
+                      ctlpt( E1, 0.0223130241031949984 ) ),
+                list( ctlpt( E1, 0.0216126021689229987 ),
+                      ctlpt( E1, 0.019513401153514999 ) ),
+                list( ctlpt( E1, 0.0136675889473930005 ),
+                      ctlpt( E1, 0.0115683879319850007 ) ),
+                list( ctlpt( E1, 0.00567459340496139983 ),
+                      ctlpt( E1, 0.00357539238955340011 ) ),
+                list( ctlpt( E1, 0.00052483527889347003 ),
+                      ctlpt( E1, -0.00157436573651450009 ) ) ),
+          list( list( ctlpt( E1, 0.0245484915961750004 ),
+                      ctlpt( E1, 0.0224492905807670007 ) ),
+                list( ctlpt( E1, 0.0217199888393120009 ),
+                      ctlpt( E1, 0.0196207878239040012 ) ),
+                list( ctlpt( E1, 0.0137034273428350006 ),
+                      ctlpt( E1, 0.0116042263274269992 ) ),
+                list( ctlpt( E1, 0.00576769786249130018 ),
+                      ctlpt( E1, 0.00366849684708330003 ) ),
+                list( ctlpt( E1, 0.00052483527889086003 ),
+                      ctlpt( E1, -0.00157436573651710001 ) ) ),
+          list( list( ctlpt( E1, 0.0223610339642770009 ),
+                      ctlpt( E1, 0.0202618329488690012 ) ),
+                list( ctlpt( E1, 0.0198021199466649998 ),
+                      ctlpt( E1, 0.0177029189312570001 ) ),
+                list( ctlpt( E1, 0.0125395271357289992 ),
+                      ctlpt( E1, 0.0104403261203209995 ) ),
+                list( ctlpt( E1, 0.0052350754128089004 ),
+                      ctlpt( E1, 0.00313587439740089981 ) ),
+                list( ctlpt( E1, 0.000524835278892129956 ),
+                      ctlpt( E1, -0.00157436573651590001 ) ) ),
+          list( list( ctlpt( E1, 0.0201296565003299989 ),
+                      ctlpt( E1, 0.0180304554849219992 ) ),
+                list( ctlpt( E1, 0.0178280595122289991 ),
+                      ctlpt( E1, 0.0157288584968209993 ) ),
+                list( ctlpt( E1, 0.0113056348328169996 ),
+                      ctlpt( E1, 0.00920643381740850024 ) ),
+                list( ctlpt( E1, 0.0048599198974855996 ),
+                      ctlpt( E1, 0.00276071888207759988 ) ),
+                list( ctlpt( E1, 0.000524835278895020006 ),
+                      ctlpt( E1, -0.00157436573651299999 ) ) ),
+          list( list( ctlpt( E1, 0.0176945980626550016 ),
+                      ctlpt( E1, 0.0155953970472470001 ) ),
+                list( ctlpt( E1, 0.0156895543998619991 ),
+                      ctlpt( E1, 0.0135903533844539993 ) ),
+                list( ctlpt( E1, 0.0100058284954760001 ),
+                      ctlpt( E1, 0.00790662748006839937 ) ),
+                list( ctlpt( E1, 0.00435338790520359981 ),
+                      ctlpt( E1, 0.00225418688979560009 ) ),
+                list( ctlpt( E1, 0.000524835278901180009 ),
+                      ctlpt( E1, -0.00157436573650680009 ) ) ),
+          list( list( ctlpt( E1, 0.0159240501310709999 ),
+                      ctlpt( E1, 0.0138248491156630002 ) ),
+                list( ctlpt( E1, 0.0141315089213279992 ),
+                      ctlpt( E1, 0.0120323079059199995 ) ),
+                list( ctlpt( E1, 0.00905009270336619952 ),
+                      ctlpt( E1, 0.00695089168795810005 ) ),
+                list( ctlpt( E1, 0.00401482530356309965 ),
+                      ctlpt( E1, 0.00191562428815509993 ) ),
+                list( ctlpt( E1, 0.000524835278910840033 ),
+                      ctlpt( E1, -0.00157436573649719991 ) ) ) ),
+    list( list( kv_open ),
+          list( kv_open ),
+          list( kv_open ) ) );
+s1 = coerce( s1, multivar_type );
+
+s2 = tbspline( 2, 4, 4,
+    list( list( list( ctlpt( E1, 0.0585000000000000034 ),
+                      ctlpt( E1, 0.0585000000000000034 ) ),
+                list( ctlpt( E1, 0.0585000000000000034 ),
+                      ctlpt( E1, 0.0585000000000000034 ) ),
+                list( ctlpt( E1, 0.0585000000000000034 ),
+                      ctlpt( E1, 0.0585000000000000034 ) ),
+                list( ctlpt( E1, 0.0585000000000000034 ),
+                      ctlpt( E1, 0.0585000000000000034 ) ),
+                list( ctlpt( E1, 0.0585000000000000034 ),
+                      ctlpt( E1, 0.0585000000000000034 ) ) ),
+          list( list( ctlpt( E1, 0.0475561864190450004 ),
+                      ctlpt( E1, 0.0475561864190450004 ) ),
+                list( ctlpt( E1, 0.0476960668850160002 ),
+                      ctlpt( E1, 0.0476960668850160002 ) ),
+                list( ctlpt( E1, 0.0480930613145000019 ),
+                      ctlpt( E1, 0.0480930613145000019 ) ),
+                list( ctlpt( E1, 0.0484928158565689979 ),
+                      ctlpt( E1, 0.0484928158565689979 ) ),
+                list( ctlpt( E1, 0.0487500000000000017 ),
+                      ctlpt( E1, 0.0487500000000000017 ) ) ),
+          list( list( ctlpt( E1, 0.0350653101817169979 ),
+                      ctlpt( E1, 0.0350653101817169979 ) ),
+                list( ctlpt( E1, 0.035241568759145997 ),
+                      ctlpt( E1, 0.035241568759145997 ) ),
+                list( ctlpt( E1, 0.0357411337844269969 ),
+                      ctlpt( E1, 0.0357411337844269969 ) ),
+                list( ctlpt( E1, 0.0362358399142330007 ),
+                      ctlpt( E1, 0.0362358399142330007 ) ),
+                list( ctlpt( E1, 0.0365624999999999978 ),
+                      ctlpt( E1, 0.0365624999999999978 ) ) ),
+          list( list( ctlpt( E1, 0.020473225771353 ),
+                      ctlpt( E1, 0.020473225771353 ) ),
+                list( ctlpt( E1, 0.0206448257194449987 ),
+                      ctlpt( E1, 0.0206448257194449987 ) ),
+                list( ctlpt( E1, 0.0211318494489299985 ),
+                      ctlpt( E1, 0.0211318494489299985 ) ),
+                list( ctlpt( E1, 0.0216216498352039994 ),
+                      ctlpt( E1, 0.0216216498352039994 ) ),
+                list( ctlpt( E1, 0.0219374999999999987 ),
+                      ctlpt( E1, 0.0219374999999999987 ) ) ),
+          list( list( ctlpt( E1, 0.0107906084919029994 ),
+                      ctlpt( E1, 0.0107906084919029994 ) ),
+                list( ctlpt( E1, 0.0109545994192009992 ),
+                      ctlpt( E1, 0.0109545994192009992 ) ),
+                list( ctlpt( E1, 0.0114193473535089997 ),
+                      ctlpt( E1, 0.0114193473535089997 ) ),
+                list( ctlpt( E1, 0.0118787737843930007 ),
+                      ctlpt( E1, 0.0118787737843930007 ) ),
+                list( ctlpt( E1, 0.0121875000000000004 ),
+                      ctlpt( E1, 0.0121875000000000004 ) ) ),
+          list( list( ctlpt( E1, 0.0035185920172026001 ),
+                      ctlpt( E1, 0.0035185920172026001 ) ),
+                list( ctlpt( E1, 0.00367705272024329999 ),
+                      ctlpt( E1, 0.00367705272024329999 ) ),
+                list( ctlpt( E1, 0.00412623447218030039 ),
+                      ctlpt( E1, 0.00412623447218030039 ) ),
+                list( ctlpt( E1, 0.00457289459346270008 ),
+                      ctlpt( E1, 0.00457289459346270008 ) ),
+                list( ctlpt( E1, 0.00487499999999999999 ),
+                      ctlpt( E1, 0.00487499999999999999 ) ) ),
+          list( list( ctlpt( E1, -0.00134942651396879995 ),
+                      ctlpt( E1, -0.00134942651396879995 ) ),
+                list( ctlpt( E1, -0.00119234690575300011 ),
+                      ctlpt( E1, -0.00119234690575300011 ) ),
+                list( ctlpt( E1, -0.000747064607995730017 ),
+                      ctlpt( E1, -0.000747064607995730017 ) ),
+                list( ctlpt( E1, -0.00030582631114397 ),
+                      ctlpt( E1, -0.00030582631114397 ) ),
+                list( ctlpt( E1, 0 ),
+                      ctlpt( E1, 0 ) ) ) ),
+    list( list( kv_open ),
+          list( kv_open ),
+          list( kv_open ) ) );
+s2 = coerce( s2, multivar_type );
+
+s3 = tbspline( 2, 4, 4,
+    list( list( list( ctlpt( E1, -0.0184809190929240003 ),
+                      ctlpt( E1, 0.041632332876053002 ) ),
+                list( ctlpt( E1, -0.0180397077971360016 ),
+                      ctlpt( E1, 0.0420735441718409972 ) ),
+                list( ctlpt( E1, -0.0168039598919670005 ),
+                      ctlpt( E1, 0.0433092920770100018 ) ),
+                list( ctlpt( E1, -0.0156723247046270005 ),
+                      ctlpt( E1, 0.0444409272643499983 ) ),
+                list( ctlpt( E1, -0.0150293159781499999 ),
+                      ctlpt( E1, 0.0450839359908270024 ) ) ),
+          list( list( ctlpt( E1, -0.0184356647480229986 ),
+                      ctlpt( E1, 0.0416775872209549994 ) ),
+                list( ctlpt( E1, -0.017964092264220001 ),
+                      ctlpt( E1, 0.0421491597047570013 ) ),
+                list( ctlpt( E1, -0.0166699667672970016 ),
+                      ctlpt( E1, 0.0434432852016799972 ) ),
+                list( ctlpt( E1, -0.0158255885830449992 ),
+                      ctlpt( E1, 0.0442876633859319996 ) ),
+                list( ctlpt( E1, -0.0150293159781829996 ),
+                      ctlpt( E1, 0.045083935990794001 ) ) ),
+          list( list( ctlpt( E1, -0.0185976255065679989 ),
+                      ctlpt( E1, 0.0415156264624089999 ) ),
+                list( ctlpt( E1, -0.0182368296434630012 ),
+                      ctlpt( E1, 0.0418764223255140011 ) ),
+                list( ctlpt( E1, -0.0171557184437199986 ),
+                      ctlpt( E1, 0.0429575335252569968 ) ),
+                list( ctlpt( E1, -0.0152769847093790004 ),
+                      ctlpt( E1, 0.0448362672595990011 ) ),
+                list( ctlpt( E1, -0.015029315978126 ),
+                      ctlpt( E1, 0.0450839359908509971 ) ) ),
+          list( list( ctlpt( E1, -0.0188953267439059998 ),
+                      ctlpt( E1, 0.041217925225070999 ) ),
+                list( ctlpt( E1, -0.0183683637688469986 ),
+                      ctlpt( E1, 0.0417448882001310029 ) ),
+                list( ctlpt( E1, -0.0169232037027420013 ),
+                      ctlpt( E1, 0.043190048266235001 ) ),
+                list( ctlpt( E1, -0.015839288822950999 ),
+                      ctlpt( E1, 0.0442739631460270025 ) ),
+                list( ctlpt( E1, -0.0150293159781639991 ),
+                      ctlpt( E1, 0.0450839359908129997 ) ) ),
+          list( list( ctlpt( E1, -0.0193618622234910005 ),
+                      ctlpt( E1, 0.0407513897454859983 ) ),
+                list( ctlpt( E1, -0.0188425319482510012 ),
+                      ctlpt( E1, 0.0412707200207260011 ) ),
+                list( ctlpt( E1, -0.0173245704134970015 ),
+                      ctlpt( E1, 0.0427886815554799974 ) ),
+                list( ctlpt( E1, -0.0153056705282849995 ),
+                      ctlpt( E1, 0.044807581440693002 ) ),
+                list( ctlpt( E1, -0.0150293159782510007 ),
+                      ctlpt( E1, 0.0450839359907259998 ) ) ),
+          list( list( ctlpt( E1, -0.0193520895913429983 ),
+                      ctlpt( E1, 0.0407611623776339971 ) ),
+                list( ctlpt( E1, -0.0187748075283339991 ),
+                      ctlpt( E1, 0.0413384444406430032 ) ),
+                list( ctlpt( E1, -0.0171212378717899988 ),
+                      ctlpt( E1, 0.0429920140971869966 ) ),
+                list( ctlpt( E1, -0.0153045724007120007 ),
+                      ctlpt( E1, 0.0448086795682650016 ) ),
+                list( ctlpt( E1, -0.0150293159784230003 ),
+                      ctlpt( E1, 0.0450839359905539985 ) ) ),
+          list( list( ctlpt( E1, -0.0191469778435830011 ),
+                      ctlpt( E1, 0.0409662741253939977 ) ),
+                list( ctlpt( E1, -0.0185816760545160012 ),
+                      ctlpt( E1, 0.0415315759144610011 ) ),
+                list( ctlpt( E1, -0.0169603926661819997 ),
+                      ctlpt( E1, 0.0431528593027949992 ) ),
+                list( ctlpt( E1, -0.0151205350332180005 ),
+                      ctlpt( E1, 0.0449927169357590001 ) ),
+                list( ctlpt( E1, -0.0150293159787010001 ),
+                      ctlpt( E1, 0.0450839359902769979 ) ) ) ),
+    list( list( kv_open ),
+          list( kv_open ),
+          list( kv_open ) ) );
+s3 = coerce( s3, multivar_type );
+
+s = list( s1, s2, s3 );  # s23
+
+a = TestSols( s, 1e-5, 1e-14 );
+ViewInput3Tvs( s, a );
+
+##################################################################
+o = list( ctlpt( e2, 4.9000000000000000e-01, 4.8000000000000000e-01 ) );
+
+s1 = RuledSrf(
+    ctlpt( E1, -0.489999999999999991 ) + ctlpt( E1, 0.510000000000000009 ),
+    ctlpt( E1, -0.489999999999999991 ) + ctlpt( E1, 0.510000000000000009 ) );
+s1 = coerce( s1, multivar_type );
+
+s2 = RuledSrf(
+    ctlpt( E1, -0.479999999999999982 ) + ctlpt( E1, -0.479999999999999982 ),
+    ctlpt( E1, 0.520000000000000018 ) + ctlpt( E1, 0.520000000000000018 ) );
+s2 = coerce( s2, multivar_type );
+
+s = list( s1, s2 );  # s24
+
+a = TestSols( s, 1e-5, 1e-14 );
+ViewInput2( s, a );
+
+##################################################################
+o = list( ctlpt( e3, 2.5000000000000000e-01, 6.6666666666666667e-01, 7.5000000000000000e-01 ) );
+
+s1 = tbspline( 2, 2, 2,
+    list( list( list( ctlpt( E1, 2 ),
+                      ctlpt( E1, 2 ) ),
+                list( ctlpt( E1, -1 ),
+                      ctlpt( E1, -1 ) ) ),
+          list( list( ctlpt( E1, 2 ),
+                      ctlpt( E1, 2 ) ),
+                list( ctlpt( E1, -1 ),
+                      ctlpt( E1, -1 ) ) ) ),
+    list( list( kv_open ),
+          list( kv_open ),
+          list( kv_open ) ) );
+s1 = coerce( s1, multivar_type );
+
+s2 = tbspline( 2, 2, 2,
+    list( list( list( ctlpt( E1, -0.5 ),
+                      ctlpt( E1, 1.5 ) ),
+                list( ctlpt( E1, -0.5 ),
+                      ctlpt( E1, 1.5 ) ) ),
+          list( list( ctlpt( E1, -0.5 ),
+                      ctlpt( E1, 1.5 ) ),
+                list( ctlpt( E1, -0.5 ),
+                      ctlpt( E1, 1.5 ) ) ) ),
+    list( list( kv_open ),
+          list( kv_open ),
+          list( kv_open ) ) );
+s2 = coerce( s2, multivar_type );
+
+s3 = tbspline( 2, 2, 2,
+    list( list( list( ctlpt( E1, 1.5 ),
+                      ctlpt( E1, 1.5 ) ),
+                list( ctlpt( E1, 1.5 ),
+                      ctlpt( E1, 1.5 ) ) ),
+          list( list( ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ) ),
+                list( ctlpt( E1, -0.5 ),
+                      ctlpt( E1, -0.5 ) ) ) ),
+    list( list( kv_open ),
+          list( kv_open ),
+          list( kv_open ) ) );
+s3 = coerce( s3, multivar_type );
+
+s = list( s1, s2, s3 );  # s25
+
+a = TestSols( s, 1e-5, 1e-14 );
+ViewInput3Tvs( s, a );
+
+##################################################################
+o = list( ctlpt( e2,-2.4238931475358477e-01, 1.1799146447931050e+00 ),
+	  ctlpt( e2, 0.0000000000000000e+00, 0.0000000000000000e+00 ),
+	  ctlpt( e2, 3.6800118271864440e-01, 3.6800118271864463e-01 ),
+	  ctlpt( e2, 4.3259044547786968e-01, 4.3259044547787001e-01 ),
+	  ctlpt( e2, 7.2739841203619404e-01, 7.2739841203619449e-01 ),
+	  ctlpt( e2, 1.0000000000000000e+00, 1.0000000000000000e+00 ),
+	  ctlpt( e2, 1.1799146447931055e+00, -2.4238931475358433e-01 ) );
+
+
+s1 = sbspline( 4, 4, 
+    list( list( ctlpt( E1, -213.199999999999989 ),
+                ctlpt( E1, 157.599999999999994 ),
+                ctlpt( E1, 19 ),
+                ctlpt( E1, -110.599999999999994 ) ),
+          list( ctlpt( E1, 166.599999999999994 ),
+                ctlpt( E1, -99.7999999999999972 ),
+                ctlpt( E1, -71 ),
+                ctlpt( E1, 155.800000000000011 ) ),
+          list( ctlpt( E1, -162.800000000000011 ),
+                ctlpt( E1, 78.4000000000000057 ),
+                ctlpt( E1, 91 ),
+                ctlpt( E1, -157.400000000000006 ) ),
+          list( ctlpt( E1, 118.900000000000006 ),
+                ctlpt( E1, -28.6999999999999993 ),
+                ctlpt( E1, -143 ),
+                ctlpt( E1, 197.199999999999989 ) ) ),
+    list( list( kv_open ),
+          list( kv_open ) ) );
+s1 = coerce( s1, multivar_type );
+
+s2 = sbspline( 4, 4, 
+    list( list( ctlpt( E1, -213.199999999999989 ),
+                ctlpt( E1, 166.599999999999994 ),
+                ctlpt( E1, -162.800000000000011 ),
+                ctlpt( E1, 118.900000000000006 ) ),
+          list( ctlpt( E1, 157.599999999999994 ),
+                ctlpt( E1, -99.7999999999999972 ),
+                ctlpt( E1, 78.4000000000000057 ),
+                ctlpt( E1, -28.6999999999999993 ) ),
+          list( ctlpt( E1, 19 ),
+                ctlpt( E1, -71 ),
+                ctlpt( E1, 91 ),
+                ctlpt( E1, -143 ) ),
+          list( ctlpt( E1, -110.599999999999994 ),
+                ctlpt( E1, 155.800000000000011 ),
+                ctlpt( E1, -157.400000000000006 ),
+                ctlpt( E1, 197.199999999999989 ) ) ),
+    list( list( kv_open ),
+          list( kv_open ) ) );
+s2 = coerce( s2, multivar_type );
+
+s = list( s1, s2 );  # s26
+
+a = TestSols( s, 1e-5, 1e-14 );
+ViewInput2( s, a );
+
+##################################################################
+resolution = save_res;
+LastFloatFrmt = iritstate( "FloatFrmt", LastFloatFrmt );
+
+free( o );
+free( a );
+free( s );
+free( s1 );
+free( s2 );
+free( s3 );
+free( Solutions );
+free( LastFloatFrmt );
+free( save_res );

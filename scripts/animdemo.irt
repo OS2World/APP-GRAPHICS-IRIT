@@ -1,0 +1,97 @@
+#
+# Simple animation demo
+#
+#			Zvika Zilberman and Haggay Dagan
+#
+
+save_mat = view_mat;
+save_res = resolution;
+
+view_mat = view_mat * sc( 0.1 );
+viewobj( view_mat );
+
+a = box( vector( 0, 0, 0 ), 1, 1, 1 );
+b = box( vector( 0, 0, 0 ), 1, 1, 1 );
+c = box( vector( 0, 0, 0 ), 1, 1, 1 );
+d = sphere( vector( 0, 0, 0), 0.7 );
+
+pt0   =  ctlpt( e1,  0.0 );
+pt1   =  ctlpt( e1,  1.0 );
+pt2   =  ctlpt( e1,  2.0 );
+pt6   =  ctlpt( e1,  6.0 );
+pt360 =  ctlpt( e1,  360.0 );
+
+pt10 = ctlpt( e1, -4.0 );
+pt11 = ctlpt( e1,  1.0 );
+pt12 = ctlpt( e1,  4.0 );
+pt13 = ctlpt( e1, -1.0 );
+
+visible = creparam( cbezier( list( pt10,  pt11 ) ), 0.0, 5.0 );
+mov_x   = creparam( cbezier( list( pt0, pt6, pt2 ) ), 0.0, 1.2 );
+mov_y   = mov_x;
+mov_z   = mov_x;
+rot_x   = creparam( cbspline( 2,
+                              list( pt0, pt360, pt0 ),
+                              list( KV_OPEN ) ),
+                    1.2, 2.5 ); 
+rot_y   = rot_x;
+rot_z   = rot_x;
+scl     = creparam( cbezier( list( pt1, pt2, pt1, pt2, pt1 ) ),
+                    2.5, 4.0 );
+scl_x   = scl;
+scl_y   = scl;
+scl_z   = scl;
+mov_xyz = creparam( circle( vector( 0, 0, 0 ), 2.0 ), 4.0, 5.0 );
+
+attrib( d, "animation", list( mov_xyz, visible ) );
+free( visible );
+
+visible = creparam( cbezier( list( pt12,  pt13 ) ), 0.0, 5.0 );
+
+attrib( a, "animation", list( rot_x, mov_x, scl, scl_x, visible ) );
+attrib( b, "animation", list( rot_y, mov_y, scl, scl_y, visible ) );
+attrib( c, "animation", list( rot_z, mov_z, scl, scl_z, visible ) );
+
+color( a, red );
+color( b, green );
+color( c, blue );
+color( d, cyan );
+
+demo = list( a, b, c, d );
+
+interact( demo );
+viewanim( 0, 5, 0.01 );
+
+save( "animdemo", demo );
+
+free( a );
+free( b );
+free( c );
+free( d );
+free( demo );
+
+free( pt0 );
+free( pt1 );
+free( pt2 );
+free( pt6 );
+free( pt360 );
+free( pt10 );
+free( pt11 );
+free( pt12 );
+free( pt13 );
+
+free( visible );
+free( mov_xyz );
+free( mov_x );
+free( mov_y );
+free( mov_z );
+free( scl );
+free( scl_x );
+free( scl_y );
+free( scl_z );
+free( rot_x );
+free( rot_y );
+free( rot_z );
+
+resolution = save_res;
+view_mat = save_mat;

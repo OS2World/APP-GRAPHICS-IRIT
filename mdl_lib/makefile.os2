@@ -1,0 +1,23 @@
+#
+# This is the make file for the mdl. lib subdirectory (OS2, gcc 2.1, gnumake).
+#
+#				Gershon Elber, Aug 1991
+#
+
+include ..\makeflag.os2
+
+OBJS =  mdl_aux.o mdl_bbox.o mdl_bool.o mdl2bool.o \
+	mdl_dbg.o mdl_dum.o \
+	mdl_err.o mdl_ftl.o mdl_gen.o \
+	mdl_prim.o mdl_ptch.o mdlcnvrt.o
+
+libmdl.a: $(OBJS)
+	-$(RM) libmdl.a
+	ar rc libmdl.a $(OBJS)
+
+install: libmdl.a
+	$(CP) libmdl.a $(IRIT_LIB_DIR)
+	ar s $(IRIT_LIB_DIR)/libmdl.a
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.
+

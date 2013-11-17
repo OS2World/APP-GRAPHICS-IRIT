@@ -1,0 +1,153 @@
+#
+# Some examples of 3d bisector computations between surfaces and points.
+#
+#			Gershon Elber, February 1997.
+#
+
+save_res = resolution;
+resolution = 60;
+save_mat = view_mat;
+view_mat = rotz( 35 ) * rotx( -60 ) * sc( 0.3 );
+viewobj( view_mat );
+
+viewstate( "DepthCue", 1 );
+viewstate( "WidthLines", 1 );
+
+#############################################################################
+#
+# A bilinear surface: sphere--plane bisector
+#
+s1 = ruledSrf( ctlpt( E3, -1.0, -1.0, 0.0 ) + ctlpt( E3,  1.0, -1.0, 0.0 ),
+	       ctlpt( E3, -1.0,  1.0, 0.0 ) + ctlpt( E3,  1.0,  1.0, 0.0 ) );
+color( s1, red );
+pt = point( 0, 0, 1 );
+adwidth( pt, 3 );
+color( pt, yellow );
+
+bisect = sbisector( s1, pt );
+color( bisect, cyan );
+
+save( "sbisect1", list( s1, pt, bisect ) );
+interact( list( s1, pt, bisect ) );
+
+for ( z = 1.0, -0.01, -1.0,
+    pt = point( 0, 0, z ):
+    adwidth( pt, 3 ):
+    color( pt, yellow ):
+    bisect = sbisector( s1, pt ):
+    color( bisect, cyan ):
+    view( list( s1, pt, bisect ), 1 ) );
+
+free( s1 );
+pause();
+
+#############################################################################
+#
+# A sphere--sphere/sphere-pt bisector
+#
+s = sphereSrf( 1 );
+color( s, red );
+pt = point( 0, 2, 0 );
+adwidth( pt, 3 );
+color( pt, yellow );
+
+bisect = sbisector( s, pt );
+color( bisect, cyan );
+
+save( "sbisect2", list( s, pt, bisect ) );
+interact( list( s, pt, bisect ) );
+
+#############################################################################
+#
+# A quadratic surface
+#
+s2 = sFromCrvs( list( cbezier( list( ctlpt( E3, -1.0, -1.0,  0.0 ),
+				     ctlpt( E3, -1.0,  0.0,  0.1 ),
+				     ctlpt( E3, -1.0,  1.0,  0.0 ) ) ),
+		      cbezier( list( ctlpt( E3,  0.0, -1.0,  0.1 ),
+				     ctlpt( E3,  0.0,  0.0, -0.8 ),
+				     ctlpt( E3,  0.0,  1.0,  0.1 ) ) ),
+		      cbezier( list( ctlpt( E3,  1.0, -1.0,  0.0 ),
+				     ctlpt( E3,  1.0,  0.0,  0.1 ),
+				     ctlpt( E3,  1.0,  1.0,  0.0 ) ) ) ),
+		3, KV_OPEN );
+color( s2, red );
+
+pt = point( 0, 0, 1 );
+adwidth( pt, 3 );
+color( pt, yellow );
+
+bisect = sbisector( s2, pt );
+color( bisect, cyan );
+
+save( "sbisect3", list( s2, pt, bisect ) );
+interact( list( s2, pt, bisect ) );
+
+for ( z = 1.0, -0.03, -1.0,
+    pt = point( 0, 0, z ):
+    adwidth( pt, 3 ):
+    color( pt, yellow ):
+    bisect = sbisector( s2, pt ):
+    color( bisect, cyan ):
+    view( list( s2, pt, bisect ), 1 ) );
+
+pause();
+
+for ( z = 3.0, -0.03, -1.0,
+    s2a = seditpt( s2, ctlpt( E3, 0.0, 0.0, z ), 1, 1 ):
+    color( s2a, red ):
+    bisect = sbisector( s2a, pt ):
+    color( bisect, cyan ):
+    view( list( s2a, pt, bisect ), 1 ) );
+
+free( s2 );
+free( s2a );
+pause();
+
+#############################################################################
+#
+# A bicubic surface (region of a glass)
+#
+
+c3tmp = cbezier( list( ctlpt( E3, -0.6, 0.0,  0.0 ),
+		       ctlpt( E3, -0.2, 0.0,  0.4 ),
+		       ctlpt( E3,  0.2, 0.0, -0.4 ),
+		       ctlpt( E3,  0.6, 0.0,  0.0 ) ) );
+s3 = sFromCrvs( list( c3tmp * ty( -0.6 ),
+		      c3tmp * sz( -1.0 ) * tz( 0.1 ) * ty( -0.2 ),
+		      c3tmp * ty(  0.2 ) * tz( -0.1 ),
+		      c3tmp * sz( -1.0 ) * ty( 0.6 ) ),
+		4, KV_OPEN );
+free( c3tmp );
+color( s3, red );
+
+pt = point( 0.0, 0.0, 1.0 );
+adwidth( pt, 3 );
+color( pt, yellow );
+
+bisect = sbisector( s3, pt );
+color( bisect, cyan );
+
+save( "sbisect4", list( s3, pt, bisect ) );
+interact( list( s3, pt, bisect ) );
+
+for ( z = 1.0, -0.03, -1.0,
+    pt = point( 0, 0, z ):
+    adwidth( pt, 3 ):
+    color( pt, yellow ):
+    bisect = sbisector( s3, pt ):
+    color( bisect, cyan ):
+    view( list( s3, pt, bisect ), 1 ) );
+
+free( s3 );
+pause();
+
+#############################################################################
+
+free( s );
+free( z );
+free( pt );
+free( bisect );
+
+view_mat = save_mat;
+resolution = save_res;

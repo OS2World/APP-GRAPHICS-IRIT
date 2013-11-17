@@ -1,0 +1,115 @@
+#
+# Some tests of packing.
+#
+#						Gershon Elber, June 2009
+#
+
+view_mat1 = rx( 0 );
+viewobj( view_mat1 );
+free( view_mat1 );
+
+#################################
+
+C1 = PKTri3Crcs( pt1 = point(    0,   0.8, 0 ),
+	 	 pt2 = point(  0.8,  -0.7, 0 ),
+		 pt3 = point( -0.8,  -0.7, 0 ),
+		 true, 0.01, -1e-8 ):
+Tri1 = poly( list( pt1, pt2, pt3, pt1 ), 1 ):
+color( Tri1, yellow ):
+
+interact( list( Tri1, C1 ) );
+
+C2 = PKTri3Crcs( pt1 = point(    0,   0.8, 0 ),
+	 	 pt2 = point(  0.8,  -0.7, 0 ),
+		 pt3 = point( -0.8,  -0.7, 0 ),
+		 false, 0.01, -1e-8 ):
+Tri2 = poly( list( pt1, pt2, pt3, pt1 ), 1 ):
+color( Tri2, yellow ):
+
+interact( list( Tri2, C2 ) );
+
+#################################
+
+C3 = PKTri3Crcs( pt1 = point(    0,   0.5, 0 ),
+	 	 pt2 = point(  0.8,  -0.4, 0 ),
+		 pt3 = point( -1.2,  -0.4, 0 ),
+		 true, 0.01, -1e-8 ):
+Tri3 = poly( list( pt1, pt2, pt3, pt1 ), 1 ):
+color( Tri3, yellow ):
+
+interact( list( Tri3, C3 ) );
+
+C4 = PKTri3Crcs( pt1 = point(    0,   0.5, 0 ),
+	 	 pt2 = point(  0.8,  -0.4, 0 ),
+		 pt3 = point( -1.2,  -0.4, 0 ),
+		 false, 0.01, -1e-8 ):
+Tri4 = poly( list( pt1, pt2, pt3, pt1 ), 1 ):
+color( Tri4, yellow ):
+
+interact( list( Tri4, C4 ) );
+
+save( "mv1pack", list( list( C1, Tri1 ) * tx( -8 ),
+		       list( C2, Tri2 ) * tx( -4 ),
+		       list( C3, Tri3 ) * tx(  4 ),
+		       list( C4, Tri4 ) * tx(  8 ) ) );
+
+#################################
+
+for ( x = -0.905, 0.01, 1,
+    C1 = PKTri3Crcs( pt1 = point(    0,   0.8, 0 ),
+	 	     pt2 = point(    x,  -0.7, 0 ),
+		     pt3 = point( -0.2,  -0.7, 0 ),
+		     true, 0.01, -1e-8 ):
+    Tri1 = poly( list( pt1, pt2, pt3, pt1 ), 1 ):
+    color( Tri1, yellow ):
+    view( list( Tri1, C1 ), 1 ) );
+
+pause();
+
+Anim = nil():
+for ( x = -0.95, 0.1, 1,
+    C1 = PKTri3Crcs( pt1 = point(    0,   0.8, 0 ),
+	 	     pt2 = point(    x,    -x, 0 ),
+		     pt3 = point( -0.2,  -0.7, 0 ),
+		     true, 0.01, -1e-8 ):
+    Tri1 = poly( list( pt1, pt2, pt3, pt1 ), 1 ):
+    color( Tri1, yellow ):
+    TransX = x * abs( x )^0.5 * 10:
+    snoc( list( Tri1 * tx( TransX ), C1 * tx( TransX ) ), Anim ):
+    view( list( Tri1, C1 ), 1 ) );
+
+view( Anim, 1 );
+save( "mv2pack", Anim );
+
+pause();
+
+#################################
+#
+# This is slow so we do a very crude tolerance here.
+#
+C1 = PKTri6Crcs( pt1 = point(  0.07,   0.82, 0 ),
+	 	 pt2 = point(  0.18,  -0.71, 0 ),
+		 pt3 = point( -0.85,  -0.73, 0 ),
+		 true, 0.5, -1e-8 ):
+Tri1 = poly( list( pt1, pt2, pt3, pt1 ), 1 ):
+color( Tri1, yellow ):
+
+interact( list( Tri1, C1 ) );
+save( "mv3pack", list( Tri1, C1 ) );
+
+#################################
+
+free( x );
+free( pt1 );
+free( pt2 );
+free( pt3 );
+free( C1 );
+free( C2 );
+free( C3 );
+free( C4 );
+free( Tri1 );
+free( Tri2 );
+free( Tri3 );
+free( Tri4 );
+free( Anim );
+free( TransX );

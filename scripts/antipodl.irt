@@ -1,0 +1,154 @@
+#
+# Few examples of curve and surface antipodal points computations.
+#
+#						 Gershon Elber Feb 2006
+#
+
+EvalAntiPodalPtsOnCrv = function( Crv ): Aps: Ap: i: t1: t2: Pt1: Pt2:
+    Diam: DiamLine:
+    Aps = AntiPodal( Crv, 1e-3, 1e-14 ):
+    printf( "%d antipodal points detected\\n", list( sizeof( Aps ) ) ):
+    return = nil():
+    Diam = 0:
+    for ( i = 1, 1, sizeof( Aps ),
+	Ap = nth( Aps, i ):
+	t1 = coord( Ap, 1 ):
+	t2 = coord( Ap, 2 ):
+	Pt1 = ceval( Crv, t1 ):
+	Pt2 = ceval( Crv, t2 ):
+	if ( dstPtPt( coerce( Pt1, point_type ),
+		      coerce( Pt2, point_type ) ) > Diam,
+	    Diam = dstPtPt( coerce( Pt1, point_type ),
+		            coerce( Pt2, point_type ) ):
+	    DiamLine = Pt1 + Pt2 ):
+	snoc( list( Pt1 + Pt2, Pt1 * tx( 0 ), Pt2 * tx( 0 ) ), return ) ):
+    color( return, yellow ):
+    color( DiamLine, cyan ):
+    adwidth( DiamLine, 3 ):
+    snoc( list( DiamLine ), return );
+
+EvalAntiPodalPtsOnSrf = function( Srf ): Aps: Ap: i: u1: v1: u2: v2: Pt1: Pt2:
+    Diam: DiamLine:
+    Aps = AntiPodal( Srf, 1e-3, -1e-12 ):
+    printf( "%d antipodal points detected\\n", list( sizeof( Aps ) ) ):
+    return = nil():
+    Diam = 0:
+    for ( i = 1, 1, sizeof( Aps ),
+	Ap = nth( Aps, i ):
+	u1 = coord( Ap, 1 ):
+	v1 = coord( Ap, 2 ):
+	u2 = coord( Ap, 3 ):
+	v2 = coord( Ap, 4 ):
+	Pt1 = seval( Srf, u1, v1 ):
+	Pt2 = seval( Srf, u2, v2 ):
+	if ( dstPtPt( coerce( Pt1, point_type ),
+		      coerce( Pt2, point_type ) ) > Diam,
+	    Diam = dstPtPt( coerce( Pt1, point_type ),
+		            coerce( Pt2, point_type ) ):
+	    DiamLine = Pt1 + Pt2 ):
+	snoc( list( Pt1 + Pt2, Pt1 * tx( 0 ), Pt2 * tx( 0 ) ), return ) ):
+    color( return, yellow ):
+    color( DiamLine, cyan ):
+    adwidth( DiamLine, 3 ):
+    snoc( list( DiamLine ), return );
+
+#############################################################################
+
+c1 = pcircle( vector( 0.1, 0.2, 0.3 ), 0.7 ) * sy( 0.5 );
+
+ApLine1 = EvalAntiPodalPtsOnCrv( c1 );
+
+interact( list( axes, ApLine1, c1 ) );
+
+c2 = cbspline( 4,
+    list( ctlpt( E2, 0.707, 0.304 ),
+          ctlpt( E2, 0.317, -0.1 ),
+          ctlpt( E2, -0.052, 0.147 ),
+          ctlpt( E2, -0.159, 0.682 ),
+          ctlpt( E2, -0.592, 0.039 ),
+          ctlpt( E2, -0.646, -0.254 ),
+          ctlpt( E2, -0.313, -0.532 ),
+          ctlpt( E2, -0.568, -0.145 ),
+          ctlpt( E2, -0.402, 0.336 ),
+          ctlpt( E2, -0.272, 0.134 ),
+          ctlpt( E2, -0.168, 0.241 ),
+          ctlpt( E2, -0.056, 0.641 ),
+          ctlpt( E2, 0.272, -0.069 ),
+          ctlpt( E2, 0.361, -0.173 ),
+          ctlpt( E2, 0.443, 0.062 ),
+          ctlpt( E2, 0.613, -0.186 ),
+          ctlpt( E2, 0.541, 0.101 ),
+          ctlpt( E2, 0.437, 0.263 ),
+          ctlpt( E2, 0.509, 0.335 ),
+          ctlpt( E2, 0.775, 0.155 ) ),
+    list( kv_periodic ) );
+
+ApLine2 = EvalAntiPodalPtsOnCrv( c2 );
+
+interact( list( axes, ApLine2, c2 ) );
+
+save( "antipdl1", list( list( c1, ApLine1 ) * tx( -1 ),
+		        list( c2, ApLine2 ) * tx( 1 ) ) );
+
+#############################################################################
+
+c1 = cbspline( 4,
+    list( ctlpt( E2,  0.7,  0.5 ),
+          ctlpt( E2, -0.4,  0.4 ),
+          ctlpt( E2, -0.4, -0.4 ),
+          ctlpt( E2,  0.7, -0.5 ) ),
+    list( kv_open ) );
+c2 = cbspline( 4,
+    list( ctlpt( E2,  0.7,  0.5 ),
+          ctlpt( E2, -0.4, -0.8 ),
+          ctlpt( E2, -0.4,  0.8 ),
+          ctlpt( E2,  0.7, -0.5 ) ),
+    list( kv_open ) );
+s1 = sFromCrvs( list( c1,
+		      c2 * sc( 1.1 ) * tx( -0.2 ) * tz( 0.2 ),
+		      c2 * sx( 1.1 ) * tx( -0.2 ) * tz( 0.4 ),
+		      c1 * tz( 0.6 ) ),
+		3, kv_open );
+
+ApLine1 = EvalAntiPodalPtsOnSrf( s1 );
+
+interact( list( axes, ApLine1, s1 ) );
+
+
+
+c1 = cbspline( 4,
+    list( ctlpt( E2,  1.0,  0.15 ),
+          ctlpt( E2, -0.4,  0.4 ),
+          ctlpt( E2, -0.4, -0.4 ),
+          ctlpt( E2,  1.0, -0.15 ) ),
+    list( kv_open ) );
+c2 = cbspline( 4,
+    list( ctlpt( E2,  1.0,   0.1 ),
+          ctlpt( E2,  0.65, -0.2 ),
+          ctlpt( E2, -0.2,   0.25 ),
+          ctlpt( E2, -0.2,  -0.252 ),
+          ctlpt( E2,  0.65,  0.2 ),
+          ctlpt( E2,  1.0,  -0.1 ) ),
+    list( kv_open ) );
+s2 = sFromCrvs( list( c1,
+		      c2 * sc( 1.1 ) * tx( -0.2 ) * tz( 0.2 ),
+		      c2 * sx( 1.1 ) * tx( -0.2 ) * tz( 0.4 ),
+		      c1 * tz( 0.6 ) ),
+		3, kv_open );
+
+ApLine2 = EvalAntiPodalPtsOnSrf( s2 );
+
+interact( list( axes, ApLine2, s2 ) );
+
+save( "antipdl2", list( list( s1, ApLine1 ) * tx( -1 ),
+		        list( s2, ApLine2 ) * tx( 1 ) ) );
+
+#############################################################################
+
+free( c1 );
+free( c2 );
+free( s1 );
+free( s2 );
+free( ApLine1 );
+free( ApLine2 );
+

@@ -1,0 +1,15 @@
+#
+# Makefile for the TEST hidden curve remover.
+#
+
+include ../makeflag.unx
+
+OBJS =	test.o$(IRIT_OBJ_PF)
+
+all:	test$(IRIT_EXE_PF)
+
+test$(IRIT_EXE_PF):	$(OBJS)
+	$(CC) $(CFLAGS) -o test$(IRIT_EXE_PF) $(OBJS) $(MOREOBJS) \
+	$(IRIT_LIBS) $(IRIT_MORE_LIBS) $(GRAPOGLLIBS) -lm
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

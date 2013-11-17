@@ -1,0 +1,95 @@
+#
+# Compute offset of a freeform curve by matching it with a unit sphere.
+#
+#					Gershon Elber, July 1995.
+#
+
+Circ = pcircle( vector( 0, 0, 0 ), 1 );
+
+#
+# Example 1.
+#
+
+Crv1 = cbezier( list( ctlpt( E2, -0.5, 0.0 ),
+		      ctlpt( E2, -0.5, 1.7 ),
+		      ctlpt( E2,  0.5, 1.7 ),
+		      ctlpt( E2,  0.5, 0.0 ) ) );
+color( Crv1, red );
+attrib( Crv1, "width", 0.01 );
+attrib( Crv1, "Dwidth", 4 );
+
+Arc1 = cregion( Circ, 0, 2 );
+ffcompat( Crv1, Arc1 );
+color( Arc1, green );
+attrib( Arc1, "width", 0.01 );
+
+interact( list( Crv1, Arc1 ) );
+
+Arc1match = ffmatch( Crv1, Arc1, 50, 200, 2, false, 2 );
+
+Offsets1NoMatch = nil();
+for (i = -5, 1, 5,
+    snoc( symbSum( Crv1, Arc1 * sc( i / 10 ) ), Offsets1NoMatch ) );
+color( Offsets1NoMatch, yellow );
+All1a = list( Arc1, Crv1, Offsets1NoMatch ) * sc( 0.7 ) * tx( -0.8 ) * ty( 0.5 );
+
+Offsets1 = nil();
+for (i = -5, 1, 5,
+    snoc( symbSum( Crv1, Arc1match * sc( i / 10 ) ), Offsets1 ) );
+color( Offsets1, yellow );
+All1b = list( Arc1, Crv1, Offsets1 ) * sc( 0.7 ) * tx( 0.8 ) * ty( 0.5 );
+
+#
+# Example 2.
+#
+
+Crv2 = Crv1 * sy( 0.8 );
+color( Crv2, red );
+attrib( Crv2, "width", 0.01 );
+attrib( Crv2, "Dwidth", 4 );
+
+Arc2 = cregion( Circ, 0, 2 );
+ffcompat( Crv2, Arc2 );
+color( Arc2, green );
+attrib( Arc2, "width", 0.01 );
+
+interact( list( Crv2, Arc2 ) );
+
+Arc2match = ffmatch( Crv2, Arc2, 50, 200, 2, false, 1 );
+
+
+Offsets2NoMatch = nil();
+for (i = -5, 1, 5,
+    snoc( symbSum( Crv2, Arc2 * sc( i / 10 ) ), Offsets2NoMatch ) );
+color( Offsets2NoMatch, yellow );
+All2a = list( Arc2, Crv2, Offsets2NoMatch ) * sc( 0.7 ) * tx( -0.8 ) * ty( -0.9 );
+
+
+Offsets2 = nil();
+for (i = -5, 1, 5,
+    snoc( symbSum( Crv2, Arc2match * sc( i / 10 ) ), Offsets2 ) );
+color( Offsets2, yellow );
+All2b = list( Arc2, Crv2, Offsets2 ) * sc( 0.7 ) * tx( 0.8 ) * ty( -0.9 );
+
+All = list( All1a, All1b, All2a, All2b );
+interact( All );
+
+save( "ofstmtch", All );
+
+free( Crv1 );
+free( Crv2 );
+free( Arc1 );
+free( Arc2 );
+free( Arc1match );
+free( Arc2match );
+free( Offsets1NoMatch );
+free( Offsets2NoMatch );
+free( Offsets1 );
+free( Offsets2 );
+free( All );
+free( All1a );
+free( All1b );
+free( All2a );
+free( All2b );
+free( Circ );
+free( i );

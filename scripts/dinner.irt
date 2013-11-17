@@ -1,0 +1,356 @@
+#
+# A dinner table scene, to demonstrate the surface constructors of the IRIT
+# solid modeller. Do not attempt to run this model on an IBM PC...
+#
+#					Gershon Elber, June 1991
+#
+# modification to dinner.ray:
+# fov 12
+# light 1 1 1 point 10 30 10
+
+save_res = resolution;
+if ( machine == msdos, resolution = 5, resolution = 10 );
+
+#
+# First model the floor...
+#
+v1 = vector( -4.0, -4.0, 0.0 );
+v2 = vector(  4.0, -4.0, 0.0 );
+v3 = vector(  4.0,  4.0, 0.0 );
+v4 = vector( -4.0,  4.0, 0.0 );
+scene_floor = poly( list( v4, v3, v2, v1 ), false );
+free( v1 );
+free( v2 );
+free( v3 );
+free( v4 );
+
+color( scene_floor, white );
+attrib( scene_floor, "texture", "marble" );
+attrib( scene_floor, "reflect", "0.6" );
+attrib( scene_floor, "rgb", "100,0,0" );
+
+#
+# Model the table:
+#
+
+cross = ctlpt( E3, 0.0001, 0.0, 1.0 ) +
+        ctlpt( E3, 1.0,    0.0, 1.0 ) +
+        ctlpt( E3, 1.0,    0.0, 0.95 ) +
+	cbspline( 3,
+		  list( ctlpt( E3, 0.1, 0.0, 0.95 ),
+			ctlpt( E3, 0.1, 0.0, 0.9 ),
+			ctlpt( E3, 0.1, 0.0, 0.7 ),
+			ctlpt( E3, 0.2, 0.0, 0.6 ),
+			ctlpt( E3, 0.2, 0.0, 0.2 ),
+			ctlpt( E3, 0.4, 0.0, 0.05 ),
+			ctlpt( E3, 0.4, 0.0, 0.0 ) ),
+		  list( KV_OPEN ) ) +
+	ctlpt( E3, 0.0001, 0.0, 0.0 );
+table = -surfrev( cross );
+color( table, yellow );
+attrib( table, "resolution", 2 );
+attrib( table, "texture", "wood" );
+attrib( table, "reflect", "0.6" );
+attrib( table, "rgb", "244,164,96" );
+
+#
+# Make the chairs.
+#
+base1 = sweepsrf( circle( vector( 0.0, 0.0, 0.0 ), 0.02 ),
+		  cbspline( 3,
+			    list( ctlpt( E3, 0.5,   0.2, 0.5 ),
+				  ctlpt( E3, 0.5,   0.2, 0.07 ),
+				  ctlpt( E3, 0.5,   0.2, 0.015 ),
+				  ctlpt( E3, 0.43,  0.2, 0.015 ),
+				  ctlpt( E3, 0.25,  0.2, 0.1 ),
+				  ctlpt( E3, 0.07,  0.2, 0.015 ),
+				  ctlpt( E3, 0.0,   0.2, 0.015 ),
+				  ctlpt( E3, 0.0,   0.2, 0.07 ),
+				  ctlpt( E3, 0.0,   0.2, 0.5 ) ),
+			    list( KV_OPEN ) ),
+		  off );
+color( base1, white );
+attrib( base1, "reflect", "0.9" );
+base2 = base1 * trans( vector( 0.0, -0.4, 0.0 ) );
+
+swpcrv = cbspline( 3,
+		   list( ctlpt( E3,  0.6, 0.0, 0.5 ),
+			 ctlpt( E3,  0.3, 0.0, 0.6 ),
+			 ctlpt( E3,  0.0, 0.0, 0.5 ),
+			 ctlpt( E3, -0.1, 0.0, 0.5 ),
+			 ctlpt( E3, -0.1, 0.0, 0.6 ),
+			 ctlpt( E3,  0.0, 0.0, 0.9 ),
+			 ctlpt( E3, -0.1, 0.0, 1.2 ) ),
+		   list( KV_OPEN ) );
+swpcrv = crefine( swpcrv, false,
+		  list( 0.002, 0.02, 0.04, 0.06, 0.94, 0.96, 0.98, 0.998 ) );
+
+cross = arc( vector(  0.25,  0.05,  0.0 ),
+	     vector(  0.25,  0.0,   0.0 ),
+	     vector(  0.3,   0.0,   0.0 ) ) +
+	arc( vector(  0.3,   0.0,   0.0 ),
+	     vector(  0.25,  0.0,   0.0 ),
+	     vector(  0.25, -0.05,  0.0 ) ) +
+	arc( vector( -0.25, -0.05,  0.0 ),
+	     vector( -0.25,  0.0,   0.0 ),
+	     vector( -0.3,   0.0,   0.0 ) ) +
+	arc( vector( -0.3,   0.0,   0.0 ),
+	     vector( -0.25,  0.0,   0.0 ),
+	     vector( -0.25,  0.05,  0.0 ) ) +
+	ctlpt( E3, 0.25, 0.05, 0.0 );
+
+coverMain = -sweepsrf( cross * rotz( 90 ), swpcrv, off );
+free( swpcrv );
+
+color( coverMain, yellow );
+attrib( coverMain, "texture", "wood" );
+attrib( coverMain, "rgb", "244,164,96" );
+
+c1 = cmesh(coverMain, ROW, 14);
+c2 = c1 * trans( vector( -0.018, 0.0, 0.06 ) );
+c3 = c2 * scale( vector( 0.0, 0.83, 0.0 ) ) *
+	  trans( vector( -0.124, 0.0, 1.26 ) );
+coverTop = sFromCrvs( list( c1, c2, c3 ), 3, KV_OPEN );
+color( coverTop, yellow );
+attrib( coverTop, "texture", "wood" );
+attrib( coverTop, "rgb", "244,164,96" );
+
+c1 = cmesh(coverMain, ROW, 0);
+c2 = c1 * trans( vector( 0.06, 0.0, -0.02 ) );
+c3 = c2 * scale( vector( 0.0, 0.83, 0.0 ) ) *
+	  trans( vector( 0.66, 0.0, 0.48 ) );
+coverBot = -sFromCrvs( list( c1, c2, c3 ), 3, KV_OPEN );
+free( c1 );
+free( c2 );
+free( c3 );
+
+color( coverBot, yellow );
+attrib( coverBot, "texture", "wood" );
+attrib( coverBot, "rgb", "244,164,96" );
+
+cover = list( CoverMain, CoverBot, CoverTop );
+free( CoverMain );
+free( CoverBot );
+free( CoverTop );
+
+chair = list( cover, base1, base2 );
+free( cover );
+free( base1 );
+free( base2 );
+chair1 = chair * trans( vector( -1.2, 0.0, 0.0 ) );
+chair2 = chair1 * rotz( 90 );
+chair3 = chair1 * rotz( 180 );
+chair4 = chair1 * rotz( 270 );
+chairs = list( chair1, chair2, chair3, chair4 );
+free( chair );
+free( chair1 );
+free( chair2 );
+free( chair3 );
+free( chair4 );
+
+#
+# Create some dishes/cups.
+#
+
+# Four Dishes.
+cross = cbspline( 3,
+		  list( ctlpt( E3, 0.0001, 0.0, 0.003 ),
+			ctlpt( E3, 0.1,    0.0, 0.003 ),
+			ctlpt( E3, 0.12,   0.0, 0.0 ),
+			ctlpt( E3, 0.15,   0.0, 0.03 ),
+			ctlpt( E3, 0.15,   0.0, 0.04 ),
+			ctlpt( E3, 0.14,   0.0, 0.03 ),
+			ctlpt( E3, 0.12,   0.0, 0.013 ),
+			ctlpt( E3, 0.1,    0.0, 0.01 ),
+			ctlpt( E3, 0.0001, 0.0, 0.01 ) ),
+		  list( KV_OPEN ) );
+dish = surfrev( cross );
+color( dish, white );
+attrib( dish, "reflect", "0.2" );
+dish1 = dish * trans( vector( 0.75, 0.0, 1.0 ) );
+dish2 = dish * trans( vector( -0.75, 0.0, 1.0 ) );
+dish3 = dish * trans( vector( 0.0, 0.75, 1.0 ) );
+dish4 = dish * trans( vector( 0.0, -0.75, 1.0 ) );
+dishes = list( dish1, dish2, dish3, dish4 );
+free( dish );
+free( dish1 );
+free( dish2 );
+free( dish3 );
+free( dish4 );
+
+# Wine glasses.
+cross = cbspline( 3,
+		  list( ctlpt( E3, 0.0001, 0.0, 0.002 ),
+		  	ctlpt( E3, 0.02,   0.0, 0.002 ),
+			ctlpt( E3, 0.022,  0.0, 0.0 ),
+			ctlpt( E3, 0.022,  0.0, 0.003 ),
+			ctlpt( E3, 0.003,  0.0, 0.003 ),
+			ctlpt( E3, 0.003,  0.0, 0.007 ),
+			ctlpt( E3, 0.004,  0.0, 0.03 ),
+			ctlpt( E3, 0.03,   0.0, 0.03 ),
+			ctlpt( E3, 0.04,   0.0, 0.04 ),
+			ctlpt( E3, 0.03,   0.0, 0.07 ),
+			ctlpt( E3, 0.028,  0.0, 0.07 ),
+			ctlpt( E3, 0.037,  0.0, 0.042 ),
+			ctlpt( E3, 0.031,  0.0, 0.032 ),
+			ctlpt( E3, 0.0001, 0.0, 0.032 ) ),
+		list( KV_OPEN ) );
+wglass = surfrev( cross * scale( vector( 1.6, 1.6, 1.6 ) ) );
+color( wglass, white );
+attrib( wglass, "reflect", "0.2" );
+attrib( wglass, "transp", "0.95" );
+attrib( wglass, "index", "1.4" );
+wglass1 = wglass * trans( vector( 0.75, 0.2, 1.0 ) );
+wglass2 = wglass * trans( vector( -0.75, -0.2, 1.0 ) );
+wglass3 = wglass * trans( vector( -0.2, 0.75, 1.0 ) );
+wglass4 = wglass * trans( vector( 0.2, -0.75, 1.0 ) );
+wglasses = list( wglass1, wglass2, wglass3, wglass4 );
+free( wglass );
+free( wglass1 );
+free( wglass2 );
+free( wglass3 );
+free( wglass4 );
+
+# Regular glasses.
+cross = cbspline( 3,
+		  list( ctlpt( E3, 0.0001, 0.0, 0.0 ),
+		  	ctlpt( E3, 0.02,   0.0, 0.0 ),
+			ctlpt( E3, 0.022,  0.0, 0.001 ),
+			ctlpt( E3, 0.022,  0.0, 0.003 ),
+			ctlpt( E3, 0.03,   0.0, 0.07 ),
+			ctlpt( E3, 0.03,   0.0, 0.072 ),
+			ctlpt( E3, 0.028,  0.0, 0.072 ),
+			ctlpt( E3, 0.028,  0.0, 0.07 ),
+			ctlpt( E3, 0.02,   0.0, 0.005 ),
+			ctlpt( E3, 0.018,  0.0, 0.005 ),
+			ctlpt( E3, 0.0001, 0.0, 0.005 ) ),
+		  list( KV_OPEN ) );
+glass = surfrev( cross * scale( vector( 1.6, 1.6, 1.6 ) ) );
+color( glass, white );
+attrib( glass, "reflect", "0.2" );
+attrib( glass, "transp", "0.95" );
+attrib( glass, "index", "1.4" );
+glass1 = glass * trans( vector( 0.75, -0.2, 1.0 ) );
+glass2 = glass * trans( vector( -0.75, 0.2, 1.0 ) );
+glass3 = glass * trans( vector( 0.2, 0.75, 1.0 ) );
+glass4 = glass * trans( vector( -0.2, -0.75, 1.0 ) );
+glasses = list( glass1, glass2, glass3, glass4 );
+free( glass );
+free( glass1 );
+free( glass2 );
+free( glass3 );
+free( glass4 );
+
+# Napkins.
+cross = cbspline( 3,
+		  list( ctlpt( E2, -0.018, 0.001 ),
+		  	ctlpt( E2,  0.018, 0.001 ),
+			ctlpt( E2,  0.019, 0.002 ),
+			ctlpt( E2,  0.018, 0.004 ),
+			ctlpt( E2, -0.018, 0.004 ),
+			ctlpt( E2, -0.019, 0.001 ) ),
+		  list( KV_OPEN ) );
+cross = cross + -cross * scale( vector( 1, -1, 1 ) );
+
+napkin = extrude( cross * scale( vector( 1.6, 1.6, 1.6 ) ),
+		  vector( 0.02, 0.03, 0.2 ), 0 );
+color( napkin, red );
+napkin1 = napkin * trans( vector( 0.75, -0.2, 1.0 ) );
+napkin2 = napkin1 * rotz( 90 );
+napkin3 = napkin1 * rotz( 180 );
+napkin4 = napkin1 * rotz( 270 );
+napkins = list( napkin1, napkin2, napkin3, napkin4 );
+free( napkin );
+free( napkin1 );
+free( napkin2 );
+free( napkin3 );
+free( napkin4 );
+
+# Big dish.
+cross = ctlpt( E3, 0.0001, 0.0, 0.003 ) +
+	cbspline( 3,
+		  list(	ctlpt( E3, 0.15,   0.0, 0.003 ),
+			ctlpt( E3, 0.1,    0.0, 0.01 ),
+			ctlpt( E3, 0.1,    0.0, 0.035 ),
+			ctlpt( E3, 0.2,    0.0, 0.15 ),
+			ctlpt( E3, 0.195,  0.0, 0.15 ),
+			ctlpt( E3, 0.09,   0.0, 0.03 ),
+			ctlpt( E3, 0.04,   0.0, 0.01 ),
+			ctlpt( E3, 0.0001, 0.0, 0.01 ) ),
+		  list( KV_OPEN ) );
+bigdish = surfrev( cross * scale( vector( 1.2, 1.2, 1.2 ) ) );
+bigdish = bigdish * trans( vector( 0.0, -0.2, 1.0 ) );
+color( bigdish, white );
+attrib( bigdish, "reflect", "0.2" );
+attrib( bigdish, "transp", "0.95" );
+attrib( bigdish, "index", "1.4" );
+alldishes = list( dishes, wglasses, glasses, napkins, bigdish );
+free( dishes );
+free( wglasses );
+free( glasses );
+free( napkins );
+free( bigdish );
+
+#
+# Create some candles staff.
+#
+cross = cbspline( 3,
+		  list( ctlpt( E3, 0.0001, 0.0, 0.0 ),
+			ctlpt( E3, 0.03,   0.0, 0.0 ),
+			ctlpt( E3, 0.035,   0.0, -0.001 ),
+			ctlpt( E3, 0.02,   0.0, 0.011 ),
+			ctlpt( E3, 0.015,  0.0, 0.011 ),
+			ctlpt( E3, 0.014,  0.0, 0.012 ),
+			ctlpt( E3, 0.014,  0.0, 0.02 ),
+			ctlpt( E3, 0.02,   0.0, 0.03 ) ),
+		  list( KV_OPEN ) ) +
+	ctlpt( E3, 0.012,  0.0, 0.03 ) +
+	ctlpt( E3, 0.012,  0.0, 0.015 ) +
+	ctlpt( E3, 0.0001, 0.0, 0.015 );
+
+cndlbase = surfrev( cross * scale( vector( 2, 2, 2 ) ) );
+color( cndlbase, white );
+attrib( cndlbase, "reflect", "0.2" );
+attrib( cndlbase, "transp", "0.95" );
+cndlbase1 = cndlbase * trans( vector( 0.2, 0.3, 1.0 ) );
+cndlbase2 = cndlbase * trans( vector( -0.2, 0.3, 1.0 ) );
+free( cndlbase );
+
+cross = ctlpt( E3, 0.0001, 0.0, 0.015 ) +
+	cbspline( 3,
+		  list(	ctlpt( E3, 0.011,  0.0, 0.015 ),
+			ctlpt( E3, 0.011,  0.0, 0.2 ),
+			ctlpt( E3, 0.003,  0.0, 0.3 ) ),
+		  list( KV_OPEN ) );
+candle = surfrev( cross * scale( vector( 2, 2, 2 ) ) );
+free( cross );
+
+color( candle, red );
+candle1 = candle * trans( vector( 0.2, 0.3, 1.0 ) );
+candle2 = candle * trans( vector( -0.2, 0.3, 1.0 ) );
+free( candle );
+
+candles = list( cndlbase1, cndlbase2, candle1, candle2 );
+free( cndlbase1 );
+free( cndlbase2 );
+free( candle1 );
+free( candle2 );
+
+save_mat = view_mat;
+view_mat = view_mat * scale( vector( 0.5, 0.5, 0.5 ) );
+dinner = list( scene_floor, table, chairs, alldishes, candles );
+free( scene_floor );
+free( table );
+free( chairs );
+free( alldishes );
+free( candles );
+
+interact( dinner );
+save( "dinner", dinner );
+
+free( dinner );
+
+view_mat = save_mat;
+resolution = save_res;
+
+view( list( view_mat ), on );

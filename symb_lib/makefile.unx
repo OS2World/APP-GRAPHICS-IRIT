@@ -1,0 +1,63 @@
+#
+# This is the make file for the symb_lib library.
+#
+#				Gershon Elber, Aug 1990
+#
+
+include ../makeflag.unx
+
+OBJS =  adap_iso.o$(IRIT_OBJ_PF) \
+	arc_len.o$(IRIT_OBJ_PF) \
+	biarc.o$(IRIT_OBJ_PF) \
+	blending.o$(IRIT_OBJ_PF) \
+	bspkntrm.o$(IRIT_OBJ_PF) \
+	bsp3injc.o$(IRIT_OBJ_PF) \
+	bsp_sym.o$(IRIT_OBJ_PF) \
+	bspiprod.o$(IRIT_OBJ_PF) \
+	bzr_sym.o$(IRIT_OBJ_PF) \
+	ccnvhul.o$(IRIT_OBJ_PF) \
+	cmp_crvs.o$(IRIT_OBJ_PF) \
+	composit.o$(IRIT_OBJ_PF) \
+	constrct.o$(IRIT_OBJ_PF) \
+	crv_lenv.o$(IRIT_OBJ_PF) \
+	crv_skel.o$(IRIT_OBJ_PF) \
+	crv_tans.o$(IRIT_OBJ_PF) \
+	curvatur.o$(IRIT_OBJ_PF) \
+	crvtrrec.o$(IRIT_OBJ_PF) \
+	decompos.o$(IRIT_OBJ_PF) \
+	distance.o$(IRIT_OBJ_PF) \
+	duality.o$(IRIT_OBJ_PF) \
+	evalcurv.o$(IRIT_OBJ_PF) \
+	ffptdist.o$(IRIT_OBJ_PF) \
+	moffset.o$(IRIT_OBJ_PF) \
+	moments.o$(IRIT_OBJ_PF) \
+	morphing.o$(IRIT_OBJ_PF) \
+	multires.o$(IRIT_OBJ_PF) \
+	nrmlcone.o$(IRIT_OBJ_PF) \
+	offset.o$(IRIT_OBJ_PF) \
+	orthotom.o$(IRIT_OBJ_PF) \
+	prisa.o$(IRIT_OBJ_PF) \
+	rflct_ln.o$(IRIT_OBJ_PF) \
+	rrinter.o$(IRIT_OBJ_PF) \
+	rvrs_eng.o$(IRIT_OBJ_PF) \
+	smp_skel.o$(IRIT_OBJ_PF) \
+	symb_crv.o$(IRIT_OBJ_PF) \
+	symb_err.o$(IRIT_OBJ_PF) \
+	symb_ftl.o$(IRIT_OBJ_PF) \
+	symb_gen.o$(IRIT_OBJ_PF) \
+	symb_srf.o$(IRIT_OBJ_PF) \
+	symbpoly.o$(IRIT_OBJ_PF) \
+	symbsply.o$(IRIT_OBJ_PF) \
+	symbzero.o$(IRIT_OBJ_PF)
+
+all:	libIritSymb$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+
+libIritSymb$(IRIT_LIB_PF).$(IRIT_LIB_SFX): $(OBJS)
+	rm -f libIritSymb$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+	$(IRIT_LIB_MAKE) libIritSymb$(IRIT_LIB_PF).$(IRIT_LIB_SFX) *.o$(IRIT_OBJ_PF)
+	-$(IRIT_LIB_RAN) libIritSymb$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+
+install: libIritSymb$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+	mv -f libIritSymb$(IRIT_LIB_PF).$(IRIT_LIB_SFX) $(IRIT_LIB_DIR)
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

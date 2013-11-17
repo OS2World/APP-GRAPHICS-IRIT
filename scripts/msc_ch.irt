@@ -1,0 +1,297 @@
+#
+# Minimum Spanning Circle/Cone/Sphere and Convex Hull for polys.
+#
+#				Gershon Elber, February 1996
+#
+
+save_mat = view_mat;
+view_mat = sc( 0.5 );
+viewobj( view_mat );
+view_mat = save_mat;
+
+ri = iritstate( "RandomInit", 1964 );  # Seed-initiate the randomizer,
+free( ri );
+
+RandomPts = function( n ): l: i: t: r:
+    l = nil():
+    for ( i = 1, 1, n,
+	r = random( -1, 1 ):
+	t = random( 0, 2 * pi ):
+        snoc( vector( cos( t ) * r, sin( t ) * r, 0 ), l ) ):
+    return = poly( l, false ):
+    color( return, red ):
+    adwidth( return, 5 );
+
+RandomPts2 = function( n ): l: i: t: r:
+    return = nil():
+    for ( i = 1, 1, n,
+	r = random( -1, 1 ):
+	t = random( 0, 2 * pi ):
+        snoc( point( cos( t ) * r, sin( t ) * r, 0 ), return ) ):
+    color( return, red ):
+    adwidth( return, 5 );
+
+RandomPts3D = function( n ): l: i:
+    l = nil():
+    for ( i = 1, 1, n,
+        snoc( point( random( -1, 1 ), random( -1, 1 ), random( -1, 1 ) ),
+	      l ) ):
+    return = l:
+    color( return, green ):
+    adwidth( return, 5 );
+
+RandomVecs = function( n ): l: i: t: r:
+    l = nil():
+    for ( i = 1, 1, n,
+	r = random( -1, 1 ):
+	t = random( 0, 2 * pi ):
+        snoc( vector( cos( t ) * r, 2.0, sin( t ) * r ), l ) ):
+    return = l:
+    color( return, red ):
+    adwidth( return, 3 );
+
+RandomCtlPt3 = function( n ): l: i: t: r:
+    l = nil():
+    for ( i = 1, 1, n,
+	r = random( -0.5, 0.5 ):
+	t = random( 0, 2 * pi ):
+        snoc( ctlpt( E3, cos( t ) * r, random( 0.5, 1.5 ), sin( t ) * r ),
+	      l ) ):
+    return = l:
+    color( return, green ):
+    adwidth( return, 3 );
+
+RandomCtlPt4 = function( n ): l: i: t: r:
+    l = nil():
+    for ( i = 1, 1, n,
+	r = random( -0.5, 0.5 ):
+	t = random( 0, 2 * pi ):
+        snoc( ctlpt( E4, cos( t ) * r, sin( t ) * r, random( -1, 1 ), random( 0.5, 1.5 ) ),
+	      l ) ):
+    return = l:
+    color( return, green ):
+    adwidth( return, 3 );
+
+RandomCtlPt5 = function( n ): l: i: t: r:
+    l = nil():
+    for ( i = 1, 1, n,
+	r = random( -0.5, 0.5 ):
+	t = random( 0, 2 * pi ):
+        snoc( ctlpt( E5, cos( t ) * r, sin( t ) * r, random( -1, 1 ), random( 1, 1 ), random( -0.5, 1.5 ) ),
+	      l ) ):
+    return = l:
+    color( return, green ):
+    adwidth( return, 3 );
+
+GenRandomCrv = function( d, n, size ): CtlPts: CPt: i:
+    CtlPts = nil():
+    for ( i = 1, 1, n,
+	snoc( ctlpt( E2, random( -size, size ), random( -size, size ) ),
+	      CtlPts ) ):
+    return = cbspline( d,
+		       CtlPts * tx( random( -1, 1 ) ) * ty( random( -1, 1 ) ),
+		       list( kv_periodic ) ):
+    return = coerce( return, kv_open );
+
+RandomCrvs = function( NumCrvs, CrvDeg, CrvLen, size ): i: l:
+    l = nil():
+    for ( i = 1, 1, NumCrvs,
+        snoc( GenRandomCrv( CrvDeg, CrvLen, size ), l ) ):
+    return = l:
+    color( return, red ):
+    adwidth( return, 3 );
+
+#############################################################################
+#
+# Points
+#
+
+# MSC and CH of points in the plane.
+n = 4:
+while ( n <= 1024,
+    printf( "Processing %4d 2D pts...", list( n ) ):
+    p = RandomPts( n ):
+    ch = cnvxhull( p, 0 ):
+    color( ch, green ):
+    adwidth( ch, 2 ):
+    msc = mscirc( p, 0 ):
+    cntr = getattr( msc, "center" ):
+    rad = getattr( msc, "radius" ):
+    color( msc, yellow ):
+    adwidth( msc, 2 ):
+    view( list( p, msc, ch ), 1 ):
+    printf( "done (Center = %.5lg %.5lg, Radius = %.5lg).\\n",
+	    list( coord( cntr, 0 ), coord( cntr, 1 ), rad ) ):
+#    pause():
+    miliSleep( 1000 ):
+    n = n * 2 );
+
+save( "msc_ch1", list( ch, msc, p ) );
+
+pause();
+
+# MSS of points in 3-space.
+n = 4:
+while ( n <= 1024,
+    printf( "Processing %4d 3D pts...", list( n ) ):
+    p = RandomPts3D( n ):
+    mss = mssphere( p ):
+    cntr = getattr( mss, "center" ):
+    rad = getattr( mss, "radius" ):
+    color( mss, yellow ):
+    adwidth( mss, 2 ):
+    view( list( p, mss ), 1 ):
+    printf( "done (Center = %.5lg %.5lg, Radius = %.5lg).\\n",
+	    list( coord( cntr, 0 ), coord( cntr, 1 ), rad ) ):
+#    pause():
+    miliSleep( 1000 ):
+    n = n * 4 );
+
+save( "msc_ch2", list( mss, p ) );
+
+free( p );
+pause();
+
+#############################################################################
+#
+# Vectors in R^3
+#
+
+n = 4:
+while ( n <= 1024,
+    printf( "Processing %4d vecs...", list( n ) ):
+    p = RandomVecs( n ):
+    msc = mscone( p ):
+    cntr = getattr( msc, "center" ):
+    rad = getattr( msc, "angle" ):
+    color( msc, yellow ):
+    attrib( p, "UseAvg", 1 ):
+    msc2 = mscone( p ):
+    cntr2 = getattr( msc2, "center" ):
+    rad2 = getattr( msc2, "angle" ):
+    color( msc2, cyan ):
+
+    view( list( msc, msc2, axes, p ), 1 ):
+    printf( "done Radius1 = %.5lg Radius2 = %.5lg.\\n", list( rad, rad2 ) ):
+#    pause():
+    miliSleep( 1000 ):
+    n = n * 2 );
+
+save( "msc_ch3", list( msc2, msc, p ) );
+
+interact( list( msc2, msc, p ) );
+
+#############################################################################
+#
+# Vectors in R^n
+#
+
+n = 4:
+while ( n <= 1024,
+    printf( "Processing %4d vecs in R^3...", list( n ) ):
+    p = RandomCtlPt3( n ):
+    msc = mscone( p ):
+    cntr = getattr( msc, "center" ):
+    rad = getattr( msc, "angle" ):
+    color( msc, yellow ):
+    attrib( p, "UseAvg", 1 ):
+    msc2 = mscone( p ):
+    cntr2 = getattr( msc2, "center" ):
+    rad2 = getattr( msc2, "angle" ):
+    color( msc2, cyan ):
+
+    view( list( msc, msc2, axes, p ), 1 ):
+    printf( "done Radius1 = %.5lg Radius2 = %.5lg.\\n", list( rad, rad2 ) ):
+#    pause():
+    miliSleep( 1000 ):
+    n = n * 2 );
+
+interact( list( msc2, msc, p ) );
+
+n = 4:
+while ( n <= 1024,
+    printf( "Processing %4d vecs in R^4...", list( n ) ):
+    p = RandomCtlPt4( n ):
+    msc = mscone( p ):
+    rad = nth( msc, 2 ):
+    color( msc, yellow ):
+    attrib( p, "UseAvg", 1 ):
+    msc2 = mscone( p ):
+    rad2 = nth( msc2, 2 ):
+    color( msc2, cyan ):
+
+    printf( "done Radius1 = %.5lg Radius2 = %.5lg.\\n", list( rad, rad2 ) ):
+#    pause():
+    miliSleep( 1000 ):
+    n = n * 2 );
+
+n = 4:
+while ( n <= 1024,
+    printf( "Processing %4d vecs in R^5...", list( n ) ):
+    p = RandomCtlPt5( n ):
+    msc = mscone( p ):
+    rad = nth( msc, 2 ):
+    color( msc, yellow ):
+    attrib( p, "UseAvg", 1 ):
+    msc2 = mscone( p ):
+    rad2 = nth( msc2, 2 ):
+    color( msc2, cyan ):
+
+    printf( "done Radius1 = %.5lg Radius2 = %.5lg.\\n", list( rad, rad2 ) ):
+#    pause():
+    miliSleep( 1000 ):
+    n = n * 2 );
+
+save( "msc_ch4", list( msc2, msc, p ) );
+
+#############################################################################
+#
+# Curves
+#
+
+testRun = function( NumCrvs, CrvDeg, CrvLen, CrvSize,
+	            Seed, SubEps, NumEps, Opti ): ri: c: msc:
+    ri = iritstate( "RandomInit", Seed ):
+    c = RandomCrvs( NumCrvs, CrvDeg, CrvLen, CrvSize ):
+    attrprop( c, "color", yellow ):
+    view( c, 1 ):
+    msc = mscirc( c, list( SubEps, NumEps ) ):
+    view( msc, 0 ):
+    pause():
+    return = list( msc, c );
+
+a = testRun( 6, 3, 3, 0.85, 1, 0.1, -1e-10, 1 );
+
+b = testRun( 16, 3, 4, 0.15, 1, 0.1, -1e-10, 1 );
+
+c = testRun( 2, 3, 4, 0.85, 1, 0.1, -1e-10, 0 );
+
+d = testRun( 35, 3, 3, 0.35, 1, 0.1, -1e-10, 1 );
+
+e = testRun( 15, 3, 3, 0.85, 1, 0.1, -1e-10, 1 );
+
+save( "msc_ch5", list( a * tx( -5 ) * ty( -1 ),
+		       b * tx( -2 ),
+		       c * tx(  0.4 ),
+		       d * tx(  3.9 ) * ty( -1 ),
+		       e * tx(  7 ) * ty( -0.2 ) ) );
+
+free( a );
+free( b );
+free( c );
+free( d );
+free( e );
+
+#############################################################################
+
+free( n );
+free( p );
+free( ch );
+free( msc );
+free( mss );
+free( cntr );
+free( rad );
+free( msc2 );
+free( cntr2 );
+free( rad2 );
+

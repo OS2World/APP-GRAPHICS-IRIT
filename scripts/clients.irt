@@ -1,0 +1,95 @@
+#
+# Some simple tests of running clients.
+#
+
+Client = "xmtdrvs -s-";
+if ( machine == ibmos2, Client = "os2drvs -s-" );
+if ( machine == windows, Client = "wntdrvs -s-" );
+if ( machine == sgi || machine == linux, Client = "xogldrvs -s-" );
+
+printf( "Executing Client \"%s\"\\n", list( Client ) );
+
+h1 = clntexec( Client );
+
+clntwrite( h1, axes );
+sp = sphere( vector( 0, 0, 0 ), 0.6 );
+clntwrite( h1, sp );
+for ( i = 0, 1, 5,
+    clntunhigh( h1 ):
+    clnthigh1( h1, "sp"):
+    miliSleep( 1000 ):
+    clntunhigh( h1 ):
+    clnthigh2( h1, "sp"):
+    miliSleep( 1000 ) );
+clntunhigh( h1 );
+
+
+#
+# Pick objects (Middle-Button or Shift-Left-Button, depends on device):
+#
+
+clntpickname( h1 );
+for ( i = 1, 1, 3, clntread( h1, 10000 ) );
+clntpickobj( h1 );
+for ( i = 1, 1, 3, clntread( h1, 10000 ) );
+
+pause();
+
+clntpickdone( h1 );
+
+
+h2 = clntexec( Client );
+
+s45 = sqrt(2) / 2;
+halfcirc = cbspline( 3,
+		     list( ctlpt( P3, 1.0,  0.0, 0.0,  1.0 ),
+		           ctlpt( P3, s45, -s45, 0.0,  s45 ),
+		           ctlpt( P3, 1.0, -1.0, 0.0,  0.0 ),
+		           ctlpt( P3, s45, -s45, 0.0, -s45 ),
+			   ctlpt( P3, 1.0,  0.0, 0.0, -1.0 ) ),
+		     list( 0, 0, 0, 1, 1, 2, 2, 2 ) );
+color( halfcirc, white );
+
+sp = surfrev( halfcirc * sc( 0.6 ) );
+
+clntwrite( h2, axes );
+clntwrite( h2, sp );
+
+pause();
+
+clntclose( h1, true );
+
+obj1 = clntgetobj( h2, "axes" ); # Do write and read - a macro in iritinit.irt
+obj2 = clntgetobj( h2, "sp" );   # Do write and read - a macro in iritinit.irt
+
+i = iritstate( "dumplevel", 255 );
+obj1;
+obj2;
+i = iritstate( "dumplevel", i );
+free( i );
+
+h3 = clntexec( "nuldrvs -s- -d" );
+clntwrite( h3, obj1 );
+clntwrite( h3, obj2 );
+
+pause();
+
+clntclose( h3, true );
+
+obj3 = clntread( h2, 1000 );     # No data - timeout after 1 second.
+
+pause();
+
+clntclose( h2, true );
+
+free( obj1 );
+free( obj2 );
+free( obj3 );
+free( h1 );
+free( h2 );
+free( h3 );
+free( halfcirc );
+free( s45 );
+free( sp );
+free( client );
+free( i );

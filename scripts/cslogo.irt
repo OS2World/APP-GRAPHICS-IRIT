@@ -1,0 +1,94 @@
+#
+# The Logo of the Computer Science Department, Technion by Alfred Bruckstein
+#
+#				Gershon Elber, March 1998
+#
+
+CreateCubicBezier = function( x1, y1, x2, y2, x3, y3 ):
+    x1 = x1 / 1000.0:
+    y1 = y1 / 1000.0:
+    x2 = x2 / 1000.0:
+    y2 = y2 / 1000.0:
+    x3 = x3 / 1000.0:
+    y3 = y3 / 1000.0:
+    return = cbezier( list( ctlpt( E2, x1, y1 ),
+			    ctlpt( E2, x1 + (x2 - x1) * 2 / 3,
+				       y1 + (y2 - y1) * 2 / 3 ),
+			    ctlpt( E2, x3 + (x2 - x3) * 2 / 3,
+				       y3 + (y2 - y3) * 2 / 3 ),
+			    ctlpt( E2, x3, y3 ) ) );
+
+c1 = CreateCubicBezier( 414.0, 331.5, 489.0, 314.0, 489.0, 294.0 ) +
+     CreateCubicBezier( 489.0, 294.0, 489.0, 274.0, 421.5, 259.0 ) +
+     CreateCubicBezier( 421.5, 259.0, 354.0, 244.0, 441.5, 259.0 ) +
+     CreateCubicBezier( 441.5, 259.0, 529.0, 274.0, 529.0, 294.0 ) +
+     CreateCubicBezier( 529.0, 294.0, 529.0, 314.0, 434.0, 331.5 ) +
+     CreateCubicBezier(	434.0, 331.5, 339.0, 349.0, 414.0, 331.5 ):
+c1p = CnvrtCrvToPolygon( c1, 128, false );
+free( c1 );
+
+c2 = CreateCubicBezier( 356.5, 196.5, 289.0, 214.0, 289.0, 234.0 ) +
+     CreateCubicBezier( 289.0, 234.0, 289.0, 254.0, 356.5, 269.0 ) +
+     CreateCubicBezier( 356.5, 269.0, 424.0, 284.0, 336.5, 269.0 ) +
+     CreateCubicBezier( 336.5, 269.0, 249.0, 254.0, 249.0, 234.0 ) +
+     CreateCubicBezier( 249.0, 234.0, 249.0, 214.0, 336.5, 196.5 ) +
+     CreateCubicBezier( 336.5, 196.5, 424.0, 179.0, 356.5, 196.5 ):
+c2p = CnvrtCrvToPolygon( c2, 128, false );
+free( c2 );
+
+c3 = CreateCubicBezier( 379.0, 334.0, 469.0, 314.0, 469.0, 294.0 ) +
+     CreateCubicBezier( 469.0, 294.0, 469.0, 274.0, 409.0, 264.0 ) +
+     CreateCubicBezier( 409.0, 264.0, 349.0, 254.0, 349.0, 234.0 ) +
+     CreateCubicBezier( 349.0, 234.0, 349.0, 214.0, 429.0, 194.0 ) +
+     CreateCubicBezier( 429.0, 194.0, 509.0, 174.0, 409.0, 194.0 ) +
+     CreateCubicBezier( 409.0, 194.0, 309.0, 214.0, 309.0, 234.0 ) +
+     CreateCubicBezier( 309.0, 234.0, 309.0, 254.0, 369.0, 264.0 ) +
+     CreateCubicBezier( 369.0, 264.0, 429.0, 274.0, 429.0, 294.0 ) +
+     CreateCubicBezier( 429.0, 294.0, 429.0, 314.0, 359.0, 334.0 ) +
+     CreateCubicBezier( 359.0, 334.0, 289.0, 354.0, 379.0, 334.0 ):
+c3p = CnvrtCrvToPolygon( -c3, 128, false );
+free( c3 );
+
+t1 = poly( list( vector( 354, 359, 0 ),
+		 vector( 439, 359, 0 ),
+        	 vector( 379, 479, 0 ),
+	         vector( 314, 349, 0 ) ), true ) * sc( 0.001 );
+t2 = offset( t1, 0.0065, 0.0, 0.0 );
+t3 = offset( t1, -0.0065, 0.0, 0.0 );
+TechList = nil();
+for ( i = 0, 1, sizeof( t2 ) - 1,
+    snoc( coord( t2, i ), TechList ) );
+for ( i = sizeof( t3 ) - 1, -1, 0,
+    snoc( coord( t3, i ), TechList ) );
+
+Tech = poly( TechList, false );
+free( t1 );
+free( t2 );
+free( t3 );
+free( TechList );
+
+# Make solids out of the profiles:
+
+Vec = vector( 0.0, 0.0, 0.1 );
+
+c1pSolid = extrude( c1p, Vec, 3 );
+c2pSolid = extrude( c2p, Vec, 3 );
+c3pSolid = extrude( c3p, Vec, 3 );
+TechSolid = extrude( Tech, Vec, 3 );
+free( c1p );
+free( c2p );
+free( c3p );
+free( Tech );
+free( Vec );
+
+All = list( c1pSolid, c2pSolid, c3pSolid, TechSolid )
+					* sc( 3 ) * tx( -1 ) * ty( -1 );
+view( All, 1 );
+save( "cslogo", All );
+
+free( c1pSolid );
+free( c2pSolid );
+free( c3pSolid );
+free( TechSolid );
+free( All );
+free( i );

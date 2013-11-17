@@ -1,0 +1,85 @@
+#
+# This is the make file for the mvar_lib library.
+#
+#				Gershon Elber, June 1993
+#
+
+# Get the destination directories:
+include ..\makeflag.wce
+
+MAT_OBJS = \
+	mvbiscon.$(IRIT_OBJ_PF) \
+	mvlowenv.$(IRIT_OBJ_PF) \
+	mvsplmon.$(IRIT_OBJ_PF) \
+	mvtrmbis.$(IRIT_OBJ_PF) \
+	mvtrmpcr.$(IRIT_OBJ_PF) \
+	mvvorcel.$(IRIT_OBJ_PF) \
+	mvvorcrv.$(IRIT_OBJ_PF)
+
+OBJS =  contacts.$(IRIT_OBJ_PF) \
+	crv_krnl.$(IRIT_OBJ_PF) \
+	hasdrf2d.$(IRIT_OBJ_PF) \
+	hasdrf3d.$(IRIT_OBJ_PF) \
+	lnsrfdst.$(IRIT_OBJ_PF) \
+	ms_circ.$(IRIT_OBJ_PF) \
+	ms_sphr.$(IRIT_OBJ_PF) \
+	mvaccess.$(IRIT_OBJ_PF) \
+	mvar_aux.$(IRIT_OBJ_PF) \
+	mvar_dbg.$(IRIT_OBJ_PF) \
+	mvar_der.$(IRIT_OBJ_PF) \
+	mvar_det.$(IRIT_OBJ_PF) \
+	mvar_err.$(IRIT_OBJ_PF) \
+	mvar_ftl.$(IRIT_OBJ_PF) \
+	mvar_gen.$(IRIT_OBJ_PF) \
+	mvar_int.$(IRIT_OBJ_PF) \
+	mvar_pll.$(IRIT_OBJ_PF) \
+	mvar_ref.$(IRIT_OBJ_PF) \
+	mvar_rev.$(IRIT_OBJ_PF) \
+	mvar_sub.$(IRIT_OBJ_PF) \
+	mvar_ssi.$(IRIT_OBJ_PF) \
+	mvar_sym.$(IRIT_OBJ_PF) \
+	mvar_vec.$(IRIT_OBJ_PF) \
+	mv_crvtr.$(IRIT_OBJ_PF) \
+	mvarcmpt.$(IRIT_OBJ_PF) \
+	mvarcoer.$(IRIT_OBJ_PF) \
+	mvardist.$(IRIT_OBJ_PF) \
+	mvaredit.$(IRIT_OBJ_PF) \
+	mvareval.$(IRIT_OBJ_PF) \
+	mvarextr.$(IRIT_OBJ_PF) \
+	mvarintr.$(IRIT_OBJ_PF) \
+	mvarkant.$(IRIT_OBJ_PF) \
+	mvarmrph.$(IRIT_OBJ_PF) \
+	mvarpack.$(IRIT_OBJ_PF) \
+	mvarpck2.$(IRIT_OBJ_PF) \
+	mvarproj.$(IRIT_OBJ_PF) \
+	mvarprim.$(IRIT_OBJ_PF) \
+	mvarrais.$(IRIT_OBJ_PF) \
+	mvarsils.$(IRIT_OBJ_PF) \
+	mvartopo.$(IRIT_OBJ_PF) \
+	mvarzero.$(IRIT_OBJ_PF) \
+	mvarzral.$(IRIT_OBJ_PF) \
+	mvarzreq.$(IRIT_OBJ_PF) \
+	mvbisect.$(IRIT_OBJ_PF) \
+	mvbspsym.$(IRIT_OBJ_PF) \
+	mvbzrpwr.$(IRIT_OBJ_PF) \
+	mvbzrsym.$(IRIT_OBJ_PF) \
+	mvcones.$(IRIT_OBJ_PF) \
+	mvtangnt.$(IRIT_OBJ_PF) \
+	mvtrivar.$(IRIT_OBJ_PF) \
+	offset2.$(IRIT_OBJ_PF) \
+	offst2ni.$(IRIT_OBJ_PF) \
+	ray-trap.$(IRIT_OBJ_PF) \
+	raytrp3d.$(IRIT_OBJ_PF) \
+	selfintr.$(IRIT_OBJ_PF) \
+	skel2d.$(IRIT_OBJ_PF) \
+
+$(MVAR_LIB): $(OBJS) $(MAT_OBJS)
+	-del $(MVAR_LIB)
+	$(IRITLIB) -out:$(MVAR_LIB) $(OBJS) $(MAT_OBJS)
+
+$(IRIT_LIB_DIR)\$(MVAR_LIB): $(MVAR_LIB)
+	copy $(MVAR_LIB) $(IRIT_LIB_DIR)
+
+install: $(IRIT_LIB_DIR)\$(MVAR_LIB)
+
+# Dependencies starts here - do not touch, generated automatically.

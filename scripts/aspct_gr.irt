@@ -1,0 +1,138 @@
+#
+# Examples of aspect graph's computation on freeform surfaces.
+#
+#					Gershon Elber, Nov. 2002
+#
+
+save_res = resolution;
+
+resolution = 60;
+
+ComputeParabolicLines = function( s ):
+    return = sparabolc( s, true ):
+    adwidth( return, 2 ):
+    awidth( return, 0.01 ):
+    attrib( return, "gray", 0.5 ):
+    attrib( return, "rgb", "100,255,255" );
+
+ComputeTopoAspectGraph = function( s, Spc ): ag: sp: s1:
+    ag = saspctgrph( s ):
+    color( ag, yellow ):
+    adwidth( ag, 3 ):
+
+    sp = sphereSrf( 1 ):
+    color( sp, red ):
+
+    s1 = s * tx( 0 ):
+    color( s1, green ):
+    adwidth( s1, 2 ):
+
+    return = list( list( ag, sp, axes ) * sc( 0.6 ) * tx( Spc ),
+		   list( s1, axes ) * tx( -Spc ) );
+
+#############################################################################
+
+c = cbspline( 4,
+	      list( ctlpt( E2, 0,    0.15 ),
+		    ctlpt( E2, 0.25, 0.15 ),
+		    ctlpt( E2, 0.52, 0.4 ),
+		    ctlpt( E2, 0.85, 0.3 ),
+		    ctlpt( E2, 0.85, 0.0 ) ),
+	      list( kv_open ) );
+c = -c + c * sx( -1 );
+
+srfEight = surfprev( c * ry( 90 ) );
+color( srfEight, yellow );
+awidth( srfEight, 0.001 );
+
+SParabs = ComputeParabolicLines( srfEight );
+interact( list( srfEight, SParabs ) );
+
+#
+# View the aspect graph with silhouettes...
+#
+SAspect = ComputeTopoAspectGraph( srfEight, 0.9 );
+
+viewstate("PolyAprx", 1);
+viewstate("PolyAprx", 1);
+viewstate("NumIsos", 0);
+viewstate("NumIsos", 0);
+viewstate("NumIsos", 0);
+viewstate("NumIsos", 0);
+viewstate("LowResRatio", 1);
+viewstate("LowResRatio", 1);
+viewstate("DSrfSilh", 1);
+
+interact( SAspect );
+
+save( "aspct1gr", SAspect );
+
+viewstate("DSrfSilh", 0);
+viewstate("PolyAprx", 0);
+viewstate("PolyAprx", 0);
+viewstate("NumIsos", 1);
+viewstate("NumIsos", 1);
+viewstate("NumIsos", 1);
+viewstate("LowResRatio", 0);
+viewstate("LowResRatio", 0);
+
+free( srfEight );
+
+#############################################################################
+
+c = pcircle( vector( 0, 0, 0 ), 1 );
+
+srf8b = -sFromCrvs( list( c * sc( 0.001 ),
+		         c * sc( 1 ),
+		         c * sc( 1 ) * tz( 1 ),
+		         c * ry( -20 ) * sc( 0.6 ) * sx( 0.2 ) * tx( 0.4 ) * tz( 0.4 ),
+		         c * ry( -20 ) * sc( 0.2 ) * tx( -0.4 ) * tz( 1.7 ),
+     		         c * sc( 0.65 ) * tz( 2 ),
+     		         c * sc( 0.65 ) * tz( 3 ),
+     		         c * sc( 0.001 ) * tz( 3 ) ),
+	       4, kv_open );
+color( srf8b, yellow );
+awidth( srf8b, 0.001 );
+
+resolution = 40;
+
+SParabs = ComputeParabolicLines( srf8b );
+interact( list( srf8b, SParabs ) );
+
+#
+# View the aspect graph with silhouettes...
+#
+SAspect = ComputeTopoAspectGraph( srf8b, 0.9 );
+
+viewstate("PolyAprx", 1);
+viewstate("PolyAprx", 1);
+viewstate("NumIsos", 0);
+viewstate("NumIsos", 0);
+viewstate("NumIsos", 0);
+viewstate("NumIsos", 0);
+viewstate("LowResRatio", 1);
+viewstate("LowResRatio", 1);
+viewstate("DSrfSilh", 1);
+
+interact( SAspect );
+
+save( "aspct2gr", SAspect );
+
+viewstate("DSrfSilh", 0);
+viewstate("PolyAprx", 0);
+viewstate("PolyAprx", 0);
+viewstate("NumIsos", 1);
+viewstate("NumIsos", 1);
+viewstate("NumIsos", 1);
+viewstate("LowResRatio", 0);
+viewstate("LowResRatio", 0);
+
+free( srf8b );
+
+#############################################################################
+
+resolution = save_res;
+
+free( c );
+free( SParabs );
+free( SAspect );

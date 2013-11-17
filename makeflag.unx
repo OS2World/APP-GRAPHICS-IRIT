@@ -1,0 +1,614 @@
+#
+# This makeflag is the main makefile setup of the IRIT solid modeller and its
+# auxilary tools, under UNIX and GNU MAKE.
+#
+#				Gershon Elber, Nov. 1991
+#
+# The IRIT_SRC_DIR variables below MUST have ABSOLUTE path. Since this file
+# is sourced from several directories relative path specification will
+# be simple wrong.
+#
+
+IRIT_SRC_DIR = /irit/irit
+
+#
+# All libraries created will be installed into the IRIT_LIB_DIR directory.
+#
+IRIT_LIB_DIR = ../lib
+
+#
+# All includes files associated with the installed libraries will be
+# installed into the IRIT_INC_DIR directory.
+#
+IRIT_INC_DIR = ../include
+
+#
+# All binaries created will be installed into the IRIT_BIN_DIR directory.
+#
+IRIT_BIN_DIR = ../bin
+
+#
+# Invoke this make file as 'make CFG=Rel makefile.unx' for release mode:
+#
+
+IRIT_OBJ_PF = D
+IRIT_LIB_PF = D
+IRIT_EXE_PF = D
+IRIT_STRIP_EXE = ls
+
+#
+# Location of object file to resolve circularities in libraries.
+#
+IRIT_CIRCLINK = ../circlink/circlink.o$(IRIT_OBJ_PF)
+
+#
+# The scan converter (irender) needs the Utah Raster Toolkit (IRIT_URT) library
+# to read/write image data. You can ftp it in cs.utah.edu.
+#
+#   Make these empty if you would like to give up on irender's compilation.
+#
+# IRIT_URT = /net/cel2-3/labs/cggc/gershon/c/urt/sun4
+# IRIT_URT_INC = -I$(IRIT_URT)/include
+# IRIT_URT_LIB = -L$(IRIT_URT)/lib -lrle
+# IRIT_URT_FLAGS = -DIRIT_HAVE_URT_RLE -DIRIT_URT_OLD_COMPAT
+
+#
+# Support for IRIT_GIF image read/write using the giflib toolkit library.
+# You can ftp it from http://catb.org/~esr/giflib/doc/gif_lib.html
+#
+# IRIT_GIF = /net/cel2-3/labs/cggc/gershon/c/gif_lib
+# IRIT_GIF_INC = -I$(IRIT_GIF)/lib
+# IRIT_GIF_LIB = $(IRIT_GIF)/sun4/lib/libgif.a
+# IRIT_GIF_FLAGS = -DIRIT_HAVE_GIF_LIB
+
+#
+# Support for IRIT_PNG image read/write using the pnglib toolkit library.
+# You can ftp it from http://www.libpng.org/pub/png/libpng.html
+#
+# IRIT_PNG = /net/cel2-3/labs/cggc/gershon/c/libpng/lpng125
+# IRIT_PNG_INC = -I$(IRIT_PNG) 
+# IRIT_PNG_LIB = $(IRIT_PNG)/sun4/libpng.a
+# IRIT_PNG_FLAGS = -DIRIT_HAVE_PNG_LIB
+
+#
+# Support for IRIT_GZIP read/write using the gzip toolkit library.
+#
+# IRIT_GZIP = /net/cel2-3/labs/cggc/gershon/c/zlib/zlib-1.2.1
+# IRIT_GZIP_INC = -I$(IRIT_GZIP)
+# IRIT_GZIP_LIB = $(IRIT_GZIP)/sun4/libz.a
+# IRIT_GZIP_FLAGS = -DIRIT_HAVE_GZIP_LIB
+
+#
+# If you would like to use Mesa emulation of Open GL and compile Open GL
+# code using it (see http://www.ssec.wisc.edu/~brianp/Mesa.html for info
+# on Mesa), define the following:
+#
+# IRIT_MESA_INC = -I/mach/emc2-32/isl/gershon/c/mesa/MesaLib-2.4/include -D__IRIT_MESA__ -D__OPENGL__
+# IRIT_MESA_LIB = -L/mach/emc2-32/isl/gershon/c/mesa/MesaLib-2.4/lib -lGLU -lGL
+
+#
+# Support of (shared) libraries.  You will need to set the proper suffix
+# of the libraries (IRIT_LIB_SFX) and the proper method to create a (shared)
+# library (IRIT_LIB_MAKE). IRIT_LIB_RAN is optional to optimize the archive (ranlib).
+# Remember you will have to update the LD_LIBRARY_PATH environment variable.
+#
+# Default is no shared libraries:
+#
+# IRIT_LIB_SFX = a
+# IRIT_LIB_MAKE = ar rcv
+# IRIT_LIB_RAN = ranlib
+
+#
+# Uncomment the correct set of variables to be used or modify it for
+# your system.
+#
+# -D flags:
+#
+# -D__GL__ - if your system supports gl graphics library (SGI 4d & IBM R6000).
+#
+# -D__X11__ - if your system supports X11. Only one of __GL__ or __X11__ should
+#	be used.
+#
+#  Emulation to the following function are available by defining the
+#  following. Look at misc_lib/xgeneral.c/h for implementation.
+# -DGETCWD - if getcwd is not defined in this system.
+# -DSTRSTR - if strstr is not defined in this system.
+# -DSTRDUP - if strdup is not defined in this system.
+# -DSTRICMP - if niether strcasecmp nor stricmp are defined in this system.
+#
+# -DTIMES - if times is defined in your system, otherwise uses time.
+#
+# -DRANDOM_IRIT - Use irit internal random numbers generator (default).
+# -DRAND - if the (s)rand random number generator exists.
+# -DRAND48 - ?rand48 random number generators exists.
+#	If non of RAND or RAND48 are defined, (s)random is used.
+#
+# Unfortunately, there is no one Unix function to do subseconds' sleep.
+# -DUSLEEP - if usleep is defined in the system.
+# -DSGINAP - on sgi systems instead of usleep.
+# -DUSLEEP_SELECT - do the usleep using the 'select' unix call.
+# -DITIMERVAL - when all the above fails, try this.
+#
+# -DNO_VOID_PTR - if your C compiler does not support (void *).
+#
+# -DUSE_VARARGS - if your system does not have stdarg.h and have the old
+#	varargs.h.
+#
+# -DNO_CONCAT_STR - if 'char *p = "This is" "one string";' is illegal.
+#
+# -DGRAPDRVS - any combination of of 'xgldrvs', 'xgladap', 'x11drvs', etc.
+#
+# -DMAKE_REAL_FLOAT - force real number to be float and not double.
+#               Expect problems as it is not really tested.
+#
+# -DIRIT_URT_INC and -DIRIT_URT_LIB - library and include of the utah
+#		 raster toolkit.
+# -DIRIT_HAVE_URT_RLE - if IRIT can use the IRIT_URT RLE package.
+#		 That is IRIT_URT_INC/IRIT_URT_LIB are properly set.
+#
+# -DIRIT_GIF_INC and -DIRIT_GIF_LIB - library and include of the
+#		 giflib toolkit.
+# -DIRIT_HAVE_GIF_LIB - if IRIT can use the IRIT_GIFLIB package.
+#		 That is IRIT_GIF_INC/IRIT_GIF_LIB are properly set.
+# 
+# -DIRIT_PNG_INC and -DIRIT_PNG_LIB - library and include of the
+#		 pnglib toolkit.
+# -DIRIT_HAVE_PNG_LIB - if IRIT can use the IRIT_PNGLIB package.
+#		 That is IRIT_PNG_INC/IRIT_PNG_LIB are properly set.
+#  The png lib also requires zlib!
+# 
+# -DIRIT_GZIP_INC and -DIRIT_GZIP_LIB - library and include of the
+#		 giflib toolkit.
+# -DIRIT_HAVE_GZIP_LIB - if IRIT can use the IRIT_GZIPLIB package.
+#		 That is IRIT_GZIP_INC/IRIT_GZIP_LIB are properly set.
+#
+# -DIPC_BIN_COMPRESSION - if support for binary compressed files is to
+#		to be provided (*.icd files).
+#  This option also requires -DIRIT_HAVE_GZIP_LIB.
+#
+# -DIRIT_QUIET_STRINGS - minimal print outs.
+#
+# Other, possibly useful defines (for c code development):
+#
+# -DDEBUG - for some debugging functions in the code (that can be invoked
+#		from a debugger).
+#
+# -DDEBUG_IRIT_MALLOC - for extensive malloc debugging facility.  See
+#               misc_lib/imalloc.c and the idynmem irit interpreter function.
+#
+
+#
+# Flags for SGI 4d, Irix 3.x, using GL or X11:
+#
+# CC = cc
+# DFLAGS = -DNO_VOID_PTR -DSTRICMP -DNO_CONCAT_STR -DSGINAP -DRANDOM_IRIT -DTIMES -D__UNIX__ -D__GL__ -D__X11__
+# CFLAGS = -O -DNDEBUG $(DFLAGS) -Olimit 1000 -Wf,-XNh10000 -Wf,-XNd10000 -G 4
+# CFLAGS = -g -DDEBUG $(DFLAGS) -Olimit 1000 -Wf,-XNh10000 -Wf,-XNd10000 -G 4
+# IRIT_MORE_LIBS = -lbsd -lmalloc
+# GRAPX11LIBS = -lX11
+# GRAPGLLIBS = -lgl_s
+# GRAPDRVS = nuldrvs$(IRIT_EXE_PF) xgldrvs$(IRIT_EXE_PF) xgladap$(IRIT_EXE_PF) # x11drvs$(IRIT_EXE_PF)
+
+#
+# Flags for SGI 4d, Irix 4.0, using GL or X11:
+#
+# CC = cc -fullwarn -woff 302,303,269,927 -xansi
+# DFLAGS = -DFUNCPROTO -DSGINAP -DRANDOM_IRIT -DTIMES -D__UNIX__ -D__GL__ -D__X11__
+# CFLAGS = -O -DNDEBUG $(DFLAGS) -Olimit 1000 -Wf,-XNh10000 -Wf,-XNd10000 -G 4
+# CFLAGS = -g -DDEBUG $(DFLAGS) -Olimit 1000 -Wf,-XNh10000 -Wf,-XNd10000 -G 4
+# IRIT_MORE_LIBS = -lbsd -lmalloc
+# GRAPX11LIBS = -lXext -lX11
+# GRAPXMTLIBS = -lXm_s -lXt_s -lXext -lX11 -lgl_s
+# GRAPGLLIBS = -lgl_s
+# GRAPDRVS = nuldrvs$(IRIT_EXE_PF) xgldrvs$(IRIT_EXE_PF) xgladap$(IRIT_EXE_PF) # x11drvs$(IRIT_EXE_PF) xmtdrvs$(IRIT_EXE_PF)
+
+#
+# Flags for SGI 4d, Irix 5.1.1.2/5.2/5.3 using GL or X11 (tested on Indy):
+#
+# CC = cc -xansi -fullwarn
+# DFLAGS = -DSGINAP -DRANDOM_IRIT -DTIMES -D__UNIX__ -D__GL__ -D__OPENGL__ -D__X11__
+# CFLAGS = $(DFLAGS) -Olimit 1000 -Wf,-XNh10000 -Wf,-XNd10000 -Wl,-w # -mips2
+# CFLAGS = -g -DDEBUG $(DFLAGS) -Olimit 1000 -Wf,-XNh10000 -Wf,-XNd10000 -Wl,-w # -mips2
+# IRIT_MORE_LIBS = -lbsd -lmalloc
+# GRAPX11LIBS = -lXext -lX11
+# GRAPXMTLIBS = -lXm -lXt -lXext -lX11
+# GRAPGLLIBS = -lgl
+# GRAPOGLLIBS = -lGLU -lGL $(GRAPXMTLIBS)
+# GRAPDRVS = nuldrvs$(IRIT_EXE_PF) xgldrvs$(IRIT_EXE_PF) xgladap$(IRIT_EXE_PF) x11drvs$(IRIT_EXE_PF) xmtdrvs$(IRIT_EXE_PF) xglmdrvs$(IRIT_EXE_PF) xogldrvs$(IRIT_EXE_PF)
+# IRIT_LIB_SFX = so
+# IRIT_LIB_MAKE = ld -shared -o 
+# IRIT_LIB_RAN = echo
+
+#
+# Flags for SGI 4d, Irix 5.1.1.2/5.2/5.3 using GL or X11 and gcc 2.7.0
+#
+# CC = gcc
+# DFLAGS = -DSGINAP -DRANDOM_IRIT -DTIMES -D__UNIX__ -D__GL__ -D__OPENGL__ -D__X11__ -Dsgi -D_SGI_SOURCE
+# CFLAGS = -O2 -DNDEBUG -mcpu=r4000 -ansi -Wall $(DFLAGS)
+# CFLAGS = -g -DDEBUG $(DFLAGS)
+# IRIT_MORE_FLAGS = -I /usr/include
+# IRIT_MORE_LIBS = -lbsd -lmalloc
+# GRAPX11LIBS = -lXext -lX11
+# GRAPXMTLIBS = -lXm -lXt -lXext -lX11
+# GRAPGLLIBS = -lgl
+# GRAPOGLLIBS = -lGLU -lGL $(GRAPXMTLIBS)
+# GRAPDRVS = nuldrvs$(IRIT_EXE_PF) xgldrvs$(IRIT_EXE_PF) xgladap$(IRIT_EXE_PF) x11drvs$(IRIT_EXE_PF) xmtdrvs$(IRIT_EXE_PF) xglmdrvs$(IRIT_EXE_PF) xogldrvs$(IRIT_EXE_PF)
+#
+# For shared libraries add (For Irit 5.3 see also Irit 6.3 below):
+#
+# IRIT_LIB_SFX = so
+# IRIT_LIB_MAKE = ld -shared -o 
+# IRIT_LIB_RAN = echo
+
+# Flags for SGI 4d, Irix 6.4 using GL or X11.  It should be noted that these
+# flags can be used with cc options of '-o32', '-n32', or '-64'.  For '-64'
+# libgl.a is no longer supported so xgldrvs xgladap xglmdrvs will not link!
+#
+# CC = cc -xansi -fullwarn -mips3 -n32
+# DFLAGS = -DSGINAP -DRANDOM_IRIT -DTIMES -D__UNIX__ -D__GL__ -D__OPENGL__ -D__X11__ -DSGI64
+# CFLAGS = $(DFLAGS) -Wl,-w
+# CFLAGS = -g -DDEBUG $(DFLAGS) -Wl,-w
+# IRIT_MORE_LIBS =  -lmalloc
+# GRAPX11LIBS = -lXext -lX11
+# GRAPXMTLIBS = -lXm -lXt -lXext -lX11
+# GRAPGLLIBS = -lgl
+# GRAPOGLLIBS = -lGLU -lGL $(GRAPXMTLIBS)
+# GRAPDRVS = nuldrvs$(IRIT_EXE_PF) x11drvs$(IRIT_EXE_PF) xmtdrvs$(IRIT_EXE_PF) xogldrvs$(IRIT_EXE_PF) xgldrvs$(IRIT_EXE_PF) xgladap$(IRIT_EXE_PF) xglmdrvs$(IRIT_EXE_PF)
+#
+# For shared libraries add:
+#
+# IRIT_LIB_SFX = so
+# IRIT_LIB_MAKE = cc -shared -o 
+# IRIT_LIB_RAN = echo
+
+#
+# Flags for SGI 4d, Irix 6.5 using GL or X11 (tested on Indy):
+#
+# CC = cc -xansi -fullwarn -woff 1209,1174 -mips3 -n32
+# DFLAGS = -DSGINAP -DRANDOM_IRIT -DTIMES -D__UNIX__ -D__GL__ -D__OPENGL__ -D__X11__
+# CFLAGS = $(DFLAGS) # -mips2
+# CFLAGS = -g -DDEBUG $(DFLAGS) -Wl,-w # -mips2
+# IRIT_MORE_LIBS = -lbsd -lmalloc
+# GRAPX11LIBS = -lXext -lX11
+# GRAPXMTLIBS = -lXm -lXt -lXext -lX11
+# GRAPGLLIBS = -lgl
+# GRAPOGLLIBS = -lGLU -lGL $(GRAPXMTLIBS)
+# GRAPDRVS = nuldrvs$(IRIT_EXE_PF) xgldrvs$(IRIT_EXE_PF) xgladap$(IRIT_EXE_PF) x11drvs$(IRIT_EXE_PF) xmtdrvs$(IRIT_EXE_PF) xglmdrvs$(IRIT_EXE_PF) xogldrvs$(IRIT_EXE_PF)
+
+#
+# For shared libraries add:
+#
+# IRIT_LIB_SFX = so
+# IRIT_LIB_MAKE = cc -shared -o 
+# IRIT_LIB_RAN = echo
+
+#
+# Flags for i386 SVR4 using X11
+#
+# CC = cc
+# DFLAGS = -D__UNIX__ -D__X11__
+# CFLAGS = -O -DNDEBUG $(DFLAGS)
+# CFLAGS = -g -DDEBUG $(DFLAGS)
+# IRIT_MORE_LIBS = -lsocket -lnsl
+# GRAPX11LIBS = -lX11
+# GRAPDRVS = nuldrvs$(IRIT_EXE_PF) x11drvs$(IRIT_EXE_PF)
+
+#
+# Flags for Linux, using X11/Motif, IBMPC.
+#
+# CC = cc
+# DFLAGS = -DLINUX386 -D__UNIX__ -D__X11__ -DSTRICMP -DUSLEEP -DTIMES -DRANDOM_IRIT -DGRAPDRVS -DNO_CONCAT_STR
+# CFLAGS = -O -DNDEBUG $(DFLAGS)
+# CFLAGS = -g -DDEBUG $(DFLAGS)
+# GRAPX11LIBS = -L/usr/X11R6/lib -lX11
+# GRAPXMTLIBS = -L/usr/X11R6/lib -L/usr/OpenMotif-2.1.32 -lXm -lXt -lXext -lX11
+# GRAPDRVS = nuldrvs$(IRIT_EXE_PF) x11drvs$(IRIT_EXE_PF) xmtdrvs$(IRIT_EXE_PF)
+
+#
+# Flags for i486 Linux using gcc/X11R6
+#
+# CC = gcc
+# OPEN_MOTIF = /usr/OpenMotif-2.1.32
+# DFLAGS = -DLINUX386 -D__UNIX__ -DX11R6 -D__X11__ -DSTRICMP -DUSLEEP -I/usr/include -I/usr/X11R6/include -I$(OPEN_MOTIF)/include
+# CFLAGS = -O2 -DNDEBUG -pipe -m486 -fomit-frame-pointer  $(DFLAGS)
+# CFLAGS = -g -DDEBUG $(DFLAGS)
+# IRIT_MORE_LIBS =  -lc -L/usr/X11R6/lib -lXm -lXt
+# GRAPX11LIBS = -L/usr/X11R6/lib -lX11
+# GRAPXMTLIBS = -L/usr/X11R6/lib -L$(OPEN_MOTIF)/lib -lXm -lXt -lXext -lX11
+# GRAPOGLLIBS = -lGLU -lGL $(GRAPXMTLIBS)
+# GRAPDRVS = nuldrvs$(IRIT_EXE_PF) x11drvs$(IRIT_EXE_PF) xmtdrvs$(IRIT_EXE_PF) xogldrvs$(IRIT_EXE_PF)
+
+# For shared libraries add:
+#
+# IRIT_LIB_SFX = so
+# IRIT_LIB_MAKE = cc -shared -o 
+# IRIT_LIB_RAN = echo
+
+#
+# Flags for SUN ipx O.S. 4.1.3 using gcc 2.4.5 and X11/Motif:
+# Note you cannot use SUN's native cc compiler since it does not support
+# Ansi C.
+#
+# CC = gcc
+# DFLAGS = -DSUN4 -DTIMES -DUSLEEP -D__UNIX__ -D__X11__ -I/usr/include/X11
+# CFLAGS = -O2 -DNDEBUG $(DFLAGS)
+# CFLAGS = -g -DDEBUG $(DFLAGS)
+# IRIT_MORE_LIBS = 
+# GRAPX11LIBS = -lX11
+# GRAPXMTLIBS = -lXm -lXt -lX11
+# GRAPDRVS = nuldrvs$(IRIT_EXE_PF) x11drvs$(IRIT_EXE_PF) xmtdrvs$(IRIT_EXE_PF)
+
+#
+# Flags for SUN Solaris 5.3 using gcc 2.5.8 and X11:
+# Note you cannot use SUN's native cc compiler since it does not support
+# Ansi C. If you use mesa emulation of Open GL, uncomment xogldrvs 
+#
+CC = gcc
+DFLAGS = -DSUN4 -DTIMES -DRANDOM_IRIT -DNANOSLEEP -D__UNIX__ -D__X11__ -I/usr/openwin/share/include -I/opt/SUNWmotif/share/include $(IRIT_MESA_INC)
+# CFLAGS = -O2 -DNDEBUG $(DFLAGS)
+CFLAGS = -g -DDEBUG $(DFLAGS)
+IRIT_MORE_LIBS = -lsocket -lnsl -lposix4
+GRAPX11LIBS = -L/usr/openwin/lib -lX11
+GRAPXMTLIBS = -L/opt/SUNWmotif/lib -L/usr/ccs/lib -lXm -L/usr/openwin/lib -lXt -lX11 -lgen
+# GRAPOGLLIBS = $(IRIT_MESA_LIB) -lXext $(GRAPXMTLIBS)
+# GRAPOGLLIBS = -lGLU -lGL $(GRAPXMTLIBS)
+GRAPDRVS = nuldrvs$(IRIT_EXE_PF) x11drvs$(IRIT_EXE_PF) xmtdrvs$(IRIT_EXE_PF) # xogldrvs$(IRIT_EXE_PF)
+#
+# For shared libraries add:
+#
+IRIT_LIB_SFX = so
+IRIT_LIB_MAKE = ld -G -o 
+IRIT_LIB_RAN = echo
+
+#
+# Flags for SUN Solaris 5.3 using cc SC3.0.1 and X11 (uncomment xogldrvs if
+# has Open GL):
+#
+# CC = cc
+# DFLAGS = -D__EXTENSIONS__ -DSUN4 -DTIMES -DRANDOM_IRIT -DNANOSLEEP -D__UNIX__ -D__X11__ -DNO_CONCAT_STR -I/usr/openwin/share/include -I/opt/SUNWmotif/share/include $(IRIT_MESA_INC)
+# CFLAGS = -xO4 -fast $(DFLAGS)
+# CFLAGS = -g -DDEBUG $(DFLAGS)
+# IRIT_MORE_LIBS = -lsocket -lnsl -lposix4
+# GRAPX11LIBS = -L/usr/openwin/lib -lX11
+# GRAPXMTLIBS = -L/opt/SUNWmotif/lib -L/usr/ccs/lib -lXm -L/usr/openwin/lib -lXt -lX11 -lgen
+# GRAPOGLLIBS = $(IRIT_MESA_LIB) -lXext $(GRAPXMTLIBS)
+# GRAPOGLLIBS = -lGLU -lGL $(GRAPXMTLIBS)
+# GRAPDRVS = nuldrvs$(IRIT_EXE_PF) x11drvs$(IRIT_EXE_PF) xmtdrvs$(IRIT_EXE_PF) # xogldrvs$(IRIT_EXE_PF)
+#
+# For shared libraries add:
+#
+# IRIT_LIB_SFX = so
+# IRIT_LIB_MAKE = ld -G -o 
+# IRIT_LIB_RAN = echo
+
+#
+# Flags for SUN Solaris 5.3 using ucbcc (uncomment xogldrvs if has Open GL)
+#
+# CC = cc
+# DFLAGS = -D__EXTENSIONS__ -DSUN4 -DTIMES -DRANDOM_IRIT -DNANOSLEEP -D__UNIX__ -D__X11__ -DNO_CONCAT_STR
+# CFLAGS = -O2 -DNDEBUG $(DFLAGS)
+# CFLAGS = -g -DDEBUG $(DFLAGS)
+# IRIT_MORE_LIBS = -lsocket -lnsl -lposix4
+# GRAPX11LIBS = -L/usr/openwin/lib -lX11
+# GRAPXMTLIBS = -L/opt/SUNWmotif/lib -lXm -L/usr/openwin/lib -lXt -lX11 -lgen
+# GRAPOGLLIBS = -lGLU -lGL $(GRAPXMTLIBS)
+# GRAPDRVS = nuldrvs$(IRIT_EXE_PF) x11drvs$(IRIT_EXE_PF) xmtdrvs$(IRIT_EXE_PF) # xogldrvs$(IRIT_EXE_PF)
+#
+# For shared libraries add:
+#
+# IRIT_LIB_SFX = so
+# IRIT_LIB_MAKE = ld -G -o 
+# IRIT_LIB_RAN = echo
+
+#
+# Flags for MAC OSX using gcc/X11R6
+#
+#CC = gcc
+#DFLAGS = -D__MACOSX__ -D__UNIX__ -DX11R6 -D__X11__ -DUSLEEP -DRANDOM_IRIT -I/sw/include -I/usr/include -I/usr/X11R6/include  $(IPC_COMP) # -DDEBUG -DDEBUG_IRIT_MALLOC
+#CFLAGS = -O2 -DNDEBUG -pipe -fomit-frame-pointer $(DFLAGS)
+#CFLAGS = -g -DDEBUG $(DFLAGS)
+#IRIT_MORE_LIBS =  -lc 
+#GRAPX11LIBS = -L/sw/lib -L/usr/X11R6/lib -lX11 -lSM -lICE
+#GRAPXMTLIBS = -L/sw/lib -L/usr/X11R6/lib -lXm -lXt -lX11 -lSM -lICE
+#GRAPOGLLIBS = -lGLU -lGL $(GRAPXMTLIBS)
+#GRAPDRVS = nuldrvs$(IRIT_EXE_PF) x11drvs$(IRIT_EXE_PF) xmtdrvs$(IRIT_EXE_PF) xogldrvs$(IRIT_EXE_PF)
+#
+# For shared libraries add:
+#
+#IRIT_LIB_SFX = so
+#IRIT_LIB_MAKE = gcc -shared -o 
+#IRIT_LIB_RAN = echo
+#
+# Static libraries
+#
+#IRIT_LIB_SFX = a
+
+#
+# Flags for HPBSD 4.3, HP300/400 and X11
+# Note I used gnumake here since the provided make do not support the
+# 'include ../makeflag.unx' directive.
+#
+# CC = gcc
+# DFLAGS = -DUSE_VARARGS -DRANDOM_IRIT -DTIMES -D__UNIX__ -D__X11__ -DSTRICMP -DSTRSTR -DGETCWD
+# CFLAGS = -O -DNDEBUG $(DFLAGS)
+# CFLAGS = -g -pg -DDEBUG $(DFLAGS)
+# IRIT_MORE_LIBS = 
+# GRAPX11LIBS = -lX11
+# GRAPDRVS = nuldrvs$(IRIT_EXE_PF) x11drvs$(IRIT_EXE_PF)
+
+#
+# Flags for a DEC 5000/200, with gcc, x11:
+#
+# CC = gcc
+# DFLAGS = -DSTRDUP -DRANDOM_IRIT -DTIMES -D__UNIX__ -D__X11__
+# CFLAGS = -O -DNDEBUG -fstrength-reduce -fcombine-regs -fforce-mem -fforce-addr -fomit-frame-pointer -finline-functions -fcaller-saves -fdelayed-branch $(DFLAGS)
+# CFLAGS = -g -DDEBUG $(DFLAGS)
+# IRIT_MORE_LIBS = 
+# GRAPX11LIBS = -lX11
+# GRAPDRVS = nuldrvs$(IRIT_EXE_PF) x11drvs$(IRIT_EXE_PF)
+
+#
+# Flags for a DEC 5000/240, with cc, x11:
+#
+# CC = cc
+# DFLAGS = -DSTRDUP -DRANDOM_IRIT -DTIMES -DNO_CONCAT_STR -D__UNIX__ -D__X11__
+# CFLAGS = -O -DNDEBUG $(DFLAGS)
+# CFLAGS = -g -DDEBUG $(DFLAGS)
+# IRIT_MORE_LIBS = 
+# GRAPX11LIBS = -lX11
+# GRAPDRVS = nuldrvs$(IRIT_EXE_PF) x11drvs$(IRIT_EXE_PF)
+
+#
+# Flags for Dec Alpha AXP running OSF1.3/ gcc2.7.2
+#
+# CC = gcc
+# DFLAGS = -DOSF1DEC -DTIMES -DUSLEEP -D__UNIX__ -D__X11__ -I/usr/include/X11
+# CFLAGS = -O2 -DNDEBUG $(DFLAGS)
+# CFLAGS = -g -DDEBUG $(DFLAGS)
+# IRIT_MORE_LIBS = -lc
+# GRAPX11LIBS = -lX11
+# GRAPXMTLIBS = -lXm -lXt -lXext -lX11
+# GRAPDRVS = nuldrvs$(IRIT_EXE_PF) x11drvs$(IRIT_EXE_PF) xmtdrvs$(IRIT_EXE_PF)
+#
+# For shared libraries add:
+#
+# IRIT_LIB_SFX = so
+# IRIT_LIB_MAKE = ld -shared -o 
+# IRIT_LIB_RAN = echo
+
+#
+# Flags for Dec Alpha AXP running OSF1.3/native C compiler
+#
+# CC = cc
+# DFLAGS = -std1 -warnprotos -DOSF1DEC -DTIMES -DUSLEEP -D__UNIX__ -D__X11__ -I/usr/include/X11
+# CFLAGS = -O2 -DNDEBUG $(DFLAGS)
+# CFLAGS = -g -DDEBUG $(DFLAGS)
+# IRIT_MORE_LIBS = -lc
+# GRAPX11LIBS = -lX11
+# GRAPXMTLIBS = -lXm -lXt -lXext -lX11
+# GRAPDRVS = nuldrvs$(IRIT_EXE_PF) x11drvs$(IRIT_EXE_PF) xmtdrvs$(IRIT_EXE_PF)
+#
+# For shared libraries add:
+#
+# IRIT_LIB_SFX = so
+# IRIT_LIB_MAKE = ld -shared -o 
+# IRIT_LIB_RAN = echo
+
+# Flags for Alpha Linux using X11
+#
+# CC = cc
+# DFLAGS = -D__UNIX__ -D__X11__ -DSTRICMP -DUSLEEP -DTIMES -DRANDOM_IRIT -D_POSIX_SOURCE -DGRAPDRVS -DNO_CONCAT_STR -D_AlphaLinux
+# CFLAGS = -O -DNDEBUG $(DFLAGS)
+# CFLAGS = -g -DDEBUG $(DFLAGS)
+# IRIT_MORE_LIBS = -L/usr/local/lib -lc
+# GRAPX11LIBS = -L/usr/X11/lib -lX11
+# GRAPDRVS = nuldrvs$(IRIT_EXE_PF) x11drvs$(IRIT_EXE_PF)
+
+#
+# Flags for IBM RS6000 using GL or X11, X11/Motif
+# The gl implementation (in both software and hardware) on the RS6000
+# could be better. Although basically working, its speed is approximately
+# the same as X11 (You do get hardware shading though)...
+#
+# CC = xlc # Or it is cc now!?
+# DFLAGS = -D_POSIX_SOURCE -D_ALL_SOURCE -DSTRSTR -DSTRDUP -DRANDOM_IRIT -DTIMES -D__UNIX__ -D__X11__ -D__GL__
+# CFLAGS = -O -DNDEBUG -qnoro $(DFLAGS)
+# CFLAGS = -g -pg -qnoro -DDEBUG $(DFLAGS)
+# IRIT_MORE_LIBS = -lbsd
+# GRAPX11LIBS = -lX11
+# GRAPXMTLIBS = -lXm -lXt -lX11
+# GRAPGLLIBS = -lgl
+# GRAPDRVS = nuldrvs$(IRIT_EXE_PF) xgldrvs$(IRIT_EXE_PF) x11drvs$(IRIT_EXE_PF) xmtdrvs$(IRIT_EXE_PF) xglmdrvs$(IRIT_EXE_PF)
+
+#
+# Flags for HP 7xx (snake) machines running hpux.
+#
+# CC = cc
+# DHPFLAGS = -D_INCLUDE_XOPEN_SOURCE -D_INCLUDE_HPUX_SOURCE -D_INCLUDE_POSIX_SOURCE -D_INCLUDE_XOPEN_SOURCE_EXTENDED -DUSLEEP -I/usr/include/X11R5 -I/usr/include/Motif1.2
+# DFLAGS = -DRANDOM_IRIT -DTIMES -D__UNIX__ -D__X11__ $(DHPFLAGS)
+# CFLAGS = -Aa -O -DNDEBUG $(DFLAGS)
+# CFLAGS = -Aa -g -DDEBUG $(DFLAGS)
+# IRIT_MORE_LIBS =
+# GRAPX11LIBS = -L/usr/lib/X11R5 -lX11
+# GRAPXMTLIBS = -L/usr/lib/X11R5 -L/usr/lib/Motif1.2 -lXm -lXt -lXhp11 -lX11
+# GRAPSBLIBS = -L/usr/lib -L/usr/lib/X11R5 -lXwindow -lsb -ldld
+# GRAPDRVS = nuldrvs$(IRIT_EXE_PF) x11drvs$(IRIT_EXE_PF) xmtdrvs$(IRIT_EXE_PF) xsbmdrvs$(IRIT_EXE_PF)
+#
+# For shared libraries add (also add +Z compilation option to CFLAGS):
+#
+# IRIT_LIB_SFX = sl
+# IRIT_LIB_MAKE = ld -b -o 
+# IRIT_LIB_RAN = echo
+
+#
+# Flags for IBM PC, SYSV3.2, ISC 2.2.1 and MIT X11R4, using gcc 1.40
+#
+# CC = gcc
+# DFLAGS = -DNO_CONCAT_STR -DUSE_VARARGS -DRANDOM_IRIT -DTIMES -D__UNIX__ -D__X11__ -DNO_ASM -DISC
+# CFLAGS = -O -DNDEBUG $(DFLAGS)
+# IRIT_MORE_LIBS = -L/usr2/lib -linet -lpt -lcposix
+# GRAPX11LIBS = -lX11_s
+# GRAPDRVS = nuldrvs$(IRIT_EXE_PF) x11drvs$(IRIT_EXE_PF)
+
+#
+# Flags for Evans & Sutherland ESV
+#
+# CC = cc
+# DFLAGS = -DSTRICMP -DNO_CONCAT_STR -DRANDOM_IRIT -DTIMES -D__UNIX__ -D__X11__ 
+# CFLAGS = -systype sysv -s -O -DNDEBUG $(DFLAGS)
+# IRIT_MORE_LIBS = -systype sysv -lbsd
+# GRAPX11LIBS = -lX11
+# GRAPDRVS = nuldrvs$(IRIT_EXE_PF) x11drvs$(IRIT_EXE_PF)
+
+#
+# Flags for i386 FreeBSD using X11R6
+#
+# DFLAGS = -D__UNIX__ -DX11R6 -D__X11__ -DTIMES -DRANDOM_IRIT -DUSLEEP
+# CFLAGS = -O2 -DNDEBUG -pipe -m486 -fomit-frame-pointer $(DFLAGS)
+# CFLAGS = -g -DDEBUG $(DFLAGS) 
+# IRIT_MORE_LIBS =  -lc
+# GRAPX11LIBS = -L/usr/X11R6/lib -lX11
+# GRAPXMTLIBS = -L/usr/X11R6/lib -lXm -lXt -lX11
+# GRAPDRVS = nuldrvs$(IRIT_EXE_PF) x11drvs$(IRIT_EXE_PF) xmtdrvs$(IRIT_EXE_PF)
+#
+#
+# For shared libraries add:
+#
+# IRIT_LIB_SFX = so
+# IRIT_LIB_MAKE = cc -shared -o 
+# IRIT_LIB_RAN = ranlib
+
+#
+# Default rule for compilation.
+#
+#
+# Some makefiles (SGI) expects 
+#.c.o:
+%.o$(IRIT_OBJ_PF): %.c
+	$(CC) $(CFLAGS) $(IRIT_URT_FLAGS) $(IRIT_GIF_FLAGS) $(IRIT_PNG_FLAGS) $(IRIT_GZIP_FLAGS) $(IRIT_MORE_FLAGS) -I. -I$(IRIT_INC_DIR) $(IRIT_URT_INC) $(IRIT_GIF_INC) $(IRIT_PNG_INC) $(IRIT_GZIP_INC) $(IRIT_MORE_INC) -o $@ -c $<
+
+#.cpp.o:
+%.o$(IRIT_OBJ_PF): %.cpp
+	$(CC) $(CFLAGS) $(IRIT_URT_FLAGS) $(IRIT_GIF_FLAGS) $(IRIT_PNG_FLAGS) $(IRIT_GZIP_FLAGS) $(IRIT_MORE_FLAGS) -I. -I$(IRIT_INC_DIR) $(IRIT_URT_INC) $(IRIT_GIF_INC) $(IRIT_PNG_INC) $(IRIT_GZIP_INC) $(IRIT_MORE_INC) -o $@ -c $<
+
+#
+# All libraries.
+#
+IRIT_LIBS = $(IRIT_CIRCLINK) -L$(IRIT_LIB_DIR) $(IRIT_MORE_LIBS) \
+	-lIritExt$(IRIT_LIB_PF) \
+	-lIritGrap$(IRIT_LIB_PF) \
+	-lIritUser$(IRIT_LIB_PF) \
+	-lIritRndr$(IRIT_LIB_PF) \
+	-lIritBool$(IRIT_LIB_PF) \
+	-lIritPrsr$(IRIT_LIB_PF) \
+	-lIritMdl$(IRIT_LIB_PF) \
+	-lIritMvar$(IRIT_LIB_PF) \
+	-lIritTrim$(IRIT_LIB_PF) \
+	-lIritTriv$(IRIT_LIB_PF) \
+	-lIritTrng$(IRIT_LIB_PF) \
+	-lIritSymb$(IRIT_LIB_PF) \
+	-lIritCagd$(IRIT_LIB_PF) \
+	-lIritGeom$(IRIT_LIB_PF) \
+	-lIritMisc$(IRIT_LIB_PF) \
+	-lIritXtra$(IRIT_LIB_PF) \
+	$(IRIT_URT_LIB) $(IRIT_GIF_LIB) $(IRIT_PNG_LIB) $(IRIT_GZIP_LIB) # -l gif

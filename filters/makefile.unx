@@ -1,0 +1,187 @@
+
+#
+# Makefile for the iritfltr subdirectory (IRIT solid modeller).
+#
+
+include ../makeflag.unx
+
+ALL_EXE = \
+	irit2dxf$(IRIT_EXE_PF) \
+	irit2hgl$(IRIT_EXE_PF) \
+	irit2igs$(IRIT_EXE_PF) \
+	irit2iv$(IRIT_EXE_PF) \
+	irit2nff$(IRIT_EXE_PF) \
+	irit2obj$(IRIT_EXE_PF) \
+	irit2off$(IRIT_EXE_PF) \
+	irit2plg$(IRIT_EXE_PF) \
+	irit2pov$(IRIT_EXE_PF) \
+	irit2ps$(IRIT_EXE_PF) \
+	irit2ray$(IRIT_EXE_PF) \
+	irit2scn$(IRIT_EXE_PF) \
+	irit2stl$(IRIT_EXE_PF) \
+	irit2wrl$(IRIT_EXE_PF) \
+	irit2xfg$(IRIT_EXE_PF) \
+	3ds2irit$(IRIT_EXE_PF) \
+	dat2bin$(IRIT_EXE_PF) \
+	dat2irit$(IRIT_EXE_PF) \
+	dxf2irit$(IRIT_EXE_PF) \
+	igs2irit$(IRIT_EXE_PF) \
+	obj2irit$(IRIT_EXE_PF) \
+	off2irit$(IRIT_EXE_PF) \
+	skeletn1$(IRIT_EXE_PF) \
+	stl2irit$(IRIT_EXE_PF)
+
+all: $(ALL_EXE)
+
+IRIT2DXF_OBJS	= irit2dxf.o$(IRIT_OBJ_PF)
+
+IRIT2HGL_OBJS	= irit2hgl.o$(IRIT_OBJ_PF)
+
+IRIT2IGS_OBJS	= irit2igs.o$(IRIT_OBJ_PF)
+
+IRIT2IV_OBJS	= irit2iv.o$(IRIT_OBJ_PF)
+
+IRIT2NFF_OBJS	= irit2nff.o$(IRIT_OBJ_PF)
+
+IRIT2OBJ_OBJS	= irit2obj.o$(IRIT_OBJ_PF)
+
+IRIT2OFF_OBJS	= irit2off.o$(IRIT_OBJ_PF)
+
+IRIT2PLG_OBJS	= irit2plg.o$(IRIT_OBJ_PF)
+
+IRIT2POV_OBJS	= irit2pov.o$(IRIT_OBJ_PF)
+
+IRIT2PS_OBJS	= irit2ps.o$(IRIT_OBJ_PF)
+
+IRIT2RAY_OBJS	= irit2ray.o$(IRIT_OBJ_PF)
+
+IRIT2SCN_OBJS	= irit2scn.o$(IRIT_OBJ_PF)
+
+IRIT2STL_OBJS	= irit2stl.o$(IRIT_OBJ_PF)
+
+IRIT2WRL_OBJS	= irit2wrl.o$(IRIT_OBJ_PF)
+
+IRIT2XFG_OBJS	= irit2xfg.o$(IRIT_OBJ_PF)
+
+
+3DS2IRIT_OBJS	= 3ds2irit.o$(IRIT_OBJ_PF)
+
+DAT2BIN_OBJS	= dat2bin.o$(IRIT_OBJ_PF)
+
+DAT2IRIT_OBJS	= dat2irit.o$(IRIT_OBJ_PF)
+
+DXF2IRIT_OBJS	= dxf2irit.o$(IRIT_OBJ_PF)
+
+IGS2IRIT_OBJS	= igs2irit.o$(IRIT_OBJ_PF)
+
+OBJ2IRIT_OBJS	= obj2irit.o$(IRIT_OBJ_PF)
+
+OFF2IRIT_OBJS	= off2irit.o$(IRIT_OBJ_PF)
+
+SKELETN1_OBJS	= skeletn1.o$(IRIT_OBJ_PF)
+
+STL2IRIT_OBJS	= stl2irit.o$(IRIT_OBJ_PF)
+
+
+irit2dxf$(IRIT_EXE_PF):	$(IRIT2DXF_OBJS)
+	$(CC) $(CFLAGS) -o irit2dxf$(IRIT_EXE_PF) $(IRIT2DXF_OBJS) $(MOREOBJS) \
+	$(IRIT_LIBS) -lm $(IRIT_MORE_LIBS)
+
+irit2hgl$(IRIT_EXE_PF):	$(IRIT2HGL_OBJS)
+	$(CC) $(CFLAGS) -o irit2hgl$(IRIT_EXE_PF) $(IRIT2HGL_OBJS) $(MOREOBJS) \
+	$(IRIT_LIBS) -lm $(IRIT_MORE_LIBS)
+
+irit2igs$(IRIT_EXE_PF):	$(IRIT2IGS_OBJS)
+	$(CC) $(CFLAGS) -o irit2igs$(IRIT_EXE_PF) $(IRIT2IGS_OBJS) $(MOREOBJS) \
+	$(IRIT_LIBS) -lm $(IRIT_MORE_LIBS)
+
+irit2iv$(IRIT_EXE_PF):	$(IRIT2IV_OBJS)
+	$(CC) $(CFLAGS) -o irit2iv$(IRIT_EXE_PF) $(IRIT2IV_OBJS) $(MOREOBJS) \
+	$(IRIT_LIBS) -lm $(IRIT_MORE_LIBS)
+
+irit2nff$(IRIT_EXE_PF):	$(IRIT2NFF_OBJS)
+	$(CC) $(CFLAGS) -o irit2nff$(IRIT_EXE_PF) $(IRIT2NFF_OBJS) $(MOREOBJS) \
+	$(IRIT_LIBS) -lm $(IRIT_MORE_LIBS)
+
+irit2obj$(IRIT_EXE_PF):	$(IRIT2OBJ_OBJS)
+	$(CC) $(CFLAGS) -o irit2obj$(IRIT_EXE_PF) $(IRIT2OBJ_OBJS) $(MOREOBJS) \
+	$(IRIT_LIBS) -lm $(IRIT_MORE_LIBS)
+
+irit2off$(IRIT_EXE_PF):	$(IRIT2OFF_OBJS)
+	$(CC) $(CFLAGS) -o irit2off$(IRIT_EXE_PF) $(IRIT2OFF_OBJS) $(MOREOBJS) \
+	$(IRIT_LIBS) -lm $(IRIT_MORE_LIBS)
+
+irit2plg$(IRIT_EXE_PF):	$(IRIT2PLG_OBJS)
+	$(CC) $(CFLAGS) -o irit2plg$(IRIT_EXE_PF) $(IRIT2PLG_OBJS) $(MOREOBJS) \
+	$(IRIT_LIBS) -lm $(IRIT_MORE_LIBS)
+
+irit2pov$(IRIT_EXE_PF):	$(IRIT2POV_OBJS)
+	$(CC) $(CFLAGS) -o irit2pov$(IRIT_EXE_PF) $(IRIT2POV_OBJS) $(MOREOBJS) \
+	$(IRIT_LIBS) -lm $(IRIT_MORE_LIBS)
+
+irit2ps$(IRIT_EXE_PF):	$(IRIT2PS_OBJS)
+	$(CC) $(CFLAGS) -o irit2ps$(IRIT_EXE_PF) $(IRIT2PS_OBJS) $(MOREOBJS) \
+	$(IRIT_LIBS) -lm $(IRIT_MORE_LIBS)
+
+irit2ray$(IRIT_EXE_PF):	$(IRIT2RAY_OBJS)
+	$(CC) $(CFLAGS) -o irit2ray$(IRIT_EXE_PF) $(IRIT2RAY_OBJS) $(MOREOBJS) \
+	$(IRIT_LIBS) -lm $(IRIT_MORE_LIBS)
+
+irit2scn$(IRIT_EXE_PF):	$(IRIT2SCN_OBJS)
+	$(CC) $(CFLAGS) -o irit2scn$(IRIT_EXE_PF) $(IRIT2SCN_OBJS) $(MOREOBJS) \
+	$(IRIT_LIBS) -lm $(IRIT_MORE_LIBS)
+
+irit2stl$(IRIT_EXE_PF):	$(IRIT2STL_OBJS)
+	$(CC) $(CFLAGS) -o irit2stl$(IRIT_EXE_PF) $(IRIT2STL_OBJS) $(MOREOBJS) \
+	$(IRIT_LIBS) -lm $(IRIT_MORE_LIBS)
+
+irit2wrl$(IRIT_EXE_PF):	$(IRIT2WRL_OBJS)
+	$(CC) $(CFLAGS) -o irit2wrl$(IRIT_EXE_PF) $(IRIT2WRL_OBJS) $(MOREOBJS) \
+	$(IRIT_LIBS) -lm $(IRIT_MORE_LIBS)
+
+irit2xfg$(IRIT_EXE_PF):	$(IRIT2XFG_OBJS)
+	$(CC) $(CFLAGS) -o irit2xfg$(IRIT_EXE_PF) $(IRIT2XFG_OBJS) $(MOREOBJS) \
+	$(IRIT_LIBS) -lm $(IRIT_MORE_LIBS)
+
+
+3ds2irit$(IRIT_EXE_PF):	$(3DS2IRIT_OBJS)
+	$(CC) $(CFLAGS) -o 3ds2irit$(IRIT_EXE_PF) $(3DS2IRIT_OBJS) $(MOREOBJS) \
+	$(IRIT_LIBS) -lm $(IRIT_MORE_LIBS)
+
+dat2bin$(IRIT_EXE_PF):	$(DAT2BIN_OBJS)
+	$(CC) $(CFLAGS) -o dat2bin$(IRIT_EXE_PF) $(DAT2BIN_OBJS) $(MOREOBJS) \
+	$(IRIT_LIBS) -lm $(IRIT_MORE_LIBS)
+
+dat2irit$(IRIT_EXE_PF):	$(DAT2IRIT_OBJS)
+	$(CC) $(CFLAGS) -o dat2irit$(IRIT_EXE_PF) $(DAT2IRIT_OBJS) $(MOREOBJS) \
+	$(IRIT_LIBS) -lm $(IRIT_MORE_LIBS)
+
+dxf2irit$(IRIT_EXE_PF):	$(DXF2IRIT_OBJS)
+	$(CC) $(CFLAGS) -o dxf2irit$(IRIT_EXE_PF) $(DXF2IRIT_OBJS) $(MOREOBJS) \
+	$(IRIT_LIBS) -lm $(IRIT_MORE_LIBS)
+
+igs2irit$(IRIT_EXE_PF):	$(IGS2IRIT_OBJS)
+	$(CC) $(CFLAGS) -o igs2irit$(IRIT_EXE_PF) $(IGS2IRIT_OBJS) $(MOREOBJS) \
+	$(IRIT_LIBS) -lm $(IRIT_MORE_LIBS)
+
+obj2irit$(IRIT_EXE_PF):	$(OBJ2IRIT_OBJS)
+	$(CC) $(CFLAGS) -o obj2irit$(IRIT_EXE_PF) $(OBJ2IRIT_OBJS) $(MOREOBJS) \
+	$(IRIT_LIBS) -lm $(IRIT_MORE_LIBS)
+
+off2irit$(IRIT_EXE_PF):	$(OFF2IRIT_OBJS)
+	$(CC) $(CFLAGS) -o off2irit$(IRIT_EXE_PF) $(OFF2IRIT_OBJS) $(MOREOBJS) \
+	$(IRIT_LIBS) -lm $(IRIT_MORE_LIBS)
+
+skeletn1$(IRIT_EXE_PF):	$(SKELETN1_OBJS)
+	$(CC) $(CFLAGS) -o skeletn1$(IRIT_EXE_PF) $(SKELETN1_OBJS) $(MOREOBJS) \
+	$(IRIT_LIBS) -lm $(IRIT_MORE_LIBS)
+
+stl2irit$(IRIT_EXE_PF):	$(STL2IRIT_OBJS)
+	$(CC) $(CFLAGS) -o stl2irit$(IRIT_EXE_PF) $(STL2IRIT_OBJS) $(MOREOBJS) \
+	$(IRIT_LIBS) -lm $(IRIT_MORE_LIBS)
+
+install: all
+	mv -f $(ALL_EXE) $(IRIT_BIN_DIR)
+
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

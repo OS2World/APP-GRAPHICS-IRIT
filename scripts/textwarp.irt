@@ -1,0 +1,53 @@
+#
+# Few examples of text warping through surfaces using the textwarp function.
+#
+#						Gershon Elber, Jan 2003.
+#
+
+c1 = cbezier( list( ctlpt( e2, -2,  0 ),
+		    ctlpt( e2, -1,  1 ),
+		    ctlpt( e2,  0, -1 ),
+		    ctlpt( e2,  1,  0 ) ) );
+c2 = cbezier( list( ctlpt( e1, -0.0 ),
+		    ctlpt( e1, -1.8 ),
+		    ctlpt( e1, -0.0 ) ) );
+s1 = sreparam( ruledSrf( c1, offset( c1, -0.4, 0.02, off ) ), col, 0, 6 );
+color( s1, red );
+t1 = textwarp( s1, "Computer Graphics", 0.09, 0.25, 0.75, 0 );
+color( t1, cyan );
+adwidth( t1, 2 );
+interact( list( t1, s1 ) );
+
+t1 = textwarp( s1, "Computer Graphics", 0.1, 0.25, 0.75, 1 );
+color( t1, cyan );
+adwidth( t1, 2 );
+interact( list( t1, s1 ) );
+
+
+s2 = sreparam( ruledSrf( c1, offset( c1, c2, 0.01, off ) ), col, 0, 6 );
+color( s2, red );
+t2 = textwarp( s2, "Computer Graphics", 0.15, 0.25, 0.75, 0.55 );
+color( t2, cyan );
+adwidth( t2, 2 );
+interact( list( t2, s2 ) );
+
+
+s3 = sreparam( sphereSrf( 1 ), col, 0, 6.5 );
+color( s3, red );
+t3 = textwarp( s3, "A Sphere", 0.1, 0.2, 0.9, 0.85 );
+color( t3, cyan );
+adwidth( t3, 2 );
+interact( list( t3, s3 ) );
+
+save( "textwarp", list( list( s1, t1 ) * ty( 1 ),
+		        list( s2, t2 ),
+		        list( s3, t3 ) * rx( -90 ) * ty( -2 ) ) );
+
+free( c1 );
+free( c2 );
+free( s1 );
+free( s2 );
+free( s3 );
+free( t1 );
+free( t2 );
+free( t3 );

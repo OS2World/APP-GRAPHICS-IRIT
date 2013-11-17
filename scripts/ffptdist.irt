@@ -1,0 +1,149 @@
+#
+# Examples of constructing uniform point distributions on freeforms.
+#
+#					Gershon Elber, August 1996.
+#
+
+save_mat = view_mat;
+view_mat = rotx( 0 );
+viewobj( view_mat );
+
+#
+# Some examples for curves.
+#
+
+c1 = cbezier( list( ctlpt( E2, -1.0,  0.0 ),
+		    ctlpt( E2, -1.0,  0.1 ),
+		    ctlpt( E2, -0.9, -0.1 ),
+		    ctlpt( E2,  0.9,  0.0 ) ) );
+color( c1, magenta );
+
+pts = ffptdist( c1, false, 1000 );
+e2pts = nil();
+for ( i = 1, 10, sizeof( pts ),
+	pt = ceval( c1, coord( nth( pts, i ), 0 ) ):
+	snoc( pt, e2pts )
+    );
+interact( list( e2pts, c1 ) );
+
+save( "ffptdst1", list( e2pts, c1 ) );
+
+pts = ffptdist( c1, true, 1000 );
+e2pts = nil();
+for ( i = 1, 10, sizeof( pts ),
+	pt = ceval( c1, coord( nth( pts, i ), 0 ) ):
+	snoc( pt, e2pts )
+    );
+interact( list( e2pts, c1 ) );
+
+save( "ffptdst2", list( e2pts, c1 ) );
+
+c2 = cbspline( 3,
+	       list( ctlpt( E2, -0.8,  0.0 ),
+		     ctlpt( E2, -1.0,  0.5 ),
+		     ctlpt( E2, -0.8, -0.5 ),
+		     ctlpt( E2, -0.6, -0.0 ),
+		     ctlpt( E2,  1.0,  0.0 ) ),
+	       list( KV_OPEN ) );
+color( c2, magenta );
+
+pts = ffptdist( c2, false, 1000 );
+e2pts = nil();
+for ( i = 1, 10, sizeof( pts ),
+	pt = ceval( c2, coord( nth( pts, i ), 0 ) ):
+	snoc( pt, e2pts )
+    );
+interact( list( e2pts, c2 ) );
+
+save( "ffptdst3", list( e2pts, c2 ) );
+
+pts = ffptdist( c2, true, 1000 );
+e2pts = nil();
+for ( i = 1, 10, sizeof( pts ),
+	pt = ceval( c2, coord( nth( pts, i ), 0 ) ):
+	snoc( pt, e2pts )
+    );
+interact( list( e2pts, c2 ) );
+
+save( "ffptdst4", list( e2pts, c2 ) );
+
+
+#
+# Some examples for surfaces.
+#
+
+view_mat = save_mat;
+viewobj( view_mat );
+
+s1 = sbezier( list( list( ctlpt( E3, -0.5, -1.0,  0.0 ),
+		          ctlpt( E3,  0.4,  0.0,  0.1 ),
+		          ctlpt( E3, -0.5,  1.0,  0.0 ) ),
+	            list( ctlpt( E3,  0.0, -0.7,  0.1 ),
+		          ctlpt( E3,  0.0,  0.0,  0.0 ),
+		          ctlpt( E3,  0.0,  0.7, -0.2 ) ),
+	            list( ctlpt( E3,  0.5, -1.0,  0.1 ),
+		          ctlpt( E3, -0.4,  0.0,  0.0 ),
+		          ctlpt( E3,  0.5,  1.0, -0.2 ) ) ) );
+color( s1, magenta );
+
+pts = ffptdist( s1, false, 1000 );
+e3pts = nil();
+for ( i = 1, 1, sizeof( pts ),
+	prmPt = nth( pts, i ):
+	pt = seval( s1, coord( prmPt, 0 ), coord( prmPt, 1 ) ):
+	snoc( pt, e3pts )
+    );
+interact( list( e3pts, s1 ) );
+
+save( "ffptdst5", list( e3pts, s1 ) );
+
+pts = ffptdist( s1, true, 1000 );
+e3pts = nil();
+for ( i = 1, 1, sizeof( pts ),
+	prmPt = nth( pts, i ):
+	pt = seval( s1, coord( prmPt, 0 ), coord( prmPt, 1 ) ):
+	snoc( pt, e3pts )
+    );
+interact( list( e3pts, s1 ) );
+
+save( "ffptdst6", list( e3pts, s1 ) );
+
+s2 = surfRev( ctlpt( E3, 0.0, 0.0, 0.0 ) +
+	      ctlpt( E3, 0.5, 0.0, 0.0 ) +
+	      ctlpt( E3, 0.0, 0.0, 1.0 ) );
+color( s2, magenta );
+
+pts = ffptdist( s2, false, 1000 );
+e3pts = nil();
+for ( i = 1, 1, sizeof( pts ),
+	prmPt = nth( pts, i ):
+	pt = seval( s2, coord( prmPt, 0 ), coord( prmPt, 1 ) ):
+	snoc( pt, e3pts )
+    );
+interact( list( e3pts, s2 ) );
+
+save( "ffptdst7", list( e3pts, s2 ) );
+
+pts = ffptdist( s2, true, 1000 );
+e3pts = nil();
+for ( i = 1, 1, sizeof( pts ),
+	prmPt = nth( pts, i ):
+	pt = seval( s2, coord( prmPt, 0 ), coord( prmPt, 1 ) ):
+	snoc( pt, e3pts )
+    );
+interact( list( e3pts, s2 ) );
+
+save( "ffptdst8", list( e3pts, s2 ) );
+
+#############################################################################
+
+free( i );
+free( pts );
+free( e3pts );
+free( e2pts );
+free( prmpt );
+free( pt );
+free( c1 );
+free( c2 );
+free( s1 );
+free( s2 );

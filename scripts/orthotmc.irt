@@ -1,0 +1,244 @@
+#
+# Some examples of K-orthotomics (See Fundamentals of Computer Aided 
+# Geometric Design, by J. Hoschek and D. Lasser.)
+#
+#			Gershon Elber, August 1996.
+#
+
+save_mat = view_mat;
+view_mat3d = save_mat * ry( 15 ) * sc( 0.6 );
+view_mat2d = sc( 0.6 );
+
+viewobj( view_mat2d );
+viewstate( "WidthLines", 1 );
+
+#############################################################################
+#
+# A cubic curve
+#
+
+pt = point( 0, 0.35, 0 );
+color( pt, cyan );
+
+#
+# Modifying the curve.
+#
+for ( a = 0.0, -0.01, -1.0,
+    crv = cbezier( list( ctlpt( E2, -0.8, -0.6 ),
+		         ctlpt( E2, -0.3, -0.2 ),
+			 ctlpt( E2,  0.0, a ),
+			 ctlpt( E2,  0.8, -0.6 ) ) ):
+    color( crv, yellow ):
+    Orth = orthotomc( crv, pt, 2 ):
+    color( Orth, green ):
+    view( list( Orth, crv, pt ) * tx( 0.5 ), 1 ) );
+#
+# Modifying K.
+#
+for ( a = 2.0, -0.01, -1.0,
+    Orth = orthotomc( crv, pt, a ):
+    color( Orth, green ):
+    view( list( Orth, crv, pt ) * tx( 0.5 ), 1 ) );
+
+save( "orthtmc1", list( Orth, crv, pt ) );
+
+pause();
+
+#############################################################################
+#
+# A quartic curve
+#
+
+pt = point( 0, 0.35, 0 );
+color( pt, cyan );
+
+#
+# Modifying the curve.
+#
+for ( a = 0.0, -0.01, -1.0,
+    crv = cbezier( list( ctlpt( E2, -0.8, -0.6 ),
+		         ctlpt( E2, -0.3, -0.3 ),
+			 ctlpt( E2,  0.0, a ),
+			 ctlpt( E2,  0.3, -0.3 ),
+			 ctlpt( E2,  0.8, -0.6 ) ) ):
+    color( crv, yellow ):
+    Orth = orthotomc( crv, pt, 2 ):
+    color( Orth, green ):
+    view( list( Orth, crv, pt ) * tx( 0.5 ), 1 ) );
+
+pause();
+
+
+crv = cbezier( list( ctlpt( E2, -0.8, -0.6 ),
+		     ctlpt( E2, -0.3, -0.3 ),
+		     ctlpt( E2,  0.0, -1.0 ),
+		     ctlpt( E2,  0.3, -0.3 ),
+		     ctlpt( E2,  0.8, -0.6 ) ) );
+color( crv, yellow );
+
+#
+# Modifying the point.
+#
+for ( a = 0.0, -0.01, -1.0,
+    pt = point( 0, a, 0 ):
+    color( pt, cyan ):
+    Orth = orthotomc( crv, pt, 2 ):
+    color( Orth, green ):
+    view( list( Orth, crv, pt ), 1 ) );
+for ( a = -1.0, 0.01, 0.5,
+    pt = point( 1.0 + a, a, 0 ):
+    color( pt, cyan ):
+    Orth = orthotomc( crv, pt, 2 ):
+    color( Orth, green ):
+    view( list( Orth, crv, pt ), 1 ) );
+for ( a = 0.0, 0.01, 0.5,
+    pt = point( 1.5 - 3 * a, 0.5 - a, 0 ):
+    color( pt, cyan ):
+    Orth = orthotomc( crv, pt, 2 ):
+    color( Orth, green ):
+    view( list( Orth, crv, pt ), 1 ) );
+
+pause();
+
+#############################################################################
+#
+# A rational cubic curve
+#
+
+pt = point( 0, 0.35, 0 );
+color( pt, cyan );
+
+#
+# Modifying the curve.
+#
+for ( a = 0.0, -0.01, -1.0,
+    crv = cbezier( list( ctlpt( P2,  1.0, -0.8, -0.6 ),
+		         ctlpt( P2,  5.0, -0.4, -0.2 ),
+			 ctlpt( P2,  2.0,  0.2, a ),
+			 ctlpt( P2,  1.0,  0.8, -0.6 ) ) ):
+    color( crv, yellow ):
+    Orth = orthotomc( crv, pt, 2 ):
+    color( Orth, green ):
+    view( list( Orth, crv, pt ), 1 ) );
+
+pause();
+
+#############################################################################
+#
+# A biquartic surface
+#
+
+pt = point( 0, 0, 0 ):
+color( pt, cyan ):
+
+srf = sbezier( 
+        list( list( ctlpt( E3, -1.0, -1.0, 0.0 ),
+                    ctlpt( E3,  0.0, -1.0, 0.3 ),
+                    ctlpt( E3,  1.0, -1.0, 0.0 ) ),
+              list( ctlpt( E3, -1.0,  0.0, 0.3 ),
+                    ctlpt( E3,  0.0,  0.0, 0.6 ),
+                    ctlpt( E3,  1.0,  0.0, 0.3 ) ),
+              list( ctlpt( E3, -1.0,  1.0, 0.0 ),
+                    ctlpt( E3,  0.0,  1.0, 0.3 ),
+                    ctlpt( E3,  1.0,  1.0, 0.0 ) ) ) );
+attrib( srf, "color", yellow );
+
+#
+# Modifying the surface.
+#
+viewobj( view_mat3d );
+for ( a = -0.5, 0.03, 1.5,
+    NewSrf = sEditPt( srf, ctlpt( E3,  0.0,  0.0, a ), 1, 1 ):
+    Orth = orthotomc( NewSrf, pt, 2 ):
+    color( Orth, green ):
+    view( list( Orth, NewSrf, pt ), 1 ) );
+
+pause();
+
+#############################################################################
+#
+# A biquartic surface
+#
+
+wiggle = sbspline( 3, 3, 
+        list( list( ctlpt( E3, 0.013501, 0.46333, -1.01136 ),
+                    ctlpt( E3, 0.410664, -0.462427, -0.939545 ),
+                    ctlpt( E3, 0.699477, 0.071974, -0.381915 ) ),
+              list( ctlpt( E3, -0.201925, 1.15706, -0.345263 ),
+                    ctlpt( E3, 0.210717, 0.022708, -0.34285 ),
+                    ctlpt( E3, 0.49953, 0.557109, 0.21478 ) ),
+              list( ctlpt( E3, -0.293521, 0.182036, -0.234382 ),
+                    ctlpt( E3, 0.103642, -0.743721, -0.162567 ),
+                    ctlpt( E3, 0.392455, -0.20932, 0.395063 ) ),
+              list( ctlpt( E3, -0.508947, 0.875765, 0.431715 ),
+                    ctlpt( E3, -0.096305, -0.258586, 0.434128 ),
+                    ctlpt( E3, 0.192508, 0.275815, 0.991758 ) ),
+              list( ctlpt( E3, -0.600543, -0.099258, 0.542596 ),
+                    ctlpt( E3, -0.20338, -1.02502, 0.614411 ),
+                    ctlpt( E3, 0.085433, -0.490614, 1.17204 ) ) ),
+        list( list( KV_OPEN ),
+              list( KV_OPEN ) ) );
+attrib( wiggle, "color", yellow );
+
+#
+# Modifying the point.
+#
+for ( a = 0.0, -0.03, -1.0,
+    pt = point( 0, a, 0 ):
+    color( pt, cyan ):
+    Orth = orthotomc( wiggle, pt, 2 ):
+    color( Orth, green ):
+    view( list( Orth, wiggle, pt ), 1 ) );
+
+pause();
+
+#############################################################################
+#
+# A cubic surface
+#
+
+pt = point( 0, 0, 0 ):
+color( pt, cyan ):
+
+srf = sbezier( 
+        list( list( ctlpt( E3, -1.0, -1.0, 0.0 ),
+                    ctlpt( E3, -0.3, -1.0, 0.3 ),
+                    ctlpt( E3,  0.3, -1.0, 0.3 ),
+                    ctlpt( E3,  1.0, -1.0, 0.0 ) ),
+              list( ctlpt( E3, -1.0, -0.3, 0.3 ),
+                    ctlpt( E3, -0.3, -0.3, 0.6 ),
+                    ctlpt( E3,  0.3, -0.3, 0.6 ),
+                    ctlpt( E3,  1.0, -0.3, 0.3 ) ),
+              list( ctlpt( E3, -1.0,  0.3, 0.3 ),
+                    ctlpt( E3, -0.3,  0.3, 0.6 ),
+                    ctlpt( E3,  0.3,  0.3, 0.6 ),
+                    ctlpt( E3,  1.0,  0.3, 0.3 ) ),
+              list( ctlpt( E3, -1.0,  1.0, 0.0 ),
+                    ctlpt( E3, -0.3,  1.0, 0.3 ),
+                    ctlpt( E3,  0.3,  1.0, 0.3 ),
+                    ctlpt( E3,  1.0,  1.0, 0.0 ) ) ) );
+attrib( srf, "color", yellow );
+
+#
+# Modifying the surface.
+#
+for ( a = -2.0, 0.1, 2.5,
+    NewSrf = sEditPt( srf, ctlpt( E3,  0.0,  0.0, a ), 1, 1 ):
+    Orth = orthotomc( NewSrf, pt, 2 ):
+    color( Orth, green ):
+    view( list( Orth, NewSrf, pt ), 1 ) );
+
+save( "orthtmc2", list( Orth, NewSrf, pt ) );
+
+free( Orth );
+free( srf );
+free( NewSrf );
+free( Wiggle );
+free( crv );
+free( a );
+free( Pt );
+free( view_mat2d );
+free( view_mat3d );
+free( save_mat );
+
+pause();

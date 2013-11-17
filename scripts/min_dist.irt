@@ -1,0 +1,204 @@
+#
+# Minimal distances between freeforms
+#
+#					Gershon Elber, October 2006.
+#
+
+#############################################################################
+
+GlblRes = nil();
+GlblTransY = -5;
+DisplayObjObjMDRes = procedure( O1, O2, Eps ):
+    MDRes: Dist: Param1: Param2: t: uv: Pt1: Pt2: i: L: All: Prm:
+    MDRes = MinDist2FF( O1, O2, Eps ):
+    Dist = nth( MDres, 1 ):
+    Param1 = nth( MDres, 2 ):
+    Param2 = nth( MDres, 3 ):
+
+    if ( sizeof( Param1 ) == 0,
+	Pt1 = coerce( O1, E3 ),
+	Prm = nth( Param1, 1 ):
+        if ( thisobj("Prm") == numeric_type,
+	    for (i = 1, 1, sizeof( Param1 ),
+	        t = nth( Param1, i ):
+	        printf( "Min distance %f detected at t1 = %f\\n",
+		         list( Dist, t ) ) ):
+            Pt1 = ceval( O1, t ),
+
+	    for (i = 1, 1, sizeof( Param1 ),
+	        uv = nth( Param1, i ):
+	        printf( "Min distance %f detected at uv1 = %f %f\\n",
+		         list( Dist, nth( uv, 1 ), nth( uv, 2 ) ) ) ):
+            Pt1 = seval( O1, nth( nth( Param1, 1 ), 1 ),
+			     nth( nth( Param1, 1 ), 2 ) ) ) ):
+
+    if ( sizeof( Param2 ) == 0,
+	Pt2 = coerce( O2, E3 ),
+	Prm = nth( Param2, 1 ):
+        if ( thisobj("Prm") == numeric_type,
+	    for (i = 1, 1, sizeof( Param2 ),
+	        t = nth( Param2, i ):
+	        printf( "Min distance %f detected at t2 = %f\\n",
+		         list( Dist, t ) ) ):
+            Pt2 = ceval( O2, t ),
+
+	    for (i = 1, 1, sizeof( Param2 ),
+	        uv = nth( Param2, i ):
+	        printf( "Min distance %f detected at uv2 = %f %f\\n",
+		         list( Dist, nth( uv, 1 ), nth( uv, 2 ) ) ) ):
+            Pt2 = seval( O2, nth( nth( Param2, 1 ), 1 ),
+			     nth( nth( Param2, 1 ), 2 ) ) ) ):
+
+    color( Pt1, magenta ):
+    color( o1, magenta ):
+    color( Pt2, yellow ):
+    color( o2, yellow ):
+    L = Pt1 + Pt2:
+    All = list( O1, O2, Pt1, Pt2, L ):
+    snoc( All * ty( GlblTransY ), GlblRes ):
+    GlblTransY = GlblTransY + 1:
+    interact( All );
+
+#############################################################################
+#
+# Faster product using Bezier decomposition.
+IProd = iritstate( "BspProdMethod", 0 );
+
+viewstate( "PllnAprx", on );
+viewstate( "PllnAprx", on );
+
+#############################################################################
+
+pt1 = point( 0.43, 0.33, 0 );
+
+pt2 = point( 0.55, 0.17, 0 );
+
+
+c1 = cbspline( 2,
+    list( ctlpt( E2, 0.56, 0.4 ),
+          ctlpt( E2, 0.43, 0.1 ) ),
+    list(  kv_open ) );
+color( c1, green );
+
+c2 = cbspline( 3,
+    list( ctlpt( E2, 0.546, 0.42 ),
+          ctlpt( E2, 0.5,  -0.2 ),
+          ctlpt( E2, 0.398, 0.4 ),
+          ctlpt( E2, 0.54,  0.44 ) ),
+    list( kv_open ) );
+color( c2, cyan );
+
+c2a = cbspline( 3,
+    list( ctlpt( E3, 0.546,  0.42, -0.3 ),
+          ctlpt( E3, 0.5,   -0.2,   0.5 ),
+          ctlpt( E3, 0.398,  0.4,  -0.3 ),
+          ctlpt( E3, 0.54,   0.44, -0.1 ) ),
+    list( kv_open ) );
+color( c2a, cyan );
+
+c3 =  cbspline( 4,
+    list( ctlpt( E2, 0.546,  0.0652 ),
+          ctlpt( E2, 0.56,  -0.164 ),
+          ctlpt( E2, 0.198, -0.192 ),
+          ctlpt( E2, 0.263,  0.376 ),
+          ctlpt( E2, 0.432,  0.478 ),
+          ctlpt( E2, 0.497,  0.254 ) ),
+    list( kv_open ) );
+color( c3, yellow );
+
+c4 = cbspline( 4,
+    list( ctlpt( E2, 0.53,   0.35 ),
+          ctlpt( E2, 0.423, -0.00924 ),
+          ctlpt( E2, 0.198, -0.192 ),
+          ctlpt( E2, 0.263,  0.376 ),
+          ctlpt( E2, 0.432,  0.478 ),
+          ctlpt( E2, 0.521, -0.0762 ) ),
+    list(  kv_open ) );
+color( c4, magenta );
+
+c4a = cbspline( 4,
+    list( ctlpt( E3, 0.53,   0.35, -0.3 ),
+          ctlpt( E3, 0.423, -0.01,  0.3 ),
+          ctlpt( E3, 0.198, -0.19,  0.4 ),
+          ctlpt( E3, 0.263,  0.38, -0.2),
+          ctlpt( E3, 0.432,  0.48, -0.3 ),
+          ctlpt( E3, 0.521, -0.08,  0.4) ),
+    list(  kv_open ) );
+color( c4a, magenta );
+
+c5 = cbspline( 2,
+    list( ctlpt( E2, 0.54,  0.42 ),
+          ctlpt( E2, 0.46,  0.01 ) ),
+    list(  kv_open ) );
+color( c5, green );
+
+c6 = pcircle( vector( 0, 0, 0 ), 1 );
+color( c6, red );
+
+s2 = ruledSrf( c2, c2 * tz( 0.5 ) );
+color( s2, cyan );
+
+s3 = sFromCrvs( list( c3 * tz( -0.5 ), c3 * sc( 1.3 ), c3 * tz( 0.5 ) ),
+	        3, kv_open );
+color( s3, yellow );
+
+#############################################################################
+
+DisplayObjObjMDRes( pt1, c6, 1e-10 );
+
+DisplayObjObjMDRes( pt2, c2, 1e-10 );
+
+DisplayObjObjMDRes( pt2, c4, 1e-10 );
+
+DisplayObjObjMDRes( c3, c3 * tx( -0.5 ), 1e-10 );
+
+DisplayObjObjMDRes( c4, c4 * rz( 180 ), 1e-10 );
+
+DisplayObjObjMDRes( c4, c4a * tx( -0.5 ), 1e-10 );
+
+DisplayObjObjMDRes( s2, c4a * tx( -0.5 ), 1e-10 );
+
+DisplayObjObjMDRes( s2, c4a * sx( -3 ) * tx( 0.5 ), 1e-10 );
+
+DisplayObjObjMDRes( s2, c2a * sx( -3 ) * tx( 0.5 ), 1e-10 );
+
+DisplayObjObjMDRes( s2, s2 * sx( -3 ) * tx( 0.5 ), 1e-10 );
+
+DisplayObjObjMDRes( s2, s2 * sx( -3 ) * tx( 0.5 ) * ry( -10 ), 1e-10 );
+
+DisplayObjObjMDRes( s2, s2 * sx( -3 ) * tx( 0.5 ) * ry( 10 ), 1e-10 );
+
+DisplayObjObjMDRes( s3, s3 * sx( 3 ) * tx( 0.5 ) * ry( 10 ), 1e-10 );
+
+DisplayObjObjMDRes( s3 * rx( 90 ),
+	           s3 * sx( 3 ) * tx( 0.5 ) * ry( 10 ), 1e-10 );
+
+DisplayObjObjMDRes( s3 * rx( 90 ) * ry( 120 ),
+	           s3 * sx( 3 ) * tx( 0.5 ) * ry( 10 ), 1e-10 );
+
+DisplayObjObjMDRes( s3 * sx( 3 ) * tx( 0.5 ) * ry( -60 ) * tx( -0.5 ) * tz( -1.2 ),
+	           s3 * rx( 90 ) * ry( 120 ), 1e-10 );
+
+
+save( "min_dist", GlblRes );
+view( GlblRes, 1 );
+
+#############################################################################
+free( GlblRes );
+free( GlblTransY );
+
+IProd = iritstate( "BspProdMethod", IProd );
+free( IProd );
+
+free( pt1 );
+free( pt2 );
+free( c1 );
+free( c2 );
+free( c2a );
+free( c3 );
+free( c4 );
+free( c4a );
+free( c5 );
+free( c6 );
+free( s2 );
+free( s3 );

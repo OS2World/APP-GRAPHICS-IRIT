@@ -1,0 +1,23 @@
+#
+# This is the make file for the graphic driver's subdirectory.
+#
+#				Gershon Elber, June 1993
+#
+
+include ../makeflag.ami
+
+GRAPDRVS=nuldrvs amidrvs 
+
+nuldrvs: nuldrvs.o gen_grap.o
+	$(CC) $(CFLAGS) -o nuldrvs nuldrvs.o gen_grap.o $(IRIT_LIBS) $(IRIT_MORE_LIBS) $(GRAPGLLIBS) -lm
+
+amidrvs: amidrvs.o gen_grap.o
+	$(CC) $(CFLAGS) -s -o amidrvs amidrvs.o gen_grap.o \
+        $(IRIT_LIBS) $(IRIT_MORE_LIBS) $(GRAPGLLIBS) -lm
+
+install: $(GRAPDRVS)
+	mv -f $(GRAPDRVS) $(IRIT_BIN_DIR)
+	cp *drvs.cfg $(IRIT_BIN_DIR)
+
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

@@ -1,0 +1,21 @@
+#
+# This is the make file for the extensions lib subdirectory.
+#
+#				Gershon Elber, Aug 2009
+#
+
+include ../makeflag.unx
+
+OBJS =  crv2rect.o$(IRIT_OBJ_PF) explfunc.o$(IRIT_OBJ_PF)
+
+all:	libIritExt$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+
+libIritExt$(IRIT_LIB_PF).$(IRIT_LIB_SFX): $(OBJS)
+	rm -f libIritExt$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+	$(IRIT_LIB_MAKE) libIritExt$(IRIT_LIB_PF).$(IRIT_LIB_SFX) *.o$(IRIT_OBJ_PF)
+	-$(IRIT_LIB_RAN) libIritExt$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+
+install: libIritExt$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+	mv -f libIritExt$(IRIT_LIB_PF).$(IRIT_LIB_SFX) $(IRIT_LIB_DIR)
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

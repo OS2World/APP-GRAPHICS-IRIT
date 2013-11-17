@@ -1,0 +1,21 @@
+#
+# Simple examples for the capability of the PRINTF command.
+#
+printf("this is a line.\\n", nil());
+printf("this is a string \"%s\".\\n", list("STRING"));
+printf("this is an integer %-8d, %u, %3o, %05x\\n",
+	 list(pi * 1000, pi * 1000, pi * 1000, pi * 1000));
+printf("this is a float %lf %8.2lg %9.5E\\n", list(pi, pi, pi));
+printf("this is a vector [%8.5lvf], [%5.2lvg]\\n",
+	list(vector(1,2,3), vector(1,2,3)));
+printf("this is a point [%.5lpf], [%lpg]\\n",
+	list(point(1,2,3), point(1,2,3)));
+printf("this is a plane %lPf\\n",
+	list(plane(sin(33), sin(44), sin(55), sin(66))));
+printf("this is a object %Df, until here...\\n", list(axes));
+
+DLevel = iritState( "DumpLevel", 255 );
+printf("this is a object %8.6lDf, until here...\\n", list(axes));
+printf("this is a object %10.8lDg, until here...\\n", list(axes));
+DLevel = iritState( "DumpLevel", DLevel );
+free( DLevel );

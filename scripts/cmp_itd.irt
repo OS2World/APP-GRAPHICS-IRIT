@@ -1,0 +1,53 @@
+#
+# Compare a list of itd files between the current directory and a reference
+# one.  Use as "ls *.itd | irit cmp_itd.irt".
+#
+#					Gershon Elber, July 2005
+#
+
+RefDir = "c:/irit/ref/";
+ThisDir = "";
+Eps = 1e-3;
+OldEps = IritState( "CmpObjEps", Eps );
+
+#################################
+
+CompareObjs = function( o1, o2, e ):
+    e = IritState( "CmpObjEps", e ):
+    return = o1 == o2;
+
+#################################
+
+s = " ";
+LastS = "LastS";
+
+printf( "********** A comparison with Eps = %g ***********:\\n", list( Eps ) ):
+
+while ( ( sizeof( s ) > 0 ) && ( s != LastS ),
+    LastS = s:
+    s = getLine( string_type ):
+    printf( "Cmp ",
+	    list( RefDir + s, ThisDir + s, Eps ) ):
+    f1 = load( RefDir + s ):
+    f2 = load( ThisDir + s ):
+    if ( CompareObjs( f1, f2, Eps ),
+        printf( "O.k.:  ", nil() ),
+        printf( "Failed:", nil() ) ):
+    printf( " \"%s\" with \"%s\"\\n",
+	    list( RefDir + s, ThisDir + s ) ) );
+
+#################################
+
+OldEps = IritState( "CmpObjEps", OldEps );
+free( Eps );
+free( OldEps );
+free( ThisDir );
+free( RefDir );
+free( s );
+free( LastS );
+free( f1 );
+free( f2 );
+
+#################################
+
+exit();

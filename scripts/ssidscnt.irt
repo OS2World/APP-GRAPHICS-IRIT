@@ -1,0 +1,161 @@
+#
+# Test cases for SSI.
+#
+#				Gershon Elber, Feb 1995
+#
+# In order to be able to appreciate the complexity of some of the test cases,
+# it is suggested to view this file through IRIT with a display device that
+# is able to render the surfaces shaded, such as xgldrvs.
+#
+
+Step = 0.005;
+SubdivTol = 0.005;
+NumericTol = 1e-8;
+Euclidean = true;
+
+TestInter = function( s1, s2 ): n:
+    return = ssintr2( s1, s2, Step, SubdivTol, NumericTol, Euclidean ):
+    color( return, magenta ):
+    adwidth( return, 3 ):
+    if (sizeof( return ) == 2,
+	n = ( sizeof( nth( return, 1 ) ) + sizeof( nth( return, 2 ) ) ) / 2,
+	if (sizeof( return ) == 1,
+	    n = sizeof( nth( return, 1 ) ) / 2,
+	    n = 0 ) ):
+    printf( "Found %d intersection connected components.\\n", list( n ) );
+    
+#
+# 1. A discont extrusion and a plane intersection
+#
+
+c1 = cbspline( 3,
+	       list( ctlpt( E3, 0.0, 0.0, 0 ),
+                     ctlpt( E3, 0.2, 0.5, 0 ),
+                     ctlpt( E3, 0.0, 1.0, 0 ),
+                     ctlpt( E3, 0.3, 0.5, 0 ),
+                     ctlpt( E3, 1.0, 0.0, 0 ) ),
+	       list( 0, 0, 0, 1, 1, 2, 2, 2 ) );
+s1 = extrude( c1, vector( 0, 0, 1 ), 0 );
+
+s2 = planeSrf( -1, -1, 2, 2 ) * tz( 0.5 );
+
+i = TestInter( s1, s2 );
+
+All = list( s1, s2, i );
+interact( All );
+
+save( "ssi1dsc", All );
+
+#
+# 2. Intersection of two discont extrusions
+#
+
+c1 = cbspline( 3,
+	       list( ctlpt( E3, 0.0, 0.0, 0 ),
+                     ctlpt( E3, 0.2, 0.5, 0 ),
+                     ctlpt( E3, 0.0, 1.0, 0 ),
+                     ctlpt( E3, 0.3, 0.5, 0 ),
+                     ctlpt( E3, 1.0, 0.0, 0 ) ),
+	       list( 0, 0, 0, 1, 1, 2, 2, 2 ) );
+s1 = extrude( c1, vector( 0, 0, 2 ), 0 ) * tz( -1 );
+
+s2 = s1 * rx( 60 ) * ry( 30 );
+
+i = TestInter( s1, s2 );
+
+All = list( s1, s2, i );
+interact( All );
+
+save( "ssi2dsc", All );
+
+view( list( axes, s1, s2 ), 1 );
+
+#
+# 3. Surface ofrevolution 'r' and a cylinder intersection
+#
+
+r = cbspline( 3,
+    list( ctlpt( E2,      0.284734375,         0.856125 ),
+          ctlpt( E2,      0.286359375,        0.7631875 ),
+          ctlpt( E2,      0.287984375,          0.67025 ),
+          ctlpt( E2,           0.3885,        0.8579375 ),
+          ctlpt( E2,        0.4976875,       0.85984375 ),
+          ctlpt( E2,        0.5473125,      0.860703125 ),
+          ctlpt( E2,      0.580328125,      0.831046875 ),
+          ctlpt( E2,       0.61334375,      0.801390625 ),
+          ctlpt( E2,       0.61403125,        0.7616875 ),
+          ctlpt( E2,      0.614640625,           0.7265 ),
+          ctlpt( E2,      0.591609375,     0.7017265625 ),
+          ctlpt( E2,      0.568578125,      0.676953125 ),
+          ctlpt( E2,       0.53609375,         0.676375 ),
+          ctlpt( E2,      0.504515625,      0.675828125 ),
+          ctlpt( E2,       0.46471875,     0.7062734375 ),
+          ctlpt( E2,      0.424921875,       0.73671875 ),
+          ctlpt( E2,       0.40596875,      0.736390625 ),
+          ctlpt( E2,      0.389734375,      0.736109375 ),
+          ctlpt( E2,       0.37109375,      0.717734375 ),
+          ctlpt( E2,      0.331140625,       0.68003125 ),
+          ctlpt( E2,      0.289296875,      0.594453125 ),
+          ctlpt( E2,          0.29275,      0.396390625 ),
+          ctlpt( E2,      0.296203125,      0.198328125 ),
+          ctlpt( E2,       0.29740625,          0.12975 ),
+          ctlpt( E2,       0.31515625,      0.094859375 ),
+          ctlpt( E2,        0.3273125,      0.070703125 ),
+          ctlpt( E2,     0.3573828125,     0.0549765625 ),
+          ctlpt( E2,      0.387453125,          0.03925 ),
+          ctlpt( E2,      0.443390625,      0.040234375 ),
+          ctlpt( E2,      0.443671875,     0.0239921875 ),
+          ctlpt( E2,      0.443953125,          0.00775 ),
+          ctlpt( E2,     0.2323515625,     0.0040546875 ),
+          ctlpt( E2,          0.02075,      0.000359375 ),
+          ctlpt( E2,       0.02046875,     0.0166015625 ),
+          ctlpt( E2,        0.0201875,       0.03284375 ),
+          ctlpt( E2,      0.083359375,      0.033953125 ),
+          ctlpt( E2,        0.1136875,       0.05434375 ),
+          ctlpt( E2,      0.135984375,      0.069171875 ),
+          ctlpt( E2,       0.14446875,       0.10090625 ),
+          ctlpt( E2,      0.148703125,      0.116328125 ),
+          ctlpt( E2,      0.147453125,      0.188515625 ),
+          ctlpt( E2,       0.14465625,     0.3486796875 ),
+          ctlpt( E2,      0.141859375,       0.50884375 ),
+          ctlpt( E2,       0.13934375,       0.65321875 ),
+          ctlpt( E2,            0.133,      0.680640625 ),
+          ctlpt( E2,       0.12665625,        0.7080625 ),
+          ctlpt( E2,      0.110640625,      0.720421875 ),
+          ctlpt( E2,         0.094625,       0.73278125 ),
+          ctlpt( E2,      0.071171875,         0.732375 ),
+          ctlpt( E2,      0.043203125,         0.731875 ),
+          ctlpt( E2,      0.008234375,       0.71771875 ),
+          ctlpt( E2,     0.0034453125,     0.7338828125 ),
+          ctlpt( E2,      -0.00134375,      0.750046875 ),
+          ctlpt( E2,          0.12275,     0.8027578125 ),
+          ctlpt( E2,       0.24684375,       0.85546875 ),
+          ctlpt( E2,     0.2657890625,      0.855796875 ),
+          ctlpt( E2,      0.284734375,         0.856125 ) ),
+    list( kv_disc_open ) ) * tx( 0.5 ) * rx( 90 );
+
+s1 = surfrev( -coerce( r, kv_open ) ) * rz( 180 );
+
+s2 = CylinSrf( 2, 1 ) * tx( 1 ) * tz( -0.5 );
+
+i = TestInter( s1, s2 );
+
+All = list( s1, s2, i );
+interact( All );
+
+save( "ssi3dsc", All );
+
+
+#############################################################################
+
+free( i );
+free( r );
+free( s1 );
+free( s2 );
+free( c1 );
+free( All );
+
+free( Step );
+free( SubdivTol );
+free( NumericTol );
+free( Euclidean );

@@ -1,0 +1,346 @@
+#
+# LJ8000 printer,  Gershon Elber March 2000
+#
+
+save_res = resolution;
+
+LJ8SampleCurve = function( Crv, n ):ptl:pt:lastPt:t:t0:t1:dt:
+    ptl = nil():
+    t0 = nth( pdomain( Crv ), 1 ):
+    t1 = nth( pdomain( Crv ), 2 ):
+    if ( n < 2, n = 2 ):
+    dt = (t1 - t0) / (n + 0.0001 - 1):
+    for ( t = t0, dt, t1,
+	pt = ceval( Crv, t ):
+	snoc( pt, ptl )
+    ):
+    return = ptl;
+
+#
+# Basic box shape.
+#
+Base = box( vector( 0.0, 0.0, 0.0 ), 8.0, 5.0, 7.0 ) +
+       box( vector( 5.5, 0.5, 6.0 ), 2.25, 4.0, 1.5 ) -     # Top square bump
+       box( vector( 6.8, 2.0, 7.35 ), 2.0, 1.0, 1.0 ) -
+       box( vector( 1.0, 0.5, 6.0 ), 4.4, 4.0, 1.5 ) -      # Top feed
+       box( vector( 0.4, -0.1, -0.1 ), 6.9, 5.0, 3.075 ) -  # Bottom Drawers
+       box( vector( 3.5, -0.1, 2.98 ), 3.8, 5.0, 1.5 ) -    # Top Drawer
+       box( vector( 7.6,  0.5, -0.1 ), 0.5, 3.7, 0.5 ) -    # Botton Step
+       box( vector( 7.9,  0.51, -0.1 ), 1.0, 3.68, 6.5 ) -  # Back doors
+       box( vector( 0.01, -0.11, 2.95 ), 7.98, 5.0, 0.05 );
+
+Base = Base / box( vector( 0.6,  0.5, 1.0 ), 7.0, 4.0, 4.0 )
+	    / box( vector( 7.8,  0.6, 0.5 ), 1.0, 3.5, 5.8 )
+	    / box( vector( 0.1, 0.05, 0.05 ), 0.2, 4.9, 6.9 );
+
+TmpBody = box( vector( 3.0, -0.1, 6.1 ), 2.0, 0.2, 0.05 );
+for ( z = 6.2, 0.1, 6.5,
+    TmpBody = TmpBody ^ box( vector( 3.0, -0.1, z ), 2.0, 0.2, 0.05 ) );
+
+for ( z = 5.0, 0.2, 6.5,
+    TmpBody = TmpBody ^ box( vector( 7.9, 0.1, z ), 1.0, 0.4, 0.05 ) );
+
+for ( z = 1.0, 0.3, 6.5,
+    TmpBody = TmpBody ^ box( vector( 7.95, 4.3, z ), 1.0, 0.6, 0.05 ) );
+
+Base = Base / TmpBody;
+
+Stopper = box( vector( 6.85, 2.05, 7.37 ), 0.9, 0.9, 0.13 );
+
+rot_y = cbezier( list( ctlpt( E1, 0 ), ctlpt( E1, -80 ) ) );
+Trns = trans( vector( -7.75, 0.0, -7.45 ) );
+attrib( Stopper, "animation", list( Trns, rot_y, Trns^-1 ) );
+free( rot_y );
+free( Trns );
+
+#
+# Top round.
+#
+TopRound = poly( LJ8SampleCurve( cbezier( list( ctlpt( E3, 0.0, -0.7, 7.5 ),
+				                ctlpt( E3, 0.0,  2.5, 8.0 ),
+				                ctlpt( E3, 0.0,  5.7, 7.5 ) ) ),
+			         10 ) +
+		 list( point( 0.0,  5.7, 7.2 ),
+		       point( 0.0,  5.2, 7.2 ),
+		       point( 0.0,  4.9, 6.8 ),
+		       point( 0.0,  4.9, 6.0 ),
+		       point( 0.0,  0.1, 6.0 ),
+		       point( 0.0,  0.1, 6.3 ),
+		       point( 0.0, -0.2, 6.3 ),
+		       point( 0.0, -0.7, 7.1 ) ),
+		 false );
+TopRound = extrude( TopRound, vector( 2, 0, 0 ), 3 ) * tx( 0.001 );
+
+resolution = 4;
+Screen = con2( vector( 0.0, 0.0, 0.0 ), vector( 0, 0, -0.15 ), 0.3, 0.2, 3 )
+	* rz( 45 );
+TopRound = TopRound - Screen * rx( 5.5 ) * sx( 3 ) * tx( 1 ) * tz( 7.65 );
+resolution = 20;
+Screen = ruledSrf( ctlpt( E3, 0.1414, 0.1414, -0.14 ) +
+					ctlpt( E3, -0.1414, 0.1414, -0.14 ),
+		   ctlpt( E3, 0.1414, -0.1414, -0.14 ) +
+					ctlpt( E3, -0.1414, -0.1414, -0.14 ) )
+			     * rx( 5.5 ) * sx( 3 ) * tx( 1 ) * tz( 7.65 );
+attrib( Screen, "rgb", "20,100,20" );
+
+TmpBody = box( vector( 1.0, 0.75, 6.5 ), 2.0, 3.5, 0.15 );
+for ( z = 7.2, 0.1, 7.5,
+    TmpBody = TmpBody ^ box( vector( -0.1, 1.0, z ), 0.2, 3.0, 0.05 ) );
+
+TopRound = TopRound / TmpBody;
+
+Base = Base + TopRound;
+
+free( z );
+
+#
+# Top round control.
+#
+
+Button = coerce( cbspline( 3,
+			   list( ctlpt( E3,  0, 0,   0 ),
+				 ctlpt( E3,  2, 0,   0 ),
+				 ctlpt( E3,  3, 0,   0 ),
+				 ctlpt( E3,  3, 1.4, 0 ),
+				 ctlpt( E3,  2, 1.4, 0 ),
+				 ctlpt( E3,  0, 1.4, 0 ),
+				 ctlpt( E3, -1, 1.4, 0 ),
+				 ctlpt( E3, -1, 0,   0 ) ),
+			   list( kv_periodic ) ),
+		 kv_open ) * tx( -1 ) * ty( -0.7 );
+Button = sFromCrvs( list( Button * tz( -1.0 ),
+			  Button,
+			  Button * tz( 0.6 ),
+			  Button * sx( 0.7 ) * sy( 0.001 ) * tz( 0.6 ) ),
+		    3, kv_open ) * sc( 0.1 );
+attrib( Button, "rgb", "155,155,155" );
+
+RedButton = Cylin( vector( 0, 0, 0 ), vector( 0, 0, 0.1 ), 0.1, 3 );
+attrib( RedButton, "rgb", "255,0,0" );
+
+GreenButton = Cylin( vector( 0, 0, 0 ), vector( 0, 0, 0.1 ), 0.075, 3 );
+attrib( GreenButton, "rgb", "0,255,0" );
+
+Buttons = list( Button * rx( 8 ) * ty( -0.5 ) * tx( 0.3 ) * tz( 7.55 ),
+		Button * rx( 8 ) * ty( -0.5 ) * tx( 0.75 ) * tz( 7.55 ),
+		Button * rx( 8 ) * ty( -0.5 ) * tx( 1.25 ) * tz( 7.55 ),
+		Button * rx( 8 ) * ty( -0.5 ) * tx( 1.7 ) * tz( 7.55 ),
+		RedButton * rx( 8 ) * tx( 0.2 ) * tz( 7.55 ),
+		GreenButton * rx( 8 ) * tx( 1.8 ) * tz( 7.55 ) ):
+
+free( Button );
+free( RedButton );
+free( GreenButton );
+
+#
+# Logo frame
+#
+
+HPLogo =
+    ruledSrf( ctlpt( E3, 6.0, -0.01, 6.4 ) + ctlpt( E3, 7.7, -0.01, 6.4 ),
+	      ctlpt( E3, 6.0, -0.01, 6.8 ) + ctlpt( E3, 7.7, -0.01, 6.8 ) );
+attrib( HPLogo, "rgb", "0,0,255" );
+
+
+#
+# On-off button
+#
+
+resolution = 4;
+OnOff = con2( vector( 0.0, -0.1, 0.0 ), vector( 0, 0.3, 0 ), 0.2, 0.1, 3 )
+	* ry( 45 ) * sz( 1.5 ) * tx( 0.2 ) * tz( 0.7 );
+resolution = 20;
+
+Base = Base - OnOff;
+
+OnOff = box( vector( 0.135, 0.0, 0.6 ), 0.135, 0.2, 0.2 );
+
+TopFeed = extrude( cbezier( list( ctlpt( E3, 2.0,  0.51, 6.2 ),
+				  ctlpt( E3, 3.7,  0.51, 7.0 ),
+				  ctlpt( E3, 4.5,  0.51, 7.5 ),
+				  ctlpt( E3, 5.39, 0.51, 7.5 ) ) ) +
+		   ctlpt( E3, 5.39, 0.51, 6.01 ) +
+		   ctlpt( E3, 2.0,  0.51, 6.01 ) +
+		   ctlpt( E3, 2.0,  0.51, 6.2 ),
+		   vector( 0, 3.98, 0 ), 3 );
+
+Drawer1 =
+    ruledSrf( ctlpt( E3, 3.5, 0.38, 0.56 ) + ctlpt( E3, 4.9, 0.38, 0.56 ),
+	      ctlpt( E3, 3.5, 0.38, 0.85 ) + ctlpt( E3, 4.9, 0.38, 0.85 ) );
+attrib( Drawer1, "rgb", "50,50,50");
+DrawerSep = box( vector( 3.7,  0.51, 0.06 ), 0.1, 3.95, 1.3 );
+attrib( DrawerSep, "rgb", "255,255,100");
+DrawPages = box( vector( 4.0,  0.6, 0.1 ), 3.0, 3.8, 1.0 );
+attrib( DrawPages, "rgb", "255,255,255");
+resolution = 4;
+Drawer1 =
+    list( Drawer1, DrawerSep, DrawPages,
+	  box( vector( 0.5,   0.0,  0.0 ),  6.7, 4.5, 1.45 ) -
+	  box( vector( 0.55,  0.5, 0.05 ), 6.6, 3.95, 1.45 ) -
+	  con2( vector( 0.0, -0.1, 0.0 ), vector( 0, 0.5, 0 ), 0.5, 0.2, 3 )
+		* ry( 45 ) * sx( 5 ) * trans( vector( 4.2, 0.0, 0.7 ) ) -
+	  con2( vector( 0.0, 0.1, 0.0 ), vector( 0, 0.32, 0 ), 0.46, 0.22, 3 )
+		* ry( 45 ) * sx( 4 ) * trans( vector( 4.2, 0.0, 1.0 ) ) );
+resolution = 20;
+mov_y = cbezier( list( ctlpt( E1, 0 ), ctlpt( E1, -4 ) ) );
+attrib( Drawer1, "animation", list( mov_y ) );
+free( mov_y );
+
+Drawer2 = Drawer1 * tz( 1.5 );
+
+Drawer3 = box( vector( 3.6,   0.0,  3.0 ),  3.6, 0.1, 1.45 );
+
+free( DrawPages );
+free( DrawerSep );
+
+#
+# Back doors
+#
+BackDoor0 = box( vector( 7.91, 0.55, 0.4 ), 0.09, 3.6, 1.5 );
+
+BackDoor1 =
+    list( box( vector( 7.91, 0.55, 1.94 ), 0.09,  3.6,  2.2 ) +
+	  box( vector( 7.6,  2.0,  3.5 ),  0.35,  1.0,  0.4 ) -
+	  box( vector( 7.7,  2.1,  3.55 ), 0.35,  0.8,  0.3 ),
+	  box( vector( 7.98, 2.12, 3.7 ),  0.02,  0.76, 0.13 ) );
+rot_y = cbezier( list( ctlpt( E1, 0 ), ctlpt( E1, -70 ) ) );
+Trns = trans( vector( -7.95, 0.0, -1.94 ) );
+attrib( BackDoor1, "animation", list( Trns, rot_y, Trns^-1 ) );
+free( rot_y );
+free( Trns );
+
+resolution = 20;
+BackDoor2 =
+    list( box( vector( 7.91, 0.55, 4.18 ), 0.09, 3.6, 2.2 ) +
+	  box( vector( 7.6,  2.0,  5.7 ), 0.35,  1.0, 0.4 ) -
+	  box( vector( 7.7,  2.1,  5.75 ), 0.35,  0.8, 0.3 ),
+	  ( cylin( vector( 0, 0, 0 ), vector( 0, 0, 0.15 ), 0.7, 3 ) -
+	    cylin( vector( 0, 0, -0.02 ), vector( 0, 0, 0.15 ), 0.69, 3 ) )
+	  * box( vector( 0.5, -1.0, -1.0 ), 1.0, 2.0, 2.0 )
+	  * trans( vector( 7.5, 2.5, 5.9 ) ) );
+rot_y = cbezier( list( ctlpt( E1, 0 ), ctlpt( E1, -70 ) ) );
+Trns = trans( vector( -7.95, 0.0, -4.18 ) );
+attrib( BackDoor2, "animation", list( Trns, rot_y, Trns^-1 ) );
+free( rot_y );
+free( Trns );
+
+#
+# Front door
+#
+FrontDoor = poly( list( point( 0, 0.1, 1.0 ),
+		        point( 0, 0.4, 1.0 ),
+		        point( 0, 0.4, 1.3 ),
+		        point( 0, 4.6, 1.3 ),
+		        point( 0, 4.6, 1.0 ),
+		        point( 0, 4.9, 1.0 ),
+		        point( 0, 4.9, 6.5 ),
+		        point( 0, 0.1, 6.5 ) ),
+		  false );
+Base = Base / extrude( FrontDoor * tx( -0.1 ), vector( 0.25, 0, 0 ), 3 );
+FrontDoor = extrude( offset( FrontDoor * ry( 90 ),
+			     0.05, 0.1, off ) * ry( -90 ),
+		     vector( 0.03, 0.0, 0.0 ), 3 );
+
+TmpBody = box( vector( -0.1, 1.0, 4.0 ), 1.0, 3.0, 1.0 );
+for ( y = 1.0, 0.2, 4.0,
+    TmpBody = TmpBody ^ box( vector( -0.1, y, 2.0 ), 1.0, 0.07, 1.0 ) );
+FrontDoor = FrontDoor / TmpBody;
+
+free( y );
+
+FrontDoor = list( FrontDoor +
+		  box( vector(  0.01, 2.0,  5.5 ),  0.3,  1.0,  0.4 ) -
+		  box( vector( -0.1, 2.1,  5.55 ), 0.3,  0.8,  0.3 ),
+		  box( vector(  0.0, 2.12, 5.7 ),  0.02, 0.76, 0.13 ) );
+
+#
+# Front tray
+#
+FrontTrayBase = cbezier( list( ctlpt( E3, -4.0, 0.0, 0.0 ),
+		               ctlpt( E3, -4.5, 0.6, 0.0 ),
+		               ctlpt( E3, -4.5, 1.3, 0.0 ) ) ) +
+	        ctlpt( E3, -3.2, 1.4, 0.0 ) +
+	        ctlpt( E3, -3.2, 2.0, 0.0 );
+FrontTrayBase = FrontTrayBase +
+	       -FrontTrayBase * ty( -2.0 ) * sy( -1 ) * ty( 2.0 );
+TmpBody = ctlpt( E3, -4.0, 0.0, 0.0 ) +
+	  ctlpt( E3,  0.0, 0.0, 0.0 ) +
+	  ctlpt( E3,  0.0, 4.0, 0.0 ) +
+	  ctlpt( E3, -4.0, 4.0, 0.0 );
+FrontTrayBase = list( ruledSrf( FrontTrayBase, TmpBody ),
+		      ruledSrf( FrontTrayBase, TmpBody ) * tz( 0.1 ),
+		      ruledSrf( FrontTrayBase + -TmpBody,
+			        ( FrontTrayBase + -TmpBody ) * tz( 0.1 ) ) )
+	* sy( 3 / 4 );
+
+free( TmpBody );
+
+FrontTrayCover =
+    ( box( vector(  0.0, 0.0, 0.0 ), 0.05, 3.0, 1.0 ) -
+      box( vector( -0.1, 0.1, 0.3 ), 0.25, 2.8, 0.3 ) ) * ry( -20 );
+
+FrontCoverSide =
+    poly( LJ8SampleCurve( cbezier( list( ctlpt( E3, 0, 0, 1 ) * ry( -20 ),
+				         ctlpt( E3, -0.5, 0, 0.3 ),
+				         ctlpt( E3, -1.3, 0, 0 ) ) ),
+			  10 ) +
+	  list( point( 0.0,  0.0, 0.0 ),
+		point( 0.0,  0.0, 0.0 ) * ry( -20 ) ),
+	  false );
+FrontCoverSide = extrude( FrontCoverSide * ty( -0.01 ),
+			  vector( 0, 0.02, 0 ), 3 );
+
+FrontTray = list( FrontTrayBase,
+		  FrontTrayCover,
+		  FrontCoverSide,
+		  FrontCoverSide * ty( 3 ) ) * ry( 20 ) * ty( 1 ) * tz( 4 );
+attrib( FrontTray, "rgb", "155,155,155" );
+
+free( FrontCoverSide );
+free( FrontTrayCover );
+free( FrontTrayBase );
+
+#################################
+
+Front = list( FrontTray, FrontDoor );
+
+free( FrontTray );
+free( FrontDoor );
+
+rot_y = cbezier( list( ctlpt( E1, 0 ), ctlpt( E1, 56 ) ) );
+Trns = trans( vector( -0.05, 0.0, -1.1 ) );
+attrib( Front, "animation", list( Trns, rot_y, Trns^-1 ) );
+free( rot_y );
+free( Trns );
+
+#############################################################################
+
+All = convex( list( Base, TopRound, Stopper, Screen, Buttons, HPLogo,
+	            TopFeed, OnOff, Drawer1, Drawer2, Drawer3,
+		    BackDoor0, BackDoor1, BackDoor2, Front ) );
+free( Base );
+free( TopRound );
+free( Stopper );
+free( Screen );
+free( Buttons );
+free( HPLogo );
+free( TopFeed );
+free( OnOff );
+free( Drawer1 );
+free( Drawer2 );
+free( Drawer3 );
+free( BackDoor0 );
+free( BackDoor1 );
+free( BackDoor2 );
+free( Front );
+
+attrib( All, "rgb", "155,155,155" );
+save( "lj8000", all );
+
+view( All, 1 );
+
+#################################
+
+free( All );
+
+resolution = save_res;

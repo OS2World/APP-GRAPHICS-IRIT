@@ -1,0 +1,302 @@
+#
+# Some examples of 3d trisector computations of 3-space freeform objects.
+#
+#			Michael Barton, September 2009.
+#
+
+#############################################################################
+#
+# Three lines
+#
+#############################################################################
+
+c1 = cbezier(
+    list( ctlpt( E3, -1.442, -1.341,  0. ),
+          ctlpt( E2, -0.908,  1.663 ) ) );
+
+c2 = cbezier(
+    list( ctlpt( E3,  0.923, -1.643,  0. ),
+          ctlpt( E2,  1.278,  1.47 ) ) );
+
+c3 = cbezier(
+    list( ctlpt( E3, -0.487, -1.424,  2. ),
+          ctlpt( E3, -0.419,  1.362,  2. ) ) );
+	
+adwidth( c1, 3 );
+color( c1, green );
+adwidth( c2, 3 );
+color( c2, green );
+adwidth( c3, 3 );
+color( c3, green );
+
+t = mtrisector( c1, c2, c3, 0.08, 0.01, 1e-6,
+	        vector( -2, -2, -2 ), vector( 2, 2, 2 ) );
+color( t, yellow );
+adwidth( t, 3 );
+
+All = list( c1, c2, c3, t );
+interact( All );
+
+save( "Trisect1", All );
+
+#############################################################################
+#
+# Three curves I -- Simple
+#
+#############################################################################
+
+c1 = cbezier(
+    list( ctlpt( E3, -1.442, -1.341,  0. ),
+          ctlpt( E2, -0.908,  1.663 ) ) );
+
+c2 = cbezier(
+    list( ctlpt( E3,  0.923, -1.643,  0. ),
+          ctlpt( E2, -0.305, -0.125 ),
+          ctlpt( E2,  1.278,  1.47 ) ) );
+
+c3 = cbezier(
+    list( ctlpt( E3, -0.487, -1.424,  2. ),
+          ctlpt( E2, -0.305, -0.125 ),
+          ctlpt( E3, -0.419,  1.362,  2. ) ) );
+	
+adwidth( c1, 3 );
+color( c1, green );
+adwidth( c2, 3 );
+color( c2, green );
+adwidth( c3, 3 );
+color( c3, green );
+
+t = mtrisector( c1, c2, c3, 0.08, 0.01, 1e-6,
+	        vector( -2, -2, -2 ), vector( 2, 2, 2 ) );
+color( t, yellow );
+adwidth( t, 3 );
+
+All = list( c1, c2, c3, t );
+interact( All );
+
+save( "Trisect2", All );
+
+#
+# Rest of examples are too slow to run in the test-suite.
+#
+comment $
+
+#############################################################################
+#
+# Three curves, Gershon's example
+#
+#############################################################################
+
+c1 = cbezier( list( ctlpt( E3, -1, 0, 0 ),
+		    ctlpt( E3,  0, 0, 0.5 ),
+		    ctlpt( E3,  1, 0, 0 ) ) );
+	
+c2 = cbezier( list( ctlpt( E3, -1, 0.3, 0 ),
+		    ctlpt( E3,  0, 0.2, 0.5 ),
+		    ctlpt( E3,  1, 0.5, 0 ) ) );
+	
+c3 = cbezier( list( ctlpt( E3, -1, 0.15, 0.3 ),
+		    ctlpt( E3,  0, 0.2,  0.2 ),
+		    ctlpt( E3,  1, 0.14, 0.3 ) ) );
+	
+adwidth( c1, 3 );
+color( c1, green );
+adwidth( c2, 3 );
+color( c2, green );
+adwidth( c3, 3 );
+color( c3, green );
+
+t = mtrisector( c1, c2, c3, 0.08, 0.01, 1e-6,
+		vector( -2, -2, 0), vector( 2, 2, 2 ) );
+
+color( t, yellow );
+adwidth( t, 3 );
+
+All = list( c1, c2, c3, t );
+interact( All );
+
+save( "Trisect3", All );
+
+#############################################################################
+#
+# Three curves II -- More complex
+#
+#############################################################################
+
+c1 = cbezier(
+    list( ctlpt( E3, -0.356,  0.232,  2.541 ),
+          ctlpt( E3, -2.563,  0.342,  0.38 ),
+          ctlpt( E3, -2.462,  3.273,  2.645 ),
+          ctlpt( E3, -3.071,  2.999,  1.246 ) ) );
+
+c2 = cbezier(
+    list( ctlpt( E3, -3.368, -0.478,  0. ),
+          ctlpt( E2, -1.879,  0.458 ),
+          ctlpt( E2, -4.26,  0.796 ),
+          ctlpt( E3, -3.731,  2.67,  1. ) ) );
+
+c3 = cbezier(
+    list( ctlpt( E3,  0.145, -1.912,  0. ),
+          ctlpt( E2,  1.199, -0.756 ),
+          ctlpt( E3,  1.211,  1.374,  3. ),
+          ctlpt( E2, -0.419,  2.791 ) ) );
+	
+adwidth( c1, 3 );
+color( c1, green );
+adwidth( c2, 3 );
+color( c2, green );
+adwidth( c3, 3 );
+color( c3, green );
+
+t = mtrisector( c1, c2, c3, 0.08, 0.01, 1e-6,
+		vector( -5, -5, -5 ), vector( 3, 3, 3 ) );
+color( t, yellow );
+adwidth( t, 3 );
+
+All = list( c1, c2, c3, t );
+interact( All );
+
+save( "Trisect4", All );
+
+#############################################################################
+#
+# Two curves + one surface
+#
+#############################################################################
+
+s1 = sbezier( list( list( ctlpt( E3, 0.1, 0.0, 1.0 ),
+                          ctlpt( E3, 0.3, 1.0, 0.5 ),
+                          ctlpt( E3, 0.0, 2.0, 1.0 ) ),
+                    list( ctlpt( E3, 1.1, 0.0, 0.5 ),
+                          ctlpt( E3, 1.3, 1.0, 0.0 ),
+                          ctlpt( E3, 1.0, 2.0, 0.5 ) ),
+                    list( ctlpt( E3, 2.1, 0.0, 1.1 ),
+                          ctlpt( E3, 2.3, 1.0, 0.4 ),
+                          ctlpt( E3, 2.0, 2.0, 1.2 ) ) ) );
+                          
+c1 = cbezier(
+    list( ctlpt( E3, 0.1, 0.0, 0 ),
+          ctlpt( E3, 0.0, 2.0, 0 ) ) );
+
+c2 = cbezier(
+    list( ctlpt( E3, 2.1, 0.0, 0 ),
+          ctlpt( E3, 1, 1, 0.5 ),
+          ctlpt( E3, 2.0, 2.0, 0 ) ) );
+                          
+color( s1, red );
+adwidth( s1, 3 );
+color( c1, green );
+adwidth( c1, 3 );
+color( c2, green );
+adwidth( c2, 3 );
+
+t = mtrisector( s1, c1, c2, 0.08, 0.01, 1e-6,
+		vector( -2, -2, -2 ), vector( 2, 2, 2 ) );
+color( t, yellow );
+adwidth( t, 3 );
+
+All = list( s1, c1, c2, t );
+interact( All );
+
+save( "Trisect5", All );
+
+#############################################################################
+#
+# Two planes + one curve
+#
+#############################################################################
+
+s1 = sbezier( list( list( ctlpt( E3, 0, 0, 0 ),
+                          ctlpt( E3, 0, 2, 0 ) ),
+                    list( ctlpt( E3, 2, 0, 0 ),
+                          ctlpt( E3, 2, 2, 0 ) ) ) );
+                          
+s2 = sbezier( list( list( ctlpt( E3, 3, 0, 0 ),
+                          ctlpt( E3, 3, 2, 0 ) ),
+                    list( ctlpt( E3, 3, 0, 2 ),
+                          ctlpt( E3, 3, 2, 2 ) ) ) );
+
+c1 = cbezier(
+    list( ctlpt( E3, 0.0, 0, 2 ),
+          ctlpt( E3, 1.0, 1, 2 ),
+          ctlpt( E3, 1.0, 1, 1 ),
+          ctlpt( E3, 0.0, 2, 2 ) ) );
+                          
+color( s1, red );
+adwidth( s1, 3 );
+color( s2, red );
+adwidth( s2, 3 );
+color( c1, green );
+adwidth( c1, 3 );
+
+t = mtrisector( s1, s2, c1, 0.08, 0.03, 1e-6,
+		vector( 0, 0, 0 ), vector( 2, 2, 2 ) );
+color( t, yellow );
+adwidth( t, 3 );
+
+All = list( s1, s2, c1, t );
+interact( All );
+
+save( "Trisect6", All );
+
+#############################################################################
+#
+# Two surfaces + one curve
+#
+#############################################################################
+
+
+s1 = sbezier( list( list( ctlpt( E3, 0, 0.0, 0.0 ),
+                          ctlpt( E3, 0, 1.0, 1.0 ),
+                          ctlpt( E3, 0, 2.0, 0.0 ) ),
+                    list( ctlpt( E3, 1, 0.0, 0.5 ),
+                          ctlpt( E3, 1, 1.0, 1.5 ),
+                          ctlpt( E3, 1, 2.0, 0.5 ) ),
+                    list( ctlpt( E3, 2, 0.0, 0.0 ),
+                          ctlpt( E3, 2, 1.0, 1.2 ),
+                          ctlpt( E3, 2, 2.0, 0.0 ) ) ) );
+                          
+s2 = sbezier( list( list( ctlpt( E3, 3, 0.0, 0.0 ),
+                          ctlpt( E3, 3, 1.0, 0.0 ),
+                          ctlpt( E3, 3, 2.0, 0.0 ) ),
+                    list( ctlpt( E3, 3, 0.0, 1.5 ),
+                          ctlpt( E3, 1, 1.0, 1.5 ),
+                          ctlpt( E3, 3, 2.0, 1.5 ) ),
+                    list( ctlpt( E3, 3, 0.0, 3.0 ),
+                          ctlpt( E3, 3, 1.0, 3.0 ),
+                          ctlpt( E3, 3, 2.0, 3.0 ) ) ) );
+
+c1 = cbezier(
+    list( ctlpt( E3, 0.0, 0, 3 ),
+          ctlpt( E3, 1.0, 1, 1 ),
+          ctlpt( E3, 0.0, 2, 3 ) ) );
+                          
+color( s1, red );
+adwidth( s1, 3 );
+color( s2, red );
+adwidth( s2, 3 );
+color( c1, green );
+adwidth( c1, 3 );
+
+t = mtrisector( s1, s2, c1, 0.08, 0.03, 1e-6,
+	        vector( 0, 0, 0 ), vector( 4, 4, 4 ) );
+color( t, yellow );
+adwidth( t, 3 );
+
+All = list( s1, c1, s2, t );
+interact( All );
+
+save( "Trisect7", All );
+
+#############################################################################
+
+free( s1 );
+free( s2 );
+
+$
+
+free( All );
+free( c1 );
+free( c2 );
+free( c3 );
+free( t );

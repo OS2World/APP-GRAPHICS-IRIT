@@ -1,0 +1,15 @@
+#
+# This is the make file for circlink subdirectory.
+#
+#				Gershon Elber, Aug 1991
+#
+
+include ../makeflag.unx
+
+OBJS =  circlink.o$(IRIT_OBJ_PF)
+
+install: $(OBJS)
+	-cp $(OBJS) $(IRIT_LIB_DIR)
+
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

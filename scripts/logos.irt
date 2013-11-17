@@ -1,0 +1,205 @@
+#
+# The making of some known logos.
+#
+
+save_res = resolution;
+
+#
+# American plane's marker
+#
+d = (Pi / 180) * 360 * 2 / 5;
+Ptc = point( 0, 0, 0 );
+Pt1 = point( cos(0), sin(0), 0 );
+Pt2 = point( cos(d), sin(d), 0 );
+Pt3 = point( cos(d * 2), sin(d * 2), 0 );
+Pt4 = point( cos(d * 3), sin(d * 3), 0 );
+Pt5 = point( cos(d * 4), sin(d * 4), 0 );
+
+Star = list( poly( list( Ptc, Pt1, Pt2 ), false ),
+	     poly( list( Ptc, Pt2, Pt3 ), false ),
+	     poly( list( Ptc, Pt3, Pt4 ), false ),
+	     poly( list( Ptc, Pt4, Pt5 ), false ),
+	     poly( list( Ptc, Pt5, Pt1 ), false ) ) * rz( 90 );
+color( Star, white );
+
+resolution = 80;
+Circ = circPoly( vector( 0, 0, 1 ), vector( 0, 0, 0 ), 1 ) * tz( -0.01 );
+color( Circ, blue );
+attrib( Circ, "rgb", "0,0,8" );
+resolution = 20;
+
+Logo1 = list( Circ, Star );
+
+interact( Logo1 );
+
+save( "logo1", logo1 );
+
+free( logo1 );
+
+#################################
+
+eps = 0.12;
+Poly1 = poly( list( point( -1.8 - eps, -0.2 - eps, 0 ),
+		    point( -1.8 - eps,  0.2 + eps, 0 ),
+		    point(  1.8 + eps,  0.2 + eps, 0 ),
+		    point(  1.8 + eps, -0.2 - eps, 0 ) ),
+	      false ) * tz( -0.04 );
+color( Poly1, blue );
+attrib( Poly1, "rgb", "0,0,8" );
+Poly2 = poly( list( point( -1.8, -0.2, 0 ),
+		    point( -1.8,  0.2, 0 ),
+		    point(  1.8,  0.2, 0 ),
+		    point(  1.8, -0.2, 0 ) ),
+	      false ) * tz( -0.03 );
+color( Poly2, white );
+Poly3 = poly( list( point( -1.8, -0.07, 0 ),
+		    point( -1.8,  0.07, 0 ),
+		    point(  1.8,  0.07, 0 ),
+		    point(  1.8, -0.07, 0 ) ),
+	      false ) * tz( -0.02 );
+color( Poly3, red );
+
+Logo2 = list( Circ, Star, Poly1, Poly2, Poly3 );
+
+free( eps );
+free( Star );
+free( Poly1 );
+free( Poly2 );
+free( Poly3 );
+
+interact( Logo2 );
+
+save( "logo2", logo2 );
+
+free( Logo2 );
+
+#
+# Israeli plane's marker
+#
+
+d = (Pi / 180) * 360 / 6;
+Ptc = point( 0, 0, 0 );
+Pt1 = point( cos(0), sin(0), 0 );
+Pt2 = point( cos(d), sin(d), 0 );
+Pt3 = point( cos(d * 2), sin(d * 2), 0 );
+Pt4 = point( cos(d * 3), sin(d * 3), 0 );
+Pt5 = point( cos(d * 4), sin(d * 4), 0 );
+Pt6 = point( cos(d * 5), sin(d * 5), 0 );
+
+DavidStar = list( poly( list( Pt1, Pt3, Pt5 ), false ),
+		  poly( list( Pt2, Pt4, Pt6 ), false ) ) * rz( 90 );
+color( DavidStar, cyan );
+
+resolution = 80;
+Circ = circPoly( vector( 0, 0, 1 ), vector( 0, 0, 0 ), 1 ) * tz( -0.01 );
+color( Circ, white );
+resolution = 20;
+
+Logo3 = list( Circ, DavidStar );
+
+interact( Logo3 );
+
+save( "logo3", logo3 );
+
+free( Logo3 );
+
+#
+# Israeli flag.
+#
+
+Strip1 = poly( list( point( -2.0, -1.3, 0.0 ),
+		     point(  2.0, -1.3, 0.0 ),
+		     point(  2.0, -1.1, 0.0 ),
+		     point( -2.0, -1.1, 0.0 ) ),
+	       false );
+color( Strip1, cyan );
+
+Strip2 = Strip1 * ty( 2.4 );
+color( Strip2, cyan );
+
+BackGrnd = poly( list( point( -2.0, -1.5, 0.0 ),
+		       point(  2.0, -1.5, 0.0 ),
+		       point(  2.0,  1.5, 0.0 ),
+		       point( -2.0,  1.5, 0.0 ) ),
+	         false ) * tz( -0.01 );
+color( BackGrnd, white );
+
+ISFlag = list( DavidStar * sc( 0.7 ), Strip1, Strip2, BackGrnd );
+
+interact( ISFlag );
+
+save( "isflag", ISFlag );
+
+free( Strip1 );
+free( Strip2 );
+free( BackGrnd );
+free( DavidStar );
+free( ISFlag );
+
+#
+# Israeli 3D david star
+#
+
+pt1 = point( 0, 1, 0 );
+pl1 = poly( list( pt1,
+		  pt1 * rz( 120 ),
+		  pt1 * rz( 240 ) ),
+	    false );
+
+d1 = extrude( pl1, vector( 0, 0, 0.15 ), 3 );
+d1 = d1 - d1 * sc( 0.67 ) * sz( 3 ) * tz( -0.1 );
+
+d2 = d1 * rz( 180 );
+
+d = list( d1, d2 );
+
+interact( d );
+
+save( "david3d", d );
+
+free( d1 );
+free( d2 );
+free( pl1 );
+
+#
+# Israeli 3D Menora emblem
+#
+
+Arc1 = cbspline( 3,
+		 list(  ctlpt( e2,  0, -1 ),
+			ctlpt( e2,  1, -1 ),
+			ctlpt( e2,  1,  0 ) ),
+		 list( kv_open ) );
+Arc1 = -Arc1 + Arc1 * ry( 180 );
+Arc2 = Arc1 * sc( 0.66 );
+Arc3 = Arc1 * sc( 0.33 );
+
+R = 0.06;
+Menora = list( sweepSrf( circle( vector( 0, 0, 0 ), R ), Arc1, off ),
+	       sweepSrf( circle( vector( 0, 0, 0 ), R ), Arc2, off ),
+	       sweepSrf( circle( vector( 0, 0, 0 ), R ), Arc3, off ),
+	       sweepSrf( circle( vector( 0, 0, 0 ), R ),
+			 ctlpt( e2, 0.0, -1.2 ) + ctlpt( e2, 0.0, 0.2 ), off ) );
+interact( Menora );
+
+save( "menora3d", Menora );
+
+free( Arc1 );
+free( Arc2 );
+free( Arc3 );
+free( R );
+
+#############################################################################
+
+resolution = save_res;
+
+free( Menora );
+free( d );
+free( Ptc );
+free( Pt1 );
+free( Pt2 );
+free( Pt3 );
+free( Pt4 );
+free( Pt5 );
+free( Pt6 );
+free( Circ );

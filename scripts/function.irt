@@ -1,0 +1,167 @@
+#
+# Some routines to demonstrate the function/procedure capability.
+#
+
+#
+# sqr definition.
+#
+sqr = function(x):
+    return = x * x;
+
+#
+# No parameters function. Alias to varlist().
+#
+vl1 = procedure():
+    varlist();
+
+#
+# No parameters function, with local variables. Note varlist acknowledges
+# the existance of x & y with in a procedure or a function.
+#
+vl2 = procedure():x:y:
+    x = 5:
+    y = 6:
+    varlist();
+
+#
+# factorial recursive (what else) definition. Note in order for the function
+# to be recognized within itself, we have to define it twice, first time as
+# a dummy function and second time, the real recursive definition.
+#
+factor = function(x):return = x;
+factor = function(x):
+    if (x <= 1, return = 1, return = x * factor(x - 1));
+
+#
+# Interact with axes, possible in a middle of expression (returns o).
+#
+aint = function(o):
+    interact(list(o, axes)):
+    return = o;
+
+b = box(vector(-3,-2,-1),6,4,2);
+t = 3.14;
+
+save( "functn1",
+      list( sqrt(sqr(t * 3.14)),
+	    sqr(2),
+	    sqr(2) + sqr(2),
+
+	    factor( 3 ),
+	    factor( 10 ),
+	    factor( 15 ),
+
+	    aint( b ),
+	    aint( cone( vector( 0, 0, -1), vector(0, 0, 4 ), 2, 1 ) ) ) );
+
+free(t);
+free(b);
+
+#
+# Few parameters. Apply operator to two given operand. Note since operators
+# are overloaded, we can apply this function to many types.
+#
+apply = function(oprnd1, oprtr, oprnd2):
+    if (oprtr == "+", return = oprnd1 + oprnd2):
+    if (oprtr == "*", return = oprnd1 * oprnd2):
+    if (oprtr == "-", return = oprnd1 - oprnd2):
+    if (oprtr == "/", return = oprnd1 / oprnd2);
+
+interact(apply(box(vector(-3, -2, -1), 6, 4, 2), "-",
+	       box(vector(-4, -3, -2), 2, 2, 4)));
+
+#
+# Having some local variables (can you imagine what this function do?).
+#
+lcl = function(x):y:z:
+    y = x + x:
+    z = y + y:
+    return = x + y + z;
+
+#
+# Call a function within a function.
+#
+somemath = function(x, y):
+    return = sqr(x) * factor(y) + sqr(y) * factor(x);
+
+save( "functn2",
+      list( apply( 5, "*", 6 ),
+	    apply( vector( 1, 2, 3 ), "+", point( 1, 1, 1 ) ),
+
+	    lcl( 3 ),
+	    lcl( 5 ),
+
+	    somemath( 2, 2 ),
+	    somemath( 4, 3 ) ) );
+
+#
+# Computes an approximation to the arclength of a curve, by approximating it
+# as a piecewise linear curve with n segments.
+#
+distptpt = function(pt1, pt2):
+    return = sqrt(sqr(coord(pt1, 1) - coord(pt2, 1)) +
+		  sqr(coord(pt1, 2) - coord(pt2, 2)) +
+		  sqr(coord(pt1, 3) - coord(pt2, 3)));
+
+crvlength = function(crv, n):pd:t:t1:t2:dt:pt1:pt2:i:
+    return = 0.0:
+    pd = pdomain(crv):
+    t1 = nth(pd, 1):
+    t2 = nth(pd, 2):
+    dt = (t2 - t1) / n:
+    pt1 = coerce(ceval(crv, t1), e3):
+    for (i = 1, 1, n,
+	 pt2 = coerce(ceval(crv, t1 + dt * i), e3):
+	 return = return + distptpt(pt1, pt2):
+	 pt1 = pt2);
+
+#
+# Set a global variable in a function.
+#
+
+DumVar = rotx( 10 );
+modaxes = function():
+    DumVar = vector(1, 2, 3):
+    return = DumVar;
+
+save( "functn3",
+      list( crvlength( circle( vector( 0.0, 0.0, 0.0 ), 1.0 ), 30 ) / 2,
+	    crvlength( circle( vector( 0.0, 0.0, 0.0 ), 1.0 ), 100 ) / 2,
+	    crvlength( circle( vector( 0.0, 0.0, 0.0 ), 1.0 ), 300 ) / 2,
+
+	    DumVar,
+	    modaxes(),
+	    DumVar ) );
+
+free( DumVar );
+
+#
+# Make sure operator overloading is still valid inside a function:
+#
+add = FUNCTION(x, y):
+    return = x + y;
+
+save( "functn4",
+      list( add( 1, 2 ),
+	    add( vector( 1, 2, 3 ), point( 1, 2, 3 ) ),
+	    add( box( vector( -3, -2, -1 ), 6, 4, 2 ),
+		 box( vector( -4, -3, -2 ), 2, 2, 4 ) ) ) );
+
+#
+# Prisa (layout) of pyramids
+#
+
+PyramidPrisa = function(n, s): Pts: i:
+    Pts = nil():
+    for (i = 0, 1, n,
+        snoc( point( cos(i * 2 * Pi / n),
+                     sin(i * 2 * Pi / n),
+                     0.0 ), Pts ) ):
+    return = list( poly( Pts, true ) ):
+    for (i = 1, 1, n,
+        snoc( poly( list( nth( Pts, i ),
+                          nth( Pts, i + 1 ),
+                          normalize( nth( Pts, i ) + nth( Pts, i + 1 ) ) * s ),
+                    false ), return ) );
+
+interact( PyramidPrisa( 8, 2 ) * sc( 0.5 ) );

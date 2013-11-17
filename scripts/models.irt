@@ -1,0 +1,130 @@
+#
+# Some basic examples of the mdl_lib (freeform closed models).
+#
+#				Gershon Elber, September 2010
+#
+
+OldBFF = iritstate( "BoolFreeform", vector( 0.025, 1e-8, 0.025 ) );
+
+#############################################################################
+
+s1 = SphereSrf(1) * tx( 0.6 ):
+S2 = s1 * tx( -1.2 ):
+
+m1 = coerce( s1, model_type ):
+m2 = coerce( s2, model_type ):
+free( s1 ):
+free( s2 ):
+
+b1 = m1 + m2:
+b2 = m1 * m2:
+b3 = m1 - m2:
+b4 = m2 - m1:
+
+All = list( b1 * ty(  3.5 ),
+	    b2 * ty(  1.25 ),
+	    b3 * ty( -1.25 ),
+	    b4 * ty( -3.5 ) );
+
+interact( All );
+
+save( "models1", All );
+
+#############################################################################
+
+s1 = cylinSrf( 2, 0.5 ) * ry( 90 ) * tx( -2.5 ) * tz( 0.2 ):
+m1 = coerce( s1, model_type ):
+free( s1 ):
+
+b1 = m2 + m1:
+b2 = m2 * m1:
+b3 = m2 - m1:
+b4 = m1 - m2:
+
+All = list( b1 * ty(  3.5 ),
+	    b2 * ty(  1.25 ),
+	    b3 * ty( -1.25 ),
+	    b4 * ty( -3.5 ) );
+
+interact( All );
+
+save( "models2", All );
+
+#############################################################################
+
+s1 = cylinSrf( 3, 0.5 ) * ry( 90 ) * tx( -2. ) * tz( 0.7 ):
+m1 = coerce( s1, model_type ):
+free( s1 ):
+
+b1 = m2 + m1:
+b2 = m2 * m1:
+b3 = m2 - m1:
+b4 = m1 - m2:
+
+All = list( b1 * ty(  3.5 ),
+	    b2 * ty(  1.25 ),
+	    b3 * ty( -1.25 ),
+	    b4 * ty( -3.5 ) );
+
+interact( All );
+
+save( "models3", All );
+
+#############################################################################
+
+s1 = cylinSrf( 3, 0.5 ) * ry( 90 ) * tx( -2. ) * tz( 0.1 ):
+m1 = coerce( s1, model_type ):
+free( s1 ):
+
+b1 = m2 + m1:
+b2 = m2 * m1:
+b3 = m2 - m1:
+b4 = m1 - m2:
+
+All = list( b1 * ty(  3.5 ),
+	    b2 * ty(  1.25 ),
+	    b3 * ty( -1.25 ),
+	    b4 * ty( -3.5 ) );
+
+interact( All );
+
+save( "models4", All );
+
+#############################################################################
+
+s1 = SphereSrf(1) * tx( 0.6 ):
+S2 = s1 * tx( -1.2 ):
+S3 = s1 * tx( -2.4 ):
+
+m1 = coerce( s1, model_type ):
+m2 = coerce( s2, model_type ):
+m3 = coerce( s3, model_type ):
+free( s1 ):
+free( s2 ):
+free( s3 ):
+
+b1 = m1 + m2 + m3:
+b2 = m1 + m2 - m3:
+b3 = (m1 + m2) * m3:
+
+All = list( b1 * ty(  3 ),
+	    b2 * ty(  0 ),
+	    b3 * ty( -3 ) );
+
+interact( All );
+
+save( "models5", All );
+
+#############################################################################
+
+OldBFF = iritstate( "BoolFreeform", OldBFF );
+free( OldBFF );
+
+free( m1 );
+free( m2 );
+free( m3 );
+free( b1 );
+free( b2 );
+free( b3 );
+free( b4 );
+free( All );

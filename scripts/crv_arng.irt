@@ -1,0 +1,289 @@
+#
+# Curve arrangements
+#
+#			Gershon Elber, March 2010
+#
+
+#
+# The different allowed CA operations:
+#
+
+CA_CREATE = 1:
+CA_COPY = 2:
+CA_FILTER_DUP = 3:
+CA_FILTER_TAN = 4:
+CA_SPLIT_CRV = 5:
+CA_BREAK_LIN = 6:
+CA_BREAK_INTER = 7:
+CA_BREAK_NEAR_PTS = 8:
+CA_UNION_CRV = 9:
+CA_LSTSQR_CRV = 10:
+CA_EVAL_CA = 11:
+CA_CLASSIFY = 12:
+CA_REPORT = 13:
+CA_OUTPUT = 14:
+CA_FREE = 15;
+
+ri = iritstate( "RandomInit", 1964 );  # Seed-initiate the randomizer,
+free( ri );
+
+#############################################################################
+
+Crvs1 = list(
+    cbspline( 4,
+	list( ctlpt( E3, -0.6, 0.2, 0. ),
+              ctlpt( E2, -0.2, 0.4 ),
+              ctlpt( E2, 0.2, 0.2 ),
+              ctlpt( E2, 0.6, 0.2 ),
+              ctlpt( E2, 0.8, -0.2 ) ),
+        list( kv_open ) ),
+    cbspline( 2,
+        list( ctlpt( E3, -0.6, 0.6, 0. ),
+              ctlpt( E2, -0.6, -0.4 ) ),
+        list( kv_open ) ),
+    cbspline( 3,
+        list( ctlpt( E3, 0.4, 0.6, 0. ),
+              ctlpt( E1, 0.4 ),
+              ctlpt( E2, -0.2, -0.2 ),
+              ctlpt( E1, -0.4 ),
+              ctlpt( E2, -0.4, 0.4 ),
+              ctlpt( E2, -0.8, 0.4 ) ),
+        list( kv_open ) ),
+    cbspline( 2,
+        list( ctlpt( E3, 0., -0.4, 0. ),
+              ctlpt( E2, 0.4, -0.4 ),
+              ctlpt( E2, 0.8, 0.4 ) ),
+        list( kv_open ) ),
+    cbspline( 4,
+        list( ctlpt( E3, -0.6, 0., 0. ),
+              ctlpt( E1, -0.2 ),
+              ctlpt( E2, 0.2, -0.2 ),
+              ctlpt( E2, 0.2, -0.4 ) ),
+        list( kv_open ) ) );
+
+Crvs2 = list(
+    cbspline( 4,
+        list( ctlpt( E3, -0.6, 0., 0. ),
+              ctlpt( E2, -0.2, -0.4 ),
+              ctlpt( E2, 0.2, -0.2 ),
+              ctlpt( E2, 0.4, -0.4 ),
+              ctlpt( E2, 0.6, -0.2 ),
+              ctlpt( E2, 0.6, 0.2 ),
+              ctlpt( E2, 0.2, 0.2 ),
+              ctlpt( E2, 0.2, 0.4 ),
+              ctlpt( E2, 0.6, 0.2 ),
+              ctlpt( E2, 0.8, 0.4 ),
+              ctlpt( E2, 0.8, 0.2 ) ),
+        list( kv_open ) ),
+    cbspline( 2,
+        list( ctlpt( E3, 0.2, 0.4, 0. ),
+              ctlpt( E2, 0.6, 0.4 ),
+              ctlpt( E2, 0.6, 0.2 ),
+              ctlpt( E2, 0.2, 0.2 ) ),
+        list( kv_open ) ),
+    cbspline( 3,
+        list( ctlpt( E3, -0.4, -0.4, 0. ),
+              ctlpt( E2, -0.2, 0.6 ),
+              ctlpt( E2, 0., -0.4 ),
+              ctlpt( E2, 0.2, 0.6 ),
+              ctlpt( E2, 0.4, -0.4 ),
+              ctlpt( E2, 0.6, 0.6 ) ),
+        list( kv_open ) ),
+    cbspline( 4,
+        list( ctlpt( E3, -0.6, 0.6, 0. ),
+              ctlpt( E2, -0.4, 0.2 ),
+              ctlpt( E2, -0.2, 0.4 ),
+              ctlpt( E2, -0.2, 0.6 ),
+              ctlpt( E2, 0., 0.6 ),
+              ctlpt( E2, 0., 0.2 ),
+              ctlpt( E2, -0.2, -0.6 ),
+              ctlpt( E2, -0.4, -0.6 ),
+              ctlpt( E2, -0.6, -0.4 ),
+              ctlpt( E2, -0.6, -0.2 ) ),
+        list( 0.0, 0.0, 0.0, 0.0, 0.2, 0.2, 0.2, 0.6, 0.6,
+                                0.6, 1.0, 1.0, 1.0, 1.0 ) ) );
+
+#################################
+
+view( crvs1, 1 );
+
+ca1 = carngmnt2( crvs1, CA_CREATE, list( 1e-2, 1e-2, TRUE, 7 ) );
+ca2 = carngmnt2( ca1, CA_BREAK_INTER, list( 1e-6 ) );
+ca3 = carngmnt2( ca2, CA_EVAL_CA, list( FALSE ) );
+dm = carngmnt2( ca3, CA_CLASSIFY, nil() );
+CAFinal1 = carngmnt2( ca3, CA_OUTPUT, list( 2, 1e-2, 0.05 ) );
+dm = carngmnt2( ca3, CA_REPORT, list( 1 ) );
+dm = carngmnt2( ca3, CA_REPORT, list( 2 ) );
+dm = carngmnt2( ca3, CA_REPORT, list( 4 ) );
+dm = carngmnt2( ca3, CA_REPORT, list( 8 ) );
+
+interact( CAFinal1 );
+
+dm = carngmnt2( ca1, CA_FREE, nil() );
+dm = carngmnt2( ca2, CA_FREE, nil() );
+dm = carngmnt2( ca3, CA_FREE, nil() );
+
+#################################
+
+view( crvs2, 1 );
+
+ca1 = carngmnt2( crvs2, CA_CREATE, list( 1e-2, 1e-2, TRUE, 7 ) );
+ca2 = carngmnt2( ca1, CA_BREAK_INTER, list( 1e-6 ) );
+ca3 = carngmnt2( ca2, CA_EVAL_CA, list( TRUE ) );
+dm = carngmnt2( ca3, CA_CLASSIFY, nil() );
+CAFinal2 = carngmnt2( ca3, CA_OUTPUT, list( 2, 1e-2, 0.02 ) );
+dm = carngmnt2( ca3, CA_REPORT, list( 1 ) );
+dm = carngmnt2( ca3, CA_REPORT, list( 2 ) );
+dm = carngmnt2( ca3, CA_REPORT, list( 4 ) );
+dm = carngmnt2( ca3, CA_REPORT, list( 8 ) );
+
+interact( CAFinal2 );
+
+dm = carngmnt2( ca1, CA_FREE, nil() );
+dm = carngmnt2( ca2, CA_FREE, nil() );
+dm = carngmnt2( ca3, CA_FREE, nil() );
+
+save( "crvarng1", list( CAFinal1 * tx( -2 ), CAFinal2 * tx( 2 ) ) );
+
+#
+# Sub regions
+#
+
+#
+# Examine suboverlaps.
+#
+
+c1 = cbspline( 3,
+	       list( ctlpt( E2,   0.0,   0.0 ),
+		     ctlpt( E2,   0.35,  0.25 ),
+		     ctlpt( E2,   0.65, -0.25 ),
+		     ctlpt( E2,   1.0,   0.0 ) ),
+	       list( kv_open ) );
+Rgn1 = c1 + ctlpt( E2, 1, 1 ) + ctlpt( E2, 0, 1 ) + ctlpt( E2, 0, 0 );
+
+c2 = cregion( c1, 0.3, 0.7 );
+Rgn2 = c2 +
+       ceval( c2, 0.7 ) * ty ( -0.25 ) +
+       ceval( c2, 0.3 ) * ty ( -0.5 ) +
+       ceval( c2, 0.3 );
+
+Rgn3 = cbspline( 2,
+                 list( ctlpt( e2, 1.5, 0.85 ),
+		       ctlpt( e2, 1.5, 0.5 ),
+		       ctlpt( e2, 1, 0.5 ),
+		       ctlpt( e2, 1, 0.85 ),
+		       ctlpt( e2, 1.5, 0.85 ) ),
+	         list( kv_open ) );
+
+crvs = list( Rgn1, Rgn2, Rgn3 );
+free( c1 );
+free( c2 );
+free( Rgn1 );
+free( Rgn2 );
+free( Rgn3 );
+
+view( list( crvs ), 1 );
+
+ca1 = carngmnt2( crvs, CA_CREATE, list( 1e-2, 1e-2, TRUE, 7 ) );
+ca2 = carngmnt2( ca1, CA_SPLIT_CRV, list( 4, 1e-6 ) );
+ca3 = carngmnt2( ca2, CA_BREAK_NEAR_PTS, list( nil(), 1e-4 ) );
+ca4 = carngmnt2( ca3, CA_FILTER_DUP, list( 1e-3, true ) );
+ca5 = carngmnt2( ca4, CA_EVAL_CA, list( TRUE ) );
+dm = carngmnt2( ca5, CA_CLASSIFY, nil() );
+CAFinal = carngmnt2( ca5, CA_OUTPUT, list( 2, 1e-2, 0.3 ) );
+dm = carngmnt2( ca5, CA_REPORT, list( 1 ) );
+dm = carngmnt2( ca5, CA_REPORT, list( 2 ) );
+dm = carngmnt2( ca5, CA_REPORT, list( 4 ) );
+dm = carngmnt2( ca5, CA_REPORT, list( 8 ) );
+
+interact( CAFinal );
+
+dm = carngmnt2( ca1, CA_FREE, nil() );
+dm = carngmnt2( ca2, CA_FREE, nil() );
+dm = carngmnt2( ca3, CA_FREE, nil() );
+dm = carngmnt2( ca4, CA_FREE, nil() );
+dm = carngmnt2( ca5, CA_FREE, nil() );
+
+save( "crvarng2", list( CAFinal ) );
+
+#
+# X = 0, Y = 0, Z = 0 plane
+# 
+Pl1 = nil();
+NumPts = 40;
+Eps = 1e-4;
+for ( i = 1, 1, NumPts,
+      Pt = ctlpt( E3, Random( -1, 1 ), Random( -1, 1 ), Random( -Eps, Eps ) ):
+      snoc( Pt, Pl1 ) );
+Crv = cbspline( 4, Pl1, list( kv_periodic ) );
+
+view( list( Crv ), 1 );
+
+ca1 = carngmnt2( Crv * rx( 90 ), CA_CREATE, list( 1e-2, 1e-2, TRUE, 7 ) );
+dm = carngmnt2( ca1, CA_REPORT, list( 1 ) );
+
+ca2 = carngmnt2( Crv * ry( 90 ), CA_CREATE, list( 1e-2, 1e-2, TRUE, 7 ) );
+dm = carngmnt2( ca2, CA_REPORT, list( 1 ) );
+
+ca3 = carngmnt2( Crv * rx( 45 ) * ry( 45 ), CA_CREATE, list( 1e-2, 1e-2, TRUE, 7 ) );
+dm = carngmnt2( ca3, CA_REPORT, list( 1 ) );
+
+save( "crvarng3", list( ca1 * tx( -2 ), ca2, ca3 * tx( 2 ) ) );
+
+dm = carngmnt2( ca1, CA_FREE, nil() );
+dm = carngmnt2( ca2, CA_FREE, nil() );
+dm = carngmnt2( ca3, CA_FREE, nil() );
+
+#
+# Non-planar error
+# 
+Pl1 = nil();
+NumPts = 20;
+Eps = 0.1;
+for ( i = 1, 1, NumPts,
+      Pt = ctlpt( E3, Random( -1, 1 ), Random( -1, 1 ), Random( -Eps, Eps ) ):
+      snoc( Pt, Pl1 ) );
+Crv = cbspline( 4, Pl1, list( kv_periodic ) );
+
+ca1 = carngmnt2( Crv, CA_CREATE, list( 1e-2, 1e-2, TRUE, 7 ) );
+ca2 = carngmnt2( Crv * rx( 45 ), CA_CREATE, list( 1e-2, 1e-2, TRUE, 7 ) );
+
+# Nothing to free as nothing is created
+#dm = carngmnt2( ca1, CA_FREE, nil() );
+#dm = carngmnt2( ca2, CA_FREE, nil() );
+
+#############################################################################
+
+free( CA_CREATE );
+free( CA_COPY );
+free( CA_FILTER_DUP );
+free( CA_SPLIT_CRV );
+free( CA_BREAK_LIN );
+free( CA_BREAK_INTER );
+free( CA_BREAK_NEAR_PTS );
+free( CA_UNION_CRV );
+free( CA_LSTSQR_CRV );
+free( CA_EVAL_CA );
+free( CA_REPORT );
+free( CA_OUTPUT );
+free( CA_FREE );
+
+free( CAFinal );
+free( CAFinal1 );
+free( CAFinal2 );
+free( ca1 );
+free( ca2 );
+free( ca3 );
+free( ca4 );
+free( ca5 );
+free( dm );
+
+free( Crv );
+free( Crvs );
+free( Crvs1 );
+free( Crvs2 );
+free( Pt );
+free( Pl1 );
+free( NumPts );
+free( Eps );
+free( i );

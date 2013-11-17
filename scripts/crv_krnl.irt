@@ -1,0 +1,345 @@
+#
+# Computing the kernel and diameter of a freeform simple closed curve.
+#
+
+save_res = resolution;
+resolution = 70;
+
+bg = poly( list( point( -3, -3, -1 ),
+		 point( -3,  3, -1 ),
+		 point(  3,  3, -1 ),
+		 point(  3, -3, -1 ) ), false );
+color( bg, yellow );
+view_mat1 = tx( 0 );
+view( list( view_mat1 ), 1 );
+view_mat2 = view_mat * sc( 0.5 ) * ty( 0.5 );
+
+viewstate( "DepthCue", 0 );
+viewstate( "DrawStyle", 1 );
+viewstate( "PolyAprx", 1 );
+
+#############################################################################
+
+C4 = cbspline( 4,
+    list( ctlpt( E3, -0.6, -0.3, 0 ),
+          ctlpt( E2,  0.6, -0.3 ),
+          ctlpt( E2,  0.6,  0.3 ),
+          ctlpt( E2, -0.6,  0.3 ) ),
+    list( kv_periodic ) );
+
+k = CrvKernel( C4, 0, 0, list( 3, 3, 3 ), 0 );
+attrib( k, "rgb", "1,1,1" );
+interact( list( C4, bg, k * sz( 0 ), view_mat1 ) );
+
+attrib( k, "rgb", "0,255,255" );
+interact( list( C4, k * sz( -3 ), view_mat2 ) );
+
+k1 = CrvKernel( C4, 20, 0, list( 3, 3, 3 ), 0 );
+attrib( k1, "rgb", "100,1,1" );
+k2 = CrvKernel( C4, -20, 0, list( 3, 3, 3 ), 0 );
+attrib( k2, "rgb", "1,100,1" );
+interact( list( C4, bg, k1 * sz( 0 ), k2 * sz( 0 ), view_mat1 ) );
+
+s = CrvKernel( C4, 0, 0, list( 0.25, -0.01 ), 1 );
+attrib( s, "rgb", "255,0,255" );
+
+interact( list( C4, k * sz( -3 ), s, view_mat2 ) );
+
+#############################################################################
+
+C4 = cbspline( 4,
+    list( ctlpt( E3, 0.616, -0.0552, 0 ),
+          ctlpt( E2, -0.744, -0.444 ),
+          ctlpt( E2, 0.416, -0.298 ),
+          ctlpt( E2, 0.691, 0.175 ),
+          ctlpt( E2, -0.179, 0.872 ) ),
+    list( kv_periodic ) );
+
+k = CrvKernel( C4, 0, 0, list( 2, 3, 2 ), 0 );
+attrib( k, "rgb", "1,1,1" );
+interact( list( C4, bg, k * sz( 0 ), view_mat1 ) );
+
+save( "crv1krnl", list( C4, bg, k * sz( 0 ), view_mat1 ) );
+
+#############################################################################
+
+C3 = cbspline( 3,
+    list( ctlpt( E3, -0.668, 0.333, 0 ),
+          ctlpt( E2, 0.253, 0.00684 ),
+          ctlpt( E2, -0.252, -0.417 ),
+          ctlpt( E2, 0.416, -0.298 ),
+          ctlpt( E2, 0.691, 0.175 ),
+          ctlpt( E2, 0.325, 0.502 ),
+          ctlpt( E2, 0.0699, 0.656 ),
+          ctlpt( E2, 0.227, 0.171 ) ),
+    list( kv_periodic ) );
+
+C4 = cbspline( 4,
+    list( ctlpt( E3, -0.668, 0.333, 0 ),
+          ctlpt( E2, 0.253, 0.00684 ),
+          ctlpt( E2, -0.252, -0.417 ),
+          ctlpt( E2, 0.416, -0.298 ),
+          ctlpt( E2, 0.691, 0.175 ),
+          ctlpt( E2, 0.325, 0.502 ),
+          ctlpt( E2, 0.0699, 0.656 ),
+          ctlpt( E2, 0.227, 0.171 ) ),
+    list( kv_periodic ) );
+
+d = CrvDiamtr( C3, 0.01, -1e-8, 2 );
+Lns = nil();
+for ( i = 1, 1, sizeof( d ),
+    pt = nth( d, i ):
+    snoc( ceval( C3, coord( pt, 0 ) ) + ceval( C3, coord( pt, 1 ) ),
+	  Lns ) );
+
+MaxD = CrvDiamtr( C3, 0.01, -1e-8, 1 );
+MaxD = ceval( C3, coord( MaxD, 0 ) ) + ceval( C3, coord( MaxD, 1 ) );
+color( MaxD, green );
+adwidth( MaxD, 3 );
+
+MinD = CrvDiamtr( C3, 0.01, -1e-8, 0 );
+MinD = ceval( C3, coord( MinD, 0 ) ) + ceval( C3, coord( MinD, 1 ) );
+color( MinD, yellow );
+adwidth( MinD, 3 );
+
+interact( list( C3, Lns, MaxD, MinD, view_mat1 ) );
+
+k = CrvKernel( C3, 0, 0, list( 2, 2, 2 ), 0 );
+attrib( k, "rgb", "1,1,1" );
+interact( list( C3, bg, k * sz( 0 ), view_mat1 ) );
+
+save( "crv2krnl", list( C3, bg, k * sz( 0 ), view_mat1 ) );
+
+k = CrvKernel( C4, 0, 0, list( 2, 3, 1 ), 0 );
+attrib( k, "rgb", "1,1,1" );
+interact( list( C4, bg, k * sz( 0 ), view_mat1 ) );
+
+attrib( k, "rgb", "0,255,255" );
+interact( list( C4, k * sz( -3 ), view_mat2 ) );
+
+s = CrvKernel( C4, 0, 0, list( 0.25, -0.01 ), 1 );
+attrib( s, "rgb", "255,0,255" );
+interact( list( C4, k * sz( -3 ), s, view_mat2 ) );
+
+#############################################################################
+
+C3 = cbspline( 3,
+    list( ctlpt( E3, -0.02, 0.289, 0 ),
+          ctlpt( E2, -0.668, 0.333 ),
+          ctlpt( E2, -0.192, 0.156 ),
+          ctlpt( E2, -0.252, -0.417 ),
+          ctlpt( E2, 0.0858, 0.0777 ),
+          ctlpt( E2, 0.194, -0.00113 ),
+          ctlpt( E2, 0.416, -0.298 ),
+          ctlpt( E2, 0.691, 0.175 ),
+          ctlpt( E2, 0.362, 0.228 ),
+          ctlpt( E2, 0.171, 0.265 ),
+          ctlpt( E2, 0.325, 0.502 ),
+          ctlpt( E2, 0.0699, 0.656 ),
+          ctlpt( E2, -0.137, 0.5 ) ),
+    list( kv_periodic ) );
+C4 = cbspline( 4,
+    list( ctlpt( E3, -0.02, 0.289, 0 ),
+          ctlpt( E2, -0.668, 0.333 ),
+          ctlpt( E2, -0.192, 0.156 ),
+          ctlpt( E2, -0.252, -0.417 ),
+          ctlpt( E2, 0.0858, 0.0777 ),
+          ctlpt( E2, 0.194, -0.00113 ),
+          ctlpt( E2, 0.416, -0.298 ),
+          ctlpt( E2, 0.691, 0.175 ),
+          ctlpt( E2, 0.362, 0.228 ),
+          ctlpt( E2, 0.171, 0.265 ),
+          ctlpt( E2, 0.325, 0.502 ),
+          ctlpt( E2, 0.0699, 0.656 ),
+          ctlpt( E2, -0.137, 0.5 ) ),
+    list( kv_periodic ) );
+
+d = CrvDiamtr( C3, 0.01, -1e-10, 2 );
+Lns = nil();
+for ( i = 1, 1, sizeof( d ),
+    pt = nth( d, i ):
+    snoc( ceval( C3, coord( pt, 0 ) ) + ceval( C3, coord( pt, 1 ) ),
+	  Lns ) );
+
+MaxD = CrvDiamtr( C3, 0.01, -1e-10, 1 );
+MaxD = ceval( C3, coord( MaxD, 0 ) ) + ceval( C3, coord( MaxD, 1 ) );
+color( MaxD, green );
+adwidth( MaxD, 3 );
+
+MinD = CrvDiamtr( C3, 0.01, -1e-10, 0 );
+MinD = ceval( C3, coord( MinD, 0 ) ) + ceval( C3, coord( MinD, 1 ) );
+color( MinD, yellow );
+adwidth( MinD, 3 );
+
+interact( list( C3, Lns, MaxD, MinD, view_mat1 ) );
+
+
+k = CrvKernel( C3, 0, 0, list( 2, 2, 2 ), 0 );
+attrib( k, "rgb", "1,1,1" );
+interact( list( C3, bg, k * sz( 0 ), view_mat1 ) );
+
+k = CrvKernel( C4, 0, 0, 2, 0 );
+attrib( k, "rgb", "1,1,1" );
+interact( list( C4, bg, k * sz( 0 ), view_mat1 ) );
+
+k1 = CrvKernel( C4, 5, 0, 2, 0 );
+attrib( k1, "rgb", "100,1,1" );
+k2 = CrvKernel( C4, -5, 0, 2, 0 );
+attrib( k2, "rgb", "1,100,1" );
+interact( list( C4, bg, k1 * sz( 0 ), k2 * sz( 0 ), view_mat1 ) );
+
+attrib( k, "rgb", "0,255,255" );
+interact( list( C4, k * sz( -3 ), view_mat2 ) );
+
+s = CrvKernel( C4, 0, 0, list( 0.15, -1e-3 ), 1 );
+attrib( s, "rgb", "255,0,255" );
+interact( list( C4, k * sz( -3 ), s, view_mat2 ) );
+
+save( "crv3krnl", list( C4, k * sz( -3 ), s, view_mat2 ) );
+
+#############################################################################
+
+C3 = cbspline( 3,
+    list( ctlpt( E3, -0.0398, 0.263, 0 ),
+          ctlpt( E2, -0.668, 0.333 ),
+          ctlpt( E2, -0.0634, 0.161 ),
+          ctlpt( E2, -0.299, -0.378 ),
+          ctlpt( E2, 0.0664, 0.0859 ),
+          ctlpt( E2, 0.444, -0.359 ),
+          ctlpt( E2, 0.161, 0.149 ),
+          ctlpt( E2, 0.723, 0.2 ),
+          ctlpt( E2, 0.362, 0.228 ),
+          ctlpt( E2, 0.171, 0.265 ),
+          ctlpt( E2, 0.424, 0.813 ),
+          ctlpt( E2, 0.0703, 0.283 ),
+          ctlpt( E2, -0.244, 0.88 ) ),
+    list( kv_periodic ) );
+
+C4 = cbspline( 4,
+    list( ctlpt( E3, -0.0398, 0.263, 0 ),
+          ctlpt( E2, -0.668, 0.333 ),
+          ctlpt( E2, -0.0634, 0.161 ),
+          ctlpt( E2, -0.299, -0.378 ),
+          ctlpt( E2, 0.0664, 0.0859 ),
+          ctlpt( E2, 0.444, -0.359 ),
+          ctlpt( E2, 0.161, 0.149 ),
+          ctlpt( E2, 0.723, 0.2 ),
+          ctlpt( E2, 0.362, 0.228 ),
+          ctlpt( E2, 0.171, 0.265 ),
+          ctlpt( E2, 0.424, 0.813 ),
+          ctlpt( E2, 0.0703, 0.283 ),
+          ctlpt( E2, -0.244, 0.88 ) ),
+    list( kv_periodic ) );
+
+d = CrvDiamtr( C4, 0.03, -1e-10, 2 );
+Lns = nil();
+for ( i = 1, 1, sizeof( d ),
+    pt = nth( d, i ):
+    snoc( ceval( C4, coord( pt, 0 ) ) + ceval( C4, coord( pt, 1 ) ),
+	  Lns ) );
+
+MaxD = CrvDiamtr( C4, 0.03, -1e-10, 1 );
+MaxD = ceval( C4, coord( MaxD, 0 ) ) + ceval( C4, coord( MaxD, 1 ) );
+color( MaxD, green );
+adwidth( MaxD, 3 );
+
+MinD = CrvDiamtr( C4, 0.03, -1e-10, 0 );
+MinD = ceval( C4, coord( MinD, 0 ) ) + ceval( C4, coord( MinD, 1 ) );
+color( MinD, yellow );
+adwidth( MinD, 3 );
+
+interact( list( C4, Lns, MaxD, MinD, view_mat1 ) );
+
+k = CrvKernel( C3, 0, 0, 2, 0 );
+attrib( k, "rgb", "1,1,1" );
+interact( list( C3, bg, k * sz( 0 ), view_mat1 ) );
+
+k = CrvKernel( C4, 0, 0, 2, 0 );
+attrib( k, "rgb", "1,1,1" );
+interact( list( C4, bg, k * sz( 0 ), view_mat1 ) );
+
+save( "crv4krnl", list( C4, bg, k * sz( 0 ), Lns, MaxD, MinD, view_mat1 ) );
+
+#############################################################################
+#
+# Possible extensions to open curves.
+#
+C3 = cbspline( 3,
+    list( ctlpt( E3, -0.668, 0.333, 0 ),
+          ctlpt( E2, 0.253, 0.00684 ),
+          ctlpt( E2, -0.252, -0.417 ),
+          ctlpt( E2, 0.416, -0.298 ),
+          ctlpt( E2, 0.691, 0.175 ),
+          ctlpt( E2, 0.325, 0.502 ),
+          ctlpt( E2, 0.0699, 0.656 ),
+          ctlpt( E2, 0.227, 0.171 ) ),
+    list( kv_open ) );
+
+d = CrvDiamtr( C3, 0.1, -1e-10, 2 );
+Lns = nil();
+for ( i = 1, 1, sizeof( d ),
+    pt = nth( d, i ):
+    snoc( ceval( C3, coord( pt, 0 ) ) + ceval( C3, coord( pt, 1 ) ),
+	  Lns ) );
+
+MaxD = CrvDiamtr( C3, 0.1, -1e-10, 1 );
+MaxD = ceval( C3, coord( MaxD, 0 ) ) + ceval( C3, coord( MaxD, 1 ) );
+color( MaxD, green );
+adwidth( MaxD, 3 );
+
+MinD = CrvDiamtr( C3, 0.1, -1e-10, 0 );
+MinD = ceval( C3, coord( MinD, 0 ) ) + ceval( C3, coord( MinD, 1 ) );
+color( MinD, yellow );
+adwidth( MinD, 3 );
+
+interact( list( C3, Lns, MaxD, MinD, view_mat1 ) );
+
+
+k = CrvKernel( C3, 0, 0, list( 2, 2, 2 ), 0 );
+attrib( k, "rgb", "1,1,1" );
+interact( list( C3, bg, k * sz( 0 ), view_mat1 ) );
+
+C3c = cbspline( 3,
+    list( ctlpt( E3, -0.668, 0.333, 0 ),
+          ctlpt( E2, 0.253, 0.00684 ),
+          ctlpt( E2, -0.252, -0.417 ),
+          ctlpt( E2, 0.416, -0.298 ),
+          ctlpt( E2, 0.691, 0.175 ),
+          ctlpt( E2, 0.325, 0.502 ),
+          ctlpt( E2, 0.0699, 0.656 ),
+          ctlpt( E2, 0.227, 0.171 ),
+          ctlpt( E2, 0.226, 0.171 ),
+	  ctlpt( E3, -0.668, 0.333, 0 ) ),
+    list( kv_open ) );
+
+k = CrvKernel( C3c, 0, 0, list( 2, 2, 2 ), 0 );
+attrib( k, "rgb", "1,1,1" );
+interact( list( C3c, bg, k * sz( 0 ), view_mat1 ) );
+free( c3c );
+
+interact( list( C3, bg, k * sz( 0 ), view_mat1 ) );
+
+#############################################################################
+
+viewstate( "DepthCue", 1 );
+viewstate( "DrawStyle", 1 );
+viewstate( "DrawStyle", 1 );
+viewstate( "PolyAprx", 0 );
+
+resolution = save_res;
+
+free( C4 );
+free( C3 );
+free( Lns );
+free( MaxD );
+free( MinD );
+free( Pt );
+free( s );
+free( i );
+free( d );
+free( bg );
+free( view_mat1 );
+free( view_mat2 );
+free( k );
+free( k1 );
+free( k2 );

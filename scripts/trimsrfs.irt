@@ -1,0 +1,240 @@
+#
+#  Some simple examples of trimmed surfaces' construction.
+#
+#					Gershon Elber, Dec 1994.
+#
+
+save_res = resolution;
+
+#
+# A recursive function to subdivide a trimmed surface.
+#
+
+SubdivToDepth = function( TSrf, Dpth, Vu, Vv ):
+    return = 0;
+SubdivToDepth = function( TSrf, Dpth, Vu, Vv ):
+    UMin: UMax: VMin: VMax: TSrfs: V:
+    if ( Dpth <= 0,
+#	return = cTrimSrf( TSrf, false ),
+	return = TSrf,
+	if ( Dpth / 2 != floor( Dpth / 2 ),
+            V = Vu * 2 ^ (Dpth - 1):
+	    UMin = nth( pdomain( TSrf ), 1 ):
+	    UMax = nth( pdomain( TSrf ), 2 ):
+	    TSrfs = sdivide( TSrf, col, UMin * 0.4999 + UMax * 0.5001 ),
+            V = Vv * 2 ^ (Dpth - 1):
+	    VMin = nth( pdomain( TSrf ), 3 ):
+	    VMax = nth( pdomain( TSrf ), 4 ):
+	    TSrfs = sdivide( TSrf, row, VMin * 0.4999 + VMax * 0.5001 ) ):
+        if ( sizeof( TSrfs ) == 2,
+	    return = list( SubdivToDepth( nth( TSrfs, 1 ) * trans( -V ),
+					  Dpth - 1, Vu, Vv ),
+	                   SubdivToDepth( nth( TSrfs, 2 ) * trans( V ),
+				          Dpth - 1, Vu, Vv ) ),
+	    return = SubdivToDepth( nth( TSrfs, 1 ),
+				    Dpth - 1, Vu, Vv ) ) );
+
+#############################################################################
+
+DLevel = iritstate("dumplevel", 255 );
+
+spts = list( list( ctlpt( E3, 0.1, 0.0, 1.0 ),
+	           ctlpt( E3, 0.3, 1.0, 0.0 ),
+	           ctlpt( E3, 0.0, 2.0, 1.0 ) ),
+             list( ctlpt( E3, 1.1, 0.0, 0.0 ),
+	           ctlpt( E3, 1.3, 1.5, 2.0 ),
+	           ctlpt( E3, 1.0, 2.1, 0.0 ) ),
+             list( ctlpt( E3, 2.1, 0.0, 2.0 ),
+	           ctlpt( E3, 2.3, 1.0, 0.0 ),
+	           ctlpt( E3, 2.0, 2.0, 2.0 ) ),
+             list( ctlpt( E3, 3.1, 0.0, 0.0 ),
+	           ctlpt( E3, 3.3, 1.5, 2.0 ),
+	           ctlpt( E3, 3.0, 2.1, 0.0 ) ),
+             list( ctlpt( E3, 4.1, 0.0, 1.0 ),
+	           ctlpt( E3, 4.3, 1.0, 0.0 ),
+	           ctlpt( E3, 4.0, 2.0, 1.0 ) ) );
+
+sb1 = sbezier( spts );
+sb2 = sbspline( 3, 3, spts, list( list( KV_OPEN ), list( KV_OPEN ) ) );
+free( spts );
+
+#
+# Constructor using TrimSrf
+#
+
+tcrv1 = cbspline( 2,
+		  list( ctlpt( E2, 0.3, 0.3 ),
+		        ctlpt( E2, 0.7, 0.3 ),
+		        ctlpt( E2, 0.7, 0.7 ),
+		        ctlpt( E2, 0.3, 0.7 ),
+		        ctlpt( E2, 0.3, 0.3 ) ),
+		  list( KV_OPEN ) );
+tcrv2 = circle( vector( 0.5, 0.5, 0.0 ), 0.25 );
+tcrv3 = cbspline( 3,
+		  list( ctlpt( E2, 0.3, 0.3 ),
+		        ctlpt( E2, 0.7, 0.3 ),
+		        ctlpt( E2, 0.7, 0.7 ),
+		        ctlpt( E2, 0.3, 0.7 ) ),
+		  list( KV_PERIODIC ) );
+
+tsrf1a = trimsrf( sb1, tcrv1, false );
+color( tsrf1a, cyan );
+interact( tsrf1a );
+
+tsrf1b = trimsrf( sb1, tcrv1, true ) * tz( 0.1 );
+color( tsrf1b, green );
+interact( tsrf1b );
+
+tsrf1mesh = list( ffmesh( tsrf1a ), ffmesh( tsrf1b ) );
+color( tsrf1mesh, yellow );
+
+interact( list( tsrf1a, tsrf1b, tsrf1mesh ) );
+save( "trimsrf1", list( tsrf1a, tsrf1b, tsrf1mesh ) );
+free( tsrf1mesh );
+
+tsrf2a = trimsrf( sb1, tcrv2, false );
+color( tsrf2a, magenta );
+tsrf2b = trimsrf( sb1, tcrv2, true ) * tz( 0.1 );
+color( tsrf2b, green );
+interact( list( tsrf2a, tsrf2b ) );
+
+tsrf2ap = gpolyline( tsrf2a, off );
+color( tsrf2ap, red );
+tsrf2bp = gpolyline( tsrf2b, off );
+color( tsrf2bp, green );
+interact( list( tsrf2ap, tsrf2bp ) );
+save( "trimsrf2", list( tsrf2ap, tsrf2bp ) );
+
+# tsrf2ap = gpolygon( tsrf2a, off );
+# color( tsrf2ap, red );
+# tsrf2bp = gpolygon( tsrf2b, off );
+# color( tsrf2bp, green );
+# interact( list( tsrf2ap, tsrf2bp ) );
+# free( tsrf2ap );
+# free( tsrf2bp );
+
+crvs3 = list( tcrv1 * sy( 0.3 ),
+	      tcrv2 * sy( 0.3 ) * ty( 0.3 ),
+	      tcrv3 * sy( 0.3 ) * ty( 0.6 ) );
+tsrf3a = trimsrf( sb2, crvs3, false );
+color( tsrf3a, yellow );
+tsrf3b = trimsrf( sb2, crvs3, true ) * tz( 0.1 );
+interact( tsrf3b );
+color( tsrf3b, green );
+interact( list( tsrf3a, tsrf3b ) );
+free( crvs3 );
+free( tcrv1 );
+free( tcrv2 );
+free( tcrv3 );
+
+#
+# Constructor using TrmSrfs
+#
+
+tsrfs1 = trmsrfs( sb2,
+	 	  poly( list( point( 0, 0.1, 0 ),
+			      point( 1, 0.9, 0 ) ), true ) );
+interact( list( nth( tsrfs1, 1 ) * tz( -0.1 ),
+		nth( tsrfs1, 2 ) * tz(  0.1 ) ) );
+
+tsrfs1 = trmsrfs( sb2,
+		  list( cbezier( list( ctlpt( E2, 0.0, 0.1 ),
+			               ctlpt( E2, 0.5, 0.3 ),
+			               ctlpt( E2, 1.0, 0.2 ) ) ),
+		        cbezier( list( ctlpt( E2, 0.0, 0.8 ),
+				       ctlpt( E2, 0.5, 0.8 ),
+				       ctlpt( E2, 0.5, 1.0 ) ) ) ) );
+interact( list( nth( tsrfs1, 1 ) * tz( -0.2 ),
+		nth( tsrfs1, 2 ) * tz(  0.0 ),
+		nth( tsrfs1, 3 ) * tz(  0.2 ) ) );
+
+c = circle( vector( 0, 0, 0 ), 1 );
+c = list( c * sc( 0.49 ) * tx( 0.5 ) * ty( 0.5 ),
+	  c * sy( 0.5 ) * sc( 0.12 ) * tx( 0.3 ) * ty( 0.7 ),
+	  c * sy( 0.5 ) * sc( 0.12 ) * tx( 0.7 ) * ty( 0.7 ),
+	  c * sc( 0.12 ) * tx( 0.5 ) * ty( 0.5 ),
+	  c * sc( 0.06 ) * tx( 0.5 ) * ty( 0.5 ),
+	  c * sy( 0.3 ) * sc( 0.2 ) * tx( 0.5 ) * ty( 0.2 ) );
+
+resolution = 40;
+tsrfs2aux = trmsrfs( sb2, c );
+free( c );
+
+tsrfs2 = nil();
+for ( i = 1, 1, sizeof( tsrfs2aux ),
+    snoc( nth( tsrfs2aux, i ) * tz( 2 + ( i - 2 ) / 5 ), tsrfs2 ) );
+free( tsrfs2aux );
+
+interact( tsrfs2 );
+
+save( "trimsrf4", list( tsrfs1, tsrfs2 ) );
+free( tsrfs1 );
+free( tsrfs2 );
+
+#
+# Operators on trimmed surfaces
+#
+
+s1 = SubdivToDepth( tsrf1a, 4, vector( 0, 0.02, 0 ), vector( 0.02, 0, 0 ) );
+interact( s1 );
+
+s2 = SubdivToDepth( tsrf1a, 8, vector( 0, 0.01, 0 ), vector( 0.01, 0, 0 ) );
+interact( s2 );
+
+save( "trimsrf5", list( s1, s2 ) );
+
+s1 = SubdivToDepth( tsrf3a, 4, vector( 0, 0.04, 0 ), vector( 0.02, 0, 0 ) );
+interact( s1 );
+
+s2 = SubdivToDepth( tsrf3a, 8, vector( 0, 0.01, 0 ), vector( 0.005, 0, 0 ) );
+interact( s2 );
+
+save( "trimsrf6", list( s1, s2 ) );
+
+offTsrf3a = offset( tsrf3a, 0.3, 1.0, FALSE );
+interact( list( offTsrf3a, tsrf3a ) );
+
+save( "trimsrf7",
+      list( offTsrf3a, tsrf3a,
+	    seval( tsrf1a, 0.5, 0.5 ),
+	    stangent( tsrf1a, row, 0.5, 0.5, true ),
+	    stangent( tsrf1a, col, 0.5, 0.5, true ),
+	    snormal( tsrf1a, 0.5, 0.5 ),
+
+	    seval( tsrf3a, 0.5, 0.5 ),
+	    stangent( tsrf3a, row, 0.5, 0.5, true ),
+	    stangent( tsrf3a, col, 0.5, 0.5, true ),
+	    snormal( tsrf3a, 0.5, 0.5 ) ) );
+
+interact( strimsrf( tsrf1a ) );
+interact( ctrimsrf( tsrf1a, true ) );
+interact( ctrimsrf( tsrf3a, false ) );
+
+save( "trimsrf8", list( pdomain( tsrf1a ), pdomain( tsrf3b ),
+			strimsrf( tsrf1a ), ctrimsrf( tsrf1a, true ) ) );
+
+free( s1 );
+free( s2 );
+
+save( "trimsrf9", list( tsrf2a, tsrf3b ) );
+printf( "Trim surfaces save/load test = %d\\n",
+	list( load( "trimsrf9" ) == list( tsrf2a, tsrf3b ) ) );
+
+#############################################################################
+
+free( offTsrf3a );
+free( tsrf2bp );
+free( tsrf2ap );
+free( tsrf1a );
+free( tsrf1b );
+free( tsrf2a );
+free( tsrf2b );
+free( tsrf3a );
+free( tsrf3b );
+free( sb1 );
+free( sb2 );
+
+DLevel = iritstate("dumplevel", DLevel );
+free( DLevel );
+
+resolution = save_res;

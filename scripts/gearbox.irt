@@ -1,0 +1,89 @@
+#
+# This is the DtoP custom designed Gearbox 'EndPlate'
+# 			Designed by Andy Bray <A.D.Bray@lut.ac.uk> 1992
+#
+
+save_mat = view_mat;
+view_mat = view_mat * scale(vector( 0.13, 0.13, 0.13 ));
+save_res = resolution;
+
+Cplnr = iritstate( "coplanar", true ); # Try 'iritstate("coplanar", false);'
+
+Box1 = BOX(vector( 0.0, 0.0, 1.0), 7.8, 10.4, 1.6);
+#If the line below is uncommented, then the file fails at the first operation
+#most other resolutions work without problem. This could be because
+#coincidentally something approximates colinear when it is not, but in that
+#case a resultion of 50 or 20 might do it, and do not.
+#resolution = 10;
+Hole1 = CYLIN(vector( 1.0, 1.0, 2.601), vector( 0.0, 0.0, -1.6015), 0.3, 3 );
+Solid1 = Box1 - Hole1;
+free(Hole1);
+free(Box1);
+view(list(view_mat, Solid1), true);
+
+#resolution = 20;
+Hole2 = CYLIN(vector( 6.8, 1.0, 2.601), vector( 0.0, 0.0, -1.6015), 0.3, 3);
+Solid2 = Solid1 - Hole2;
+free(Hole2);
+free(Solid1);
+view(Solid2, true);
+
+Hole3 = CYLIN(vector( 1.0, 9.4, 2.601), vector( 0.0, 0.0, -1.6015), 0.3, 3);
+Solid3 = Solid2 - Hole3;
+free(Hole3);
+free(Solid2);
+view(Solid3, true);
+
+Hole4 = CYLIN(vector( 6.8, 9.4, 2.601), vector( 0.0, 0.0, -1.6015), 0.3, 3);
+Solid4 = Solid3 - Hole4;
+free(Hole4);
+free(Solid3);
+view(Solid4, true);
+
+Pocket1 = CYLIN(vector( 3.9, 3.9, 2.601), vector( 0.0, 0.0, -0.501), 2.4, 3);
+Pocket2 = CYLIN(vector( 3.9, 6.5, 2.601), vector( 0.0, 0.0, -0.501), 1.4, 3);
+view(list(Pocket1, Pocket2), true);
+Pockets = Pocket1 + Pocket2;
+free(Pocket1);
+free(Pocket2);
+
+intsolid5 = Solid4 - Pockets;
+solid5 = convex(intsolid5);
+free(Solid4);
+free(pockets);
+free(intsolid5);
+
+Hole5 = CYLIN(vector( 3.91, 3.91, 2.602), vector( 0.0, 0.0, -2.603), 0.3, 3);
+Solid6 = Solid5 - Hole5;
+free(Hole5);
+free(Solid5);
+view(Solid6, true);
+
+# This hole passes straight through the centre of pocket2. If pocket2 and this
+#hole are moved away from pocket1, then the error passes.  Unless I am
+#mistaken, (I have been messing around with this) pocket1 does not pass
+#through the centre of hole6, and they do not (quite) have colinear surfaces
+#Even if quite big variations are tries, it still seems to fail.  I have got
+#irit to draw this component by changing some of the values by 4 or 5, but
+#small order numbers appear to have little effect.  
+Hole6 = CYLIN(vector( 3.9, 6.5, 2.602), vector( 0.0, 0.0, -2.603), 0.3, 3);
+Solid7 = Solid6 - Hole6;
+free(Hole6);
+free(Solid6);
+view(Solid7, true);
+
+interact(Solid7);
+
+cnvx7 = CONVEX( Solid7 );
+free(Solid7);
+
+view(cnvx7, true);
+save("end_plate2", cnvx7);
+
+free(cnvx7);
+
+view_mat = save_mat;
+resolution = save_res;
+
+Cplnr = iritstate( "coplanar", Cplnr );
+free( Cplnr );

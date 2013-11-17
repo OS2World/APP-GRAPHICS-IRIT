@@ -1,0 +1,31 @@
+#
+# This is the make file for the grap_lib library.
+#
+#				Gershon Elber, Aug 2006
+#
+
+include ../makeflag.ami
+
+OBJS =  draw_crv.o \
+	draw_mdl.o \
+	draw_srf.o \
+	draw_str.o \
+	drawpoly.o \
+	drawtris.o \
+	drawtriv.o \
+	drawtsrf.o \
+	grap_gen.o \
+	oglcgdmy.o \
+	sketches.o
+
+all:	libgrap.a
+
+libgrap.a: $(OBJS)
+	rm -f libgrap.a
+	ar rcv libgrap.a *.o
+	-ranlib libgrap.a
+
+install: libgrap.a
+	mv -f libgrap.a $(IRIT_LIB_DIR)
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

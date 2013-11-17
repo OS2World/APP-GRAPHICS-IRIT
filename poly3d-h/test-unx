@@ -1,0 +1,32 @@
+#!/bin/csh -f
+
+if ( ! $?IRIT_LCLDISP ) then
+    if ( $?IRIT_DISPLAY ) then
+	setenv IRIT_LCLDISP `echo $IRIT_DISPLAY | sed -e 's/-s-//'`
+    else
+	setenv IRIT_LCLDISP x11drvs
+    endif
+endif
+
+echo Using "$IRIT_LCLDISP" to display test results.
+
+set TEST_DIR = ../data
+
+poly3d-h -z
+poly3d-h -b -m $TEST_DIR/pl_cube.itd > cube.hdn
+poly3d-h -m -H -q $TEST_DIR/pl_sold1.itd > solid1.hdn
+poly3d-h -b -m $TEST_DIR/pl_sold3.itd > solid3.hdn
+poly3d-h -b -m -o cone-cyl.hdn $TEST_DIR/pl_cncyl.itd
+poly3d-h -F 1 0.01 -4 -H $TEST_DIR/pl_saddl.itd > saddle.hdn
+poly3d-h -F 0 30 -e 2 -q -4- - < $TEST_DIR/pl_wiggl.itd > wiggle.hdn
+poly3d-h -t 0.04 -q- -F 0 30 -W 0.01 $TEST_DIR/fltrtest.itd > fltrtest.hdn
+poly3d-h -t 0.04 -q- -F 1 0.01 -W 0.01 $TEST_DIR/mdl_teap.itd > mdl_teap.hdn
+
+$IRIT_LCLDISP -c- -d- cube.hdn
+$IRIT_LCLDISP -c- -d- solid1.hdn
+$IRIT_LCLDISP -c- -d- solid3.hdn
+$IRIT_LCLDISP -c- -d- cone-cyl.hdn
+$IRIT_LCLDISP -c- -d- saddle.hdn
+$IRIT_LCLDISP -c- -d- wiggle.hdn
+$IRIT_LCLDISP -c- -d- fltrtest.hdn
+$IRIT_LCLDISP -c- -d- mdl_teap.hdn

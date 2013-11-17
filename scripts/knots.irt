@@ -1,0 +1,51 @@
+#
+# Simple knots.
+#
+#						Gershon Elber, 1997
+#
+Cross = pcircle( vector( 0, 0, 0 ), 0.1 );
+
+Crv1 = coerce( cbspline( 3,
+		         list( ctlpt( E3, -1, 0.9, 0 ),
+		               ctlpt( E3, 1, 0.9, 0 ),
+		               ctlpt( E3, 1, -0.9, 0 ),
+		               ctlpt( E3, -1, -0.9, 0 ) ),
+		         list( KV_PERIODIC ) ),
+	       KV_OPEN );
+Srf1 = swpsclsrf( Cross, Crv1, 1.0, vector( 0, 0, 1 ), 2 );
+attrib( Srf1, "color", red );
+
+Crv2 = coerce( cbspline( 3,
+		         list( ctlpt( E3, -1.3, 0, 0.75 ),
+		               ctlpt( E3, 1.3, 0, 0.75 ),
+		               ctlpt( E3, 1.3, 0, -0.75 ),
+		               ctlpt( E3, -1.3, 0, -0.75 ) ),
+		         list( KV_PERIODIC ) ),
+	       KV_OPEN );
+Srf2 = swpsclsrf( Cross, Crv2, 1.0, vector( 0, 1, 0 ), 2 );
+attrib( Srf2, "color", green );
+
+Crv3 = coerce( cbspline( 3,
+		         list( ctlpt( E3, 0, 0.5, 1.1 ),
+			       ctlpt( E3, 0, 0.5, -1.1 ),
+		               ctlpt( E3, 0, -0.5, -1.1 ),
+		               ctlpt( E3, 0, -0.5, 1.1 ) ),
+		         list( KV_PERIODIC ) ),
+	       KV_OPEN );
+Srf3 = swpsclsrf( Cross, Crv3, 1.0, vector( 1, 0, 0 ), 2 );
+attrib( Srf3, "color", cyan );
+
+Knots = list( Srf1, Srf2, Srf3 );
+attrib( Knots, "u_resolution", 0.1 );
+
+interact( Knots );
+save( "knots", Knots );
+
+free( Cross );
+free( Crv1 );
+free( Crv2 );
+free( Crv3 );
+free( Srf1 );
+free( Srf2 );
+free( Srf3 );
+free( Knots );

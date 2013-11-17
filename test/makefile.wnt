@@ -1,0 +1,17 @@
+#
+# This make file is for the Test utility for Windows NT
+#
+#				Gershon Elber, Jan 2000
+#
+
+# Includes generic definitions.
+include ..\makeflag.wnt
+
+OBJS =	test.$(IRIT_OBJ_PF) 
+
+test$(IRIT_EXE_PF).exe: $(OBJS)
+	$(IRITCONLINK) -out:$@ $(OBJS) $(IRIT_LIBS) $(IRIT_MORE_LIBS) $(W32CONMTLIBS)
+	$(IRITMANIFEST) -manifest $@.manifest -outputresource:$@;1
+
+
+# Dependencies starts here - do not touch, generated automatically.

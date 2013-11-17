@@ -1,0 +1,108 @@
+#
+# Surface of revolution, June 1998, Gershon ELber
+#
+
+save_res = resolution;
+
+#
+# Surface of revolution of polygons/lines.
+#
+
+v1  = vector( 0.6, 0.0, 0.25);
+v2  = vector( 0.9, 0.0, 0.25);
+v3  = vector( 0.9, 0.0, 0.2);
+v4  = vector( 0.8, 0.0, 0.2);
+v5  = vector( 0.8, 0.0,-0.2);
+v6  = vector( 0.9, 0.0,-0.2);
+v7  = vector( 0.9, 0.0,-0.25);
+v8  = vector( 0.6, 0.0,-0.25);
+v9  = vector( 0.6, 0.0,-0.2);
+v10 = vector( 0.7, 0.0,-0.2);
+v11 = vector( 0.7, 0.0, 0.2);
+v12 = vector( 0.6, 0.0, 0.2);
+
+PlgCross = poly( list( v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12 ),
+		 false );
+
+PllCross = poly( list( v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v1 ),
+	         true );
+color( PllCross, green );
+adwidth( PllCross, 5 );
+
+free( v1 );
+free( v2 );
+free( v3 );
+free( v4 );
+free( v5 );
+free( v6 );
+free( v7 );
+free( v8 );
+free( v9);
+free( v10 );
+free( v11 );
+free( v12 );
+
+resolution = 16;
+
+T1 = surfrev2( PlgCross, 33, 180 );
+interact( list( PllCross, axes, T1 ) );
+
+T2 = surfRevAxs( PlgCross, vector( 1, 0, 1 ) );
+interact( list( PllCross, axes, T2 ) );
+
+T3 = surfRevAxs( PlgCross, vector( 1, 1, 1 ) );
+interact( list( PllCross, axes, T3 ) );
+
+T4 = surfrevAx2( PlgCross, 90, 360, vector( 1, 0, 1 ) );
+interact( list( PllCross, axes, T4 ) );
+
+# T9 = surfRevAxs( PlgCross, vector( 0, 1, 0 ) );
+
+free( PllCross );
+free( PlgCross );
+
+
+#
+# Surface of revolution of freeform curves.
+#
+
+GCross = cbspline( 3,
+		   list( ctlpt( E3, 0.3, 0.0, 0.0 ),
+		         ctlpt( E3, 0.3, 0.0, 0.05 ),
+		         ctlpt( E3, 0.1, 0.0, 0.05 ),
+		         ctlpt( E3, 0.1, 0.0, 0.4 ),
+		         ctlpt( E3, 0.5, 0.0, 0.4 ),
+		         ctlpt( E3, 0.6, 0.0, 0.8 ) ),
+		   list( 0, 0, 0, 1, 2, 3, 4, 4, 4 ) );
+color( GCross, green );
+adwidth( GCross, 5 );
+
+
+Glass1 = surfRev( GCross );
+interact( list( GCross, axes, Glass1 ) );
+
+Glass2 = surfRev2( GCross, 45, 180 );
+interact( list( GCross, axes, Glass2 ) );
+
+Glass3 = surfRevAxs( GCross, vector( 1, 0, 1 ) );
+interact( list( GCross, axes, Glass3 ) );
+
+Glass4 = surfRevAx2( GCross, 45, 315, vector( 1, 0, 0 ) );
+interact( list( GCross, axes, Glass4 ) );
+
+free( GCross );
+
+save("surfrev", list( T1, T2, T3, T4, Glass1, Glass2, Glass3, Glass4 ) );
+
+#############################################################################
+
+resolution = save_res;
+
+free( T1 );
+free( T2 );
+free( T3 );
+free( T4 );
+free( Glass1 );
+free( Glass2 );
+free( Glass3 );
+free( Glass4 );

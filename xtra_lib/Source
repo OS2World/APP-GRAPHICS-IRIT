@@ -1,0 +1,6 @@
+bzrintrp.c is from Gershon Elber and is part of Graphics Gem III
+
+filt.c is from the contribution of Paul Heckbert to the zoom tool in the URT
+	Utah raster toolkit available from cs.utah.edu.
+
+nure_svd.c is from Numerical Recipes in C.

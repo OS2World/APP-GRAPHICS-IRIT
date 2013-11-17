@@ -1,0 +1,82 @@
+#
+# Simple demo of truncated polyhedra
+#
+#						Gershon Elber, March 1999
+#
+
+save_mat = view_mat;
+view_mat = view_mat * sc( 0.3 ) * rx( 5 ) * ry( -5 );
+
+#############################################################################
+
+b = box( vector( -1, -1, -1 ), 2, 2, 2 );
+color( b, yellow );
+view( list( b, view_mat ), 1 );
+pause();
+
+#
+# Truncation along vertices.
+#
+pl1 = -poly( list( vector( -10, -10, 1.8 ),
+		   vector( -10,  10, 1.8 ),
+		   vector(  10,  10, 1.8 ),
+		   vector(  10, -10, 1.8 ) ),
+	    false ) * rotz2v( vector( 1, 1, 1 ) * sqrt( 3 ) );
+color( pl1, green );
+
+for ( a = -0.04, -0.02, -0.5,
+    p = pl1 * trans( vector( a, a, a ) ):
+    bt1 = b - p
+           - p * roty( 90 )
+           - p * roty( 180 )
+           - p * roty( 270 )
+           - p * rotx( 90 )
+           - p * rotx( 90 ) * roty( 90 )
+           - p * rotx( 90 ) * roty( 180 )
+           - p * rotx( 90 ) * roty( 270 ):
+    color( bt1, yellow ):
+    view( list( bt1 ), 1 ) );
+
+pl1 = -poly( list( vector( -10, -10, 1.4 ),
+		   vector( -10,  10, 1.4 ),
+		   vector(  10,  10, 1.4 ),
+		   vector(  10, -10, 1.4 ) ),
+	    false ) * rotz2v( vector( 1, 1, 0 ) * sqrt( 3 ) );
+color( pl1, green );
+
+pause();
+
+#
+# Truncation along edges.
+#
+
+for ( a = -0.04, -0.02, -0.4,
+    p = pl1 * trans( vector( a, a, a ) ):
+    bt2 = b - p
+           - p * rotz( 90 )
+           - p * rotz( 180 )
+           - p * rotz( 270 )
+           - p * rotx( 90 )
+           - p * rotx( 90 ) * rotz( 90 )
+           - p * rotx( 90 ) * rotz( 180 )
+           - p * rotx( 90 ) * rotz( 270 )
+           - p * rotx( -90 )
+           - p * rotx( -90 ) * rotz( 90 )
+           - p * rotx( -90 ) * rotz( 180 )
+           - p * rotx( -90 ) * rotz( 270 ):
+    color( bt2, yellow ):
+    view( list( bt2 ), 1 ) );
+
+save( "polytrnc", list( bt1 * tx( -2 ), bt2 * tx( 2 ) ) );
+
+##############################################################################
+
+view_mat = save_mat;
+free( save_mat );
+
+free( p );
+free( a );
+free( b );
+free( pl1 );
+free( bt1 );
+free( bt2 );

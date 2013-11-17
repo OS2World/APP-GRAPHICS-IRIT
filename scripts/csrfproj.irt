@@ -1,0 +1,149 @@
+#
+# A few examples of curves orthogonal projection onto surfaces.
+#
+#					 Gershon Elber, March 2011.
+#
+
+Srf = sbezier(
+    list( list( ctlpt( E3, -0.4, 0.4, 1 ),
+                ctlpt( E3, 0, -0.2, 1 ),
+                ctlpt( E3, 0.4, -0.2, 1 ),
+                ctlpt( E3, 0.4, 0.4, 1 ) ),
+          list( ctlpt( E3, -0.4, 0.4, 0.5 ),
+                ctlpt( P3, 0.5, -0.2, 0.3, 0.5 ),
+                ctlpt( E3, 0.2, 0.3, 0.5 ),
+                ctlpt( E3, 0.4, 0.4, 0.5 ) ),
+          list( ctlpt( E2, -0.4, 0.4 ),
+                ctlpt( E2, -0.4, -0.2 ),
+                ctlpt( E2, 0.0, -0.2 ),
+                ctlpt( E2, 0.4, 0.4 ) ) ) );
+attrib( Srf, "rgb", "255, 0, 255" );
+
+Crv = cbezier( list( ctlpt( E3,  0.3, 0.5, 0.3 ),
+		     ctlpt( E3,  0.1, 0.3, 0.4 ),
+		     ctlpt( E3, -0.3, 0.4, 0.4 ) ) );
+attrib( Crv, "rgb", "0, 255, 0" );
+
+ProjCrvs = cSrfproj( Crv, Srf, 1e-2, true );
+attrib( ProjCrvs, "rgb", "255, 255, 100" );
+
+interact( list( axes, Srf, Crv, ProjCrvs ) );
+
+save( "csrfprj1", list( Srf, Crv, ProjCrvs ) );
+
+#################################
+
+Srf = sbspline( 4, 3,
+    list( list( ctlpt( E3, -0.378861, 0.848307, 0.17153 ),
+                ctlpt( E3, -0.192145, 0.848307, 0.243203 ),
+                ctlpt( E3, 0.181287, 0.848307, 0.38655 ),
+                ctlpt( E3, 0.368003, 0.848307, 0.458224 ) ),
+          list( ctlpt( E3, -0.39807, 0.451251, 0.753983 ),
+                ctlpt( E3, -0.197478, 0.450111, 0.453213 ),
+                ctlpt( E3, 0.203704, 0.447829, 0.414519 ),
+                ctlpt( E3, 0.404295, 0.446689, 0.676594 ) ),
+          list( ctlpt( E3, -0.41622, -0.40055, 0.69209 ),
+                ctlpt( E3, -0.211468, -0.397111, 0.287906 ),
+                ctlpt( E3, 0.198037, -0.390233, 0.334057 ),
+                ctlpt( E3, 0.40279, -0.386794, 0.784392 ) ),
+          list( ctlpt( E3, -0.297329, -0.772212, 0.62706 ),
+                ctlpt( E3, -0.130127, -0.792265, 0.519956 ),
+                ctlpt( E3, 0.204279, -0.832371, 0.305749 ),
+                ctlpt( E3, 0.371481, -0.852424, 0.198645 ) ) ),
+    list( list( kv_open ),
+          list( 0, 0, 0, 0.5, 1, 1, 1 ) ) );
+attrib( Srf, "rgb", "255, 0, 255" );
+
+Crv = circle( vector( 0, 0, 0.7 ), 0.3 );
+attrib( Crv, "rgb", "0, 255, 0" );
+
+ProjCrvs = cSrfproj( Crv, Srf, 1e-2, true );
+attrib( ProjCrvs, "rgb", "255, 255, 100" );
+
+interact( list( axes, Srf, Crv, ProjCrvs ) );
+
+save( "csrfprj2", list( Srf, Crv, ProjCrvs ) );
+
+#################################
+
+srf = sbspline( 4, 3,
+    list( list( ctlpt( E3, 0.8, 0, 0.4 ),
+                ctlpt( E3, 0.8, 0.441828, 0.4 ),
+                ctlpt( E3, 0.441828, 0.8, 0.4 ),
+                ctlpt( E3, 0.0, 0.8, 0.4 ),
+                ctlpt( E3, -0.441828, 0.8, 0.4 ),
+                ctlpt( E3, -0.8, 0.441828, 0.4 ),
+                ctlpt( E3, -0.8, 0.0, 0.4 ),
+                ctlpt( E3, -0.8, -0.441828, 0.4 ),
+                ctlpt( E3, -0.441828, -0.8, 0.4 ),
+                ctlpt( E3, 0.0, -0.8, 0.4 ),
+                ctlpt( E3, 0.441828, -0.8, 0.4 ),
+                ctlpt( E3, 0.8, -0.441828, 0.4 ),
+                ctlpt( E3, 0.8, 0, 0.4 ) ),
+          list( ctlpt( E1, 0.2 ),
+                ctlpt( E2, 0.2, 0.110457 ),
+                ctlpt( E2, 0.110457, 0.2 ),
+                ctlpt( E2, 0.0, 0.2 ),
+                ctlpt( E2, -0.110457, 0.2 ),
+                ctlpt( E2, -0.2, 0.110457 ),
+                ctlpt( E1, -0.2 ),
+                ctlpt( E2, -0.2, -0.110457 ),
+                ctlpt( E2, -0.110457, -0.2 ),
+                ctlpt( E2, 0.0, -0.2 ),
+                ctlpt( E2, 0.110457, -0.2 ),
+                ctlpt( E2, 0.2, -0.110457 ),
+                ctlpt( E1, 0.2 ) ),
+          list( ctlpt( E3, 0.8, 0, -0.4 ),
+                ctlpt( E3, 0.8, 0.441828, -0.4 ),
+                ctlpt( E3, 0.441828, 0.8, -0.4 ),
+                ctlpt( E3, 0.0, 0.8, -0.4 ),
+                ctlpt( E3, -0.441828, 0.8, -0.4 ),
+                ctlpt( E3, -0.8, 0.441828, -0.4 ),
+                ctlpt( E3, -0.8, 0.0, -0.4 ),
+                ctlpt( E3, -0.8, -0.441828, -0.4 ),
+                ctlpt( E3, -0.441828, -0.8, -0.4 ),
+                ctlpt( E3, 0.0, -0.8, -0.4 ),
+                ctlpt( E3, 0.441828, -0.8, -0.4 ),
+                ctlpt( E3, 0.8, -0.441828, -0.4 ),
+                ctlpt( E3, 0.8, 0, -0.4 ) ) ),
+    list( list( kv_disc_open ),
+          list( kv_open ) ) );
+attrib( Srf, "rgb", "255, 0, 255" );
+
+Crv1 = circle( vector( 0, 0, 0.7 ), 0.3 ) * rx( 10 );
+attrib( Crv1, "rgb", "0, 255, 0" );
+
+ProjCrvs1 = cSrfproj( Crv1, Srf, 1e-2, true );
+attrib( ProjCrvs1, "rgb", "0, 255, 0" );
+
+Crv2 = pcircle( vector( 0, 0, 0.7 ), 0.3 ) * rx( 25 );
+attrib( Crv2, "rgb", "255, 255, 100" );
+
+ProjCrvs2 = cSrfproj( Crv2, Srf, 1e-2, true );
+attrib( ProjCrvs2, "rgb", "255, 255, 100" );
+
+Crv3 = pcircle( vector( 0, 0, 0.0 ), 0.1 ) * ry( 90 ) * tx( 0.98 );
+attrib( Crv3, "rgb", "10, 255, 255" );
+
+ProjCrvs3 = cSrfproj( Crv3, Srf, 1e-2, true );
+attrib( ProjCrvs3, "rgb", "10, 255, 255" );
+
+interact( list( axes, Srf, Crv1, ProjCrvs1,
+		           Crv2, ProjCrvs2,
+		           Crv3, ProjCrvs3 ) );
+
+save( "csrfprj3", list( Srf, Crv1, ProjCrvs1,
+		             Crv2, ProjCrvs2,
+		             Crv3, ProjCrvs3 ) );
+
+#################################
+
+free( Srf );
+free( Crv );
+free( Crv1 );
+free( Crv2 );
+free( Crv3 );
+free( ProjCrvs );
+free( ProjCrvs1 );
+free( ProjCrvs2 );
+free( ProjCrvs3 );

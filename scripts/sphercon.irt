@@ -1,0 +1,21 @@
+#
+# The Sphericon - See Scientific American, pp 98-99, October 1999.
+#
+#					Gershon Elber, December 1999
+#
+
+Cone2 = surfRev( ctlpt( E3, 0.0, 0.0, -1.0.0 ) +
+		 ctlpt( E3, 1.0, 0.0,  0.0 ) +
+		 ctlpt( E3, 0.0, 0.0,  1.0 ) );
+
+Cone2Half = sregion( Cone2, col, 0, 2 );
+
+Sphericon = list( Cone2Half * ry( 90 ),
+		  Cone2Half * rz( 180 ) );
+view( list( Sphericon, axes), 1);
+
+save( "sphercon", Sphericon );
+
+free( Cone2 );
+free( Cone2Half );
+free( Sphericon );

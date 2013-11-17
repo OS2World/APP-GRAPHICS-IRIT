@@ -1,0 +1,93 @@
+#
+# Animation of a snake motion,         Gershon Elber, May 2002.
+#
+
+viewstate( "DepthCue", 0 );
+viewstate( "DrawStyle", 1 );
+viewstate( "DSrfPoly", 1 );
+viewstate( "DSrfWire", 0 );
+viewstate( "PolyAprx", 1 );
+
+XYPlane = -ruledSrf( ctlpt( E2, -10,  50 ) + ctlpt( E2, 10,  50 ),
+		     ctlpt( E2, -10, -10 ) + ctlpt( E2, 10, -10 ) );
+attrib( XYPlane, "rgb", "220,140,100" );
+
+#############################################################################
+
+ctx = function( t, m ): x:
+    x = m * sin( t ):
+    return = tx( x );
+
+SnakeT = function( t ): p: c: ScaleCrv: s1: s2: ct: Eyes:
+    p = point( 0, 0, 0 ):
+    ct = cbspline( 3,
+	list( p * ctx( 0 + t, 1.5 ) * ty( 0.22 ),
+	      p * ctx( 0 + t, 1.5 ) * ty( 0.22 ),
+	      p * ctx( 0.3 + t, 1.5 ) * ty( 0.17 ) * tz( 0.3 ),
+	      p * ctx( 2 + t, 1.5 ) * ty( -0.06 ) * tz( 2.0 ),
+	      p * ctx( 4 + t, 1.5 ) * ty( -0.06 ) * tz( 4.0 ),
+	      p * ctx( 6 + t, 1.5 ) * ty( -0.06 ) * tz( 6.0 ),
+	      p * ctx( 8 + t, 2.5 ) * ty( -0.065 ) * tz( 8.0 ),
+	      p * ctx( 10 + t, 2.5 ) * ty( -0.07 ) * tz( 10.0 ),
+	      p * ctx( 12 + t, 2.5 ) * ty( -0.075 ) * tz( 12.0 ),
+	      p * ctx( 14 + t, 1.5 ) * ty( -0.08 ) * tz( 14.0 ),
+	      p * ctx( 16 + t, 1.5 ) * ty( -0.09 ) * tz( 16.0 ),
+	      p * ctx( 18 + t, 1.5 ) * ty( -0.10 ) * tz( 18.0 ),
+	      p * ty( -0.10 ) * tz( 20.0 ),
+	      p * ty( -0.10 ) * tz( 21 ) ),
+	list( kv_open ) ):
+    c = circle( vector( 0.0, 0.0, 0.0 ), 0.36 ) * rz( -90 ):
+    ScaleCrv = cbspline( 3,
+			 list( ctlpt( E2, 0.0, 0.001 ),
+			       ctlpt( E2, 0.1, 0.1 ),
+			       ctlpt( E2, 0.2, 0.4 ),
+			       ctlpt( E2, 0.3, 0.7 ),
+			       ctlpt( E2, 0.4, 0.8 ),
+			       ctlpt( E2, 0.5, 0.9 ),
+			       ctlpt( E2, 0.6, 0.95 ),
+			       ctlpt( E2, 0.7, 1.0 ),
+			       ctlpt( E2, 0.8, 1.0 ) ),
+			 list( kv_open ) ):
+    s1 = SwpSclSrf( c, ct, ScaleCrv, vector( 0, 1, 0 ), 1 ):
+    attrib( s1, "ptexture", "snake2.gif,1,30" ):
+
+    s2 = sfromCrvs( list( c * ty( -0.10 ) * tz( 21 ),
+			  c * ty( -0.10 ) * tz( 22 ),
+			  c * ty( -0.14 ) * sx( 2.2 ) * sy( 1.2 ) * tz( 23 ),
+			  c * ty( -0.14 ) * sx( 2.2 ) * sy( 1.2 ) * tz( 24 ),
+			  c * sy( 0.9 ) * ty( -0.10 ) * sx( 1.2 ) * tz( 25 ),
+			  c * ty( -0.10 ) * sc( 0.001 ) * tz( 25 ) ),
+		    3, kv_open ):
+    attrib( s2, "ptexture", "snake2.gif,1,5" ):
+
+    Eyes = list( sphere( vector(  0.42, -0.35, 24.5 ), 0.1 ),
+	         sphere( vector( -0.42, -0.35, 24.5 ), 0.1 ) ):
+    color( Eyes, black ):
+
+    return = list( s1, s2, Eyes ) * rx( -90 ) * tz( 0.261 );
+
+view_mat_snake = view_mat * sc( 0.08 ) * tx( -1.2 ) * ty( 0.8 ) * tz( -0.5 );
+
+snake = list( SnakeT( 2 ) );
+attrprop( snake, "u_resolution", 0.2 ):
+
+interact( list( view_mat_snake, XYPlane, snake ) );
+save( "snake", list( view_mat_snake, XYPlane, SnakeT( 2 ) ) );
+
+view( list( XYPlane, view_mat_snake ), 1 );
+for ( t = 0, pi / 10, 4 * pi,
+    snake = list( SnakeT( t ) ) * ty( t ):
+    attrprop( snake, "u_resolution", 0.2 ):
+    viewobj( snake ) );
+
+#############################################################################
+free( t );
+free( snake );
+free( view_mat_snake );
+free( XYPlane );
+
+viewstate( "DrawStyle", 1 );
+viewstate( "DrawStyle", 1 );
+viewstate( "DSrfPoly", 0 );
+viewstate( "DSrfWire", 1 );
+viewstate( "PolyAprx", 0 );

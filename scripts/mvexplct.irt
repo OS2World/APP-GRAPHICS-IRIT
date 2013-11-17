@@ -1,0 +1,313 @@
+#
+# A demonstration of the capabilities of the MVEXPLICIT function.
+#
+#					Gershon, May 2002
+#
+
+CoerceToBezSrf = function( Mv, UMin, UMax, VMin, VMax ): MvBzr: SrfBzr:
+    MvBzr = coerce( MV, bezier_type ):
+    SrfBzr = coerce( coerce( MvBzr, surface_type ), E3 )
+						* rotx( -90 ) * roty( -90 ):
+    SrfBzr = sregion( sregion( SrfBzr, row, UMin, UMax ), col, VMin, VMax ):
+    return = SrfBzr;
+
+CoerceToBezPSrf = function( Mv, UMin, UMax, VMin, VMax ): MvBzr: SrfBzr:
+    MvBzr = coerce( MV, bezier_type ):
+    SrfBzr = coerce( coerce( MvBzr, surface_type ), P3 ):
+    SrfBzr = sregion( sregion( SrfBzr, row, UMin, UMax ), col, VMin, VMax ):
+    return = SrfBzr;
+
+save_res = resolution;
+
+#
+# Simple quadratic surfaces:
+#
+Parab = CoerceToBezSrf( mvexplicit( 2, "A^2 + B^2 + 0.5" ), -1, 1, -1, 1 );
+color( Parab, yellow );
+Saddl1 = CoerceToBezSrf( mvexplicit( 2, "A^2 - B^2" ), -1, 1, -1, 1 );
+color( Saddl1, green );
+Saddl2 = CoerceToBezSrf( mvexplicit( 2, "A * B - 1.5" ), -1, 1, -1, 1 );
+color( Saddl2, cyan );
+
+interact( list( axes, Parab, Saddl1, Saddl2 ) * sc( 0.35 ) );
+save( "mvexplc1", list( axes, Parab, Saddl1, Saddl2 ) );
+
+free( Parab );
+free( Saddl1 );
+free( Saddl2 );
+
+#
+# Monkey saddle.
+#
+
+Monkey = CoerceToBezSrf( mvexplicit( 2, "A^3 - 3 * A * B^2" ), -1, 1, -1, 1 );
+color( Monkey, yellow );
+
+Pln = ruledSrf( ctlpt( E3, 0, -5, -5 ) + ctlpt( E3, 0, -5,  5 ),
+		ctlpt( E3, 0,  5, -5 ) + ctlpt( E3, 0,  5,  5 ) );
+
+ICrv = iritstate( "intercrv", true );
+resolution = 60;
+IntCrvs = list( Monkey * ( Pln * rz( 90 ) ),
+		Monkey * ( Pln * rz( 90 + 60 ) ),
+		Monkey * ( Pln * rz( 90 + 120 ) ) );
+adwidth( IntCrvs, 2 );
+color( IntCrvs, red );
+ICrv = iritstate( "intercrv", ICrv );
+free( ICrv );
+free( Pln );
+
+interact( list( axes, IntCrvs, Monkey ) * sc( 0.35 ) );
+save( "mvexplc2", list( axes, IntCrvs, Monkey ) );
+
+free( Monkey );
+free( IntCrvs );
+
+#
+# Enneper minimal surface.
+#
+
+Enneper = ffmerge( list( mvexplicit( 2, "A - A^3 / 3 + A * B^2" ),
+			 mvexplicit( 2, "    B^3 / 3 - A^2 * B - B" ),
+			 mvexplicit( 2, "A^2 - B^2" ) ),
+		   E3 );
+Enneper = CoerceToBezSrf( Enneper,  -1, 1, -1, 1 );
+
+b = bbox( smean( Enneper, false ) );
+printf( "Mean curvature sqaure computed for the Enneper surface spans %.14f to %.14f\\n",
+	list( nth( b, 1 ), nth( b, 2 ) ) );
+free( b );
+
+interact( list( axes, Enneper ) * sc( 0.35 ) );
+save( "mvexplc3", list( axes, Enneper ) );
+
+free( Enneper );
+
+#
+# Whitney Umbrella surface.
+#
+
+Whitney = ffmerge( list( mvexplicit( 2, "A * B" ),
+			 mvexplicit( 2, "A" ),
+			 mvexplicit( 2, "B^2" ) ),
+		   E3 );
+Whitney = CoerceToBezSrf( Whitney,  -1, 1, -1, 1 );
+
+interact( list( axes, Whitney ) * sc( 0.35 ) );
+save( "mvexplc4", list( axes, Whitney ) );
+
+free( Whitney );
+
+#
+# Steiner surfaces.
+#
+
+Steiner1 = ffmerge( list( mvexplicit( 2, "1 + A*A + B*B" ),
+			  mvexplicit( 2, "A*B" ),
+			  mvexplicit( 2, "A" ),
+			  mvexplicit( 2, "B" ) ),
+		    P3 );
+Steiner1 = CoerceToBezPSrf( Steiner1,  -10, 10, -10, 10 );
+
+interact( list( axes, Steiner1 ) * sc( 0.35 ) );
+
+Steiner2 = ffmerge( list( mvexplicit( 2, "1 + A*A + B*B" ),
+			  mvexplicit( 2, "A*B" ),
+			  mvexplicit( 2, "2*A" ),
+			  mvexplicit( 2, "1 - A*A" ) ),
+		    P3 );
+Steiner2 = CoerceToBezPSrf( Steiner2,  -10, 10, -10, 10 );
+
+interact( list( axes, Steiner2 ) * sc( 0.35 ) );
+
+Steiner3 = ffmerge( list( mvexplicit( 2, "1 + A*A + B*B" ),
+			  mvexplicit( 2, "2*B" ),
+			  mvexplicit( 2, "2*A" ),
+			  mvexplicit( 2, "1 - A*A + B*B" ) ),
+		    P3 );
+Steiner3 = CoerceToBezPSrf( Steiner3,  -10, 10, -10, 10 );
+
+interact( list( axes, Steiner3 ) * sc( 0.35 ) );
+
+Steiner4 = ffmerge( list( mvexplicit( 2, "1 + A*A + B*B" ),
+			  mvexplicit( 2, "2*A*A + B*B" ),
+			  mvexplicit( 2, "B*B + 2*B" ),
+			  mvexplicit( 2, "A*B + A" ) ),
+		    P3 );
+Steiner4 = CoerceToBezPSrf( Steiner4,  -10, 10, -10, 10 );
+
+interact( list( axes, Steiner4 ) * sc( 0.35 ) );
+
+save( "mvexplc5", list( axes, Steiner1, Steiner2, Steiner3, Steiner4 ) );
+
+free( Steiner1 );
+free( Steiner2 );
+free( Steiner3 );
+free( Steiner4 );
+
+#
+# Solve non linear equations.
+#
+
+#############################################################################
+# A^2 + B^2 = 1
+M1 = coerce( mvexplicit( 2, "A^2 + B^2 - 1" ), bezier_type );
+M1 = mregion( mregion( M1, 0, -3, 3 ), 1, -3, 3 );
+
+# (A+1)^2 + B^2 = 1
+M2 = coerce( mvexplicit( 2, "A^2 + 2 * A + 1 + B^2 - 1" ), bezier_type );
+M2 = mregion( mregion( M2, 0, -3, 3 ), 1, -3, 3 );
+
+z = mzero( list( M1, M2 ), 0.001, 1e-10 ) * sc( 6 ) * tx( -3 ) * ty( -3 );
+color( z, yellow );
+
+interact( list( circle( vector( 0, 0, 0 ), 1 ),
+		circle( vector( -1, 0, 0 ), 1 ),
+		z ) * sc( 0.6 ) );
+
+############################################################################## A^2 + B^2 = 1
+M1 = coerce( mvexplicit( 2, "A^2 + B^2 - 1" ), bezier_type );
+M1 = mregion( mregion( M1, 0, -3, 3 ), 1, -3, 3 );
+
+# 4A^2 + B^2/4 = 1
+M2 = coerce( mvexplicit( 2, "4 * A^2 + B^2 / 4 - 1" ), bezier_type );
+M2 = mregion( mregion( M2, 0, -3, 3 ), 1, -3, 3 );
+
+z = mzero( list( M1, M2 ), 0.01, 1e-6 ) * sc( 6 ) * tx( -3 ) * ty( -3 );
+color( z, yellow );
+free( M1 );
+free( M2 );
+
+interact( list( circle( vector( 0, 0, 0 ), 1 ),
+		circle( vector( 0, 0, 0 ), 1 ) * sx( 0.5 ) * sy( 2 ),
+		z ) * sc( 0.6 ) );
+
+#############################################################################
+# A^2 + B^2 + C^2 = 1
+M1 = coerce( mvexplicit( 3, "A^2 + B^2 + C^2 - 1" ), bezier_type );
+M1 = mregion( mregion( mregion( M1, 0, -3, 3 ), 1, -3, 3 ), 2, -3, 3 );
+
+# (A-1)^2 + B^2 + C^2 = 1
+M2 = coerce( mvexplicit( 3, "A^2 - 2 * A + 1 + B^2 + C^2 - 1" ), bezier_type );
+M2 = mregion( mregion( mregion( M2, 0, -3, 3 ), 1, -3, 3 ), 2, -3, 3 );
+
+# (A-0.5)^2 + (B-0.5)^2 + C^2 = 1
+M3 = coerce( mvexplicit( 3, "A^2 - A + 0.25 + B^2 - B + 0.25 + C^2 - 1" ), bezier_type );
+M3 = mregion( mregion( mregion( M3, 0, -3, 3 ), 1, -3, 3 ), 2, -3, 3 );
+
+z = mzero( list( M1, M2, M3 ), 0.001, 1e-9 )
+				* sc( 6 ) * tx( -3 ) * ty( -3 ) * tz( -3 );
+color( z, yellow );
+free( M1 );
+free( M2 );
+free( M3 );
+
+s1 = sphereSrf( 1 );
+color( s1, red );
+s2 = s1 * tx( 1 );
+color( s2, magenta );
+s3 = s1 * tx( 0.5 ) * ty( 0.5 );
+color( s3, blue );
+
+interact( list( s1, s2, s3, z ) * sc( 0.6 ) );
+
+free( s1 );
+free( s2 );
+free( s3 );
+
+#
+# Intersect the three surfaces we started with - paraboloid and two saddles.
+#
+Parab = CoerceToBezSrf( mvexplicit( 2, "A^2 + B^2 - 0.5" ), -1, 1, -1, 1 );
+color( Parab, yellow );
+Saddl1 = CoerceToBezSrf( mvexplicit( 2, "A^2 - B^2" ), -1, 1, -1, 1 );
+color( Saddl1, green );
+Saddl2 = CoerceToBezSrf( mvexplicit( 2, "A * B" ), -1, 1, -1, 1 );
+color( Saddl2, cyan );
+
+Pln = ruledSrf( ctlpt( E3, 0, -1, -1 ) + ctlpt( E3, 0, -1,  1 ),
+		ctlpt( E3, 0,  1, -1 ) + ctlpt( E3, 0,  1,  1 ) ) * ry( 90 );
+color( Pln, red );
+attrib( Pln, "transp", 0.95 );
+
+# Parab = Saddl1
+M12 = coerce( mvexplicit( 2, "A^2 + B^2 - 0.5 - A^2 + B^2" ), bezier_type );
+M12 = mregion( mregion( M12, 0, -1, 1 ), 1, -1, 1 );
+# Parab = Saddl1
+M23 = coerce( mvexplicit( 2, "A^2 - B^2 - A * B" ), bezier_type );
+M23 = mregion( mregion( M23, 0, -1, 1 ), 1, -1, 1 );
+
+# Intersection of the two saddles:
+z = mzero( list( M23 ), 0.01, 1e-6 ) * sc( 2 ) * tx( -1 ) * ty( -1 );
+color( z, magenta );
+interact( list( Saddl1, Saddl2, Pln, z ) * sc( 0.35 ) );
+
+# Intersection of the three surfaces:
+z = mzero( list( M12, M23 ), 0.01, 1e-6 ) * sc( 2 ) * tx( -1 ) * ty( -1 );
+color( z, magenta );
+interact( list( Parab, Saddl1, Saddl2, Pln, z ) * sc( 0.35 ) );
+save( "mvexplc6", list( Parab, Saddl1, Saddl2, Pln, z ) );
+
+#
+# Find all bitangents between two planar curves.
+#
+
+c1 = cbspline( 4,
+    list( ctlpt( E3, 0, 1, 0 ),
+          ctlpt( E2, 0.55228, 1 ),
+          ctlpt( E2, 1, 0.55228 ),
+          ctlpt( E2, 1, -0.55228 ),
+          ctlpt( E2, 0.55228, -1 ),
+          ctlpt( E2, -0.35, -1 ),
+          ctlpt( E2, -0.36, -0.55228 ),
+          ctlpt( E2, -0.36, 0.55228 ),
+          ctlpt( E2, -0.35, 1 ),
+          ctlpt( E2, 0, 1 ) ),
+    list( kv_open ) ) * sc( 0.7 );
+c2 = creparam( c1 * rz( 5 ) * tx( 0.65 ) * ty( 0.1 ), 0, 1 );
+c1 = creparam( c1 * tx( -0.5 ), 0, 1 );
+color( c1, red );
+color( c2, red );
+
+mc1 = mpromote( coerce( c1, multivar_type ), list( 1 ) );
+mc2 = mpromote( coerce( c2, multivar_type ), list( 2, 1 ) );
+
+mn1 = mpromote( coerce( cnrmlcrv( c1 ), multivar_type ), list( 1 ) );
+mn2 = mpromote( coerce( cnrmlcrv( c2 ), multivar_type ), list( 2, 1 ) );
+
+constraints = list( symbdprod( symbdiff( mc1, mc2 ), mn1 ),
+                    symbdprod( symbdiff( mc1, mc2 ), mn2 ) );
+free( mc1 );
+free( mc2 );
+free( mn1 );
+free( mn2 );
+
+z = mzero( constraints, 0.001, 1e-10 );
+free( constraints );
+
+bitans = nil();
+for ( i = 1, 1, sizeof( z ),
+    pt = nth( z, i ):
+    snoc( ceval( c1, coord( pt, 1 ) ) + ceval( c2, coord( pt, 2 ) ),
+	  bitans ) );
+color( bitans, yellow );
+
+interact( list( bitans, c1, c2 ) );
+save( "mvexplc7", list( bitans, c1, c2 ) );
+
+free( bitans );
+free( c1 );
+free( c2 );
+
+#############################################################################
+
+resolution = save_res;
+
+free( M12 );
+free( M23 );
+free( z );
+
+free( Pln );
+free( Parab );
+free( Saddl1 );
+free( Saddl2 );

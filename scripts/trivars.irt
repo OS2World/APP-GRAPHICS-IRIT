@@ -1,0 +1,707 @@
+#
+# Some simple tests of trivariate functions.
+#
+#				Gershon Elber, December 1994.
+#
+
+save_mat = view_mat;
+
+EvalTV = function( TV, ULen, VLen, WLen ): Dom: i: j: k: u: v: w: Lst2: Lst3:
+    return = nil():
+    Dom = pdomain( TV ):
+    for ( i = 0, 1, ULen - 1,
+	u = nth( Dom, 1 ) + i * ( nth( Dom, 2 ) - nth( Dom, 1 ) ) / (ULen - 1):
+	Lst2 = nil():
+	for ( j = 0, 1, VLen - 1,
+	    v = nth( Dom, 3 ) +
+                j * ( nth( Dom, 4 ) - nth( Dom, 3 ) ) / (VLen - 1):
+	    Lst3 = nil():
+	    for ( k = 0, 1, WLen - 1,
+	        w = nth( Dom, 5 ) +
+                   k * ( nth( Dom, 6 ) - nth( Dom, 5 ) ) / (WLen - 1):
+		snoc( teval( TV, u, v, w ), Lst3 ) ):
+	    snoc( Lst3 * tx( 0 ), Lst2 ) ):
+	snoc( Lst2 * tx( 0 ), return ) ):
+    return = tbezier( return );
+
+WireBox = function( SizeX, SizeY, SizeZ ):
+    return = list( ctlpt( E3,  0.0,   0.0,   0.0 ) +
+		   ctlpt( E3,  0.0,   0.0,   SizeZ ) +
+		   ctlpt( E3,  0.0,   SizeY, SizeZ ) +
+		   ctlpt( E3,  0.0,   SizeY, 0.0 ) +
+		   ctlpt( E3,  0.0,   0.0,   0.0 ) +
+		   ctlpt( E3,  SizeX, 0.0,   0.0 ) +
+		   ctlpt( E3,  SizeX, 0.0,   SizeZ ) +
+		   ctlpt( E3,  SizeX, SizeY, SizeZ ) +
+		   ctlpt( E3,  SizeX, SizeY, 0.0 ) +
+		   ctlpt( E3,  SizeX, 0.0,   0.0 ),
+		   ctlpt( E3,  0.0,   0.0,   SizeZ ) +
+		   ctlpt( E3,  SizeX, 0.0,   SizeZ ),
+		   ctlpt( E3,  0.0,   SizeY, SizeZ ) +
+		   ctlpt( E3,  SizeX, SizeY, SizeZ ), 
+		   ctlpt( E3,  0.0,   SizeY, 0.0 ) +
+		   ctlpt( E3,  SizeX, SizeY, 0.0 ) );
+WireBox3 = function( Size ):
+    return = WireBox( Size, Size, Size );
+
+DLevel = iritState( "dumplevel", 255 );
+
+#
+# A 2 by 2 by 2 trilinear trivariate:
+#
+tv1 = tbezier( list( list( list( ctlpt( E3, 0.1, 0.0, 0.8 ),
+				 ctlpt( E3, 0.2, 0.1, 2.4 ) ),
+			   list( ctlpt( E3, 0.3, 2.2, 0.2 ),
+				 ctlpt( E3, 0.4, 2.3, 2.0 ) ) ),
+		     list( list( ctlpt( E3, 2.4, 0.8, 0.1 ),
+				 ctlpt( E3, 2.2, 0.7, 2.3 ) ),
+			   list( ctlpt( E3, 2.3, 2.6, 0.5 ),
+				 ctlpt( E3, 2.1, 2.5, 2.7 ) ) ) ) );
+color( tv1, yellow );
+view_mat = view_mat * sc( 0.2 );
+viewobj( list( view_mat ) );
+interact( tv1 );
+
+#
+# A 3 by 3 by 3 triquadratic trivariate:
+#
+tv2 = tbspline( 3, 3, 2,
+		list( list( list( ctlpt( E3, 0.1, 0.1, 0.0 ),
+				  ctlpt( E3, 0.2, 0.5, 1.1 ),
+				  ctlpt( E3, 0.3, 0.1, 2.2 ) ),
+			    list( ctlpt( E3, 0.4, 1.3, 0.5 ),
+				  ctlpt( E3, 0.5, 1.7, 1.7 ),
+				  ctlpt( E3, 0.6, 1.3, 2.9 ) ),
+			    list( ctlpt( E3, 0.7, 2.4, 0.5 ),
+				  ctlpt( E3, 0.8, 2.6, 1.4 ),
+				  ctlpt( E3, 0.9, 2.8, 2.3 ) ) ),
+		      list( list( ctlpt( E3, 1.1, 0.1, 0.5 ),
+				  ctlpt( E3, 1.3, 0.2, 1.7 ),
+				  ctlpt( E3, 1.5, 0.3, 2.9 ) ),
+			    list( ctlpt( E3, 1.7, 1.2, 0.0 ),
+				  ctlpt( E3, 1.9, 1.4, 1.2 ),
+				  ctlpt( E3, 1.2, 1.6, 2.4 ) ),
+			    list( ctlpt( E3, 1.4, 2.3, 0.9 ),
+				  ctlpt( E3, 1.6, 2.5, 1.7 ),
+				  ctlpt( E3, 1.8, 2.7, 2.5 ) ) ),
+		      list( list( ctlpt( E3, 2.8, 0.1, 0.4 ),
+				  ctlpt( E3, 2.6, 0.7, 1.3 ),
+				  ctlpt( E3, 2.4, 0.2, 2.2 ) ),
+			    list( ctlpt( E3, 2.2, 1.1, 0.4 ),
+				  ctlpt( E3, 2.9, 1.2, 1.5 ),
+				  ctlpt( E3, 2.7, 1.3, 2.6 ) ),
+			    list( ctlpt( E3, 2.5, 2.9, 0.7 ),
+				  ctlpt( E3, 2.3, 2.8, 1.7 ),
+				  ctlpt( E3, 2.1, 2.7, 2.7 ) ) ) ),
+		list( list( KV_OPEN ),
+		      list( KV_OPEN ),
+		      list( KV_OPEN ) ) );
+color( tv2, yellow );
+
+tv2mesh = ffmesh( tv2 );
+color( tv2mesh, red );
+
+interact( list( tv2, tv2mesh ) );
+save( "trivar1", list( tv1, tv2 * tx( 3 ), tv2mesh * tx( 3 ) ) );
+free( tv2mesh );
+
+DLevel = iritState( "dumplevel", DLevel );
+free( DLevel );
+
+tv1t = tv1 * rotx( 50 ) * trans( vector( 1.5, -1.5, 2 ) );
+color( tv1t, red );
+tv2t = tv2 * sc( 0.75 ) * trans( vector( -1.5, 1.5, -2 ) );
+color( tv2t, green );
+
+interact( list( tv1, tv1t ) );
+interact( list( tv2, tv2t ) );
+
+save( "trivar2",
+      list( list( tv1, tv1t ),
+	    list( tv2, tv2t ) * tx( 3 ),
+	    list( fforder( tv1 ),
+	          ffctlpts( tv1 ),
+	          ffmsize( tv1 ),
+		  pdomain( tv1 ),
+
+	          fforder( tv2 ),
+	          ffmsize( tv2 ),
+	          ffkntvec( tv2 ),
+	          ffctlpts( tv2 ),
+		  pdomain( tv2t ) ) ) );
+
+
+free( tv1t );
+free( tv2t );
+
+#
+# Interpolation.
+#
+
+tv1i = tinterp( tv1, 0, 0, 0, 0, 0, 0 ); # Identical for trilinears.
+interact( tv1i );
+tv2i = tinterp( tv2, 0, 0, 0, 0, 0, 0 );
+interact( tv2i );
+
+Tv = load("../data/sphere16.itd");
+TvI = EvalTV( tinterp( Tv, 3, 3, 3, 4, 4, 4 ), 16, 16, 16 );
+
+Size = 0.03;
+Srf1 = mrchcube( list( Tv, 1, 2, off ), point( Size, Size, Size ), 1, 0.25 );
+color( Srf1, magenta );
+Srf2 = mrchcube( list( Tv, 1, 1, off ), point( Size, Size, Size ), 1, 0.5 );
+color( Srf2, green );
+Srf3 = mrchcube( list( Tv, 1, 0.5, off ), point( Size, Size, Size ), 1, 0.75 );
+color( Srf3, yellow );
+
+interact( list( axes, WireBox3( Size * (16 - 1) ), Srf1, Srf2, Srf3 ) );
+
+Size = 0.03;
+Srf1 = mrchcube( list( TvI, 1, 0.5, on ), point( Size, Size, Size ), 1, 0.25 );
+color( Srf1, magenta );
+Srf2 = mrchcube( list( TvI, 1, 0.5, on ), point( Size, Size, Size ), 1, 0.5 );
+color( Srf2, green );
+Srf3 = mrchcube( list( TvI, 1, 0.5, on ), point( Size, Size, Size ), 1, 0.75 );
+color( Srf3, yellow );
+
+interact( list( axes, WireBox3( Size * (16 - 1) ), Srf1, Srf2, Srf3 ) );
+
+save( "trivar3a", list( tv1i, tv2i * tx( 5 ), TvI * tx( 10 ) ) );
+
+#
+# Scattered Data Interpolation.
+#
+
+pl = nil();
+for ( x = 0, .25, 1,
+    for ( y = 0, .25, 1,
+        for ( z = 0, .25, 1,
+	    snoc( ctlpt( E6, x, y, z,
+		         x * y,
+			 y * z,
+			 z * x ),
+		  pl ) ) ) );
+
+Tv = tinterp( pl, 3, 3, 3, 4, 4, 4 );
+interact( list( axes, Tv ) );
+
+pl = nil();
+for ( x = 0, .25, 1,
+    for ( y = 0, .25, 1,
+        for ( z = 0, .25, 1,
+	    snoc( ctlpt( E6, x, y, z,
+		         (x - 0.5) * z^2,
+			 (y - 0.5) * z^2,
+			 z / ((x - 0.5)^2 + (y - 0.5)^2 + 1) ),
+		  pl ) ) ) );
+
+tv1i = tinterp( pl, 3, 3, 3, 3, 3, 3 );
+color( tv1i, magenta );
+tv2i = tinterp( pl, 4, 4, 4, 4, 4, 4 );
+color( tv2i, cyan );
+interact( list( axes, tv1i, tv2i ) );
+
+pl = nil();
+for ( x = 0, .25, 1,
+    for ( y = 0, .25, 1,
+        for ( z = 0, .25, 1,
+	    snoc( ctlpt( E6, x, y, z,
+		         (x - 0.5) * z^4,
+			 (y - 0.5) * z^4,
+			 z / ((x - 0.5)^2 + (y - 0.5)^2 + 1) ),
+		  pl ) ) ) );
+
+tv1i = tinterp( pl, 3, 3, 3, 3, 3, 3 );
+color( tv1i, magenta );
+tv2i = tinterp( pl, 4, 4, 4, 4, 4, 4 );
+color( tv2i, cyan );
+interact( list( axes, tv1i, tv2i ) );
+
+save( "trivar3b", list( tv1i, tv2i ) );
+
+free( tv1i );
+free( tv2i );
+
+free( Tv );
+free( TvI );
+free( Srf1 );
+free( Srf2 );
+free( Srf3 );
+
+#
+# Degree raise.
+#
+tv1r = traise( traise( traise( tv1, row, 4 ), col, 4 ), depth, 4 );
+color( tv1r, red );
+interact( list( tv1, tv1r * ty( -3.0 ) ) );
+
+tv2r = traise( traise( traise( tv2, row, 4 ), col, 4 ), depth, 4 );
+color( tv2r, red );
+interact( list( tv2, tv2r * tx( 3.0 ) ) );
+
+save( "trivar4",
+      list( tv1, tv1r * ty( -3.0 ),
+	    tv2 * tx( -3.0 ), tv2r * tx( -3.0 ) * ty( -3.0 ),
+	    treparam( treparam( treparam( tv2, ROW, 0, 10 ), # Reparametrization
+            		        COL, 0, 10 ),
+		      DEPTH, 0, 10 ) ) );
+
+free( tv1r );
+free( tv2r );
+
+#
+# Evaluation and bivariate surface extraction from a trivariate.
+#
+tv1s1 = strivar( tv1, col, 0.77 );
+color( tv1s1, red );
+tv1s2 = strivar( tv1, row, 0.375 );
+color( tv1s2, green );
+tv1s3 = strivar( tv1, depth, 0.31 );
+color( tv1s3, cyan );
+
+tv2s1 = strivar( tv2, col, 0.4 );
+color( tv2s1, red );
+tv2s2 = strivar( tv2, row, 0.5 );
+color( tv2s2, green );
+tv2s3 = strivar( tv2, depth, 0.6 );
+color( tv2s3, cyan );
+
+save_res = resolution;
+resolution = 2;
+tv2poly = gpolyline( tv2, false );
+resolution = save_res;
+interact( list( tv2poly, tv2s1, tv2s2, tv2s3 ) );
+
+save( "trivar5",
+      list( tv2poly, tv2s1, tv2s2, tv2s3,
+
+	    teval( tv1, 0.77, 0.375, 0.31 ),
+	    teval( tv2, 0.4, 0.5, 0.6 ),
+
+	    seval( tv1s1, 0.375, 0.31 ),
+	    seval( tv1s2, 0.77, 0.31 ),
+	    seval( tv1s3, 0.77, 0.375 ),
+
+	    seval( tv2s1, 0.5, 0.6 ),
+	    seval( tv2s2, 0.4, 0.6 ),
+	    seval( tv2s3, 0.4, 0.5 ) ) );
+
+free( tv1s1 );
+free( tv1s2 );
+free( tv1s3 );
+
+free( tv2s1 );
+free( tv2s2 );
+free( tv2s3 );
+
+#
+# Subdivision
+#
+tvdiv = tdivide( tv2, row, 0.3 );
+tv2a = nth( tvdiv, 1 ) * ty( -1.7 );
+color( tv2a, red );
+tv2b = nth( tvdiv, 2 ) * ty( 2.3 );
+color( tv2b, green );
+interact( list( tv2, tv2a, tv2b ) );
+
+tvdiv = tdivide( tv2, col, 0.7 );
+tv2a = nth( tvdiv, 1 ) * tz( -2.2 );
+color( tv2a, red );
+tv2b = nth( tvdiv, 2 ) * tz( 1.8 );
+color( tv2b, green );
+interact( list( tv2, tv2a, tv2b ) );
+
+tvdiv = tdivide( tv2, depth, 0.7 );
+tv2a = nth( tvdiv, 1 ) * tx( -2.2 );
+color( tv2a, red );
+tv2b = nth( tvdiv, 2 ) * tx( 2.0 );
+color( tv2b, green );
+interact( list( tv2, tv2a, tv2b ) );
+save( "trivar6", list( tv2, tv2a, tv2b ) );
+
+free( tvdiv );
+free( tv2a );
+free( tv2b );
+
+#
+# Refinement
+#
+tv1ref = trefine( tv1, row, false, list( 0.3, 0.6 ) );
+color( tv1ref, red );
+interact( list( tv1, tv1ref * ty( -3.0 ) ) );
+
+tv2ref = trefine( tv2, row, false, list( 0.3, 0.6 ) );
+color( tv2ref, red );
+interact( list( tv2, tv2ref * ty( -3.0 ) ) );
+
+tv2ref = trefine( tv2, col, false, list( 0.2, 0.4, 0.6, 0.6, 0.8 ) );
+color( tv2ref, red );
+interact( list( tv2, tv2ref * tz( -3.0 ) ) );
+
+tv2ref = trefine( tv2, depth, false, list( 0.3, 0.6 ) );
+color( tv2ref, red );
+interact( list( tv2, tv2ref * tx( 3.0 ) ) );
+
+tv2ref = trefine( tv2, row, true, list( 1, 2, 3, 4, 5, 6 ) );
+color( tv2ref, red );
+interact( list( tv2, tv2ref * tx( 3.0 ) ) );
+save( "trivar7", list( tv2, tv2ref * tx( 3.0 ) ) );
+
+free( tv1ref );
+free( tv2ref );
+
+#
+# Region extraction.
+#
+
+tv1poly = gpolyline( tv1, false );
+color( tv1poly, white );
+
+tv1r1 = tregion( tv1, row, 0.5, 0.7 );
+color ( tv1r1, red );
+tv1r2 = tregion( tv1, col, 0.4, 0.6 );
+color ( tv1r2, green );
+tv1r3 = tregion( tv1, depth, 0.2, 0.4 );
+color ( tv1r3, blue );
+interact( list( tv1poly, tv1r1, tv1r2, tv1r3 ) );
+save( "trivar8", list( tv1poly, tv1r1, tv1r2, tv1r3 ) );
+
+free( tv1poly );
+free( tv1r1 );
+free( tv1r2 );
+free( tv1r3 );
+
+tv2poly = gpolyline( tv2, false );
+color( tv2poly, cyan );
+
+interact( list( tv2poly,
+		tregion( tv2, row, 0.2, 0.3 ),
+		tregion( tv2, row, 0.4, 0.5 ),
+		tregion( tv2, row, 0.6, 0.7 ),
+		tregion( tv2, row, 0.8, 0.9 ) ) );
+interact( list( tv2poly,
+		tregion( tv2, col, 0.0, 0.3 ),
+		tregion( tv2, col, 0.4, 0.5 ),
+		tregion( tv2, col, 0.6, 0.9 ) ) );
+interact( list( tv2poly,
+		tregion( tv2, depth, 0.0, 0.15 ),
+		tregion( tv2, depth, 0.3, 0.5 ),
+		tregion( tv2, depth, 0.6, 0.95 ) ) );
+save( "trivar9", list( tv2poly,
+		       tregion( tv2, depth, 0.0, 0.15 ),
+		       tregion( tv2, depth, 0.3, 0.5 ),
+		       tregion( tv2, depth, 0.6, 0.95 ) ) );
+
+free( tv2poly );
+
+#
+# Differentiation
+#
+tv2d = tderive( tv2, col );
+interact( tv2d );
+tv2d = tderive( tv2, row );
+interact( tv2d );
+tv2d = tderive( tv2, depth );
+interact( tv2d );
+save( "trivar10", list( tv2d ) );
+
+free( tv2d );
+
+#
+# Constructing via Ruled TV
+#
+
+s1 = boolone( pcircle( vector( 0, 0, 0 ), 1 ) );
+s2 = boolone( pcircle( vector( 0, 0, 1 ), 0.5 ) );
+color( s1, red );
+attrib( s1, "adwidth", 3 );
+color( s2, red );
+attrib( s2, "adwidth", 3 );
+
+tv1 = RULEDTV( s1, s2 );
+
+interact( list( tv1, s1, s2 ) );
+
+#
+# Constructing via Extrusion
+#
+
+tv2 = EXTRUDE( s1, vector( 0, 1, 0.5 ), 0 );
+tv3 = EXTRUDE( s2, vector( 0, 0.2, -0.4 ), 0 );
+
+interact( list( tv2, tv3, s1, s2 ) );
+
+save( "trivar11", list( tv1, tv2, tv3 ) );
+
+free( s1 );
+free( s2 );
+
+
+#
+# Constructs a trivariate from a list of surfaces.
+#
+s1 = sbezier( list( list( ctlpt( E3, -0.5, -0.5, 0 ),
+			  ctlpt( E3, -0.5,  0.5, 0 ) ),
+		    list( ctlpt( E3,  0.5, -0.5, 0 ),
+			  ctlpt( E3,  0.5,  0.5, 0 ) ) ) ) * sc( 0.3 );
+Srfs = list( s1 * sc( 2.0 ),
+	     s1 * sx( 1.4 ) * ry( 45 ) * tz( 1.0 ),
+	     s1 * ry( 90 ) * trans( vector( 1.0, 0.0, 1.1 ) ),
+	     s1 * sx( 1.4 ) * ry( 135 ) * trans( vector( 2.0, 0.0, 1.0 ) ),
+	     s1 * sc( 2.0 ) * ry( 180 ) * trans( vector( 2.0, 0.0, 0.0 ) ) );
+color( Srfs, red );
+
+ts1 = tfromsrfs( Srfs, 3, kv_float );
+color( ts1, green );
+
+ts2 = tfromsrfs( Srfs, 5, kv_open );
+color( ts2, yellow );
+
+ts3 = tfromsrfs( Srfs, 5, kv_periodic );
+color( ts3, magenta );
+
+interact( list( Srfs, ts1, ts2, ts3 ) );
+
+save( "trivar12", list( srfs,  ts1, ts2, ts3 ) );
+
+ts1 = tintpsrfs( Srfs, 3, kv_open, param_uniform );
+color( ts1, green );
+
+ts2 = tintpsrfs( Srfs, 5, kv_open, param_chord );
+color( ts2, red );
+
+ts3 = tintpsrfs( Srfs, 5, kv_periodic, param_uniform );
+color( ts3, blue );
+
+interact( list( Srfs, ts1, ts2, ts3 ) );
+
+save( "trivar13", list( srfs, ts1, ts2, ts3 ) );
+
+interact( list( Srfs, ts3, ts2, ts1 ) );
+
+
+s2 = ruledsrf( circle( vector( 0, 0, 0 ), 1 ),
+	       circle( vector( 0, 0, 0 ), 0.7 ) );
+
+Srfs = list( s2,
+	     s2 * sc( 0.5 ) * tz( 0.4 ),
+	     s2 * tz( 0.8 ),
+	     s2 * sc( 0.5 ) * tz( 1.2 ) );
+color( Srfs, red );
+
+ts1 = tfromsrfs( Srfs, 3, kv_float );
+color( ts1, green );
+
+ts2 = tfromsrfs( Srfs, 5, kv_open );
+color( ts2, yellow );
+
+ts3 = tfromsrfs( Srfs, 5, kv_periodic );
+color( ts3, magenta );
+
+interact( list( Srfs, ts1, ts2, ts3 ) );
+
+save( "trivar14", list( Srfs, ts1, ts2, ts3 ) );
+
+
+ts1 = tintpsrfs( Srfs, 3, kv_open, param_uniform );
+color( ts1, green );
+
+ts2 = tintpsrfs( Srfs, 5, kv_open, param_chord );
+color( ts2, yellow );
+
+ts3 = tintpsrfs( Srfs, 5, kv_periodic, param_uniform );
+color( ts3, blue );
+
+interact( list( Srfs, ts3, ts2, ts1 ) );
+
+free( Srfs );
+
+ts1 = tvrev( s1 * rx( 90 ) * tx( 0.5 ) );
+ts2 = tvprev( s1 * rx( 90 ) * tx( 0.5 ) );
+
+s2 = ruledsrf( pcircle( vector( 0, 0, 0 ), 1 ),
+	       pcircle( vector( 0, 0, 0 ), 0.7 ) ) * sc( 0.3 );
+
+ts3 = tvrev( s2 * rx( 90 ) * tx( 0.6 ) ) * tx( 2 );
+ts4 = tvprev( s2 * rx( 90 ) * tx( 0.6 ) ) * tx( 2 );
+
+interact( list( ts1, ts2, ts3, ts4 ) );
+
+save( "trivar15", list( ts1, ts2, ts3, ts4 ) );
+
+free( s1 );
+free( s2 );
+
+free( ts1 );
+free( ts2 );
+free( ts3 );
+free( ts4 );
+
+#
+# Jacobian analysis (zero set).
+#
+
+Crv1 = cbspline( 4,
+        list( ctlpt( E3,  0.5677, -0.6246, 0 ),
+              ctlpt( E3,  0.3509, -0.5846, 0 ),
+              ctlpt( E3,  0.0416, -0.5054, 0 ),
+              ctlpt( E3, -0.0508,  0.0277, 0 ),
+              ctlpt( E3,  0.8692,  0.2523, 0 ),
+              ctlpt( E3,  0.393  , 0.8592, 0 ) ),
+         list( kv_open ) );
+Srf1 = surfPRev( Crv1 * rx( 90 ) );
+awidth( Srf1, 0.005 );
+color( Srf1, red );
+free( Crv1 );
+
+Tv1 = tfromsrfs( list( Srf1,
+                       Srf1 * tx( 3 ) * ty( 3 ),
+                       Srf1 * tx( 6 ) ),
+		 3, kv_open );
+awidth( Tv1, 0.001 );
+color( Tv1, red );
+view( Tv1, 1 );
+
+Tv1ZeroJacobian = -TvZrJacob( Tv1, 1, 1, 0 );
+All = list( Tv1ZeroJacobian, Srf1, Srf1 * tx( 6 ) );
+interact( All );
+
+Tv1ZeroJacobian = -TvZrJacob( Tv1, 1, 2, list( 0, 0, 5 ) );
+All = list( Tv1ZeroJacobian, Srf1, Srf1 * tx( 6 ) );
+interact( All );
+
+save( "trivar16", list( Tv1ZeroJacobian, Tv1 ) );
+
+free( All );
+free( Tv1ZeroJacobian );
+free( Srf1 );
+
+#
+# Curvature analysis
+#
+tv1a = coerce( tv1, E1 );
+
+save( "trivar17",
+      x = list( tv1, tv2, tv1a,
+	        tcrvtr( tv1a, point( 0, 0, 0 ), -1 ),    # Prelude
+	        tcrvtr( tv1a, point( 0, 0, 0 ),  1 ),
+	        tcrvtr( tv1a, point( 0, 0, 1 ),  1 ),
+	        tcrvtr( tv1a, point( 0, 1, 0 ),  1 ),
+	        tcrvtr( tv1a, point( 1, 0, 0 ),  1 ),
+	        tcrvtr( tv1a, point( 0, 0, 0 ),  0 ) ) ); # Postlude
+
+#
+# IO
+#
+
+printf( "Trivar save/load equality test (high precision - might fail) = %d\\n",
+	list( load( "trivar17" ) == x ) );
+z = IritState( "CmpObjEps", 1e-10 );
+printf( "Trivar save/load equality test (low precision) = %d\\n",
+	list( load( "trivar17" ) == x ) );
+z = IritState( "CmpObjEps", z );
+
+#
+# Volumetric boolean sum/one
+#
+
+c = pcircle( vector( 0, 0, 0 ), 1 );
+
+s = sIntpCrvs( list( c,
+		     c * sx( 0.3 ) * tz( 0.5 ),
+		     c * sy( 0.3 ) * tz( 1 ),
+		     c * sc( 0.5 ) * tz( 1.5 ) ),
+	       3, kv_open, param_uniform );
+
+tv1 = tBoolOne( s );
+
+#################################
+
+c = -( arc( vector( 0.2, 0.0, 0.0 ),
+	    vector( 0.2, 0.2, 0.0 ),
+	    vector( 0.0, 0.2, 0.0 ) ) +
+       arc( vector( 0.0, 0.4, 0.0 ),
+	    vector( 0.1, 0.4, 0.0 ),
+	    vector( 0.1, 0.5, 0.0 ) ) +
+       arc( vector( 0.8, 0.5, 0.0 ),
+	    vector( 0.8, 0.3, 0.0 ),
+	    vector( 1.0, 0.3, 0.0 ) ) +
+       arc( vector( 1.0, 0.1, 0.0 ),
+	    vector( 0.9, 0.1, 0.0 ),
+	    vector( 0.9, 0.0, 0.0 ) ) +
+       ctlpt( E2, 0.2, 0.0 ) ) * trans( vector( -0.5, -0.25, 0.0 ) ) * sc( 1 );
+
+s = swpsclsrf( list( c * sc( 6 ),
+		     c * sx( 6 ),
+		     c * sy( 6 ),
+		     c * sx( 6 ),
+		     c * sc( 6 ) ),
+	       arc( vector( -1.0, 0.0, 0.0 ),
+		    vector( 0.0, 0.0, 0.1 ),
+		    vector( 1.0, 0.0, 0.0 ) ),
+	       cbezier( list( ctlpt( E2, 0.0, 0.1 ),
+	       		      ctlpt( E2, 1.0, 0.5 ),
+	       	              ctlpt( E2, 2.0, 0.1 ) ) ),
+	       off, 3 );
+
+tv2 = tBoolOne( s );
+
+tv3 = tBoolSum( sregion( s, col, 0, 2.2 ),
+	        sregion( s, col, 2.2, 5.2 ),
+	        sregion( s, col, 5.2, 7.2 ),
+	        sregion( s, col, 7.2, 9.7222222222222 ),
+	        0, 0 );
+
+#################################
+
+include("cube_spr");
+s = nth( load( "CubeSpr" ), 1 );
+free( s1 ); # Allocated in "cube_spr"
+free( s2 );
+free( s3 );
+free( s4 );
+free( s5 );
+free( s6 );
+
+tv4 = tBoolSum( s,
+	        s * ry( -90 ),
+	        s * ry( -180 ),
+	        s * ry( -270 ),
+		0, 0 );
+
+tv5 = tBoolSum( s,
+	        s * ry( -90 ),
+	        s * ry( -180 ),
+	        s * ry( -270 ),
+		s * rx( 90 ) * sy( -1 ),
+		s * rx( -90 ) * sy( -1 ) * sz( -1 ) );
+
+All = list( tv1 * tx( -6 ),
+	    tv2 * tx( -3 ),
+	    tv3 * tx( 0 ),
+	    tv4 * tx( 3 ),
+	    tv5 * tx( 6 ) );
+
+interact( All );
+
+save( "trivar18", All );
+
+#############################################################################
+
+view_mat = save_mat;
+
+free( all );
+free( Size );
+free( tv1a );
+free( tv1 );
+free( tv2 );
+free( tv3 );
+free( tv4 );
+free( tv5 );
+free( pl );
+free( x );
+free( y );
+free( z );
+free( c );
+free( s );
+free( save_mat );

@@ -1,0 +1,76 @@
+#
+# Yet another simple 3D mechanical object. This one whas taken from
+# PC MAGAZINE volume 8 number 2, January 31, 1989, page 34. This was example
+# that was implemented under AutoCAD ver 10, and it looked nice so I tried
+# it... It took me about an hour to complete.
+#
+#				Created by Gershon Elber,	Mar 89
+#
+
+save_mat = view_mat;
+save_res = resolution;
+
+resolution = 48;
+view_mat = view_mat * trans( vector( 0.4, -0.1, 0.0 ) );
+
+#
+# Create the big cylinder ( no hole yet )
+#
+C1 = cylin( vector( 0.0, 0.0, 0.0 ), vector( 0.0, 0.0, 0.7 ), 0.2, 3 );
+
+#
+# And the small one ( including the torus & sphere cut
+#
+C2 = cylin( vector( 1.0, 0.0, 0.05 ), vector( 0.0, 0.0, 0.4 ), 0.15, 3 );
+resolution = 32;
+T1 = circpoly( vector( 0.0, 1.0, 0.0 ), vector( 0.151, 0.0, 0.25 ), 0.03 );
+resolution = 48;
+T2 = surfrev( T1 ) * trans( vector( 1.0, 0.0, 0.0 ) );
+free( T1 );
+B1 = C2 - T2;
+free( C2 );
+free( T2 );
+resolution = 32;
+S1 = sphere( vector( 1.0, 0.0, 0.0 ), 0.135 );
+B2 = B1 - S1;
+free( B1 );
+free( S1 );
+view( list( view_mat, B2 ), true );
+
+v1 = vector( 0.0, 0.19, 0.35 );
+v2 = vector( 0.0,-0.19, 0.35 );
+v3 = vector( 1.0,-0.14, 0.35 );
+v4 = vector( 1.0, 0.14, 0.35 );
+CrossSec = poly( list( v1, v2, v3, v4 ), false );
+Ext1 = extrude( CrossSec, vector( 0.0, 0.0, 0.07 ), 3 );
+free( CrossSec );
+free( v1 );
+free( v2 );
+free( v3 );
+free( v4 );
+
+B3 = C1 + Ext1 + B2;
+free( C1 );
+free( Ext1 );
+free( B2 );
+view( B3, true );
+
+#
+# Time to do the final hole in the big cylinder. Note we couldnt do it before
+# as E1 would have penetrate it...
+#
+resolution = 48;
+C3 = cylin( vector( 0.0, 0.0,-0.1 ), vector( 0.0, 0.0, 0.9 ), 0.165, 3 );
+B4 = B3 - C3;
+free( B3 );
+free( C3 );
+
+final = convex( B4 );
+free( B4 );
+interact( final );
+
+save( "solid7h", final );
+free( final );
+
+resolution = save_res;
+view_mat = save_mat;

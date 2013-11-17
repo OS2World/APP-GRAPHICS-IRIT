@@ -1,0 +1,378 @@
+#
+# Simple (and not so simple) 3D puzzles
+#
+#					Gershon Elber, November 1994
+#
+
+save_res = resolution;
+
+#############################################################################
+# StickStar
+#
+sqrt2 = sqrt( 2 );
+eps = 0.015;
+rad = 0.3;
+len = (rad + eps) * 2;
+ItemAux1 = box(vector(-rad / sqrt2, -rad / sqrt2, -len),
+	       rad * 2 / sqrt2, rad * 2 / sqrt2, len * 2) * rz(45);
+ItemAux2 = (ItemAux1 * tx(rad) -
+	    ItemAux1 * rotx(90) * tz(rad + eps) -
+	    ItemAux1 * rotx(90) * tz(-rad - eps)) * tx(eps / 2);
+diag = len + eps;
+diagPoly = poly(list(vector( diag, diag, 0),
+		     vector(-diag, diag, 0),
+		     vector(-diag, 0, diag),
+		     vector( diag, 0, diag)),
+		false);
+Item1 = ItemAux2 - diagPoly
+		 - diagPoly * sy(-1)
+		 - diagPoly * sz(-1)
+		 - diagPoly * sz(-1) * sy(-1);
+color(Item1, red);
+
+Item2 = Item1 * sx(-1);
+color(Item2, magenta);
+
+Item3 = Item1 * rx(90) * rz(90);
+color(Item3, green);
+
+Item4 = Item1 * rx(90) * rz(-90);
+color(Item4, yellow);
+
+Item5 = Item1 * rx(90) * ry(90);
+color(Item5, blue);
+
+Item6 = Item1 * rx(90) * ry(-90);
+color(Item6, cyan);
+
+AllItems = list(Item1, Item2, Item3, Item4, Item5, Item6);
+interact(AllItems);
+save("stickstr", AllItems);
+
+#############################################################################
+# Sixbricks.
+#
+sqrt2 = sqrt( 2 );
+eps = 0.015;
+rad = 0.3;
+len = (rad * 2 + eps) * 2;
+ItemAux1 = box(vector(-rad / sqrt2, -rad / sqrt2, -len),
+	       rad * 2 / sqrt2, rad * 2 / sqrt2, len * 2) * rz(45);
+Item1 = (ItemAux1 * tx(rad) -
+	 ItemAux1 * rotx(90) * tz(rad + eps) -
+	 ItemAux1 * rotx(90) * tz(-rad - eps)) * tx(eps / 2);
+color(Item1, red);
+
+Item2 = Item1 * sx(-1);
+color(Item2, magenta);
+
+Item3 = Item1 * rx(90) * rz(90);
+color(Item3, green);
+
+Item4 = Item1 * rx(90) * rz(-90);
+color(Item4, yellow);
+
+Item5 = Item1 * rx(90) * ry(90);
+color(Item5, blue);
+
+Item6 = Item1 * rx(90) * ry(-90);
+color(Item6, cyan);
+
+AllItems = list(Item1, Item2, Item3, Item4, Item5, Item6);
+interact(AllItems);
+save("sixbrick", AllItems);
+
+#############################################################################
+# Sixbricks - second version.
+#
+sqrt2 = sqrt( 2 );
+eps = 0.015;
+rad = 0.3;
+len = (rad * 2 + eps) * 1.1;
+pln = box( vector( -len, -len, -len ), len * 2, len * 2, len * 2 )
+	* ry( 45 ) * tx( -0.2 );
+ItemAux1 = box(vector(-rad / sqrt2, -rad / sqrt2, -len),
+	       rad * 2 / sqrt2, rad * 2 / sqrt2, len * 2) * rz(45);
+Item1 = (ItemAux1 * tx(rad) -
+	 ItemAux1 * rotx(90) * tz(rad + eps) -
+	 ItemAux1 * rotx(90) * tz(-rad - eps)) * tx(eps / 2) * pln;
+free( pln );
+color(Item1, red);
+
+Item2 = Item1 * sx(-1);
+color(Item2, magenta);
+
+Item3 = Item1 * rx(90) * rz(90);
+color(Item3, green);
+
+Item4 = Item1 * rx(90) * rz(-90);
+color(Item4, yellow);
+
+Item5 = Item1 * rx(90) * ry(90);
+color(Item5, blue);
+
+Item6 = Item1 * rx(90) * ry(-90);
+color(Item6, cyan);
+
+AllItems = list(Item1, Item2, Item3, Item4, Item5, Item6);
+interact(AllItems);
+save("sixbrck2", AllItems);
+
+#############################################################################
+# Rounded StickStar (No (dis)assembly).
+#
+eps = 0.05;
+resolution = 40;
+rad = 0.3;
+len = (rad * 2 + eps) * 2;
+ItemAux1 = cylin(vector(0, 0, -len), vector(0, 0, len * 2), rad, 3);
+ItemAux2 = ItemAux1 * tx(rad) -
+	   ItemAux1 * rotx(90) * sc(1 + eps) * tz(rad) -
+	   ItemAux1 * rotx(90) * sc(1 + eps) * tz(-rad);
+diag = len + eps;
+diagPoly = poly(list(vector( diag, diag, 0),
+		     vector(-diag, diag, 0),
+		     vector(-diag, 0, diag),
+		     vector( diag, 0, diag)),
+		false);
+Item1 = ItemAux2 - diagPoly
+		 - diagPoly * sy(-1)
+		 - diagPoly * sz(-1)
+		 - diagPoly * sz(-1) * sy(-1);
+color(Item1, red);
+
+Item2 = Item1 * sx(-1);
+color(Item2, magenta);
+
+Item3 = Item1 * rx(90) * rz(90);
+color(Item3, green);
+
+Item4 = Item1 * rx(90) * rz(-90);
+color(Item4, yellow);
+
+Item5 = Item1 * rx(90) * ry(90);
+color(Item5, blue);
+
+Item6 = Item1 * rx(90) * ry(-90);
+color(Item6, cyan);
+
+free( ItemAux1 );
+free( ItemAux2 );
+free( DiagPoly );
+free( Diag );
+
+AllItems = list(Item1, Item2, Item3, Item4, Item5, Item6);
+interact(AllItems);
+save("stckstrr", AllItems);
+
+#############################################################################
+# Coupled prisms
+#
+eps = 0.025;
+an = 71;
+ca = cos( an * pi /180 );
+sa = sin( an * pi /180 );
+Vec1 = vector( 1.0,  0.0, 0.0 );
+Vec2 = vector( -ca,  sa, 0.0 );
+Vec3 = coerce( 0.5 * normalize( normalize( Vec1 + Vec2 ) +
+			        vector( 0.0, 0.0, 1.4 ) ),
+	       vector_type );
+Prism1 = gbox( vector(  0.0,  0.0, 0.0 ),
+	       Vec1, Vec2, Vec3 );
+
+RVec = Vec2 ^ Vec3;
+Prism2 = Prism1 * 
+	rotvec( RVec,
+	        180 * acos( normalize( Vec2 ) * normalize( Vec3 ) ) / pi ) *
+	trans( -Vec2 ) *
+	rotvec( Vec2, -60 ) *
+	trans( -Vec1 + 0.6 * normalize( Vec1 + Vec2 )  + vector( 0, 0, 0.81 ) );
+Item1 = Prism1 ^ Prism2;
+color( Item1, red );
+
+Prism2a = Prism2 * rotz( an ) * sy( -1 ) * tx( 1.0 ) * trans( -vec3 );
+Item2 = ( Prism1 ^ Prism2a ) * trans( Vec3 );
+color( Item2, magenta );
+
+Prism2b = Prism2 * trans( 2 * Vec1 - 2 * Vec3 + Vec2 );
+Item3 = ( Prism1 ^ Prism2b ) * rotz( 180 ) *
+		trans( 2 * Vec3 + ( Vec1 + Vec2 ) );
+color( Item3, green );
+
+Item4 = Item1 * rotx( 180 ) *
+	rotz( 180 - an ) * trans( 4 * Vec3 - Vec1 - Vec2 );
+color( Item4, yellow );
+
+free( Prism1 );
+free( Prism2 );
+free( Prism2A );
+free( Prism2B );
+free( Vec1 );
+free( Vec2 );
+free( Vec3 );
+free( RVec );
+
+AllItems = list( Item1, Item2, Item3, Item4 );
+interact( AllItems );
+save( "cplprism", AllItems );
+
+#############################################################################
+# 2-2-2 prisms
+#
+
+Len = 2;
+Wdt = 0.3;
+
+Item1Aux = box(vector(-Len / 2, -Wdt / 2, -Wdt / 2), Len, Wdt, Wdt);
+Item1 = Item1Aux * rz( 90 ) * tx( Wdt );
+color( Item1, magenta );
+attrib( Item1, "rgb", "255, 0, 155");
+
+Item2Aux = Item1Aux - box(vector(-Wdt, -Wdt, 0), Wdt * 2, Wdt * 2, Wdt * 2);
+Item2 = ( Item2Aux - box(vector(-Wdt / 2, 0, -Wdt), Wdt, Wdt * 2, Wdt * 2) )
+	* ry( 90 ) * rz( -90 ) * tx( Wdt / 2 ) * ty( Wdt / 2 );
+color( Item2, yellow );
+attrib( Item2, "rgb", "255, 255, 0");
+Item3 = Item2 * rx( 180 );
+color( Item3, yellow );
+attrib( Item3, "rgb", "200, 200, 0");
+
+Item4 = Item2Aux * tz( -Wdt / 2 ) * tx( Wdt / 2 );
+color( Item4, cyan );
+attrib( Item4, "rgb", "0, 255, 200");
+Item5 = Item2Aux * ry( 180 ) * tz( Wdt / 2 ) * tx( Wdt / 2 );
+color( Item5, green );
+attrib( Item5, "rgb", "0, 255, 0");
+
+Item6 = ( Item1Aux - box(vector(-Wdt, -Wdt, 0), Wdt / 2, Wdt * 2, Wdt * 2)
+		   - box(vector(Wdt / 2, -Wdt, 0), Wdt / 2, Wdt * 2, Wdt * 2) )
+	* rz( 90 ) * ry( 90 );
+color( Item6, red );
+attrib( Item6, "rgb", "255, 0, 100");
+
+AllItems = list( Item1, Item2, Item3, Item4, Item5, Item6 );
+interact( AllItems );
+save( "prism222", AllItems );
+
+#############################################################################
+# 2-2-2 prisms (second version)
+#
+
+Len = 2;
+Wdt = 0.3;
+Eps = 0.001;
+
+Item1Aux = box(vector(-Len / 2, -Wdt / 2, -Wdt / 2), Len, Wdt, Wdt);
+Item1 = Item1Aux * rz( 90 ) * tx( Wdt / 2 ) 
+	- box(vector(-Wdt, Wdt / 2, 0), Wdt * 2, -Wdt, Wdt)
+	- box(vector(Wdt / 2, -Wdt, -Wdt), -Wdt, Wdt, Wdt * 2);
+
+color( Item1, magenta );
+attrib( Item1, "rgb", "255, 0, 155");
+
+Item2 = Item1Aux * ry( 90 ) * ty( Wdt / 2 )
+	- box(vector(-Wdt, Wdt / 2, 0), Wdt * 2, -Wdt, Wdt)
+	- box(vector(0, Wdt / 2, -Wdt), Wdt, -Wdt, Wdt - Eps)
+	- box(vector(Eps, Wdt, -Wdt / 2), Wdt, -Wdt * 2, Wdt);
+color( Item2, yellow );
+attrib( Item2, "rgb", "255, 255, 0");
+
+Item3 = Item1Aux * ry( 90 ) * ty( -Wdt / 2 )
+	- box(vector(-Wdt, -Wdt / 2, 0), Wdt * 2, Wdt, Wdt)
+	- box(vector(-Wdt, -Wdt / 2, -Wdt), Wdt * 2, Wdt * 2, Wdt / 2);
+color( Item3, yellow );
+attrib( Item3, "rgb", "200, 200, 0");
+
+Item4 = Item1Aux * tz( -Wdt / 2 ) 
+	- box(vector(-Wdt, -Wdt, -Wdt / 2), Wdt * 2, Wdt * 2, Wdt * 2)
+	- box(vector(-Wdt / 2, 0, -Wdt), Wdt / 2, Wdt, Wdt * 2);
+color( Item4, cyan );
+attrib( Item4, "rgb", "0, 255, 200");
+
+Item5 = Item1Aux * ry( 180 ) * tz( Wdt / 2 );
+color( Item5, green );
+attrib( Item5, "rgb", "0, 255, 0");
+
+Item6 = Item1Aux * rz( 90 ) * ry( 90 ) * tx( -Wdt / 2 )
+	- box(vector(-Wdt * 2, -Wdt / 2, 0), Wdt * 4, Wdt, Wdt)
+	- box(vector(-Wdt / 2, -Wdt, -Wdt), Wdt, Wdt * 2, Wdt * 2);
+color( Item6, red );
+attrib( Item6, "rgb", "255, 0, 100");
+
+AllItems = list( Item1, Item2, Item3, Item4, Item5, Item6 );
+interact( AllItems );
+save( "prsm222b", AllItems );
+
+#############################################################################
+# 2-3-4 prisms
+#
+
+Len = 2;
+Wdt = 0.3;
+
+Item1Aux = box(vector(-Len / 2, -Wdt / 2, -Wdt / 2), Len, Wdt, Wdt);
+Item1 = Item1Aux * rz( 90 ) * tx( Wdt );
+color( Item1, cyan );
+attrib( Item1, "rgb", "0, 255, 255");
+
+Item2Aux = Item1Aux - box(vector(-Wdt, -Wdt, 0), Wdt * 2, Wdt * 2, Wdt * 2);
+Item2 = ( Item2Aux - box(vector(-Wdt / 2, 0, -Wdt), Wdt, Wdt * 2, Wdt * 2) )
+	* ry( 90 ) * rz( -90 ) * tx( Wdt / 2 ) * ty( Wdt / 2 );
+color( Item2, yellow );
+attrib( Item2, "rgb", "255, 255, 0");
+Item3 = Item2 * tx( -Wdt );
+color( Item3, yellow );
+attrib( Item3, "rgb", "200, 200, 0");
+
+Item4 = Item2 * rx( 180 );
+color( Item4, yellow );
+attrib( Item4, "rgb", "200, 155, 0");
+Item5 = Item3 * rx( 180 );
+color( Item5, yellow );
+attrib( Item5, "rgb", "255, 200, 0");
+
+Item6 = Item2Aux * rx( 90 ) * rz( 90 );
+color( Item6, cyan );
+attrib( Item6, "rgb", "0, 255, 200");
+Item7 = Item2Aux * rx( 90 ) * rz( 90 ) * tx( -Wdt );
+color( Item7, green );
+attrib( Item7, "rgb", "0, 255, 0");
+
+Item8 = ( Item1Aux - box(vector(-Wdt * 1.5, -Wdt, 0),
+			 Wdt * 3, Wdt * 2, Wdt * 2) )
+	* tz( -Wdt / 2 );
+color( Item8, red );
+attrib( Item8, "rgb", "255, 0, 100");
+Item9 = Item8 * ry( 180 );
+color( Item9, red );
+attrib( Item9, "rgb", "255, 0, 0");
+
+AllItems = list( Item1, Item2, Item3, Item4, Item5,
+		 Item6, Item7, Item8, Item9 );
+interact( AllItems );
+save( "prism234", AllItems );
+
+#############################################################################
+
+resolution = save_res;
+
+free( Len );
+free( Wdt );
+free( Rad );
+free( Eps );
+free( Sqrt2 );
+free( An );
+free( Ca );
+free( Sa );
+free( Item1Aux );
+free( Item2Aux );
+free( Item1 );
+free( Item2 );
+free( Item3 );
+free( Item4 );
+free( Item5 );
+free( Item6 );
+free( Item7 );
+free( Item8 );
+free( Item9 );
+free( AllItems );

@@ -1,0 +1,304 @@
+#
+# Skeleton aid computation - equadistant points from 3 planar varieties.
+#
+#				Gershon Elber, September 99
+#
+
+ri = iritstate( "RandomInit", 1964 );  # Seed-initiate the randomizer,
+free( ri );
+
+Delay = 100;
+
+irandom = function( Min, Max ):
+    return = floor( random( Min, Max ) );
+
+GetRandomColors = function(): r: g: b: c1: c2:
+    c1 = floor( r = irandom( 3, 10 ) * 25 ) + "," +
+	 floor( g = irandom( 3, 10 ) * 25 ) + "," +
+	 floor( b = irandom( 3, 10 ) * 25 ):
+    c2 = floor( r / 2 ) + "," + floor( g / 2 ) + "," + floor( b / 2 ):
+    return = list( c1, c2 );
+
+SetColor = function( Obj, Clr ):
+    attrib( Obj, "rgb", Clr ):
+    return = Obj;
+
+Skel2DColor = procedure( Prim1, Prim2, Prim3, Eps, MZeroTols, DrawAll, FName ):
+    i: d: E: EquaPt: Tans: Edges: Circs: All: Clrs: Clr: DClr:
+
+    EquaPt = Skel2dInt( Prim1, Prim2, Prim3, 100, Eps, 300, MZeroTols ):
+    if ( sizeof( EquaPt ) > 1,
+	printf( "%d solutions detected\\n", list( sizeof( EquaPt ) ) ) ):
+    color( EquaPt, white ):
+
+    adwidth( Prim1, 2 ):
+    adwidth( Prim2, 2 ):
+    adwidth( Prim3, 2 ):
+
+    Tans = nil():
+    Edges = nil():
+    Circs = nil():
+
+    for ( i = 1, 1, sizeof( EquaPt ),
+        E = nth( EquaPt, i ):
+        Clrs = GetRandomColors(): 
+        Clr = nth( Clrs, 1 ):
+        DClr = nth( Clrs, 2 ):
+
+	snoc( d = GetAttr( E, "Prim1Pos" ), Tans ):
+	snoc( SetColor( coerce( GetAttr( E, "Prim1Pos" ), E2 ) +
+	                coerce( E, E2 ), DClr ),
+	      Edges ):
+
+	snoc( GetAttr( E, "Prim2Pos" ), Tans ):
+	snoc( SetColor( coerce( GetAttr( E, "Prim2Pos" ), E2 ) +
+		        coerce( E, E2 ), DClr ),
+	      Edges ):
+
+	snoc( GetAttr( E, "Prim3Pos" ), Tans ):
+	snoc( SetColor( coerce( GetAttr( E, "Prim3Pos" ), E2 ) +
+	                coerce( E, E2 ), DClr ),
+	      Edges ):
+
+	snoc( SetColor( pcircle( coerce( E, vector_type ), 
+				 dstPtPt( d, E ) ), Clr ),
+	      Circs ) ):
+
+    color( Edges, magenta ):
+    color( Tans, green ):
+
+    if ( DrawAll,
+	All = list( Prim1, Prim2, Prim3, Edges, Tans, Circs, EquaPt ),
+	All = list( Prim1, Prim2, Prim3, Circs ) ):
+
+    if ( sizeof( FName ) > 0,
+	save( FName, All ) ):
+    view( All, 1 );
+
+save_mat = view_mat;
+view_mat = sc( 0.8 );
+viewobj( view_mat );
+
+#############################################################################
+
+for ( i = 0, 1, 20,
+    Pt1 = point( random( -0.5, 0.5 ), random( -0.5, 0.5 ), 0.0 ):
+    Pt2 = point( random( -0.5, 0.5 ), random( -0.5, 0.5 ), 0.0 ):
+    Pt3 = point( random( -0.5, 0.5 ), random( -0.5, 0.5 ), 0.0 ):
+    Skel2DColor( Pt1, Pt2, Pt3, 0.01, list( 1e-2, -1e-10 ), true, "" ):
+    miliSleep( Delay ) );
+
+Skel2DColor( Pt1, Pt2, Pt3, 0.01, list( 1e-2, -1e-10 ), true, "skel2d1" );
+pause();
+
+#############################################################################
+
+for ( i = 0, 1, 20,
+    Ln1 = ctlPt( E2, random( -1, 1 ), random( -1, 1 ) ) +
+	  ctlPt( E2, random( -1, 1 ), random( -1, 1 ) ):
+    Ln2 = ctlPt( E2, random( -1, 1 ), random( -1, 1 ) ) +
+	  ctlPt( E2, random( -1, 1 ), random( -1, 1 ) ):
+    Ln3 = ctlPt( E2, random( -1, 1 ), random( -1, 1 ) ) +
+	  ctlPt( E2, random( -1, 1 ), random( -1, 1 ) ):
+    Skel2DColor( Ln1, Ln2, Ln3, 0.01, list( 1e-2, -1e-10 ), true, "" ):
+    miliSleep( Delay ) );
+
+Skel2DColor( Ln1, Ln2, Ln3, 0.01, list( 1e-2, -1e-10 ), true, "skel2d2" );
+pause();
+
+#############################################################################
+
+for ( i = 0, 1, 20,
+    Pt1 = ctlPt( E2, random( -1, 1 ), random( -1, 1 ) ):
+    Ln2 = ctlPt( E2, random( -1, 1 ), random( -1, 1 ) ) +
+	  ctlPt( E2, random( -1, 1 ), random( -1, 1 ) ):
+    Ln3 = ctlPt( E2, random( -1, 1 ), random( -1, 1 ) ) +
+	  ctlPt( E2, random( -1, 1 ), random( -1, 1 ) ):
+    Skel2DColor( Pt1, Ln2, Ln3, 0.01, list( 1e-2, -1e-10 ), true, "" ):
+    miliSleep( Delay ) );
+
+Skel2DColor( Pt1, Ln2, Ln3, 0.01, list( 1e-2, -1e-10 ), true, "skel2d3" );
+pause();
+
+#############################################################################
+
+for ( i = 0, 1, 20,
+    Pt1 = ctlPt( E2, random( -1, 1 ), random( -1, 1 ) ):
+    Pt2 = ctlPt( E2, random( -1, 1 ), random( -1, 1 ) ):
+    Ln3 = ctlPt( E2, random( -1, 1 ), random( -1, 1 ) ) +
+	  ctlPt( E2, random( -1, 1 ), random( -1, 1 ) ):
+    Skel2DColor( Pt1, Pt2, Ln3, 0.01, list( 1e-2, -1e-10 ), true, "" ):
+    miliSleep( Delay ) );
+
+Skel2DColor( Pt1, Pt2, Ln3, 0.01, list( 1e-2, -1e-10 ), true, "skel2d4" );
+pause();
+
+#############################################################################
+
+Crv3 = cbspline( 3,
+		 list( ctlpt( E2, -1,    0 ),
+		       ctlpt( E2, -0.3,  0.5 ),
+		       ctlpt( E2,  0.6, -1.9 ),
+		       ctlpt( E2,  0.6,  1 ) ),
+		 list( KV_OPEN ) ):
+for ( i = 0, 1, 20,
+    Pt1 = point( random( -0.5, 0.5 ), random( -0.5, 0.5 ), 0.0 ):
+    Pt2 = point( random( -0.5, 0.5 ), random( -0.5, 0.5 ), 0.0 ):
+    Skel2DColor( Pt1, Pt2, Crv3, 0.001, list( 1e-2, -1e-10 ), true, "" ):
+    miliSleep( Delay ) );
+
+Skel2DColor( Pt1, Pt2, Crv3, 0.001, list( 1e-2, -1e-10 ), true, "skel2d5" );
+pause();
+
+#############################################################################
+
+Ln1 = ctlPt( E2, -1, -1 ) + ctlPt( E2, 1, -1 );
+Ln2 = Ln1 * rz( 120 ) * tx( -0.5 ) * ty( -0.5 );
+Crv3 = cbspline( 3,
+		 list( ctlpt( E2, -0.5,  0.0 ),
+		       ctlpt( E2,  0.4, -1.0 ),
+		       ctlpt( E2,  0.6,  0.50 ),
+		       ctlpt( E2,  0.6, -1.0 ) ),
+		 list( KV_OPEN ) ) * tx( -0.4 ) * ty( 0.1 );
+
+Skel2DColor( Ln1, Ln2, Crv3, 1e-6, list( 1e-7, 1e-10 ), true, "skel2d6" );
+pause();
+
+#############################################################################
+
+Pt1 = point( 0.1, 0.0, 0 );
+Crv2 = cbezier( list( ctlpt( E2, -1,    0 ),
+		      ctlpt( E2, -0.3, -0.5 ),
+		      ctlpt( E2,  0.6,  1 ) ) );
+Crv3 = cbezier( list( ctlpt( E2, -0.5,  -1 ),
+		      ctlpt( E2,  0.4,   0 ),
+		      ctlpt( E2,  0.6,  -1 ) ) );
+
+Skel2DColor( Pt1, Crv2, Crv3, 0.001, list( 1e-2, 1e-10 ), true, "skel2d7" );
+pause();
+
+#############################################################################
+
+Ln1 = ctlPt( E2, 1.1, -1 ) + ctlPt( E2, 0.9, 1 );
+Crv2 = cbezier( list( ctlpt( E2, -0.8, -0.7 ),
+		      ctlpt( E2, -0.3, -0.5 ),
+		      ctlpt( E2,  0.3,  1 ),
+		      ctlpt( E2,  0.6,  1 ) ) );
+Crv3 = cbezier( list( ctlpt( E2,  0.5,  -1 ),
+		      ctlpt( E2, -1.5,  -0.9 ),
+		      ctlpt( E2,  0.9,   1.5 ),
+		      ctlpt( E2,  0.6,  -1 ) ) );
+
+Skel2DColor( Ln1, Crv2, Crv3, 1e-6, list( 1e-3, 1e-10 ), true, "skel2d8" );
+pause();
+
+#############################################################################
+
+Crv1 = pcircle( vector( -0.5,  0.7, 0.0 ), 0.3 );
+Crv2 = pcircle( vector( -0.4, -0.6, 0.0 ), 0.5 );
+Crv3 = pcircle( vector(  0.3,  0.2, 0.0 ), 0.4 );
+
+Skel2DColor( Crv1, Crv2, Crv3, 1e-6, list( 1e-2, 1e-10 ), true, "skel2d9" );
+pause();
+
+#############################################################################
+#
+# Rotate the circles a bit so the chances of a solution at the starting
+# parameter which is also the ending parameter will be virtually zero.
+#
+Crv1 = pcircle( vector( -0.5,  0.7, 0.0 ), 0.3 ) * rz( pi ) * sx( 0.5 );
+Crv2 = pcircle( vector( -0.4, -0.6, 0.0 ), 0.5 ) * rz( pi ) * sy( 0.8 );
+Crv3 = pcircle( vector(  0.3,  0.2, 0.0 ), 0.4 ) * rz( pi );
+
+Skel2DColor( Crv1, Crv2, Crv3, 1e-6, list( 1e-2, 1e-10 ), true, "skel2d10" );
+pause();
+
+#############################################################################
+#
+# Rotate the circle a bit so the chances of a solution at the starting
+# parameter which is also the ending parameter will be virtually zero.
+#
+Circ = pcircle( vector( 0, 0, 0 ), 1.4 ) * rz( pi ) * sy( 0.075 ) * ty( 0.22 );
+Crv1 = Circ;
+Crv2 = Circ * rz( 120 );
+Crv3 = Circ * rz( 240 );
+free( Circ);
+
+Skel2DColor( Crv1, Crv2, Crv3, 1e-10, list( 1e-2, 1e-10 ), false, "skel2d11" );
+pause();
+
+#############################################################################
+
+Crv1 = cbspline( 3,
+    list( ctlpt( E3, 0.495, 0.677,     0 ),
+          ctlpt( E2,  0.72,  1.02 ),
+          ctlpt( E2,  0.41,  1.08 ),
+          ctlpt( E2,  0.27, 0.841 ),
+          ctlpt( E2, 0.379, 0.483 ),
+          ctlpt( E2, 0.762, 0.428 ),
+          ctlpt( E2,  1.02, 0.847 ) ),
+    list( kv_periodic ) );
+Crv1 = coerce( Crv1, kv_open );
+
+Crv2 = cbspline( 3,
+    list( ctlpt( E3, 0.653, -0.264,     0 ),
+          ctlpt( E2, -0.161, -0.191 ),
+          ctlpt( E2, 0.483, -0.477 ),
+          ctlpt( E2, 0.0334, -0.489 ),
+          ctlpt( E2, 0.616, -0.744 ) ),
+    list( kv_periodic ) );
+Crv2 = coerce( Crv2, kv_open );
+
+Crv3 = cbspline( 3,
+    list( ctlpt( E3, -1.05, 0.899,     0 ),
+          ctlpt( E2, -1.15, 0.0623 ),
+          ctlpt( E2, -0.312, 0.315 ),
+          ctlpt( E2, -0.993, 0.275 ) ),
+    list( kv_periodic ) );
+Crv3 = coerce( Crv3, kv_open );
+
+Skel2DColor( Crv1, Crv2, Crv3, 1e-10, list( 1e-3, 1e-10 ), false, "skel2d12" );
+pause();
+
+#############################################################################
+
+Crv2 = cbspline( 3,
+    list( ctlpt( E3, 0.179, 0.0152,     0 ),
+          ctlpt( E2, 0.653, -0.264 ),
+          ctlpt( E2, -0.161, -0.191 ),
+          ctlpt( E2, 0.483, -0.477 ),
+          ctlpt( E2, 0.0334, -0.489 ),
+          ctlpt( E2, 0.616, -0.744 ),
+          ctlpt( E2, 0.987, -0.082 ) ),
+    list( kv_periodic ) );
+Crv2 = coerce( Crv2, kv_open );
+
+Crv3 = cbspline( 3,
+    list( ctlpt( E3, -0.968, 0.701,     0 ),
+          ctlpt( E2, -0.653, 0.386 ),
+          ctlpt( E2, -1.05, 0.519 ),
+          ctlpt( E2, -1.13, 0.325 ),
+          ctlpt( E2, -0.373, 0.0638 ),
+          ctlpt( E2, -0.677, 0.416 ),
+          ctlpt( E2, -0.167, 0.665 ) ),
+    list( kv_periodic ) );
+Crv3 = coerce( Crv3, kv_open );
+
+Skel2DColor( Crv1, Crv2, Crv3, 1e-10, list( 1e-6, 1e-10 ), false, "skel2d13" );
+pause();
+
+#############################################################################
+
+view_mat = save_mat;
+
+free( Pt1 );
+free( Pt2 );
+free( Pt3 );
+free( Ln1 );
+free( Ln2 );
+free( Ln3 );
+free( Crv1 );
+free( Crv2 );
+free( Crv3 );
+free( i );
+free( Delay );

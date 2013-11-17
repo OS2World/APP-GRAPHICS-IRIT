@@ -1,0 +1,6 @@
+#!/bin/csh -f
+
+zip -r irit-sm * 
+# -x */*.o */*.a */*.so */so_locations scripts/*.dat scripts/*.bdt scripts/*.mat bin/* docs/irit.tex docs/irit.doc docs/irithlp
+
+mv irit-sm.zip ~/backup

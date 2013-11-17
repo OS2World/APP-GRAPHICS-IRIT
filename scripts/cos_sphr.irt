@@ -1,0 +1,71 @@
+#
+# An example of the cosine shader - setting the cosine exponent for irender.
+#
+
+s = sphereSrf( 0.2 ) * rx( 90 );
+
+s1 = s * trans( vector( -0.5,  0.3, 0.0 ) );
+attrib( s1, "srf_cosine", 1 );
+
+s2 = s * trans( vector(  0.0,  0.3, 0.0 ) );
+attrib( s2, "srf_cosine", 4 );
+
+s3 = s * trans( vector(  0.5,  0.3, 0.0 ) );
+attrib( s3, "srf_cosine", 16 );
+
+s4 = s * trans( vector( -0.5, -0.3, 0.0 ) );
+attrib( s4, "srf_cosine", 32 );
+
+s5 = s * trans( vector(  0.0, -0.3, 0.0 ) );
+attrib( s5, "srf_cosine", 128 );
+
+s6 = s * trans( vector(  0.5, -0.3, 0.0 ) );
+attrib( s6, "srf_cosine", 256 );
+
+AllSpheres = list( s1, s2, s3, s4, s5, s6 );
+attrib( AllSpheres, "rgb", "255,255,255" );
+free( s );
+free( s1 );
+free( s2 );
+free( s3 );
+free( s4 );
+free( s5 );
+free( s6 );
+
+Light1 = point( 10, 10, 3 );
+attrib( Light1, "light_source", on );
+attrib( Light1, "rgb", "255,0,0" );
+attrib( Light1, "type", "point_infty" );
+
+Light2 = point( 10, -10, 3 );
+attrib( Light2, "light_source", on );
+attrib( Light2, "rgb", "0,255,0" );
+attrib( Light2, "type", "point_infty" );
+
+Light3 = point( -10, 10, 3 );
+attrib( Light3, "light_source", on );
+attrib( Light3, "rgb", "0,0,255" );
+attrib( Light3, "type", "point_infty" );
+
+Light4 = point( -10, -10, 3 );
+attrib( Light4, "light_source", on );
+attrib( Light4, "rgb", "255,255,255" );
+attrib( Light4, "type", "point_infty" );
+
+AllLights = list( Light1, Light2, Light3, Light4 );
+
+All = list( AllSpheres, AllLights );
+
+#
+# Run this output file through irender. Try:
+#
+# irender -a 0 -n -A sync -i ppm cos_sphr.dat > cos_sphr.ppm
+#
+save( "cos_sphr", All );
+
+free( Light1 );
+free( Light2 );
+free( Light3 );
+free( Light4 );
+free( AllLights );
+free( AllSpheres );

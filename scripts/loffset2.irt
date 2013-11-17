@@ -1,0 +1,155 @@
+#
+# Some comparison tests with L/A/OFFSET.
+#
+#			Gershon Elber, OCtober 1994.
+#
+
+#
+# If false - just computes the offsets and save in file. If true do full
+# testing of four methods (about 2 hours on a 150Mhz R4400...).
+#
+do_offset_compare = false;
+
+ComputeError = procedure( Crv, Dist, OCrv ):Dst:DstSqr:FFMin:FFMax:
+    Dst = symbdiff( Crv, OCrv ):
+    DstSqr = symbdprod( Dst, Dst ):
+    FFMin = max( coord( ffextreme( DstSqr, true ), 1 ), 0 ):
+    FFMax = max( coord( ffextreme( DstSqr, false ), 1 ), 0 ):
+    printf("%1.0lf %lf",
+           list(sizeof(OCrv),
+                max( abs( sqrt( FFMin ) - Dist ),
+                     abs( sqrt( FFMax ) - Dist ) ) ) );
+                
+CmpOffAllTols = procedure( Crv, FName, Dist, Tol, Steps ): c: i: t:
+    if (do_offset_compare,
+	logfile( FName + "_" + "offset" ):
+	logfile( on ):
+	T = Tol:
+	printf( "# OFFSET (%s)", list( FName ) ):
+	for (i = 0, 1, Steps,
+	     c = offset( Crv, Dist, T, off ):
+	     ComputeError( Crv, abs( Dist ), c ):
+	     T = T * sqrt( 0.1 ) ):
+	logfile( FName + "_" + "offseti" ):
+	logfile( on ):
+	T = Tol:
+	printf( "# OFFSETI (%s)", list( FName ) ):
+	for (i = 0, 1, Steps,
+	     c = offset( Crv, Dist, T, on ):
+	     ComputeError( Crv, abs( Dist ), c ):
+	     T = T * sqrt( 0.1 ) ):
+	T = Tol:
+	printf( "# AOFFSET (%s)", list( FName ) ):
+	logfile( FName + "_" + "aoffset" ):
+	logfile( on ):
+	for (i = 0, 1, Steps,
+	     c = aoffset( Crv, Dist, T, false, off ):
+	     ComputeError( Crv, abs( Dist ), c ):
+	     T = T * sqrt( 0.1 ) ):
+	T = Tol:
+	printf( "# LOFFSET (%s)", list( FName ) ):
+	logfile( FName + "_" + "loffset" ):
+	logfile( on ):
+	for (i = 0, 1, Steps,
+	     c = offset( Crv, Dist, T, on ):
+	     c = loffset( Crv, Dist, 300, sizeof( c ), 4 ):
+	     ComputeError( Crv, abs( Dist ), c ):
+	     T = T * sqrt( 0.1 ) ):
+	logfile( off ));
+
+#############################################################################
+
+bez = cbezier( list( ctlpt( E2, -0.95, 0.7 ),
+		     ctlpt( E2, -0.3,  0.5 ),
+		     ctlpt( E2,  0.3, -2.5 ),
+		     ctlpt( E2,  0.9, -0.2 ) ) );
+
+bez_off = loffset( bez, 0.5, 300, 64, 4 );
+attrib( bez_off, "width", 0.02 );
+save( "bez_0.4_off", list( bez, bez_off ) );
+CmpOffAllTols( bez, "bez_0.4", 0.4, 1.0, 6 );
+
+cpawn = cbspline( 4,
+	list( ctlpt( E2, 0.95, 0.05 ),
+	      ctlpt( E2, 0.95, 0.76 ),
+	      ctlpt( E2, 0.30, 1.52 ),
+	      ctlpt( E2, 0.30, 1.90 ),
+	      ctlpt( E2, 0.50, 2.09 ),
+	      ctlpt( E2, 0.72, 2.24 ),
+	      ctlpt( E2, 0.72, 2.32 ),
+	      ctlpt( E2, 0.38, 2.50 ),
+	      ctlpt( E2, 0.42, 2.70 ),
+	      ctlpt( E2, 0.57, 2.81 ),
+	      ctlpt( E2, 0.57, 3.42 ),
+	      ctlpt( E2, 0.19, 3.57 ),
+	      ctlpt( E2, 0.00, 3.57 ) ),
+	 list( KV_OPEN ) );
+
+cpawn_off = loffset( cpawn, 0.5, 300, 78, 4 );
+attrib( cpawn_off, "width", 0.04 );
+save( "cpawn_0.5_off", list( cpawn, cpawn_off ) );
+CmpOffAllTols( cpawn, "cpawn_0.5", 0.5, 1.0, 4 );
+
+cpawn_off = loffset( cpawn, 1.5, 300, 57, 4 );
+attrib( cpawn_off, "width", 0.04 );
+save( "cpawn_1.5_off", list( cpawn, cpawn_off ) );
+CmpOffAllTols( cpawn, "cpawn_1.5", 1.5, 1.0, 3 );
+
+cross = cbspline( 4,
+                  list( ctlpt( E2,  0.5,  0.5 ),
+                        ctlpt( E2,  0.5, -0.5 ),
+                        ctlpt( E2, -0.5, -0.5 ),
+                        ctlpt( E2, -0.5,  0.5 ) ),
+                  list( KV_PERIODIC ) );
+cross = coerce( cross, kv_open );
+
+cross_off = loffset( cross, 0.3, 300, 97, 4 );
+attrib( cross_off, "width", 0.02 );
+save( "cross_0.3_off", list( cross, cross_off ) );
+CmpOffAllTols( cross, "cross_0.3", 0.3, 0.1, 4 );
+
+circ = circle( vector(0, 0, 0), 1 );
+
+circ_off = loffset( circ, 0.5, 300, 33, 4 );
+attrib( circ_off, "width", 0.02 );
+save( "circ_0.5_off", list( circ, circ_off ) );
+CmpOffAllTols( circ, "circ_0.5", 0.5, 0.1, 4 );
+
+circ_off = loffset( circ, -0.6, 300, 65, 4 );
+attrib( circ_off, "width", 0.025 );
+save( "circ-0.6_off", list( circ, circ_off ) );
+CmpOffAllTols( circ, "circ-0.6", -0.6, 0.1, 4 );
+
+Crv = cbspline( 3,
+                list( ctlpt( E2, 0.7, 0.0 ),
+                      ctlpt( E2, 0.7, 0.06 ),
+                      ctlpt( E2, 0.1, 0.1 ),
+                      ctlpt( E2, 0.1, 0.6 ),
+                      ctlpt( E2, 0.6, 0.6 ),
+                      ctlpt( E2, 0.8, 0.8 ),
+                      ctlpt( E2, 0.8, 1.4 ),
+                      ctlpt( E2, 0.6, 1.6 ) ), list( KV_OPEN ) );
+
+doc_crv_off = loffset( Crv, 0.4, 300, 49, 4 );
+attrib( doc_crv_off, "width", 0.02 );
+save( "doc_crv_0.4_off", list( Crv, doc_crv_off ) );
+CmpOffAllTols( Crv, "doc_crv_0.4", 0.4, 0.1, 3 );
+
+doc_crv_off = loffset( Crv, -0.8, 300, 53, 4 );
+attrib( doc_crv_off, "width", 0.02 );
+save( "doc_crv-0.8_off", list( Crv, doc_crv_off ) );
+CmpOffAllTols( Crv, "doc_crv-0.8", -0.8, 0.1, 3 );
+
+#############################################################################
+
+free( bez );
+free( bez_off );
+free( cross );
+free( cross_off );
+free( circ );
+free( circ_off );
+free( cpawn );
+free( cpawn_off );
+free( Crv );
+free( doc_crv_off );
+free( do_offset_compare );

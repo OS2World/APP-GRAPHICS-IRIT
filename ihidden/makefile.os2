@@ -1,0 +1,19 @@
+#
+# This is the make file for the IHidden directory - OS2
+#
+#				Gershon Elber, Jan 2000
+#
+
+include ..\makeflag.os2
+
+OBJS	= ihidden.o rsi.o cci.o
+
+ihidden.exe: $(OBJS)
+
+install: ihidden.exe
+	$(CP) -f ihidden.exe $(IRIT_BIN_DIR)
+	$(CP) -f ihidden.cfg $(IRIT_BIN_DIR)
+	$(RM) ihidden.exe
+
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

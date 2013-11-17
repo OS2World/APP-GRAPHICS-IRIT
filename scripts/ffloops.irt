@@ -1,0 +1,63 @@
+#
+# This file existance is justified to demonstrate loops on free form trans.:
+#
+
+save_mat = view_mat;
+view_mat = view_mat * scale(vector(0.7,	0.7, 0.7));
+
+cbzr = cbezier( list( ctlpt( P3, 1.0, 0.0, 0.0, 0.0 ),
+	              ctlpt( P3, 0.707, 0.707, 0.0, 0.0 ),
+	              ctlpt( P3, 1.0, 1.0, 1.0, 0.0 ) ) );
+sbzr = sbezier( list ( list( ctlpt( E3, 0.0, 0.0, 0.5 ),
+		             ctlpt( E3, 0.0, 0.5, -1.0 ),
+		             ctlpt( E3, 0.0, 1.0, 0.5 ) ),
+	               list( ctlpt( E3, 0.5, 0.0, -0.5 ),
+		             ctlpt( E3, 0.5, 0.5, 1.0 ),
+	        	     ctlpt( E3, 0.5, 1.0, -0.5 ) ),
+	               list( ctlpt( E3, 1.0, 0.0, 0.5 ),
+		             ctlpt( E3, 1.0, 0.5, -1.0 ),
+	        	     ctlpt( E3, 1.0, 1.0, 0.5 ) ) ) );
+
+rot10x = rotx( 10 );
+rot10y = roty( 10 );
+rot10z = rotz( 10 );
+
+interact( list( axes, cbzr, sbzr ) );
+
+#
+# Rotate around	the X axes:
+#
+
+for ( a = 1, 1, 36,
+	cbzr = cbzr * rot10x:
+        view( list( cbzr, axes ), on )
+    );
+
+
+#
+# Rotate around	the Y axes:
+#
+
+for ( a = 1, 1, 36,
+	sbzr = sbzr * rot10y:
+        view( list( sbzr, axes ), on )
+    );
+
+
+#
+# Rotate around	the Z axes:
+#
+
+for ( a = 1, 1, 36,
+	cbzr = cbzr * rot10z:
+        view( list( cbzr, axes ), on )
+    );
+free( a );
+
+view_mat = save_mat;
+
+free( rot10x );
+free( rot10y );
+free( rot10z );
+free( cbzr );
+free( sbzr );

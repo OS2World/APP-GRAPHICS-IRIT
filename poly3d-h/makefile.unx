@@ -1,0 +1,22 @@
+#
+# Makefile for the POLY3D-H hidden line remover.
+#
+
+include ../makeflag.unx
+
+OBJS =	out-edge.o$(IRIT_OBJ_PF) \
+	poly3d-h.o$(IRIT_OBJ_PF) \
+	prepdata.o$(IRIT_OBJ_PF)
+
+all:	poly3d-h$(IRIT_EXE_PF)
+
+poly3d-h$(IRIT_EXE_PF):	$(OBJS)
+	$(CC) $(CFLAGS) -o poly3d-h$(IRIT_EXE_PF) $(OBJS) $(MOREOBJS) \
+	$(IRIT_LIBS) -lm $(IRIT_MORE_LIBS)
+
+install: poly3d-h$(IRIT_EXE_PF)
+	mv -f poly3d-h$(IRIT_EXE_PF) $(IRIT_BIN_DIR)
+	cp poly3d-h.cfg $(IRIT_BIN_DIR)
+
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

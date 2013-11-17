@@ -1,0 +1,162 @@
+#
+# Examples of the interactive use mouse/cursor events from the display devices.
+#
+#						Gershon Elber
+#
+save_mat = view_mat;
+
+view_mat = rx( 0 );
+viewobj( view_mat );
+
+#
+# Construct a menu geometry with MenuItems as entries on the XY plane
+# between (MinX, MinY) and (MaxX, MaxY)
+#
+
+MenuGenGeometry = function( MenuItems, ItemSize, MinX, MinY, MaxX, MaxY ):
+					x1: y1: x2: y2: i: n:
+    n = sizeof( MenuItems ):
+    return = nil():
+    for ( i = 0, 1, n - 1,
+	x1 = MinX:
+	x2 = MaxX:
+	y1 = MinY + ( MaxY - MinY ) * i / n:
+	y2 = y1 + ( MaxY - MinY ) * 0.8 / n:
+	snoc( list( poly( list( point( x1, y1, 0 ),
+			    point( x1, y2, 0 ),
+			    point( x2, y2, 0 ),
+			    point( x2, y1, 0 ),
+			    point( x1, y1, 0 ) ), true ),
+		    textgeom( nth( MenuItems, i + 1 ),
+			      vector( ItemSize * 0.06, 0, 0 ),
+			      ItemSize * 0.06 )
+			* trans( vector( x1 + ItemSize * 0.07,
+					 ( y1 + y2 ) / 2, 0 ) ) ),
+	      return ) );
+
+#
+# Test if the given (x, y) location is inside the given menu of n entires.
+#
+
+MenuGetSelection = function( x, y, n, MinX, MinY, MaxX, MaxY ):
+					x1: y1: x2: y2: i:
+    return = 0:
+    for ( i = 0, 1, n - 1,
+	x1 = MinX:
+	x2 = MaxX:
+	y1 = MinY + ( MaxY - MinY ) * i / n:
+	y2 = y1 + ( MaxY - MinY ) * 0.8 / n:
+	if ( x > x1 && x < x2 && y > y1 && y < y2,
+	     return = i + 1 ) );
+
+
+#
+# Ask all clients to send mouse/cursor events to the server.
+#
+ClntPickCrsr( clients_all );
+
+#
+# Ask the server to keep mouse/cursor events to be read view ClntCrsr.
+#
+CrsrKeep = IritState( "CursorKeep", 1 );
+
+#
+# Some examples of menus...   Uses Button 1 (left button).
+#
+Quit = 0;
+XYPlane = plane( 0, 0, 1, 0 );
+Crv = circle( vector( 0.0, 0.0, 0.0 ), 1 ) * sx( 0.5 ) * rx( 40 ) * rz( 44 );
+color( Crv, red );
+Srf = SwpCircSrf( circle( vector( 0, 0, 0 ), 0.7 ), 0.2, 0 );
+color( Srf, green );
+Menu = MenuGenGeometry( list( "Quit", "Draw Crv", "Draw Srf", "Draw All",
+			      "Ctl Mesh" ),
+			0.7, 0.5, 0.5, 0.95, 0.95 );
+color( Menu, white );
+view( list( Menu, Crv, Srf ), 1 );
+while ( !Quit,
+    c = clntcrsr( 60000 ):
+    if ( sizeof( c ) == 0,
+	printf( "Time out in input (one minute wait)\\n", nil() ): Quit = 1, 
+	XYPos = PtLnPln( nth( c, 1 ), nth( c, 2 ), XYPlane ):
+	# Handle only button 1 down events:
+	if ( GetAttr( nth( c, 1 ), "EventType" ) == 2,
+	    MenuIndex = MenuGetSelection( coord( XYPos, 0 ),
+					  coord( XYPos, 1 ), sizeof( Menu ),
+				          0.5, 0.5, 0.95, 0.95 ):
+	    printf( "Menu (%f %f) %f\\n",
+		    list( coord( XYPos, 0 ), coord( XYPos, 1 ), MenuIndex ) ):
+	    if ( MenuIndex == 1, Quit = 1 ):
+	    if ( MenuIndex == 2, view( list( Menu, Crv ),  1 ) ):
+	    if ( MenuIndex == 3, view( list( Menu, Srf ),  1 ) ):
+	    if ( MenuIndex == 4, view( list( Menu, Crv, Srf ),  1 ) ):
+	    if ( MenuIndex == 5, viewstate( "DSrfMesh", -1 ) ) ) ) );
+
+#
+# A function to find the closest control point of Crv to the given location
+# and update of that point to be the specified location.
+#
+
+UpdateClosestCtlPt = function( Crv, Pos ): n: i: Pt: MinDist: MinIndex:
+    n = sizeof( Crv ):
+    MinDist = 1e6:
+    return = MinIndex = 0:
+    for ( i = 0, 1, n - 1,
+	Pt = coerce( coord( Crv, i ), point_type ):
+	if ( dstPtPt( Pt, Pos ) < MinDist,
+	    MinDist = dstPtPt( Pt, Pos ):
+	    MinIndex = i ) ):
+    return = cEditPt( Crv, coerce( Pos, ctlpt_type ), MinIndex );
+
+#
+# Do some direct curve editing.  Uses Button 1 (left button).
+#
+
+XYPlane = plane( 0, 0, 1, 0 );
+Menu = MenuGenGeometry( list( "Quit", "Ctl Mesh" ),
+			0.7, 0.5, 0.75, 0.95, 0.95 );
+color( Menu, white );
+Crv = cbezier( list( point( -0.7, -0.3, 0.0 ),
+		     point( -0.2,  0.9, 0.0 ),
+		     point(  0.2, -0.9, 0.0 ),
+		     point(  0.7,  0.3, 0.0 ) ) );
+color( Crv, green );
+Quit = 0;
+while ( !Quit,
+    view( list( Crv, Menu ), 1 ):
+    c = clntcrsr( 60000 ):
+    if ( sizeof( c ) == 0,
+	printf( "Time out in input (one minute wait)\\n", nil() ): Quit = 1, 
+	XYPos = PtLnPln( nth( c, 1 ), nth( c, 2 ), XYPlane ):
+	# Handle only button 1 events:
+	if ( GetAttr( nth( c, 1 ), "EventType" ) == 2,
+	    MenuIndex = MenuGetSelection( coord( XYPos, 0 ),
+					  coord( XYPos, 1 ), sizeof( Menu ),
+				          0.5, 0.75, 0.95, 0.95 ):
+	    if ( MenuIndex == 1, Quit = 1,
+	         if ( MenuIndex == 2, viewstate( "DSrfMesh", -1 ),
+		      Crv = UpdateClosestCtlPt( Crv, XYPos ) ) ) ):
+	if ( GetAttr( nth( c, 1 ), "EventType" ) == 1,
+	    Crv = UpdateClosestCtlPt( Crv, XYPos ) ) ) );
+
+#
+# Recover from pick cursor events.
+#
+ClntPickDone( clients_all );
+CrsrKeep = IritState( "CursorKeep", CrsrKeep );
+free( CrsrKeep );
+
+#############################################################################
+
+view_mat = save_mat;
+
+free( Srf );
+free( Crv );
+free( Quit );
+free( Menu );
+free( MenuIndex );
+free( XYPos );
+free( XYPlane );
+free( c );
+
+

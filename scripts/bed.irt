@@ -1,0 +1,150 @@
+#
+# A model of a twin bed (actually built!)
+#
+#			Gershon Elber, June 1995
+#
+
+#
+# All units are in centimeters.
+#
+
+circ = circle( vector( 0, 0, 0 ), 3 );
+
+arc0 = cregion( circ, 0.0, 1.5 );
+arc1 = cregion( circ, 0.5, 1.5 );
+arc2 = cregion( circ, 1, 1.5 );
+arc3 = cregion( circ, 0.5, 1 );
+arc4 = cregion( circ, 0.7, 1.5 );
+arc5 = cregion( circ, 0.7, 1.3 );
+arc6 = cregion( circ, 0.7, 1 );
+arc7 = cregion( circ, 1, 1.3 );
+arc8 = cregion( circ, 0.5, 1.3 );
+arc9 = cregion( circ, 0.7, 1.5 );
+free( circ );
+
+prof1 = (-arc1 + -arc2 * tx( 4.6 ));
+prof1a = prof1 * sy ( 2 );
+
+prof2 = (-arc3 +
+         -arc4 * tx( 4.6 ) +
+         -arc5 * tx( 7.6 ) +
+         -arc5 * tx( 10.6 ) +
+         -arc5 * tx( 13.6 ) +
+         -arc5 * tx( 16.6 ) );
+prof2a = prof2 * sy( 2 ) * trans( vector( -2, -4, 0 ) );
+
+prof3 = (-arc6 +
+         -arc8 * tx( 3 ) +
+         -arc1 * tx( 7.6 ) +
+         -arc9 * tx( 12.3 ) +
+         -arc7 * tx( 15.3 ) );
+prof3a = prof3 * sy( 2 ) * trans( vector( -2, -8, 0 ) );
+
+prof4 = (-arc6 +
+         -arc8 * tx( 3 ) +
+         -arc1 * tx( 7.6 ) +
+         -arc0 * tx( 12.3 ) );
+prof4a = prof4 * sy( 2 ) * trans( vector( -2, -12, 0 ) );
+
+free( arc0 );
+free( arc1 );
+free( arc2 );
+free( arc3 );
+free( arc4 );
+free( arc5 );
+free( arc6 );
+free( arc7 );
+free( arc8 );
+free( arc9 );
+
+Cross1 = prof1 + prof4 * tx( 60 );
+Cross2 = prof1 + prof2 * tx( 50 ) + prof4 * tx( 80 );
+
+free( prof1 );
+free( prof1a );
+free( prof2 );
+free( prof2a );
+free( prof3 );
+free( prof3a );
+free( prof4 );
+free( prof4a );
+
+Leg1 = surfrev( Cross1 * ry( -90 ) );
+Leg2 = surfrev( Cross2 * ry( -90 ) );
+free( Cross1 );
+free( Cross2 );
+
+Legs = list( Leg1,
+             Leg1 * tx( 80 ),
+	     Leg2 * trans( vector( 0, 190, 0 ) ),
+	     Leg2 * trans( vector( 80, 190, 0 ) ) );
+attrib( Legs, "rgb", "244,164,96" );
+free( Leg1 );
+free( Leg2 );
+
+Skel = list( box( vector( -1,  -1, 25 ), 80,   2, 20 ),
+	     box( vector( -1,  -1, 25 ),  2, 190, 20 ),
+	     box( vector( -1, 189, 25 ), 80,   2, 20 ),
+	     box( vector( 79,  -1, 25 ),  2, 190, 20 ),
+	     box( vector( -1,  90, 25 ), 80,   2, 20 ) );
+attrib( Skel, "rgb", "255,255,100" );
+viewobj( Skel );
+
+Cover = box( vector( 0, 0, 45 ), 80, 190, 1 );
+attrib( Cover, "rgb", "244,164,96" );
+
+BackCross = cbspline( 3,
+		      list( ctlpt( E3,  0, 0, 75 ),
+			    ctlpt( E3, 15, 0, 75 ),
+			    ctlpt( E3, 30, 0, 95 ),
+			    ctlpt( E3, 50, 0, 95 ),
+			    ctlpt( E3, 65, 0, 75 ),
+			    ctlpt( E3, 80, 0, 75 ) ),
+		      list( KV_OPEN ) );
+BackCrossPts = list( vector( 80, 0, 75 ),
+	 	     vector( 80, 0, 45 ),
+	 	     vector(  0, 0, 45 ) );
+
+HeartCross = ( cbspline( 3,
+		         list( ctlpt( E3,  0, 0, -10 ),
+			       ctlpt( E3,  3, 0,   0 ),
+			       ctlpt( E3, 12, 0,   5 ),
+			       ctlpt( E3, 12, 0,  15 ),
+			       ctlpt( E3,  3, 0,  15 ),
+			       ctlpt( E3,  0, 0,  10 ) ),
+		         list( KV_OPEN ) ) +
+	       cbspline( 3,
+		         list( ctlpt( E3,   0, 0,  10 ),
+			       ctlpt( E3,  -2, 0,  15 ),
+			       ctlpt( E3, -13, 0,  15 ),
+			       ctlpt( E3, -13, 0,   5 ),
+			       ctlpt( E3,  -5, 0,   0 ),
+			       ctlpt( E3,   0, 0, -10 ) ),
+		         list( KV_OPEN ) ) )
+	* sc( 0.5 ) * trans( vector( 40, 1, 65 ) );
+
+#
+# We generate some colinear vertices here:
+#
+Back = ( extrude( poly( CnvrtPolyToPtList( CnvrtCrvToPolygon( BackCross,
+							      50, false ) ) + 
+		        BackCrossPts, false ),
+		  vector( 0, 2, 0 ), 3 ) -
+	 extrude( CnvrtCrvToPolygon( HeartCross, 50, false ),
+		  vector( 0, -2, 0 ), 3 ) )
+	* ty( 189 );
+attrib( Back, "rgb", "244,164,96" );
+free( BackCrossPts );
+free( HeartCross );
+free( BackCross );
+
+All = list( Legs, Skel, Cover, Back );
+free( Back );
+free( Cover );
+free( Skel );
+free( Legs );
+
+view( All, 1 );
+save( "bed", All );
+
+free( All );

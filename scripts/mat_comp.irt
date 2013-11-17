@@ -1,0 +1,81 @@
+#
+# Some homogeneous matrices' re/decompositions
+#
+#				Created by Gershon Elber, June 2011
+#
+
+printMatDecomp = procedure( m ): d:
+    d = matdecomp( m ):
+    printf( "Mat Decomp: Scale %.2vf, Trans %.2vf, Trans %.2Df\\n", d );
+
+printMatDecomp2 = procedure( m ): d:
+    d = matdecomp2( m ):
+    
+    printf( "Mat Decomp: Rot [%.2f, %.2f, %.2f], Scl (%.2f), Trans [%.3f. %.3f. %.3f]\\n",
+	    list( nth( d, 1 ) * 180 / pi,
+	          nth( d, 2 ) * 180 / pi,
+	          nth( d, 3 ) * 180 / pi,
+	          nth( d, 4 ),
+	          nth( d, 5 ),
+	          nth( d, 6 ),
+	          nth( d, 7 ) ) );
+
+#############################################################################
+
+m1 = rx( 40 ) * ry( 50 ) * rz( 60 ) * sc( 2 ) * tx( 1 ) * ty( 2 )* tz( 3 );
+
+printMatDecomp( m1 );
+printMatDecomp2( m1 );
+
+
+m2 = sc( 3 ) * rx( -182 ) * ry( -150 ) * rz( 359 ) * tx( 1 ) * ty( 2 )* tz( 3 );
+printMatDecomp2( m2 );
+
+
+
+m3 = sc( 3 ) * rx( -2 ) * ry( -30 ) * rz( 179 ) * trans( vector( 1, 2, -3 ) );
+printMatDecomp2( m3 );
+
+
+save( "mat1comp", list( m1, matrecomp( matdecomp2( m1 ) ) == m1,
+			m2, matrecomp( matdecomp2( m2 ) ) == m2,
+			m3, matrecomp( matdecomp2( m3 ) ) == m3 ) );
+printf( "Matrix decomp/recomp = %d %d %d\\n",
+	list( matrecomp( matdecomp2( m1 ) ) == m1,
+	      matrecomp( matdecomp2( m2 ) ) == m2,
+	      matrecomp( matdecomp2( m3 ) ) == m3 ) );
+
+#################################
+
+eps = iritstate( "RandomInit", 1988 );
+eps = iritstate( "CmpObjEps", 1e-10 );
+f1 = f2 = f3 = f4 = f5 = f6 = f7 = 1;
+for ( i = 1, 1, 10000,
+    m = rx( f1 = random( 0, 360 ) ) *
+	ry( f2 = random( 0, 360 ) ) *
+	rz( f3 = random( 0, 360 ) ) *
+	sc( f4 = random( 0.001, 5 ) ) *
+	tx( f5 = random( -5, 5 ) ) *
+	ty( f6 = random( -5, 5 ) ) *
+	tz( f7 = random( -5, 5 ) ):
+    if ( matrecomp( matdecomp2( m ) ) != m,
+	beep():
+	printf( "Mat Decomp Failed %d:\\nFactors [%18f  %18f  %18f  %18f  %18f  %18f  %18f]\\n%.18Df\\n%.18Df\\n",
+	        list( i, f1, f2, f3, f4, f5, f6, f7, m,
+		      matrecomp( matdecomp2( m ) ) ) ) ) );
+
+eps = iritstate("CmpObjEps", eps );
+
+free( f1 );
+free( f2 );
+free( f3 );
+free( f4 );
+free( f5 );
+free( f6 );
+free( f7 );
+free( i );
+free( m );
+free( m1 );
+free( m2 );
+free( m3 );
+free( eps );

@@ -1,0 +1,377 @@
+#
+# Some Escher style illusions.
+#
+#				Gershon Elber, Feb 2000.
+#
+
+view( list( view_mat ), 1 );
+
+save_res = resolution;
+
+viewstate( "DepthCue", 0 );
+viewstate( "PolyAprx", 1 );
+viewstate( "DrawStyle", 1 );
+viewstate( "DSrfPoly", 1 );
+viewstate( "DSrfWire", 0 );
+
+#
+# Tribar triangle.
+#
+Pln = poly( list( point(  16,   0,  -16 ),
+		  point(   0,  16,  -16 ),
+		  point( -16,   0,   16 ),
+		  point(   0, -16,   16 ) ),
+	    false );
+
+BAux = ( box( vector( -1, -1, -20 ), 2, 2, 40 )
+	 - Pln * tz( 10 ) - -Pln * tz( -10 ) )
+	 * rz( 180 ) * sc( 0.1 ) * tx( 0.2 ) * ty( -0.2 );
+
+m = ROTZ2V( vector( 1, 1, 1 ) );
+m2 = m^-1 * rz( 120 ) * m;
+
+Bar1 = BAux;
+color( Bar1, yellow );
+
+Bar2 = BAux * m2;
+color( Bar2, green );
+
+Bar3 = BAux * m2^2;
+color( Bar3, cyan );
+
+All = list( Bar1, Bar2, Bar3 );
+interact ( All );
+
+free( Bar1 );
+free( Bar2 );
+free( Bar3 );
+free( m );
+free( m2 );
+free( BAux );
+free( Pln );
+
+#
+# Bar in a ring.
+#
+ShearBox = function( ShearX, ShearY, x, y, z ): Pl:
+    pl = poly( list( point( -x, -y, -z ),
+		     point( -x,  y, -z ),
+		     point(  x,  y, -z ),
+		     point(  x, -y, -z ) ), false ):
+    return = extrude( Pl, vector( ShearX, ShearY, 2 * z ), 3 );
+
+m = ROTZ2V( vector( 1, 1, 1 ) );
+
+s1 = ShearBox( 4, 4, 9, 6, 1 );
+s2 = ShearBox( 4, 4, 7, 4, 1.001 );
+Ring = ( s1 - s2 ) * m^-1 * rz( 180 ) * m;
+color( Ring, cyan );
+
+Bar = ShearBox( -12, -12, 1, 1, 7 ) * tz( -2.5 ) * m^-1 * tz( 11 ) * m;
+color( Bar, yellow );
+
+All = list( Ring, Bar ) * Sc( 0.07 );
+interact ( All );
+
+free( s1 );
+free( s2 );
+free( Ring );
+free( Bar );
+
+#
+# two ring.
+#
+
+s1 = ShearBox( 3, 3, 9, 7, 0.75 );
+s2 = ShearBox( 3, 3, 7, 5, 0.7501 );
+Ring1 = ( s1 - s2 ) * m^-1 * rz( 180 ) * m * Sc( 0.07 );
+color( Ring1, cyan );
+
+Ring2 = Ring1 * m^-1 * rz( -120 ) * trans( vector( 0.35, -0.3, -0.5 ) ) * m;
+color( Ring2, green );
+
+All = list( Ring1, Ring2 );
+interact ( All );
+
+free( s1 );
+free( s2 );
+free( Ring1 );
+free( Ring2 );
+free( m );
+
+#
+# The impossible (Penrose) triangle.
+#
+view_mat1 = sc( 0.7 );
+
+GenTriSideAux = function( pt1, pt2, pt3, pt4 ):
+    return = poly( list( pt1, pt2, pt3, pt4 ), false );
+#GenTriSideAux = function( pt1, pt2, pt3, pt4 ):
+#    return = poly( list( pt1, pt2, pt3 ), false ) ^
+#	      poly( list( pt1, pt3, pt4 ), false );
+GenTriSide = function( pt1, pt2, pt2r, pt1r, n ): i:
+    return = nil():
+    for ( i = 0, 1, n - 1,
+	snoc( GenTriSideAux( InterpPoint( pt1, pt1r, i / n ),
+			     InterpPoint( pt2, pt2r, i  / n ),
+			     InterpPoint( pt2, pt2r, ( i + 1 ) / n ),
+			     InterpPoint( pt1, pt1r, ( i + 1 ) / n ) ),
+	      return ) ):
+    return = MergePoly( return );
+
+h1 = 0.1;
+h2 = 0.2;
+h3 = 0.2;
+
+Pt1 = point(  h1, 1.0 - h3, -h2 );
+Pt2 = point( -h1, 1.0 - h3,  h2 );
+Pt3 = point( -h1, 1.0 + h3,  h2 );
+Pt4 = point(  h1, 1.0 + h3, -h2 );
+
+Pt1r = Pt2 * rz( 120 );
+Pt2r = Pt3 * rz( 120 );
+Pt3r = Pt4 * rz( 120 );
+Pt4r = Pt1 * rz( 120 );
+
+n = 30;
+FrameBase = GenTriSide( Pt1, Pt2, Pt2r, Pt1r, n ) ^
+	    GenTriSide( Pt2, Pt3, Pt3r, Pt2r, n ) ^
+	    GenTriSide( Pt3, Pt4, Pt4r, Pt3r, n ) ^
+	    GenTriSide( Pt4, Pt1, Pt1r, Pt4r, n );
+
+Triangle = -( FrameBase ^
+	      ( FrameBase * rz( 120 ) ) ^
+	      ( FrameBase * rz( -120 ) ) );
+interact( list( Triangle, view_mat1 ) );
+
+save( "imp-tri", Triangle );
+
+free( Triangle );
+
+#
+# The impossible Square.
+#
+
+h1 = 0.15;
+h2 = 0.2;
+h3 = 0.15;
+
+Pt1 = point(  h1, 1.0 - h3, -h2 );
+Pt2 = point( -h1, 1.0 - h3,  h2 );
+Pt3 = point( -h1, 1.0 + h3,  h2 );
+Pt4 = point(  h1, 1.0 + h3, -h2 );
+
+Pt1r = Pt2 * rz( 90 );
+Pt2r = Pt3 * rz( 90 );
+Pt3r = Pt4 * rz( 90 );
+Pt4r = Pt1 * rz( 90 );
+
+n = 30;
+FrameBase = GenTriSide( Pt1, Pt2, Pt2r, Pt1r, n ) ^
+	    GenTriSide( Pt2, Pt3, Pt3r, Pt2r, n ) ^
+	    GenTriSide( Pt3, Pt4, Pt4r, Pt3r, n ) ^
+	    GenTriSide( Pt4, Pt1, Pt1r, Pt4r, n );
+
+Rectangle = -( FrameBase ^
+	      ( FrameBase * rz( 90 ) ) ^
+	      ( FrameBase * rz( 180 ) ) ^
+	      ( FrameBase * rz( -90 ) ) ) * rz( 45 );
+interact( list( Rectangle, view_mat1 ) );
+
+save( "imp-rect", Rectangle );
+
+free( Rectangle );
+
+#
+# The impossible Pentagon.
+#
+
+h1 = 0.17;
+h2 = 0.2;
+h3 = 0.11;
+
+Pt1 = point(  h1, 1.0 - h3, -h2 );
+Pt2 = point( -h1, 1.0 - h3,  h2 );
+Pt3 = point( -h1, 1.0 + h3,  h2 );
+Pt4 = point(  h1, 1.0 + h3, -h2 );
+
+Pt1r = Pt2 * rz( 72 );
+Pt2r = Pt3 * rz( 72 );
+Pt3r = Pt4 * rz( 72 );
+Pt4r = Pt1 * rz( 72 );
+
+n = 30;
+FrameBase = GenTriSide( Pt1, Pt2, Pt2r, Pt1r, n ) ^
+	    GenTriSide( Pt2, Pt3, Pt3r, Pt2r, n ) ^
+	    GenTriSide( Pt3, Pt4, Pt4r, Pt3r, n ) ^
+	    GenTriSide( Pt4, Pt1, Pt1r, Pt4r, n );
+
+Pentagon = -( FrameBase ^
+	      ( FrameBase * rz( 72 ) ) ^
+	      ( FrameBase * rz( 144 ) ) ^
+	      ( FrameBase * rz( 216 ) ) ^
+	      ( FrameBase * rz( -72 ) ) );
+interact( list( Pentagon, view_mat1 ) );
+
+save( "imp-pent", Pentagon );
+
+free( Pentagon );
+
+free( FrameBase );
+free( h1 );
+free( h2 );
+free( h3 );
+free( n );
+free( Pt1 );
+free( Pt2 );
+free( Pt3 );
+free( Pt4 );
+free( Pt1r );
+free( Pt2r );
+free( Pt3r );
+free( Pt4r );
+
+#
+# Another realized variant of the Penrose impossible triangle.
+#
+
+resolution = 10;
+
+h = 0.15;
+
+Base1 = box( vector( 0, 0, 0 ), 1 - h, h, h );
+color( Base1, red );
+Base2 = box( vector( 1 - h, 0, 0 ), h, 1 - h, h );
+color( Base2, green );
+
+Sqr = ctlpt( E2, 0, 0 ) +
+      ctlpt( E2, 0, h ) +
+      ctlpt( E2, h, h ) +
+      ctlpt( E2, h, 0 ) +
+      ctlpt( E2, 0, 0 );
+
+Base3a = -sFromCrvs( list( Sqr * tz( h ),
+			   Sqr * rz( 45 ) * sy( 1.5 ) * rx( -55 ) * rz( -45 )
+							* tz( 0.4 + h ),
+			   Sqr * rz( 45 ) * sy( 1.5 ) * rx( -55 ) * rz( -45 )
+				 * tx( 1 - h ) * ty ( 1 - h ) * tz( -0.3 + h ),
+			   Sqr * tx( 1 - h ) * ty( 1 - h ),
+			   Sqr * tx( 1 - h ) * ty( 1 - h ) * tz( h ) ),
+		     3, kv_open );
+Base3b = ruledSrf( ctlpt( E2, 0, 0 ) + ctlpt( E2, 0, h ),
+		     ctlpt( E2, h, 0 ) + ctlpt( E2, h, h ) )
+		 * tx( 1 - h ) * ty( 1 - h ) * tz( h ) ;
+Base3 = list( Base3a, base3b );
+color( Base3, blue );
+
+view_mat_tri = view_mat * rx( 145 ) * ry( 180 ) * rx( 34 )
+			* rz( -29 ) * ty( 0.5 ) * sc( 1.5 );
+
+interact( list( Base1, Base2, Base3, view_mat_tri ) );
+
+save( "Penrose2", list( Base1, Base2, Base3, view_mat_tri ) );
+
+free( h );
+free( Base1 );
+free( Base2 );
+free( Base3a );
+free( Base3b );
+free( Base3 );
+free( Sqr );
+free( view_mat_tri );
+
+#
+# Escher's Cube (Search it in his "Belvedere" Drawing).
+#
+#
+
+view_mat1 = tx( -0.15 ) * ty( -0.65 );
+w = 0.075;
+Base = box( vector( 0, 0, 0 ), 1, 1, w ) -
+       box( vector( w, w, -1 ), 1 - 2*w, 1 - 2*w, 2 );
+m1 = rz( 37 ) * rx( 70 );
+BaseBot = Base * m1;
+m2 = rz( 37 ) * rx( -70 ) * ty( 0.7 ) * tz( 1.35 );
+BaseTop = Base * m2;
+m3 = sx( -1 ) * rz( 90 ) * tx( w ) * ty( w );
+
+PillarSqr = ctlpt( e3, 0, 0, 0 ) +
+	    ctlpt( e3, 0, w, 0 ) +
+	    ctlpt( e3, w, w, 0 ) +
+	    ctlpt( e3, w, 0, 0 ) +
+	    ctlpt( e3, 0, 0, 0 );
+Pillar1 = sFromCrvs(
+    list( PillarSqr * tz( 0 ) * m1,
+	  PillarSqr * tz( -w ) * m1,
+	  PillarSqr * m3 * tz( -w ) * m2,
+	  PillarSqr * m3 * m2 ),
+    3, kv_open );
+Pillar2 = sFromCrvs(
+    list( PillarSqr * tx( 1 - w ) * tz( 0 ) * m1,
+	  PillarSqr * tx( 1 - w ) * tz( -w ) * m1,
+	  PillarSqr * m3 * tx( 1 - w ) * tz( -w ) * m2,
+	  PillarSqr * m3 * tx( 1 - w ) * m2 ),
+    3, kv_open );
+Pillar3 = sFromCrvs(
+    list( PillarSqr * ty( 1 - w ) * tz( 0 ) * m1,
+	  PillarSqr * ty( 1 - w ) * tz( -w ) * m1,
+	  PillarSqr * m3 * ty( 1 - w ) * tz( -w ) * m2,
+	  PillarSqr * m3 * ty( 1 - w ) * m2 ),
+    3, kv_open );
+Pillar4 = sFromCrvs(
+    list( PillarSqr * tx( 1 - w ) * ty( 1 - w ) * tz( 0 ) * m1,
+	  PillarSqr * tx( 1 - w ) * ty( 1 - w ) * tz( -w ) * m1,
+	  PillarSqr * m3 * tx( 1 - w ) * ty( 1 - w ) * tz( -w ) * m2,
+	  PillarSqr * m3 * tx( 1 - w ) * ty( 1 - w ) * m2 ),
+    3, kv_open );
+
+All = list( BaseBot, BaseTop, Pillar1, Pillar2, Pillar3, Pillar4 );
+interact( list( All, view_mat1 ) );
+
+#
+# Escher's circular stairs,
+#
+
+resolution = 50;
+Cyl1 = cylin( vector( 0, 0, 0 ), vector( 0, 0, 1 ), 0.5, 3 ) -
+       cylin( vector( 0, 0, 0.5 ), vector( 0, 0, 1 ), 0.4, 3 );
+
+B = gbox( vector( 0.3, -0.1,  0.9 ),
+	  vector( 0.3,  0.0,  0.0 ),
+	  vector( 0.0,  0.2,  0.02 ),
+	  vector( 0.0,  0.0,  0.3 ) );
+
+for ( i = 0, 1, 19,
+    Cyl1 = Cyl1 - B * rz( i * 360 / 20 ) );
+
+All = list( Cyl1 ) * tz( -0.3 );
+interact( list( All, view_mat ) );
+free( Cyl1 );
+free( B );
+free( i );
+
+#############################################################################
+
+resolution = save_res;
+
+viewstate( "DepthCue", 1 );
+viewstate( "PolyAprx", 0 );
+viewstate( "DrawStyle", 1 );
+viewstate( "DrawStyle", 1 );
+viewstate( "DSrfPoly", 0 );
+viewstate( "DSrfWire", 1 );
+
+free( view_mat1 );
+free( w );
+free( Base );
+free( BaseBot );
+free( BaseTop );
+free( m1 );
+free( m2 );
+free( m3 );
+free( PillarSqr );
+free( Pillar1 );
+free( Pillar2 );
+free( Pillar3 );
+free( Pillar4 );
+free( All );

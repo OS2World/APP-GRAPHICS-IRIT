@@ -1,0 +1,139 @@
+#
+# A package to plot explicit curves and surfaces as polylines.
+#
+#
+#			Gershon Elber, October 1993.
+#
+save_mat = view_mat;
+
+#
+# The functions to plot. Get x or x,y and returns y or z values.
+#
+plotfn2d = function(x):
+    return = x^3 - 5*x^2 + 4*x - 5;
+
+plotfn3d = function(x, y):
+    return = sqrt(x*x + y*y):
+    if (return == 0.0, return = 1.0, return = 1.0 * sin(return) / return);
+
+EchoSrc = iritState("EchoSource", false);
+
+#
+# Computes a polyline out of the plotfn2d function from paramter values
+# min to max in n steps.
+#
+plotfunc2d2poly = function(min, max, n):lst:t:
+    lst = nil():
+    for (t = min, (max - min) / (n - 1), max,
+	snoc(vector(t, plotfn2d(t), 0.0), lst)):
+    return = poly(lst, true);
+
+#
+# Reposition the 2d polyline in the [-1..1] xy domain and plot it.
+#
+plotfunc2d = function(minx, maxx, n):pl:miny:maxy:i:v:tr:ax:sv:
+    pl = plotfunc2d2poly(minx, maxx, n):
+    color(pl, yellow):
+    attrib(pl, "width", 0.05):
+
+    # find the Y domain of the function.
+    miny = 1e6:
+    maxy = -1e6:
+    for (i = 0, 1, 2, miny = miny+i):
+    return = pl:
+
+    for (i = 0, 1, sizeof(pl) - 1,
+	v = coord(pl, i):
+	if (coord(v, 1) > maxy, maxy = coord(v, 1)):
+	if (coord(v, 1) < miny, miny = coord(v, 1))):
+
+    # Make the axes
+    ax = poly(list(vector(min(minx, 0), 0, 0),
+	           vector(max(maxx, 0), 0, 0)),
+	      true) +
+	 poly(list(vector(0, min(miny, 0), 0),
+		   vector(0, max(maxy, 0), 0)),
+	      true):
+    color(ax, red):
+    attrib(ax, "width", 0.02):
+
+    # Map and display the polyline to the [-1..1] domain in both x and y.
+    tr = trans(vector(-(minx + maxx) / 2, -(miny + maxy) / 2, 0)) *
+	 scale(vector(2 / (maxx - minx), 2 / (maxy - miny), 0)):
+    sv = view_mat:
+    view_mat = rotx(0):
+    viewobj(list(view_mat, return = list(pl, ax) * tr)):
+    printf("XDomain = [%lf %lf], YDomain = [%lf %lf]\\n",
+	   list(minx, maxx, miny, maxy)):
+    view_mat = sv;
+
+#
+# Computes polylines out of the plotfn3d function from parameter values
+# minx/y to maxx/y in n steps and m isolines for each size.
+#
+plotfunc3d2poly = function(minx, maxx, miny, maxy, n, m):lst:x:y:first:
+    first = true:
+    for (x = minx, (maxx - minx) / (m - 1), maxx,
+	lst = nil():
+	for (y = miny, (maxy - miny) / (n - 1), maxy,
+	    snoc(vector(x, y, plotfn3d(x, y)), lst)):
+	if (first == true,
+	    return = poly(lst, true):first = false,
+	    return = return + poly(lst, true))):
+    for (y = miny, (maxy - miny) / (m - 1), maxy,
+	lst = nil():
+	for (x = minx, (maxx - minx) / (n - 1), maxx,
+	    snoc(vector(x, y, plotfn3d(x, y)), lst)):
+	return = return + poly(lst, true));
+
+#
+# Plot the 3d polylines in their original domain.
+#
+plotfunc3d = function(minx, maxx, miny, maxy, n, m):pl:minz:maxz:v:p:ax:i:j:
+    pl = plotfunc3d2poly(minx, maxx, miny, maxy, n, m):
+    color(pl, yellow):
+    attrib(pl, "width", 0.05):
+
+    # find the Y domain of the function.
+    minz = 1e6:
+    maxz = -1e6:
+    for (i = 0, 1, sizeof(pl) - 1,
+        p = coord(pl, i):
+	for (j = 0, 1, sizeof(p) - 1,
+	    v = coord(p, i):
+	    if (coord(v, 2) > maxz, maxz = coord(v, 2)):
+	    if (coord(v, 2) < minz, minz = coord(v, 2)))):
+
+    # Make the axes
+    ax = poly(list(vector(min(minx, 0), 0, 0),
+	           vector(max(maxx, 0), 0, 0)),
+	      true) +
+	 poly(list(vector(0, min(miny, 0), 0),
+		   vector(0, max(maxy, 0), 0)),
+	      true) +
+	 poly(list(vector(0, 0, min(minz, 0)),
+		   vector(0, 0, max(maxz, 0))),
+	      true):
+    color(ax, red):
+    attrib(ax, "width", 0.02):
+
+    # Plot the polylines to their original domain.
+    viewobj(return = list(pl, ax)):
+    printf("XDomain = [%lf %lf], YDomain = [%lf %lf], ZDomain = [%lf %lf]\\n",
+	   list(minx, maxx, miny, maxy, minz, maxz));
+
+EchoSrc = iritState("EchoSource", EchoSrc);
+free( EchoSrc );
+
+viewclear();
+fn = plotfunc2d(-1, 5, 50);
+pause();
+
+viewclear();
+view_mat = sz(5) * rotz(35) * rotx(-60) * sc(0.1);
+viewobj(view_mat);
+fn = plotfunc3d(-10, 10, -10, 10, 50, 10);
+pause();
+
+view_mat = save_mat;
+free( fn );

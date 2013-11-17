@@ -1,0 +1,85 @@
+#
+# A modern cup.
+#
+#				Gershon Elber, November 1995
+#
+
+save_mat = view_mat;
+view_mat = rotx( -90 ) * tx( -0.5 ) * ty( -1.0 ) * sc( 0.8 );
+viewobj( view_mat );
+
+PtList = nil();
+for ( i = 0, 1, 7,
+    snoc( point( cos( i * 2 * Pi / 8 ), sin( i * 2 * Pi / 8 ), 0.0 ),
+	  PtList ) );
+
+C1 = coerce( cbspline( 3, PtList, list( KV_PERIODIC ) ), KV_OPEN ) * rz( -22.5 );
+C2 = coerce( cbspline( 2, PtList, list( KV_PERIODIC ) ), KV_OPEN ) * sc( 1.1 );
+free( PtList );
+
+MinSize = 0.01;
+Body = sFromCrvs( list( C2 * sc( MinSize ) * tz( 0.05 ),
+			C2 * sc( 0.7 ) * tz( 0.05 ),
+			C2 * sc( 0.8 ) * tz( 0.05 ),
+			C2 * sc( 0.9 ),
+			C2,
+			C2 * tz( 2.0 ),
+			C2 * tz( 2.2 ),
+			C1 * tz( 2.2 ),
+			C1 * tz( 2.0 ),
+			C1 * tz( 0.4 ),
+			C1 * sc( 0.5 ) * tz( 0.2 ),
+			C1 * sc( MinSize ) * tz( 0.2 ) ),
+		  3, KV_OPEN );
+free( C1 );
+free( C2 );
+free( MinSize );
+
+cBody = cSurface( coerce( Body, KV_OPEN ), COL, 1 );
+
+cBodyIn = cregion( cBody, 0.6, 1.0 );
+color( cBodyIn, red );
+adwidth( cBodyIn, 3 );
+cBodyOut = -cregion( cBody, 0.0, 0.6 );
+color( cBodyOut, green );
+adwidth( cBodyOut, 3 );
+
+ruled1 = ruledSrf( cBodyIn, cBodyOut );
+interact( list( ruled1, cBodyOut, cBodyIn ) );
+save( "distmtc1", list( ruled1, cBodyOut, cBodyIn ) );
+
+cBodyIn2 = ffmatch( cBodyOut, cBodyIn, 30, 100, 2, false, -1 );
+color( cBodyIn2, red );
+adwidth( cBodyIn2, 3 );
+ruled2 = ruledSrf( cBodyIn2, cBodyOut );
+interact( list( ruled2, cBodyOut, cBodyIn2 ) );
+save( "distmtc2", list( ruled2, cBodyOut, cBodyIn2 ) );
+
+cBodyIn3 = ffmatch( cBodyOut, cBodyIn, 30, 100, 2, false, -2 );
+color( cBodyIn3, red );
+adwidth( cBodyIn3, 3 );
+ruled3 = ruledSrf( cBodyIn3, cBodyOut );
+interact( list( ruled3, cBodyOut, cBodyIn3 ) );
+save( "distmtc3", list( ruled3, cBodyOut, cBodyIn3 ) );
+
+cBodyIn4 = ffmatch( cBodyOut, cBodyIn, 30, 100, 2, false, -3 );
+color( cBodyIn4, red );
+adwidth( cBodyIn4, 3 );
+ruled4 = ruledSrf( cBodyIn4, cBodyOut );
+interact( list( ruled4, cBodyOut, cBodyIn4 ) );
+save( "distmtc4", list( ruled4, cBodyOut, cBodyIn4 ) );
+
+view_mat = save_mat;
+
+free( i );
+free( ruled1 );
+free( ruled2 );
+free( ruled3 );
+free( ruled4 );
+free( Body );
+free( cBody );
+free( cBodyIn );
+free( cBodyOut );
+free( cBodyIn2 );
+free( cBodyIn3 );
+free( cBodyIn4 );

@@ -1,0 +1,16 @@
+
+#
+# This is the make file for circlink subdirectory.
+#
+#				Gershon Elber, June 1993
+#
+
+# Get the destination directories:
+include ..\makeflag.wnt
+
+OBJS = circlink.$(IRIT_OBJ_PF)
+
+install: $(OBJS)
+	-copy $(OBJS) $(IRIT_LIB_DIR)
+
+# Dependencies starts here - do not touch, generated automatically.

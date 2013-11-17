@@ -1,0 +1,109 @@
+#
+# This make file is the main make file of the IRIT solid modeller and its
+# auxilary tools, under UNIX.
+#
+#				Gershon Elber, Nov. 1991
+#
+
+include makeflag.unx
+
+#
+# All subdirectories to recurse into.
+#
+ALL_DIRS = xtra_lib misc_lib grap_lib cagd_lib symb_lib triv_lib mdl_lib \
+	trim_lib trng_lib mvar_lib user_lib prsr_lib geom_lib bool_lib \
+	rndr_lib ext_lib circlink \
+	irit grapdrvs aisoshad poly3d-h irender ihidden illustrt \
+	filters test docs
+
+#
+# Uncommend the following variable to only see the actions taken.
+#
+# VIEW_ONLY = -n
+
+SHELL = /bin/sh
+
+all: 	binaries doc init
+
+all2:
+	$(MAKE) -f makefile.unx all
+	$(MAKE) CFG=Rel -f makefile.unx all
+
+#
+# Print info regarding initialization.
+#
+init:
+	-@for f in "" \
+		  "Before executing the test suite and/or any usage of this" \
+		  "package you will have to issue the following commands:" \
+		  "" \
+		  "set path = (\$$path $(IRIT_BIN_DIR))" \
+		  "setenv IRIT_PATH $(IRIT_BIN_DIR)/" \
+		  "setenv IRIT_DISPLAY \"x11drvs -s-\"" \
+		  "" \
+		  "	if shared library are used then" \
+		  "" \
+		  "setenv LD_LIBRARY_PATH $(LD_LIBRARY_PATH):$(IRIT_LIB_DIR)" \
+		  "" \
+		  "	and optionally the following commands:" \
+		  "" \
+		  "setenv IRIT_BIN_IPC 1" \
+		  "setenv IRIT_SERVER_HOST `hostname`" \
+		  "setenv IRIT_SERVER_PORT 5432" \
+		  "" \
+		  "or similar."; do \
+		(echo $$f) \
+	done
+
+binaries:
+	-for f in $(ALL_DIRS); do \
+		(cd $$f \
+		 && echo ----------- `pwd` ------------- \
+		 && $(MAKE) $(VIEW_ONLY) -f makefile.unx install); \
+	done
+	-$(IRIT_STRIP_EXE) $(IRIT_BIN_DIR)/*
+
+#
+# Make hardcopy documentation.
+#
+doc:
+	(cd docs && \
+	 $(MAKE) $(VIEW_ONLY) -f makefile.unx irit.tex irit.doc)
+
+clean:
+	-rm -f .~* .\#*			# Emacs backup files.
+	-for f in $(ALL_DIRS); do \
+		(rm -f $$f/*.a $$f/*.o $$f/*mon.out $$f/.~* $$f/.\#* $$f/*mon.out); \
+	done
+	-rm -f poly3d-h/*.hdn
+	-rm -f irender/*.rle
+	-rm -f ihidden/*.ps
+	-rm -f irit/*.dat
+	-rm -f lib/*.a
+	-rm -f docs/irithlp docs/irithlp.o
+
+#
+# Test some of the above programs. Make sure $(IRIT_BIN_DIR) is in your path
+# and that IRIT_LCLDISP is set ('setenv IRIT_LCLDISP x11drvs').
+#
+test:
+	-( \
+	export PATH; PATH=$(IRIT_SRC_DIR)/bin:$(PATH); \
+	export IRIT_PATH; IRIT_PATH=$(IRIT_SRC_DIR)/bin/; \
+	export IRIT_DISPLAY; IRIT_DISPLAY="x11drvs -s-"; \
+	export IRIT_BIN_IPC; IRIT_BIN_IPC=1; \
+	export IRIT_SERVER_HOST; IRIT_SERVER_HOST=`hostname`; \
+	export IRIT_SERVER_PORT; IRIT_SERVER_PORT=5432; \
+	(cd scripts && irit demo); \
+	for f in aisoshad poly3d-h irender ihidden illustrt filters; do \
+		(cd $$f && csh -f test-unx); \
+	done; \
+	)
+
+depend:
+	-for f in $(ALL_DIRS); do \
+		(cd $$f && makedepend -Y -I../include -fmakefile.unx *.c \
+			&& makedepend -Y -I../include -fmakefile.os2 *.c \
+			&& makedepend -Y -I../include -fmakefile.sas *.c \
+			&& makedepend -Y -I../include -fmakefile.ami *.c ) \
+	done

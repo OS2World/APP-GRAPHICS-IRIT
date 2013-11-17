@@ -1,0 +1,80 @@
+#
+# This is the make file for the graphic driver's subdirectory.
+#
+#				Gershon Elber, June 1993
+#
+
+include ../makeflag.unx
+
+nuldrvs$(IRIT_EXE_PF): nuldrvs.o$(IRIT_OBJ_PF) gen_grap.o$(IRIT_OBJ_PF)
+	$(CC) $(CFLAGS) -o nuldrvs$(IRIT_EXE_PF) nuldrvs.o$(IRIT_OBJ_PF) \
+	gen_grap.o$(IRIT_OBJ_PF) $(IRIT_LIBS) $(IRIT_MORE_LIBS) -lm
+
+XGEN_PRIM_DRAW = \
+	drawln3d.o$(IRIT_OBJ_PF) \
+	drawpoly.o$(IRIT_OBJ_PF) \
+	drawptvc.o$(IRIT_OBJ_PF)
+
+XGEN_DRAW = \
+	gen_grap.o$(IRIT_OBJ_PF) \
+	draw_obj.o$(IRIT_OBJ_PF) \
+	cnstcrvs.o$(IRIT_OBJ_PF) \
+	editcrvs.o$(IRIT_OBJ_PF) \
+	editsrfs.o$(IRIT_OBJ_PF) \
+	editmanp.o$(IRIT_OBJ_PF)
+
+xgldrvs$(IRIT_EXE_PF): xgldrvs.o$(IRIT_OBJ_PF) xgldraw.o$(IRIT_OBJ_PF) $(XGEN_DRAW)
+	$(CC) $(CFLAGS) -o xgldrvs$(IRIT_EXE_PF) xgldrvs.o$(IRIT_OBJ_PF) \
+	xgldraw.o$(IRIT_OBJ_PF) $(XGEN_DRAW) $(IRIT_LIBS) $(IRIT_MORE_LIBS) $(GRAPGLLIBS) -lm
+
+XMT_DRAW = \
+	xmtdrvs.o$(IRIT_OBJ_PF) \
+	xmt_anim.o$(IRIT_OBJ_PF) \
+	xmt_crvs.o$(IRIT_OBJ_PF) \
+	xmt_srfs.o$(IRIT_OBJ_PF) \
+	xmt_shad.o$(IRIT_OBJ_PF) \
+	xmt_manp.o$(IRIT_OBJ_PF) \
+	xmt_pick.o$(IRIT_OBJ_PF) \
+	$(XGEN_DRAW)
+
+
+xogldrvs$(IRIT_EXE_PF): xogldraw.o$(IRIT_OBJ_PF) open_gl.o$(IRIT_OBJ_PF) \
+	$(XMT_DRAW)
+	$(CC) $(CFLAGS) -o xogldrvs$(IRIT_EXE_PF) xogldraw.o$(IRIT_OBJ_PF) \
+	open_gl.o$(IRIT_OBJ_PF) $(XMT_DRAW) $(IRIT_LIBS) $(IRIT_MORE_LIBS) $(GRAPOGLLIBS) -lm
+
+XGLADAP_DRAW = $(XGEN_DRAW)
+xgladap$(IRIT_EXE_PF): xgladap.o$(IRIT_OBJ_PF) $(XGLADAP_DRAW)
+	$(CC) $(CFLAGS) -o xgladap$(IRIT_EXE_PF) xgladap.o$(IRIT_OBJ_PF) \
+	$(XGLADAP_DRAW) $(IRIT_LIBS) $(IRIT_MORE_LIBS) $(GRAPGLLIBS) -lm
+
+X11DRVS_DRAW = $(XGEN_DRAW) $(XGEN_PRIM_DRAW)
+x11drvs$(IRIT_EXE_PF): x11drvs.o$(IRIT_OBJ_PF) x11draw.o$(IRIT_OBJ_PF) \
+	$(X11DRVS_DRAW)
+	$(CC) $(CFLAGS) -o x11drvs$(IRIT_EXE_PF) x11drvs.o$(IRIT_OBJ_PF) \
+	x11draw.o$(IRIT_OBJ_PF) $(X11DRVS_DRAW) $(IRIT_LIBS) $(IRIT_MORE_LIBS) \
+	$(GRAPX11LIBS) -lm
+
+XMTDRVS_DRAW = $(XMT_DRAW) $(XGEN_PRIM_DRAW)
+xmtdrvs$(IRIT_EXE_PF): x11draw.o$(IRIT_OBJ_PF) $(XMT_DRAW)
+	$(CC) $(CFLAGS) -o xmtdrvs$(IRIT_EXE_PF) x11draw.o$(IRIT_OBJ_PF) \
+	$(XMTDRVS_DRAW) $(IRIT_LIBS) $(IRIT_MORE_LIBS) \
+	$(GRAPXMTLIBS) -lm
+
+xglmdrvs$(IRIT_EXE_PF): xgldraw.o$(IRIT_OBJ_PF) $(XMT_DRAW)
+	$(CC) $(CFLAGS) -o xglmdrvs$(IRIT_EXE_PF) xgldraw.o$(IRIT_OBJ_PF) \
+	$(XMT_DRAW) $(IRIT_LIBS) $(IRIT_MORE_LIBS) $(GRAPXMTLIBS) \
+	$(GRAPGLLIBS) -lm
+
+xsbmdrvs$(IRIT_EXE_PF): xsbdraw.o$(IRIT_OBJ_PF) hpsbutil.o$(IRIT_OBJ_PF) \
+	gen_grap.o$(IRIT_OBJ_PF) $(XMT_DRAW)
+	$(CC) $(CFLAGS) -o xsbmdrvs$(IRIT_EXE_PF) xsbdraw.o$(IRIT_OBJ_PF) \
+	hpsbutil.o$(IRIT_OBJ_PF) $(XMT_DRAW) $(IRIT_LIBS) \
+	$(IRIT_MORE_LIBS) $(GRAPSBLIBS) $(GRAPXMTLIBS) -lm
+
+install: $(GRAPDRVS)
+	mv -f $(GRAPDRVS) $(IRIT_BIN_DIR)
+	cp x*drvs.cfg $(IRIT_BIN_DIR)
+
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

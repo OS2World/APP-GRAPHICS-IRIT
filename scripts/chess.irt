@@ -1,0 +1,495 @@
+#
+# A complete chess set.
+#
+#			Gershon Elber, October 1996
+#
+
+viewclear();
+
+BlackColor = "100,100,100";
+WhiteColor = "255,255,255";
+
+#
+# Bishop
+#
+Bishop = function( s, clr ): BishopTop: BishopBody:
+    return = -surfPRev( cbspline( 3,
+				  list( ctlpt( E2, 0.0001, 0.82 ),
+					ctlpt( E2, 0.028,  0.82 ),
+					ctlpt( E2, 0.028,  0.77 ),
+					ctlpt( E2, 0.01,   0.77 ),
+					ctlpt( E2, 0.01,   0.765 ),
+					ctlpt( E2, 0.06,   0.76 ),
+					ctlpt( E2, 0.09,   0.69 ),
+					ctlpt( E2, 0.06,   0.625 ),
+					ctlpt( E2, 0.02,   0.62 ),
+					ctlpt( E2, 0.02,   0.61 ),
+					ctlpt( E2, 0.08,   0.60 ),
+					ctlpt( E2, 0.08,   0.59 ),
+					ctlpt( E2, 0.03,   0.58 ),
+					ctlpt( E2, 0.03,   0.56 ),
+					ctlpt( E2, 0.12,   0.55 ),
+					ctlpt( E2, 0.12,   0.53 ),
+					ctlpt( E2, 0.05,   0.51 ),
+					ctlpt( E2, 0.07,   0.29 ),
+					ctlpt( E2, 0.18,   0.12 ),
+					ctlpt( E2, 0.18,   0.0  ) ),
+				  list( KV_OPEN ) ) * rx( 90 ) ) *
+	sc( s ):
+
+    BishopTop = sRegion( return, row, 0.0, 0.1 ):
+    BishopBody = sRegion( return, row, 0.1, 1.0 ):
+
+    attrib( BishopTop, "rgb", "255,255,100" ):
+    attrib( BishopBody, "rgb", clr ):
+
+    return = list( BishopBody, BishopTop );
+
+#
+# Knight
+#
+Knight = function( s, clr ): Sec4: Sec3: Sec2: Sec1: KnightBody: KnightEyes:
+    Sec4 = cbspline( 4,
+        list( ctlpt( E2,  0.275, 0.0 ),
+	      ctlpt( E2,  0.275, 0.185 ),
+	      ctlpt( E2,  0.101, 0.442 ),
+	      ctlpt( E2,  0.051, 0.601 ),
+	      ctlpt( E2,  0.012, 0.909 ),
+	      ctlpt( E2,  0.153, 0.843 ),
+	      ctlpt( E2,  0.309, 0.789 ),
+	      ctlpt( E2,  0.340, 0.805 ),
+	      ctlpt( E2,  0.248, 0.879 ),
+	      ctlpt( E2,  0.359, 0.836 ),
+	      ctlpt( E2,  0.362, 0.880 ),
+	      ctlpt( E2,  0.218, 1.014 ),
+	      ctlpt( E2,  0.061, 1.133 ),
+	      ctlpt( E2, -0.132, 1.135 ),
+	      ctlpt( E2, -0.212, 1.062 ),
+	      ctlpt( E2, -0.209, 0.923 ),
+	      ctlpt( E2, -0.156, 0.852 ),
+	      ctlpt( E2, -0.124, 0.578 ),
+	      ctlpt( E2, -0.126, 0.463 ),
+	      ctlpt( E2, -0.263, 0.211 ),
+	      ctlpt( E2, -0.266, 0.0 ) ),
+        list( kv_open ) ):
+    Sec3 = cbspline( 4,
+        list( ctlpt( E3, 0.275, 0, 0.143 ),
+              ctlpt( E3, 0.275, 0.185, 0.143 ),
+              ctlpt( E3, 0.101, 0.442, 0.07 ),
+              ctlpt( E3, 0.051, 0.601, 0.05 ),
+              ctlpt( E3, 0.012, 0.909, 0.04 ),
+              ctlpt( E3, 0.153, 0.843, 0.031 ),
+              ctlpt( E3, 0.218, 0.816, 0.03 ),
+              ctlpt( E3, 0.319, 0.788, 0.032 ),
+              ctlpt( E3, 0.336, 0.806, 0.035 ),
+              ctlpt( E3, 0.246, 0.875, 0.034 ),
+              ctlpt( E3, 0.393, 0.836, 0.036 ),
+              ctlpt( E3, 0.274, 0.943, 0.037 ),
+              ctlpt( E3, 0.0825, 1.08, 0.035 ),
+              ctlpt( E3, -0.0448, 1.15, 0.035 ),
+              ctlpt( E3, -0.157, 1.2, 0.035 ),
+              ctlpt( E3, -0.179, 1.12, 0.035 ),
+              ctlpt( E3, -0.213, 0.994, 0.035 ),
+              ctlpt( E3, -0.158, 0.795, 0.05 ),
+              ctlpt( E3, -0.0873, 0.483, 0.07 ),
+              ctlpt( E3, -0.263, 0.211, 0.145 ),
+              ctlpt( E3, -0.266, 0, 0.143 ) ),
+        list( kv_open ) ):
+    Sec2 = cbspline( 4,
+        list( ctlpt( E3, 0.137, 0, 0.286 ),
+              ctlpt( E3, 0.137, 0.185, 0.286 ),
+              ctlpt( E3, 0.047, 0.44, 0.14 ),
+              ctlpt( E3, 0.007, 0.6, 0.1 ),
+              ctlpt( E3, -0.0273, 0.855, 0.0879 ),
+              ctlpt( E3, 0.025, 0.91, 0.0634 ),
+              ctlpt( E3, 0.111, 0.886, 0.0608 ),
+              ctlpt( E3, 0.151, 0.859, 0.0644 ),
+              ctlpt( E3, 0.177, 0.848, 0.0813 ),
+              ctlpt( E3, 0.202, 0.838, 0.0785 ),
+              ctlpt( E3, 0.28, 0.804, 0.0767 ),
+              ctlpt( E3, 0.323, 0.865, 0.0646 ),
+              ctlpt( E3, 0.284, 0.93, 0.0615 ),
+              ctlpt( E3, 0.173, 1.02, 0.0639 ),
+              ctlpt( E3, 0.00423, 1.09, 0.0804 ),
+              ctlpt( E3, -0.275, 1.5, 0.07 ),
+              ctlpt( E3, -0.135, 1.12, 0.07 ),
+              ctlpt( E3, -0.2, 1.05, 0.07 ),
+              ctlpt( E3, -0.155, 0.91, 0.07 ),
+              ctlpt( E3, -0.085, 0.59, 0.1 ),
+              ctlpt( E3, -0.074, 0.468, 0.14 ),
+              ctlpt( E3, -0.133, 0.212, 0.29 ),
+              ctlpt( E3, -0.133, 0, 0.286 ) ),
+        list( kv_open ) ):
+    Sec1 = cbspline( 4,
+        list( ctlpt( E3,  0.0,   0.0,   0.286 ),
+              ctlpt( E3, -0.004, 0.216, 0.286 ),
+              ctlpt( E3, -0.018, 0.444, 0.14 ),
+              ctlpt( E3, -0.036, 0.62,  0.1 ),
+              ctlpt( E3, -0.061, 0.8,   0.08 ),
+              ctlpt( E3, -0.09,  1.01, 0.07 ),
+              ctlpt( E3, -0.06,  1.04,  0.065 ),
+              ctlpt( E3,  0.007, 1.01, 0.065 ),
+              ctlpt( E3,  0.165, 0.927, 0.07 ),
+              ctlpt( E3,  0.235, 0.897, 0.068 ),
+              ctlpt( E3,  0.276, 0.876, 0.072 ),
+              ctlpt( E3,  0.235, 0.897, 0.068 ),
+              ctlpt( E3,  0.165, 0.927, 0.07 ),
+              ctlpt( E3,  0.007, 1.01, 0.065 ),
+              ctlpt( E3, -0.06,  1.04,  0.065 ),
+              ctlpt( E3, -0.09,  1.01, 0.07 ),
+              ctlpt( E3, -0.061, 0.8,   0.08 ),
+              ctlpt( E3, -0.036, 0.62,  0.1 ),
+              ctlpt( E3, -0.018, 0.444, 0.14 ),
+              ctlpt( E3, -0.004, 0.216, 0.286 ),
+              ctlpt( E3,  0.0,   0.0,   0.286 ) ),
+         list( kv_open ) ):
+
+    KnightBody = -sFromCrvs( list( Sec1, Sec2, Sec3, Sec4, Sec3 * sz( -1 ),
+		       Sec2 * sz( -1 ), Sec1 * sz( -1 ) ),
+		 4, KV_OPEN ):
+    attrib( KnightBody, "rgb", clr ):
+
+    KnightEyes = list( sphereSrf( 0.025 ) * ty( 1 ) * tz( 0.05 ),
+		      sphereSrf( 0.025 ) * ty( 1 ) * tz( -0.05 ) ):
+    color( KnightEyes, cyan ):
+
+    return = list( KnightBody, KnightEyes ) * sc( 0.65 * s ) * rx( 90 );
+
+#
+# Rook
+#
+
+Rook = function( s, clr ): RookBase: RookWall: Axs: Scl:
+    RookBase  = -surfPRev( ( ctlpt( E2, 0.001,  0.55 ) +
+                             ctlpt( E2, 0.11,  0.55 ) +
+                             ctlpt( E2, 0.11,  0.63 ) +
+                             ctlpt( E2, 0.13,  0.63 ) +
+                             cbspline( 3,
+                                       list( ctlpt( E2, 0.13,   0.53 ),
+                                             ctlpt( E2, 0.05,   0.51 ),
+                                             ctlpt( E2, 0.07,   0.29 ),
+                                             ctlpt( E2, 0.18,   0.12 ),
+                                             ctlpt( E2, 0.18,   0.0 ) ),
+                                       list( KV_OPEN ) ) ) * rx( 90 ) ):
+
+    Axs = crefine( creparam( pcircle( vector( 0.0, 0.0, 0.0 ), 1.0 ), 0, 1 ),
+		   false,
+		   list( 0.05, 0.1, 0.15, 0.2, 0.3, 0.35, 0.4, 0.45, 0.55,
+			 0.6, 0.65, 0.7, 0.8, 0.85, 0.9, 0.95 ) ):
+    Scl = cbspline( 2,
+                    list( ctlpt( E2,  0.0, 0.01 ),
+                          ctlpt( E2,  0.5, 0.01 ),
+                          ctlpt( E2,  0.5, 1.0 ),
+                          ctlpt( E2,  1.0, 1.0 ),
+			  ctlpt( E2,  0.0, 0.01 ) ),
+		    list( 0, 0, 0.7, 0.701, 1.999, 2, 3 ) ):
+    Scl = creparam( Scl + Scl * tx( 1 ) + Scl * tx( 2 ) + Scl * tx( 3 ) +
+	            Scl * tx( 4 ) + Scl * tx( 5 ) + ctlpt( E2, 6, 0.01 ),
+                    0, 1 ):
+
+    RookWall = swpSclSrf( ctlpt( E2, -0.08, 0.0 ) +           # Cross Section
+                          ctlpt( E2,  0.08, 0.0 ) +
+                          ctlpt( E2,  0.08, 0.6 ) +
+                          ctlpt( E2, -0.08, 0.6 ) +
+                          ctlpt( E2, -0.08, 0.0 ),
+                          Axs, Scl, vector( 0, 0, 1 ), 2 )
+        * sc( 0.12 ) * tz( 0.63 ):
+    attrib( RookWall, "rgb", "255,255,100" ):
+
+    attrib( RookBase, "rgb", clr ):
+
+    return = list( RookBase, RookWall ) * sc( s );
+
+#
+# Pawn
+#
+Pawn = function( s, clr ):
+    return = -surfPRev( cbspline( 3,
+			          list( ctlpt( E2, 0.0001, 0.635 ),
+				        ctlpt( E2, 0.06,   0.63 ),
+				        ctlpt( E2, 0.08,   0.56 ),
+				        ctlpt( E2, 0.06,   0.52 ),
+				        ctlpt( E2, 0.03,   0.5 ),
+				        ctlpt( E2, 0.03,   0.49 ),
+				        ctlpt( E2, 0.1,    0.48 ),
+				        ctlpt( E2, 0.1,    0.46 ),
+				        ctlpt( E2, 0.04,   0.44 ),
+				        ctlpt( E2, 0.05,   0.25 ),
+				        ctlpt( E2, 0.15,   0.1 ),
+				        ctlpt( E2, 0.15,   0.0 ) ),
+		                  list( KV_OPEN ) ) * rx( 90 ) )
+	* sc( s ):
+    attrib( return, "rgb", clr );
+
+#
+# King
+#
+King = function( s, clr ): KingBase: KingCrossCrv:
+    KingCrossSrf1: KingCrossSrf2: KingCrossCrv2: KingCrossSrf3: KingCross:
+    KingBase = -surfPRev( cbspline( 3,
+				    list( ctlpt( E2, 0.001,  1.04 ),
+					  ctlpt( E2, 0.04,  1.04 ),
+					  ctlpt( E2, 0.04,  1.02 ),
+					  ctlpt( E2, 0.06,  1.02 ),
+					  ctlpt( E2, 0.06,  1.0 ),
+					  ctlpt( E2, 0.08,  1.0 ),
+					  ctlpt( E2, 0.08,  0.97 ),
+					  ctlpt( E2, 0.1,  0.97 ),
+					  ctlpt( E2, 0.1,  0.94 ),
+					  ctlpt( E2, 0.07,  0.82),
+					  ctlpt( E2, 0.07,  0.80 ),
+					  ctlpt( E2, 0.09,  0.80 ),
+					  ctlpt( E2, 0.09,  0.78 ),
+					  ctlpt( E2, 0.07,  0.78 ),
+					  ctlpt( E2, 0.07,  0.74 ),
+					  ctlpt( E2, 0.10,  0.72 ),
+					  ctlpt( E2, 0.10,  0.70 ),
+					  ctlpt( E2, 0.14,  0.67 ),
+					  ctlpt( E2, 0.14,  0.64 ),
+					  ctlpt( E2, 0.06,  0.57 ),
+					  ctlpt( E2, 0.09,  0.33 ),
+					  ctlpt( E2, 0.21,  0.14 ),
+					  ctlpt( E2, 0.21,  0.0  ) ),
+				    list( KV_OPEN ) ) * rx( 90 ) ):
+
+    KingCrossCrv = ctlpt( E2,  -0.07, 0.0 ) +
+		   ctlpt( E2,  -0.07, 0.53 ) +
+		   ctlpt( E2,  -0.3,  0.53 ) +
+		   ctlpt( E2,  -0.3,  0.67 ) +
+		   ctlpt( E2,  -0.07, 0.67 ) +
+		   ctlpt( E2,  -0.07, 1.0 ) +
+		   ctlpt( E2,   0.0,  1.0 ):
+
+    KingCrossSrf1 = ruledSrf( KingCrossCrv, KingCrossCrv * sx( -1 ) ):
+
+    KingCrossSrf2 = -KingCrossSrf1 * tz( 0.08 ):
+    KingCrossCrv2 = KingCrossCrv + -KingCrossCrv * sx( -1 ):
+    KingCrossSrf3 = ruledSrf( KingCrossCrv2, KingCrossCrv2 * tz( 0.08 ) ):
+
+    KingCross = list( KingCrossSrf1, KingCrossSrf2,
+		      KingCrossSrf3 ) * tz( -0.04 )
+	* sc( 0.16 ) * rx( 90 ) * tz( 1.0 ):
+
+    attrib( KingCross, "rgb", "255,255,100" ):
+    attrib( KingBase, "rgb", clr ):
+
+    return = list( KingBase, KingCross ) * sc( s );
+
+#
+# Queen
+# 
+Queen = function( s, clr ): QueenBase: QueenCrwn:
+    QueenBase = -surfPRev( cbspline( 3,
+				    list( ctlpt( E2, 0.001, 1.01 ),
+					  ctlpt( E2, 0.02,  1.01 ),
+					  ctlpt( E2, 0.02,  0.972 ),
+					  ctlpt( E2, 0.01,  0.972 ),
+					  ctlpt( E2, 0.01,  0.97 ),
+					  ctlpt( E2, 0.09,  0.96 ),
+					  ctlpt( E2, 0.10,  0.912 ),
+					  ctlpt( E2, 0.10,  0.911 ),
+					  ctlpt( E2, 0.12,  0.911 ),
+					  ctlpt( E2, 0.12,  0.91 ),
+					  ctlpt( E2, 0.09,  0.84 ),
+					  ctlpt( E2, 0.07,  0.76 ),
+					  ctlpt( E2, 0.07,  0.74 ),
+					  ctlpt( E2, 0.085,  0.74 ),
+					  ctlpt( E2, 0.085,  0.72 ),
+					  ctlpt( E2, 0.07,  0.72 ),
+					  ctlpt( E2, 0.07,  0.70 ),
+					  ctlpt( E2, 0.10,  0.68 ),
+					  ctlpt( E2, 0.10,  0.66 ),
+					  ctlpt( E2, 0.14,  0.64 ),
+					  ctlpt( E2, 0.14,  0.62 ),
+					  ctlpt( E2, 0.06,  0.57 ),
+					  ctlpt( E2, 0.09,  0.33 ),
+					  ctlpt( E2, 0.21,  0.14 ),
+					  ctlpt( E2, 0.21,  0.0 ) ),
+				     list( KV_OPEN ) ) * rx( 90 ) ):
+    QueenCrwn = -swpSclSrf( ctlpt( E2, -0.10, 0.0 ) +   # Cross Section
+			    ctlpt( E2,  0.10, 0.0 ) +
+			    ctlpt( E2, -0.42, -0.7 ) +
+			    ctlpt( E2, -0.44, -0.7 ) +
+			    ctlpt( E2, -0.10, 0.0 ),
+			    -pcircle( vector( 0.0, 0.0, 0.0 ), 1.0 ), # Axis
+			    creparam( coerce( cbspline( 3,	# Scale curve
+						  list( ctlpt( E2,  0, -0.3 ),
+							ctlpt( E2,  1, 1.5 ),
+							ctlpt( E2,  2, -0.3 ),
+							ctlpt( E2,  3, 1.5 ),
+							ctlpt( E2,  4, -0.3 ),
+							ctlpt( E2,  5, 1.5 ),
+							ctlpt( E2,  6, -0.3),
+							ctlpt( E2,  7, 1.5 ),
+							ctlpt( E2,  8, -0.3 ),
+							ctlpt( E2,  9, 1.5 ),
+							ctlpt( E2, 10, -0.3 ),
+							ctlpt( E2, 11, 1.5 ) ),
+						  list( KV_PERIODIC ) ),
+						  KV_OPEN ),
+				      0, 1 ),
+			    vector( 0, 0, -1 ), 2 )
+	* sc( 0.11 ) * tz( 0.911 ):
+    attrib( QueenCrwn, "rgb", "255,255,100" ):
+    attrib( QueenBase, "rgb", clr ):
+
+    return = list( QueenBase, QueenCrwn ) * sc( s );
+
+#
+# The board
+#
+
+Square = ruledSrf( ctlpt( E2, 0.0, 0.0 ) + ctlpt( E2, 1.0, 0.0 ),
+		   ctlpt( E2, 0.0, 1.0 ) + ctlpt( E2, 1.0, 1.0 ) );
+
+BlackSqrs = nil();
+WhiteSqrs = nil();
+
+for ( x = 1, 1, 8,
+    for ( y = 1, 1, 8,
+	if ( abs( floor( ( x + y ) / 2 ) * 2 - ( x + y ) ) < 0.01,# X + Y Even?
+	    snoc( Square * tx( x ) * ty( y ), BlackSqrs ),
+	    snoc( Square * tx( x ) * ty( y ), WhiteSqrs ) ) ) );
+free( Square );
+free( x );
+free( y );
+
+attrib( BlackSqrs, "rgb", BlackColor );
+attrib( WhiteSqrs, "rgb", WhiteColor );
+
+BoardBaseAux = sFromCrvs( list( ctlpt( E3,  1.0,  1.0,  0.0 ) +
+			        ctlpt( E3,  1.0,  9.0,  0.0 ) +
+			        ctlpt( E3,  9.0,  9.0,  0.0 ) +
+			        ctlpt( E3,  9.0,  1.0,  0.0 ) +
+			        ctlpt( E3,  1.0,  1.0,  0.0 ),
+
+			        ctlpt( E3,  0.5,  0.5,  0.0 ) +
+			        ctlpt( E3,  0.5,  9.5,  0.0 ) +
+			        ctlpt( E3,  9.5,  9.5,  0.0 ) +
+			        ctlpt( E3,  9.5,  0.5,  0.0 ) +
+			        ctlpt( E3,  0.5,  0.5,  0.0 ),
+
+			        ctlpt( E3,  0.5,  0.5, -0.5 ) +
+			        ctlpt( E3,  0.5,  9.5, -0.5 ) +
+			        ctlpt( E3,  9.5,  9.5, -0.5 ) +
+			        ctlpt( E3,  9.5,  0.5, -0.5 ) +
+			        ctlpt( E3,  0.5,  0.5, -0.5 ),
+
+			        ctlpt( E3,  0.0,  0.0, -0.5 ) +
+			        ctlpt( E3,  0.0, 10.0, -0.5 ) +
+			        ctlpt( E3, 10.0, 10.0, -0.5 ) +
+			        ctlpt( E3, 10.0,  0.0, -0.5 ) +
+			        ctlpt( E3,  0.0,  0.0, -0.5 ),
+
+			        ctlpt( E3,  0.0,  0.0, -0.7 ) +
+			        ctlpt( E3,  0.0, 10.0, -0.7 ) +
+			        ctlpt( E3, 10.0, 10.0, -0.7 ) +
+			        ctlpt( E3, 10.0,  0.0, -0.7 ) +
+			        ctlpt( E3,  0.0,  0.0, -0.7 ) ),
+		          3, KV_OPEN );
+BoardBase = list( sregion( BoardBaseAux, col, 0.0, 1.0 ),
+		  sregion( BoardBaseAux, col, 1.0, 2.0 ),
+		  sregion( BoardBaseAux, col, 2.0, 3.0 ),
+		  sregion( BoardBaseAux, col, 3.0, 4.0 ) );
+color( BoardBase, red );
+attrib( BoardBase, "rgb", "128,64,64");
+free( BoardBaseAux );
+
+Board = list( BlackSqrs, WhiteSqrs , BoardBase );
+free( BoardBase );
+free( BlackSqrs );
+free( WhiteSqrs );
+
+#
+# Scaling factor and size of all pieces on board.
+#
+
+PieceScale = 1.5;
+
+#
+# Place the white pieces
+#
+
+WPawns = list( Pawn( PieceScale, WhiteColor ) * tx( 2.5 ) * ty( 1.5 ),
+	       Pawn( PieceScale, WhiteColor ) * tx( 2.5 ) * ty( 2.5 ),
+	       Pawn( PieceScale, WhiteColor ) * tx( 2.5 ) * ty( 3.5 ),
+	       Pawn( PieceScale, WhiteColor ) * tx( 2.5 ) * ty( 4.5 ),
+	       Pawn( PieceScale, WhiteColor ) * tx( 2.5 ) * ty( 5.5 ),
+	       Pawn( PieceScale, WhiteColor ) * tx( 2.5 ) * ty( 6.5 ),
+	       Pawn( PieceScale, WhiteColor ) * tx( 2.5 ) * ty( 7.5 ),
+	       Pawn( PieceScale, WhiteColor ) * tx( 2.5 ) * ty( 8.5 ) );
+
+WRooks =  list( Rook( PieceScale, WhiteColor ) * tx( 1.5 ) * ty( 1.5 ),
+	        Rook( PieceScale, WhiteColor ) * tx( 1.5 ) * ty( 8.5 ) );
+
+WKnights =  list( Knight( PieceScale, WhiteColor ) * rz( 30 ) * tx( 1.5 ) * ty( 2.5 ),
+	          Knight( PieceScale, WhiteColor ) * rz( -30 ) * tx( 1.5 ) * ty( 7.5 ) );
+
+WBishops =  list( Bishop( PieceScale, WhiteColor ) * tx( 1.5 ) * ty( 3.5 ),
+	          Bishop( PieceScale, WhiteColor ) * tx( 1.5 ) * ty( 6.5 ) );
+
+WKing = King( PieceScale, WhiteColor ) * rz( 90 ) * tx( 1.5 ) * ty( 5.5 );
+
+WQueen = Queen ( PieceScale, WhiteColor ) * tx( 1.5 ) * ty( 4.5 );
+
+WPieces = list( WPawns, WRooks, WKnights, WBishops, WKing, WQueen );
+
+#
+# Place the black pieces
+#
+
+BPawns = list( Pawn( PieceScale, BlackColor ) * tx( 7.5 ) * ty( 1.5 ),
+	       Pawn( PieceScale, BlackColor ) * tx( 7.5 ) * ty( 2.5 ),
+	       Pawn( PieceScale, BlackColor ) * tx( 7.5 ) * ty( 3.5 ),
+	       Pawn( PieceScale, BlackColor ) * tx( 7.5 ) * ty( 4.5 ),
+	       Pawn( PieceScale, BlackColor ) * tx( 7.5 ) * ty( 5.5 ),
+	       Pawn( PieceScale, BlackColor ) * tx( 7.5 ) * ty( 6.5 ),
+	       Pawn( PieceScale, BlackColor ) * tx( 7.5 ) * ty( 7.5 ),
+	       Pawn( PieceScale, BlackColor ) * tx( 7.5 ) * ty( 8.5 ) );
+
+BRooks =  list( Rook( PieceScale, BlackColor ) * tx( 8.5 ) * ty( 1.5 ),
+	        Rook( PieceScale, BlackColor ) * tx( 8.5 ) * ty( 8.5 ) );
+
+BKnights =  list( Knight( PieceScale, BlackColor ) * rz( 150 ) * tx( 8.5 ) * ty( 2.5 ),
+	          Knight( PieceScale, BlackColor ) * rz( 210 ) * tx( 8.5 ) * ty( 7.5 ) );
+
+BBishops =  list( Bishop( PieceScale, BlackColor ) * tx( 8.5 ) * ty( 3.5 ),
+	          Bishop( PieceScale, BlackColor ) * tx( 8.5 ) * ty( 6.5 ) );
+
+BKing = King( PieceScale, BlackColor ) * rz( 90 ) * tx( 8.5 ) * ty( 5.5 );
+
+BQueen = Queen ( PieceScale, BlackColor ) * tx( 8.5 ) * ty( 4.5 );
+
+BPieces = list( BPawns, BRooks, BKnights, BBishops, BKing, BQueen );
+
+#
+# The entire chess set.
+#
+
+Chess = list( WPieces, BPieces, Board ) * sc( 0.1 );
+
+save( "chess", Chess );
+interact( Chess );
+free( Board );
+
+free( WPawns );
+free( WBishops );
+free( WKnights );
+free( WRooks );
+free( WKing );
+free( WQueen );
+free( WPieces );
+
+free( BPawns );
+free( BBishops );
+free( BKnights );
+free( BRooks );
+free( BKing );
+free( BQueen );
+free( BPieces );
+
+free( PieceScale );
+free( BlackColor );
+free( WhiteColor );
+
+free( chess );

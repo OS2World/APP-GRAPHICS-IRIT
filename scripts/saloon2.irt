@@ -1,0 +1,357 @@
+#
+# Saloon - Gershon Elber, July 2000
+#
+
+WoodText = "wood.ppm";
+WoodClr = "244,164,96";
+
+MarbleText = "marble.ppm";
+MarbleClr = "255,255,255";
+
+SquareUnitLegs = function( W, D, H, LegW, LegD ):
+    RLeg: LLeg: GrooveD:
+    GrooveD = LegW - LegD:
+    LLeg = box( vector( 0, 0, 0 ), LegW, LegD, H ) -
+           box( vector( LegW / 3, -0.01, 0.1 ), LegW / 3, 0.02, H - 0.3 ) -
+           box( vector( -0.01, LegD / 3, 0.1 ), 0.02, LegD / 3, H - 0.3 ) -
+           box( vector( LegW - GrooveD, LegD - 0.02, 0.2 ), 0.1, 0.1, H - 0.3 ):
+    RLeg = box( vector( 0, 0, 0 ), LegW, LegD, H ) -
+           box( vector( LegW / 3, -0.01, 0.1 ), LegW / 3, 0.02, H - 0.3 ) -
+           box( vector( LegW - 0.01, LegD / 3, 0.1 ), 0.02, LegD / 3, H - 0.3 ) -
+           box( vector( GrooveD, LegD - 0.02, 0.2 ), -0.1, 0.1, H - 0.3 ):
+    return = list( LLeg,
+	           RLeg * tx( W - LegW ),
+	           LLeg * rz( 180 ) * tx( W ) * ty( D ),
+	           RLeg * rz( 180 ) * tx( LegW ) * ty( D ) ):
+    attrprop( return, "ptexture", WoodText ):
+    attrprop( return, "rgb", WoodClr );
+
+SquareUnitBars = function( W, D, H, LegW, LegD ):
+    FBar: SBar: BarFrame:
+    FBar = box( vector( LegW, 0, 0 ), W - 2 * LegW, LegD, LegW ):
+    SBar = box( vector( 0, LegD, 0 ), LegD, D - 2 * LegD, LegW ):
+    BarFrame = list( FBar,
+	             SBar,
+	             FBar * ty( D - LegD ),
+	             SBar * tx( W - LegD ) ):
+    return = list( BarFrame * tz( 0.1 ), BarFrame * tz( H - 0.1 ) ):
+    attrprop( return, "ptexture", WoodText ):
+    attrprop( return, "rgb", WoodClr );
+
+SquareUnitTop = function( W, D, H, Margin, Text, Clr ):
+    return = box( vector( -Margin, -Margin, H ),
+		  W + 2 * Margin, D + 2 * Margin, 0.03 ):
+    attrprop( return, "ptexture", Text ):
+    attrprop( return, "rgb", Clr );
+
+SideUnitWalls = function( W, D, H, LegW, LegD ): rot_z:
+    BackWall: LeftWall: RightWall: FrontDoorFrame: FrontDoorGlass: FrontDoor:
+    BackWall = box( vector( LegD, D - (LegD - 0.018), 0.2 ),
+			    W - 2 * LegD, 0.002, H - 0.3 ):
+    attrib( BackWall, "ptexture", WoodText ):
+    attrib( BackWall, "rgb", WoodClr ):
+
+    LeftWall = box( vector( LegD + 0.001, LegD, 0.2 ),
+			    0.002, D - 2 * LegD, H - 0.3 ):
+    RightWall = box( vector( W - LegD - 0.003, LegD, 0.2 ),
+			     0.002, D - 2 * LegD, H - 0.3 ):
+    attrib( LeftWall, "transp", 0.3 ):
+    attrib( RightWall, "transp", 0.3 ):
+
+    FrontDoorFrame = box( vector( LegW + 0.001, 0.0, 0.201 ),
+			  W - 2 * LegW - 0.002, 0.015, H - 0.302 ) -
+		     box( vector( LegW + 0.03, -0.1, 0.23 ),
+			  W - 2 * LegW - 0.062, 0.5, H - 0.362 ) -
+		     box( vector( LegW + 0.02, 0.01, 0.22 ),
+			  W - 2 * LegW - 0.04, 0.1, H - 0.34 ):
+    attrib( FrontDoorFrame, "ptexture", WoodText ):
+    attrib( FrontDoorFrame, "rgb", WoodClr ):
+
+    FrontDoorGlass = box( vector( LegW + 0.021, 0.011, 0.221 ),
+			  W - 2 * LegW - 0.042, 0.003, H - 0.342 ):
+    attrib( FrontDoorGlass, "transp", 0.3 ):
+    FrontDoor = list( FrontDoorFrame, FrontDoorGlass ):
+    rot_z = ctlpt( E1, 0.0 ) + ctlpt( E1, 100 ):
+    attrib( FrontDoor, "animation", list( tx( -LegW ), rot_z, tx( LegW ) ) ):
+
+    return = list( BackWall, LeftWall, RightWall, FrontDoor );
+
+SideUnitShelf = function( W, D, H, LegW, LegD ):
+    ShelfFrame: ShelfGlass:
+    ShelfFrame = box( vector( LegD + 0.001, LegD - 0.019, H - 0.015 ),
+		      W - 2 * LegD - 0.002, D - 2 * LegD + 0.038, 0.015 ) -
+		 box( vector( LegD + 0.04, LegD + 0.03, H - 0.1 ),
+		      W - 2 * LegD - 0.08, D - 2 * LegD - 0.06, H + 0.5 ) -
+		 box( vector( LegD + 0.03, LegD + 0.02, H - 0.005 ),
+		      W - 2 * LegD - 0.05, D - 2 * LegD - 0.04, H + 0.5 ):
+    attrib( ShelfFrame, "ptexture", WoodText ):
+    attrib( ShelfFrame, "rgb", WoodClr ):
+
+    ShelfGlass = box( vector( LegD + 0.032, LegD + 0.022, H - 0.003 ),
+		      W - 2 * LegD - 0.064, D - 2 * LegD - 0.044, 0.003 ):
+    attrib( ShelfGlass, "transp", 0.3 ):
+
+    return = list( ShelfFrame, ShelfGlass );
+
+CenterUnitWalls = function( W, D, H, LegW, LegD ):
+    BackWall: LeftWall: RightWall: BottomWall:
+    BackWall = box( vector( LegD, D - (LegD - 0.018), 0.2 ),
+			    W - 2 * LegD, 0.002, H - 0.3 ):
+    LeftWall = box( vector( LegD + 0.001, LegD, 0.2 ),
+			    0.002, D - 2 * LegD, H - 0.3 ):
+    RightWall = box( vector( W - LegD - 0.003, LegD, 0.2 ),
+			     0.002, D - 2 * LegD, H - 0.3 ):
+    BottomWall = box( vector( LegD, LegD, 0.2 - 0.015 ),
+		       W - 2 * LegD, D - 2 * LegD, 0.015 ):
+
+    return = list( BackWall, LeftWall, RightWall, BottomWall ):
+    attrprop( return, "ptexture", WoodText ):
+    attrprop( return, "rgb", WoodClr );
+
+CenterUnitInterior = function( W, D, H, LegW, LegD ):
+    VertWalls: Shelfs: IntWidth:
+    IntWidth = W / 3:
+    VertWalls = list( box( vector( IntWidth, 0.01, 0.2 ),
+			           0.01, D - 0.01 - LegD, H - 0.2 ),
+		      box( vector( IntWidth * 2, 0.01, 0.2 ),
+			           0.01, D - 0.01 - LegD, H - 0.2 ) ):
+    Shelfs = list( box( vector( LegD, 0.01, H * 0.55 ),
+			        IntWidth - LegD, D - 0.01 - LegD, 0.01 ),
+		   box( vector( IntWidth * 2 + 0.01, 0.01, H * 0.45 ),
+			        IntWidth - LegD - 0.01, D - 0.01 - LegD, 0.01 ),
+		   box( vector( IntWidth * 2 + 0.01, 0.01, H * 0.65 ),
+			        IntWidth - LegD - 0.01, D - 0.01 - LegD, 0.01 ) ):
+
+    return = list( VertWalls, Shelfs ):
+    attrprop( return, "ptexture", WoodText ):
+    attrprop( return, "rgb", WoodClr );
+
+CenterUnitDoors = function( W, D, H, LegW, LegD ): rot_z1: rot_z2:
+    LeftDoor: RightDoor: IntWidth:
+    IntWidth = W / 3:
+
+    LeftDoor = box( vector( LegW + 0.002, 0.0, 0.202 ),
+		    IntWidth - LegW + 0.0096, 0.01, H - 0.204 - LegW ):
+    rot_z1 = ctlpt( E1, 0.0 ) + ctlpt( E1, 100 ):
+    attrib( LeftDoor, "animation", list( tx( -LegW ), rot_z1, tx( LegW ) ) ):
+
+    RightDoor = box( vector( IntWidth * 2 + 0.002, 0.0, 0.202 ),
+		     IntWidth - LegW - 0.004, 0.01, H - 0.204 - LegW ):
+    rot_z2 = ctlpt( E1, 0.0 ) + ctlpt( E1, -100 ):
+    attrib( RightDoor, "animation", list( tx( -W + LegW ), rot_z2, tx( W - LegW ) ) ):
+
+    return = list( LeftDoor, RightDoor ):
+    attrprop( return, "ptexture", WoodText ):
+    attrprop( return, "rgb", WoodClr );
+
+CenterUnitDrawer = function( W, D, H, LegW, DrawerElev ):
+    mov_y: DrawerW: DrawerH: DrawerBox:
+    DrawerW = W / 3:
+    DrawerH = ( H - 0.204 - LegW ) / 3 - 0.01:
+    DrawerBox = box( vector( DrawerW, 0.0, DrawerElev ),
+		     DrawerW, D - LegW, DrawerH ) -
+		box( vector( DrawerW + 0.01, 0.01, DrawerElev + 0.01 ),
+		     DrawerW - 0.02, D - LegW - 0.02, DrawerH ):
+    mov_y = ctlpt( E1, 0.0 ) + ctlpt( E1, -D + LegW + 0.05 ):
+    attrib( DrawerBox, "animation", list( mov_y ) ):
+    attrib( DrawerBox, "ptexture", WoodText ):
+    attrib( DrawerBox, "rgb", WoodClr ):
+    return = list( DrawerBox );
+
+CornerUnitLegs = function( W, H, LegW, LegD ):
+    RLeg: LLeg: SLeg: CLeg: GrooveD:
+    GrooveD = LegW - LegD:
+    LLeg = box( vector( 0, 0, 0 ), LegW, LegD, H ) -
+           box( vector( LegW / 3, -0.01, 0.1 ), LegW / 3, 0.02, H - 0.3 ) -
+           box( vector( -0.01, LegD / 3, 0.1 ), 0.02, LegD / 3, H - 0.3 ) -
+           box( vector( LegD, LegD - 0.02, 0.2 ), 0.1, 0.1, H - 0.3 ):
+    SLeg = box( vector( 0, 0, 0 ), LegW, LegD, H ) -
+           box( vector( LegW / 3, -0.01, 0.1 ), LegW / 3, 0.02, H - 0.3 ) -
+           box( vector( -0.1, LegD - 0.02, 0.2 ), 0.2, 0.1, H - 0.3 ):
+    RLeg = box( vector( 0, 0, 0 ), LegW, LegD, H ) -
+           box( vector( LegW / 3, -0.01, 0.1 ), LegW / 3, 0.02, H - 0.3 ) -
+           box( vector( LegW - 0.01, LegD / 3, 0.1 ), 0.02, LegD / 3, H - 0.3 ) -
+           box( vector( GrooveD, LegD - 0.02, 0.2 ), -0.1, 0.1, H - 0.3 ):
+    CLeg = box( vector( 0, 0, 0 ), LegW, LegW, H ) -
+           box( vector( LegD, LegD, 0.2 ), 0.1, 0.1, H - 0.3 ):
+
+    return = list( LLeg,
+	           SLeg * tx( W - LegW ),
+	           SLeg * tx( W ) * rz( 90 ) * tx( 2 * W ),
+	           RLeg * rz( 90 ) * tx( 2 * W ) * ty( 2 * W - LegW ),
+	           CLeg * rz( -90 ) * ty( W * 2 ) ):
+    attrprop( return, "ptexture", WoodText ):
+    attrprop( return, "rgb", WoodClr );
+
+CornerUnitBars = function( W, H, LegW, LegD ):
+    SBar: LBar: ArcBar1: ArcBar2: ArcBar: BarFrame:
+    SBar = box( vector( LegW, 0, 0 ), W - 2 * LegW, LegD, LegW ):
+    LBar = box( vector( LegD, 0, 0 ), 2 * W - LegD - LegW, LegD, LegW ):
+    ArcBar1 = arc( vector( w, 0, 0 ),
+		   vector( w, w, 0 ),
+		   vector( 2*w, w, 0 ) ):
+    ArcBar2 = offset( ArcBar1, -LegD, 0.1, off ):
+    ArcBar = list( extrude( ArcBar1 + -ArcBar2 + ctlpt( e3, w, 0, 0 ),
+			    vector( 0, 0, LegW ), 0 ),
+		   ruledSrf( ArcBar1, ArcBar2 ),
+		   ruledSrf( ArcBar1, ArcBar2 ) * tz( LegW ) ):
+    BarFrame = list( ArcBar,
+		     SBar,
+	             SBar * tx( W ) * rz( 90 ) * tx( 2 * W ),
+	             LBar * rz( 90 ) * tx( LegD ),
+	             LBar * tx( LegW - LegD ) * ty( 2 * W - LegD ) ):
+    return = list( BarFrame * tz( 0.1 ), BarFrame * tz( H - 0.1 ) ):
+    attrprop( return, "ptexture", WoodText ):
+    attrprop( return, "rgb", WoodClr );
+
+CornerUnitWalls = function( W, H, LegW, LegD ): rot_z:
+    LWall: SWall: RDoor: ArcBar1: ArcBar2: ArcBar: RDoorFrame: RDoorGlass:
+    LWall = box( vector( LegD, 0.0, 0.2 ),
+			 2 * W - 2 * LegD, 0.002, H - 0.3 ):
+    attrib( LWall, "ptexture", WoodText ):
+    attrib( LWall, "rgb", WoodClr ):
+
+    SWall = box( vector( LegD, 0.0, 0.2 ),
+			 W - 2 * LegD, 0.002, H - 0.3 ):
+    attrib( SWall, "transp", 0.3 ):
+
+    ArcBar1 = arc( vector( w, 0, 0 ),
+		   vector( w, w, 0 ),
+		   vector( 2*w, w, 0 ) ):
+    ArcBar2 = offset( ArcBar1, -0.03, 0.1, off ):
+    ArcBar = list( extrude( ArcBar1 + -ArcBar2 + ctlpt( e3, w, 0, 0 ),
+			    vector( 0, 0, 0.03 ), 0 ),
+		   ruledSrf( ArcBar1, ArcBar2 ),
+		   ruledSrf( ArcBar1, ArcBar2 ) * tz( 0.03 ) ):
+
+    RDoorFrame =
+	list( box( vector( W, 0.0, 0.2 ), 0.03, 0.03, H - 0.3 ),
+	      box( vector( 2 * W - 0.03, W - 0.03, 0.2 ), 0.03, 0.03, H - 0.3 ),
+	      ArcBar * tz( 0.2 ),
+	      ArcBar * tz( H - 0.1 - 0.03 ) ):
+    attrib( RDoorFrame, "ptexture", WoodText ):
+    attrib( RDoorFrame, "rgb", WoodClr ):
+
+    RDoorGlass = extrude( offset( ArcBar1, -0.02, 0.1, off ) +
+			      -offset( ArcBar1, -0.03, 0.1, off ) +
+			      ctlpt( e3, w - 0.02, 0, 0 ),
+			  vector( 0, 0, H - 0.3 - 0.04 ), 0 ) * tz( 0.22 ):
+    attrib( RDoorGlass, "transp", 0.3 ):
+    RDoor = list( RDoorFrame, RDoorGlass ):
+    rot_z = ctlpt( E1, 0.0 ) + ctlpt( E1, 130 ):
+    attrib( RDoor, "animation", list( tx( -W ), rot_z, tx( W ) ) ):
+
+    return = list( LWall * ty( 2 * W ),
+		   SWall * rz( 90 ) * tx( 2 * W ) * ty( W ),
+		   LWall * rz( 90 ),
+		   SWall,
+		   RDoor );
+
+CornerUnitShelf = function( W, H, LegW, LegD ):
+    ShelfFrame: Prof1: Prof2:
+    Prof1 = ctlpt( e3, LegD, LegD, 0.0 ) +
+	    ctlpt( e3, LegD, 2 * W - LegD, 0.0 ) +
+	    ctlpt( e3, 2 * W - LegD, 2 * W - LegD, 0.0 ):
+    Prof2 = ctlpt( e3, LegD, LegD, 0.0 ) +
+	    arc( vector( w - LegD, LegD, 0 ),
+		 vector( w, w, 0 ),
+		 vector( 2*w - LegD, w - LegD, 0 ) ) +
+	    ctlpt( e3, 2 * W - LegD, 2 * W - LegD, 0.0 ):
+
+    ShelfFrame = list( extrude( Prof1 + -Prof2, vector( 0, 0, 0.03 ), 0 ),
+		       ruledSrf( Prof1, Prof2 ),
+		       ruledSrf( Prof1, Prof2 ) * tz( 0.03 ) ):
+    attrib( ShelfFrame, "ptexture", WoodText ):
+    attrib( ShelfFrame, "rgb", WoodClr ):
+
+    return = list( ShelfFrame ) * tz( H );
+
+MarbleShelfUnit = function( W, H ): Prof1: Prof2:
+    Prof1 = ctlpt( E3, 2 * W, 0, 0 ) +
+	    cbspline( 3,
+		      list( ctlpt( E3, 2 * W, W,       0 ),
+			    ctlpt( E3, 2 * W, 2 * W,   0 ),
+			    ctlpt( E3, W,     2 * W,   0 ) ),
+		      list( KV_OPEN ) ) +
+	    ctlpt( E3, 0, 2 * W, 0 ):
+    Prof2 = ctlpt( E3, 0,     2 * W,   0 ) +
+	    ctlpt( E3, 0,         0,   0 ) +
+	    ctlpt( E3, 2 * W,     0,   0 ):
+    return = list( extrude( Prof1 + Prof2, vector( 0, 0, 0.025 ), 0 ),
+		   ruledSrf( Prof1, -Prof2 ),
+		   ruledSrf( Prof1, -Prof2 ) * tz( 0.025 ) ) * tz( H ):
+    attrprop( return, "ptexture", MarbleText ):
+    attrprop( return, "rgb", MarbleClr );
+
+#############################################################################
+
+CenterUnit = function( W, D, H, LegW, LegD ): DrawerHeight:
+    DrawerHeight = ( H - 0.204 - LegW ) / 3:
+    return = list( SquareUnitLegs( W, D, H, LegW, LegD ),
+		   SquareUnitBars( W, D, H, LegW, LegD ),
+		   SquareUnitTop( W, D, H, 0.005, WoodText, WoodClr ),
+		   CenterUnitWalls( W, D, H, LegW, LegD ),
+		   CenterUnitInterior( W, D, H, LegW, LegD ),
+		   CenterUnitDoors( W, D, H, LegW, LegD ),
+		   CenterUnitDrawer( W, D, H, 0.1, 0.2 ),
+		   CenterUnitDrawer( W, D, H, 0.1, 0.2 + DrawerHeight ),
+		   CenterUnitDrawer( W, D, H, 0.1, 0.2 + DrawerHeight * 2 ) );
+
+RightUnit = function( W, D, H, LegW, LegD ):
+    return = list( SideUnitShelf( W, D, 0.2,  LegW, LegD ),
+		   SideUnitShelf( W, D, 0.45, LegW, LegD ),
+		   SideUnitShelf( W, D, 0.7,  LegW, LegD ),
+		   SideUnitShelf( W, D, 0.95, LegW, LegD ),
+		   SideUnitShelf( W, D, 1.2,  LegW, LegD ),
+		   SideUnitShelf( W, D, 1.45, LegW, LegD ),
+		   SideUnitWalls( W, D, H, LegW, LegD ),
+		   SquareUnitLegs( W, D, H, LegW, LegD ),
+		   SquareUnitBars( W, D, H, LegW, LegD ),
+		   Squareunittop( W, D, H, 0.03, WoodText, WoodClr ) );
+
+LeftUnit = function( W, H, LegW, LegD ):
+    return = list( CornerUnitWalls( W, H, LegW, LegD ),
+		   CornerUnitLegs( W, H, LegW, LegD ),
+		   CornerUnitBars( W, H, LegW, LegD ),
+		   CornerUnitShelf( W, 0.17, LegW, LegD ) );
+
+ShelfUnit = function( W, Dw, H, Dh, n ): i:
+    return = nil():
+    for ( i = 1, 1, n,
+	snoc( MarbleShelfUnit( W, H ), return ):
+	W = W - Dw:
+	H = H + Dh );
+
+#############################################################################
+
+Walls = ( box( vector( 0, -30, 0 ), 30, 30, 30 ) /
+          poly( list( point( 10,   1, -1 ),
+		      point( -1,   1, 10 ),
+		      point( -1, -10, -1 ) ),
+	        false ) ) * trans( vector( -2.35, 0.55, 0.0 ) );
+
+MUnit = CenterUnit( 1.3, 0.45, 0.8, 0.07, 0.04 ) * tx( -1.375 );
+RUnit = RightUnit( 0.65, 0.45, 1.7, 0.07, 0.04 ) * tx( -0.05 );
+LUnit = LeftUnit( 0.45, 1.05, 0.07, 0.04 ) * tx( -2.3 ) * ty( -0.4 );
+SUnit = ShelfUnit( 0.525, 0.15, 1.05, 0.4, 4 )
+			* rz( -90 ) * trans( vector( -2.35, 0.55, 0.0 ) );
+
+All = list( Walls, LUnit, RUnit, MUnit, SUnit );
+
+free( Walls );
+free( LUnit );
+free( RUnit );
+free( MUnit );
+free( SUnit );
+
+interact( All );
+
+save( "saloon2", All );
+
+free( All );
+
+
+free( WoodText );
+free( WoodClr );
+free( MarbleText );
+free( MarbleClr );

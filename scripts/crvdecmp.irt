@@ -1,0 +1,395 @@
+#
+# Curve Decomposition
+# Joon-Kyung Seong. 
+# Dec, 2002.
+#
+
+save_res = resolution;
+
+############################################################################
+#
+# Function to make a canonical form of a given polynomial.
+#
+CanonicalH = function( f, g, deg, c, ptype ): 
+t: g2: i: f2: tmp: tmp2: f_p: bm: net:
+	net = nil():
+	t = ceval( g, 1.0 ):
+	g2 = g * sc( 1.0 / coord( t, 1 ) ):
+	f2 = cregion( f, 0, coord( t, 1 ) ):
+	f_p = coerce( f2, power_type ):
+	tmp = ffsplit( f_p ):
+	
+	for (i = 1, 1, c,
+		bm = coord( coord( nth( tmp, i ), deg ), 1 ):
+		tmp2 = coerce( nth( tmp, i ), bezier_type ) * sc( 1.0 / bm ):
+		snoc( coerce( coerce( compose( tmp2, g2 ), bezier_type ), E1 ), net ) ):
+	return = ffmerge( net, ptype );
+
+OriginalF = function( f, newf, deg, c, ptype ): 
+t: i: tmp: tmp2: f_p: net: tmp3:
+	net = nil():
+	f_p = coerce( f, power_type ):
+	tmp = ffsplit( f_p ):
+	tmp3 = ffsplit( newf ):
+	for (i = 1, 1, c, 
+		t = coord( coord( nth( tmp, i ), deg ), 1 ):
+		tmp2 = nth( tmp3, i ) * sc( t ):
+		snoc( coerce( tmp2, E1 ), net ) ):
+	return = ffmerge( net, ptype );
+		 
+#########################################################################
+#
+# Matching a curve along a shared boundary between two surfaces.
+#
+c1 = cbezier( list( ctlpt( e2, 0, 0 ),
+		    ctlpt( e2, 1, 1 ),
+		    ctlpt( e2, 2, 0 ),
+		    ctlpt( e2, 4, 1 ) ) );
+awidth( c1, 0.02 );
+
+r1 = coerce( cpower( list( ctlpt( e1, 0 ),
+			   ctlpt( e1, 0.25 ),
+			   ctlpt( e1, 0.75 ) ) ), bezier_type );
+r2 = coerce( cpower( list( ctlpt( e1, 0 ),
+			   ctlpt( e1, 1.5 ),
+			   ctlpt( e1, -0.5 ) ) ), bezier_type );
+
+c1a = compose( c1, r1 );
+c2a = compose( c1, r2 );
+
+s1 = sFromCrvs( list( c1a * ty( 1 ) * tz( 3 ),
+		      c1a * ty( -1 ) * tz( 2 ),
+		      c1a * tz( 1 ),
+		      c1a ),
+		4, kv_open );
+attrib( s1, "gray", 0.2 );
+awidth( s1, 0.012 );
+
+s2 = sFromCrvs( list( c2a,
+		      c2a * tz( -1 ),
+		      c2a * ty( 1 ) * tz( -2 ),
+		      c2a * ty( 1 ) * tz( -3 ) ),
+		4, kv_open );
+attrib( s2, "gray", 0.35 );
+awidth( s2, 0.012 );
+
+All1 = list( s1, s2, c1 );
+interact( All1 );
+save( "crv1dcmp", All1 );
+
+#
+# Try to decompose
+#
+c1H = CanonicalH( c1, r1, 3, 2, e2 );
+c2H = CanonicalH( c1, r2, 3, 2, e2 );
+
+d1 = DECOMPOSE( c1H );
+dc1 = OriginalF( c1, nth( d1, 1 ), 3, 2, e2 );
+viewstate( "DSrfMesh", 1 );
+
+interact( list( c1, dc1 * tz( 1 ), c1a * tz( -1 ) ) );
+
+d2 = DECOMPOSE( c2H );
+dc2 = OriginalF( c1, nth( d2, 1 ), 3, 2, e2 );
+interact( list( c1, dc2 * tz( 1 ), c2a * tz( -1 ) ) );
+
+viewstate( "DSrfMesh", 0 );
+
+s1d = sFromCrvs( list( dc1 * ty( 1 ) * tz( 3 ),
+		      dc1 * ty( -1 ) * tz( 2 ),
+		      dc1 * tz( 1 ),
+		      dc1 ),
+		4, kv_open );
+attrib( s1d, "gray", 0.2 );
+awidth( s1d, 0.012 );
+
+s2d = sFromCrvs( list( dc2,
+		      dc2 * tz( -1 ),
+		      dc2 * ty( 1 ) * tz( -2 ),
+		      dc2 * ty( 1 ) * tz( -3 ) ),
+		4, kv_open );
+attrib( s2d, "gray", 0.35 );
+awidth( s2d, 0.012 );
+
+All2 = list( s1d, s2d, dc1 );
+interact( All2 );
+save( "crv2dcmp", list( s1d, s2d, dc1 ) );
+
+# system("illustrt -t 0.005 -l 0.005 -f 0 256 -I 8 crv2dcmp.itd crv2dcmp.imd | irit2ps -d -u - > crv2dcmp.ps");
+
+#################################
+
+resolution = 5;
+
+pl1 = gpolygon( s1, 1 );
+attrib( pl1, "gray", 0.2 );
+awidth( pl1, 0.012 );
+
+pl2 = gpolygon( s2, 1 );
+attrib( pl2, "gray", 0.35 );
+awidth( pl2, 0.012 );
+
+All3 = list( pl1, pl2 );
+
+interact( All3 );
+save( "crv3dcmp", All2 );
+
+# system("illustrt -O -t 0.005 -l 0.005 -f 0 256 -I 8 crv3dcmp.itd crv3dcmp.imd | irit2ps -d -u - > crv3dcmp.ps");
+
+resolution = 9;
+pl1d = gpolygon( s1d, 1 );
+attrib( pl1d, "gray", 0.2 );
+awidth( pl1d, 0.012 );
+
+pl2d = gpolygon( s2d, 1 );
+attrib( pl2d, "gray", 0.35 );
+awidth( pl2d, 0.012 );
+
+All4 = list( pl1d, pl2d );
+
+interact( All4 );
+save( "crv4dcmp", All4 );
+
+# system("illustrt -O -t 0.005 -l 0.005 -f 0 256 -I 8 crv4dcmp.itd crv4dcmp.imd | irit2ps -d -u - > crv4dcmp.ps");
+
+##########################################################################
+#
+# A corner example
+#
+
+c1 = cbezier( list( ctlpt( e2, -1, -0.5 ),
+		    ctlpt( e2, -1, 0.5 ),
+		    ctlpt( e2,  1, 1 ),
+		    ctlpt( e2,  1, 0 ) ) );
+awidth( c1, 0.02 );
+
+r1 = coerce( cpower( list( ctlpt( e1, 0 ),
+			   ctlpt( e1, 0.7 ),
+			   ctlpt( e1, 0.3 ) ) ), bezier_type );
+r2 = coerce( cpower( list( ctlpt( e1, 0 ),
+			   ctlpt( e1, 0.3 ),
+			   ctlpt( e1, 0.7 ) ) ), bezier_type );
+
+c1a = compose( c1, r1 );
+c2a = compose( c1, r2 );
+
+s1 = ruledSrf( c1a, c1a * tz( 1 ) );
+attrib( s1, "gray", 0.2 );
+awidth( s1, 0.012 );
+
+s2 = ruledSrf( c2a * sc( 0.0001 ), c2a );
+attrib( s2, "gray", 0.35 );
+awidth( s2, 0.012 );
+
+All1 = list( s1, s2, c1 );
+interact( All1 );
+save( "crv5dcmp", All1 );
+
+# system("illustrt -t 0.01 -l 0.01 -f 0 256 -I 8 crv5dcmp.itd crv5dcmp.imd | irit2ps -d -u - > crv5dcmp.ps");
+
+#
+# Try to decompose
+#
+c1H = CanonicalH( c1, r1, 3, 2, e2 );
+c2H = CanonicalH( c1, r2, 3, 2, e2 );
+
+d1 = DECOMPOSE( c1H );
+dc1 = OriginalF( c1, nth( d1, 1 ), 3, 2, e2 );
+
+viewstate( "DSrfMesh", 1 );
+
+interact( list( c1, dc1 * tz( 1 ), c1a * tz( -1 ) ) );
+
+d2 = DECOMPOSE( c2H );
+dc2 = OriginalF( c1, nth( d2, 1 ), 3, 2, e2 );
+interact( list( c1, dc2 * tz( 1 ), c2a * tz( -1 ) ) );
+
+viewstate( "DSrfMesh", 0 );
+
+s1d = ruledSrf( dc1, dc1 * tz( 1 ) );
+attrib( s1d, "gray", 0.2 );
+awidth( s1d, 0.012 );
+
+s2d = ruledSrf( dc2 * sc( 0.0001 ), dc2 );
+attrib( s2d, "gray", 0.35 );
+awidth( s2d, 0.012 );
+
+All2 = list( s1d, s2d, dc1 );
+interact( All2 );
+save( "crv6dcmp", All2 );
+
+# system("illustrt -t 0.01 -l 0.01 -f 0 256 -I 8 crv6dcmp.itd crv6dcmp.imd | irit2ps -d -u - > crv6dcmp.ps");
+
+#################################
+
+resolution = 5;
+
+pl1 = gpolygon( s1, 1 );
+attrib( pl1, "gray", 0.2 );
+awidth( pl1, 0.015 );
+
+pl2 = gpolygon( s2, 1 );
+attrib( pl2, "gray", 0.35 );
+awidth( pl2, 0.015 );
+
+All3 = list( pl1, pl2 );
+interact( All3 );
+save( "crv7dcmp", All3 );
+
+# system("illustrt -O -t 0.005 -l 0.005 -f 0 256 -I 8 crv7dcmp.itd crv7dcmp.imd | irit2ps -d -u - > crv7dcmp.ps");
+
+resolution = 9;
+pl1d = gpolygon( s1d, 1 );
+attrib( pl1d, "gray", 0.2 );
+awidth( pl1d, 0.015 );
+
+pl2d = gpolygon( s2d, 1 );
+attrib( pl2d, "gray", 0.35 );
+awidth( pl2d, 0.015 );
+
+All4 = list( pl1d, pl2d );
+interact( All4 );
+save( "crv8dcmp", All4 );
+
+# system("illustrt -O -t 0.005 -l 0.005 -f 0 256 -I 8 crv8dcmp.itd crv8dcmp.imd | irit2ps -d -u - > crv8dcmp.ps");
+
+########################################################################
+#
+# Curve matching example: Duck
+#
+
+c = cbezier(
+    list( ctlpt( E3, 0,  0,   -1.3 ),
+          ctlpt( E3, 0, -1.5, -1.25 ),
+          ctlpt( E3, 0, -0.9,  1.1 ),
+          ctlpt( E3, 0,  0.9,  1.15 ),
+          ctlpt( E3, 0,  1.5, -1.25 ),
+          ctlpt( E3, 0,  0,   -1.3 ) ) );
+
+view( c, 1 );
+
+c = c * sy( 1.6 ) * sz( 1.3 );
+
+r1 = coerce( cpower( list( ctlpt( e1, 0 ),
+			   ctlpt( e1, 0.25 ),
+			   ctlpt( e1, 0.75 ) ) ), bezier_type );
+r2 = coerce( cpower( list( ctlpt( e1, 0 ),
+			   ctlpt( e1, 1.5 ),
+			   ctlpt( e1, -0.5 ) ) ), bezier_type );
+c1a = compose( c, r1 );
+c1b = compose( c, r2 );
+
+c2 = cbspline( 6,
+    list( ctlpt( E3, 0, -0.279, -1.54 ),
+          ctlpt( E3, 0, -0.483, -0.896 ),
+          ctlpt( E3, 0, -0.762, -0.631 ),
+          ctlpt( E3, 0, -1.07, -0.0984 ),
+          ctlpt( E3, 0, -0.747, 0.761 ),
+          ctlpt( E3, 0, 0, 1 ),
+          ctlpt( E3, 0, 0.747, 0.761 ),
+          ctlpt( E3, 0, 1.07, -0.0984 ),
+          ctlpt( E3, 0, 0.762, -0.631 ),
+          ctlpt( E3, 0, 0.483, -0.896 ),
+          ctlpt( E3, 0, 0.279, -1.54 ),
+          ctlpt( E3, 0, 0, -1.78 ) ),
+    list( kv_open ) );
+
+Crvs = list( c1b * sc( 0.001 ) * trans( vector( 1.02, 0.0, 0.18 ) ),
+	     c1b * sc( 0.07 ) * sz( 0.4 ) * trans( vector( 1.02, 0.0, 0.18 ) ),
+	     c1b * sc( 0.18 ) * sz( 0.3 ) * trans( vector( 0.8, 0.0, 0.16 ) ),
+	     c1b * sc( 0.27 ) * sz( 0.5 ) * trans( vector( 0.6, 0.0, 0.16 ) ),
+	     c1b * sc( 0.43 ) * sz( 0.64 ) * trans( vector( 0.3, 0.0, 0.2 ) ),
+	     c1b * sc( 0.54 ) * sz( 0.7 ) * trans( vector( 0.0, 0.0, 0.23 ) ),
+	     c1b * sc( 0.52 ) * ry( 25 ) * sz( 0.76 ) * trans( vector( -0.34, 0.0, 0.26 ) ),
+	     c1b * sc( 0.41 ) * sz( 1.13 ) * ry( 50 ) * trans( vector( -0.6, 0.0, 0.32 ) ),
+	     c1b * sc( 0.3 ) * sz( 1.3 ) * ry( 65 ) * trans( vector( -0.7, 0.0, 0.42 ) ),
+	     c1b * sc( 0.16 ) * sz( 1.4 ) * ry( 75 ) * trans( vector( -0.71, 0.0, 0.5 ) ),
+             c1a * sc( 0.16 ) * sz( 1.4 ) * ry( 75 ) * trans( vector( -0.72, 0.0, 0.53 ) ),
+	     c1a * sc( 0.2 ) * sz( 2.0 ) * ry( 75 ) * trans( vector( -0.8, 0.0, 0.6 ) ),
+	     c1a * sc( 0.2 ) * sz( 2.0 ) * ry( 75 ) * trans( vector( -0.82, 0.0, 0.66 ) ),
+	     c1a * sc( 0.2 ) * sz( 1.2 ) * ry( 75 ) * trans( vector( -0.79, 0.0, 0.8 ) ),
+	     c1a * sc( 0.15 ) * sz( 1.2 ) * ry( 75 ) * trans( vector( -0.82, 0.0, 0.95 ) ),
+	     c1a * sc( 0.05 ) * sz( 1.2 ) * ry( 75 ) * trans( vector( -0.82, 0.0, 1.02 ) ),
+	     c1a * sc( 0.001 ) * sz( 1.2 ) * ry( 75 ) * trans( vector( -0.82, 0.0, 1.02 ) ) );
+
+Duck = sFromCrvs( Crvs, 4, kv_open );
+attrib( Duck, "ptexture", "Grid2.ppm,12,0");
+interact( Duck );
+
+#
+# Try to decompose
+#
+t = c * ry( -90 );
+c3 = coerce( t, e2 );
+
+c3H1 = CanonicalH( c3, r1, 5, 2, e2 );
+c3H2 = CanonicalH( c3, r2, 5, 2, e2 );
+
+d1 = DECOMPOSE( c3H1 );
+dc1 = OriginalF( c3, nth( d1, 1 ), 5, 2, e2 ) * ry( 90 );
+interact( list( c3, dc1 * tz( 1 ) ) );
+
+d2 = DECOMPOSE( c3H2 );
+dc2 = OriginalF( c3, nth( d2, 1 ), 5, 2, e2 ) * ry (90 );
+interact( list( c3, dc2 * tz( 1 ) ) );
+
+Crvs1 = list( dc2 * sc( 0.001 ) * trans( vector( 1.02, 0.0, 0.18 ) ),
+	     dc2 * sc( 0.07 ) * sz( 0.4 ) * trans( vector( 1.02, 0.0, 0.18 ) ),
+	     dc2 * sc( 0.18 ) * sz( 0.3 ) * trans( vector( 0.8, 0.0, 0.16 ) ),
+	     dc2 * sc( 0.27 ) * sz( 0.5 ) * trans( vector( 0.6, 0.0, 0.16 ) ),
+	     dc2 * sc( 0.43 ) * sz( 0.64 ) * trans( vector( 0.3, 0.0, 0.2 ) ),
+	     dc2 * sc( 0.54 ) * sz( 0.7 ) * trans( vector( 0.0, 0.0, 0.23 ) ),
+	     dc2 * sc( 0.52 ) * ry( 25 ) * sz( 0.76 ) * trans( vector( -0.34, 0.0, 0.26 ) ),
+	     dc2 * sc( 0.41 ) * sz( 1.13 ) * ry( 50 ) * trans( vector( -0.6, 0.0, 0.32 ) ),
+	     dc2 * sc( 0.3 ) * sz( 1.3 ) * ry( 65 ) * trans( vector( -0.7, 0.0, 0.42 ) ),
+	     dc2 * sc( 0.16 ) * sz( 1.4 ) * ry( 75 ) * trans( vector( -0.71, 0.0, 0.5 ) ),
+             dc1 * sc( 0.16 ) * sz( 1.4 ) * ry( 75 ) * trans( vector( -0.72, 0.0, 0.53 ) ),
+	     dc1 * sc( 0.2 ) * sz( 2.0 ) * ry( 75 ) * trans( vector( -0.8, 0.0, 0.6 ) ),
+	     dc1 * sc( 0.2 ) * sz( 2.0 ) * ry( 75 ) * trans( vector( -0.82, 0.0, 0.66 ) ),
+	     dc1 * sc( 0.2 ) * sz( 1.2 ) * ry( 75 ) * trans( vector( -0.79, 0.0, 0.8 ) ),
+	     dc1 * sc( 0.15 ) * sz( 1.2 ) * ry( 75 ) * trans( vector( -0.82, 0.0, 0.95 ) ),
+	     dc1 * sc( 0.05 ) * sz( 1.2 ) * ry( 75 ) * trans( vector( -0.82, 0.0, 1.02 ) ),
+	     dc1 * sc( 0.001 ) * sz( 1.2 ) * ry( 75 ) * trans( vector( -0.82, 0.0, 1.02 ) ) );
+
+Duck1 = sFromCrvs( Crvs1, 4, kv_open );
+attrib( Duck1, "ptexture", "Grid2.ppm,12,0");
+interact( Duck1 );
+
+#############################################################################
+
+resolution = save_res;
+
+free( t );
+free( r1 );
+free( r2 );
+free( c );
+free( c1 );
+free( c2 );
+free( c1a );
+free( c1b );
+free( c2a );
+free( s1 );
+free( s2 );
+free( c1H );
+free( c2H );
+free( d1 );
+free( dc1 );
+free( d2 );
+free( dc2 );
+free( Crvs );
+free( Crvs1 );
+free( s1d );
+free( s2d );
+free( pl1 );
+free( pl2 );
+free( pl1d );
+free( pl2d );
+free( Duck );
+free( Duck1 );
+free( c3 );
+free( c3H1 );
+free( c3H2 );
+free( All1 );
+free( All2 );
+free( All3 );
+free( All4 );

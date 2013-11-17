@@ -1,0 +1,52 @@
+#
+# This is the make file for the misc. lib subdirectory.
+#
+#				Gershon Elber, Aug 1991
+#
+
+include ../makeflag.unx
+
+OBJS =  bipartte.o$(IRIT_OBJ_PF) \
+	config.o$(IRIT_OBJ_PF) \
+	dither.o$(IRIT_OBJ_PF) \
+	exprtree.o$(IRIT_OBJ_PF) \
+	editimag.o$(IRIT_OBJ_PF) \
+	getarg.o$(IRIT_OBJ_PF) \
+	gnrl_mat.o$(IRIT_OBJ_PF) \
+	hash_tbl.o$(IRIT_OBJ_PF) \
+	hash2tbl.o$(IRIT_OBJ_PF) \
+	hmgn_mat.o$(IRIT_OBJ_PF) \
+	imalloc.o$(IRIT_OBJ_PF) \
+	imgstcvr.o$(IRIT_OBJ_PF) \
+	irit_ftl.o$(IRIT_OBJ_PF) \
+	irit2ftl.o$(IRIT_OBJ_PF) \
+	irit_inf.o$(IRIT_OBJ_PF) \
+	irit2inf.o$(IRIT_OBJ_PF) \
+	irit_wrn.o$(IRIT_OBJ_PF) \
+	irit2wrn.o$(IRIT_OBJ_PF) \
+	levenmar.o$(IRIT_OBJ_PF) \
+	list.o$(IRIT_OBJ_PF) \
+	mincover.o$(IRIT_OBJ_PF) \
+	misc_err.o$(IRIT_OBJ_PF) \
+	misc_ftl.o$(IRIT_OBJ_PF) \
+	miscattr.o$(IRIT_OBJ_PF) \
+	miscatt2.o$(IRIT_OBJ_PF) \
+	miscatt3.o$(IRIT_OBJ_PF) \
+	priorque.o$(IRIT_OBJ_PF) \
+	qrfactor.o$(IRIT_OBJ_PF) \
+	readimag.o$(IRIT_OBJ_PF) \
+	search.o$(IRIT_OBJ_PF) \
+	writimag.o$(IRIT_OBJ_PF) \
+	xgeneral.o$(IRIT_OBJ_PF)
+
+all:	libIritMisc$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+
+libIritMisc$(IRIT_LIB_PF).$(IRIT_LIB_SFX): $(OBJS)
+	rm -f libIritMisc$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+	$(IRIT_LIB_MAKE) libIritMisc$(IRIT_LIB_PF).$(IRIT_LIB_SFX) *.o$(IRIT_OBJ_PF)
+	-$(IRIT_LIB_RAN) libIritMisc$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+
+install: libIritMisc$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+	mv -f libIritMisc$(IRIT_LIB_PF).$(IRIT_LIB_SFX) $(IRIT_LIB_DIR)
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

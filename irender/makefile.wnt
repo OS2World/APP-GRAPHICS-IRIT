@@ -1,0 +1,19 @@
+#
+# Makefile for the IRENDER scan converter.
+#
+
+include ..\makeflag.wnt
+
+OBJS	= main.$(IRIT_OBJ_PF) config.$(IRIT_OBJ_PF) parser.$(IRIT_OBJ_PF)
+
+irender$(IRIT_EXE_PF).exe:	$(OBJS)
+	$(IRITCONLINK) -out:$@ $(OBJS) $(IRIT_LIBS) $(W32CONLIBS)
+	$(IRITMANIFEST) -manifest $@.manifest -outputresource:$@;1
+
+install: irender$(IRIT_EXE_PF).exe
+	copy irender$(IRIT_EXE_PF).exe $(IRIT_BIN_DIR)
+	del irender$(IRIT_EXE_PF).exe
+	copy irender.cfg $(IRIT_BIN_DIR)
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.
+

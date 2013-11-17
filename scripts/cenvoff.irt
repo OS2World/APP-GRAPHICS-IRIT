@@ -1,0 +1,105 @@
+#
+# Some examples of envelope offset
+#
+#				Gershon Elber, August 1996
+#
+
+save_mat = view_mat;
+
+view_mat = rx( 180 );
+viewobj( view_mat );
+
+c1 = cbezier( list( ctlpt( E2, -0.8, 0.0 ),
+		    ctlpt( E2, -0.2, 1.0 ),
+		    ctlpt( E2,  0.2, 0.0 ),
+		    ctlpt( E2,  0.8, 0.6 ) ) );
+color( c1, yellow );
+attrib( c1, "dwidth", 4 );
+
+s1 = cenvoff( c1, 0.5, 0.01 );
+color( s1, cyan );
+
+interact( list( c1, s1 ) );
+free( c1 );
+free( s1 );
+
+
+c2 = cbspline( 3,
+	       list( ctlpt( E2,  1.0,  0.0 ),
+		     ctlpt( E2,  1.0,  1.0 ),
+		     ctlpt( E2,  0.3,  1.0 ),
+		     ctlpt( E2,  0.0, -0.5 ),
+		     ctlpt( E2, -0.3,  1.0 ),
+		     ctlpt( E2, -1.0,  1.0 ),
+		     ctlpt( E2, -1.0,  0.0 ),
+		     ctlpt( E2, -1.0, -1.0 ),
+		     ctlpt( E2, -0.3, -1.0 ),
+		     ctlpt( E2,  0.0, -0.6 ),
+		     ctlpt( E2,  0.3, -1.0 ),
+		     ctlpt( E2,  1.0, -1.0 ),
+		     ctlpt( E2,  1.0,  0.0 ) ),
+		list( KV_OPEN ) );
+color( c2, yellow );
+attrib( c2, "dwidth", 4 );
+
+s2 = cenvoff( c2, 2, 0.01 );
+color( s2, cyan );
+
+interact( list( c2, s2 ) );
+free( c2 );
+free( s2 );
+
+
+c3 = cbspline( 5,
+	       list( ctlpt( E2,  1.0,  0.0 ),
+		     ctlpt( E2,  1.0,  1.0 ),
+		     ctlpt( E2,  0.3,  1.0 ),
+		     ctlpt( E2,  0.0, -0.6 ),
+		     ctlpt( E2, -0.3,  1.0 ),
+		     ctlpt( E2, -1.0,  1.0 ),
+		     ctlpt( E2, -1.0,  0.0 ),
+		     ctlpt( E2, -1.0, -1.0 ),
+		     ctlpt( E2, -0.3, -1.0 ),
+		     ctlpt( E2,  0.0, -0.6 ),
+		     ctlpt( E2,  0.3, -1.0 ),
+		     ctlpt( E2,  1.0, -1.0 ),
+		     ctlpt( E2,  1.0,  0.0 ) ),
+		list( KV_OPEN ) );
+color( c3, yellow );
+attrib( c3, "dwidth", 4 );
+
+s3 = cenvoff( c3, 2, 0.01 );
+color( s3, cyan );
+
+interact( list( c3, s3 ) );
+free( c3 );
+free( s3 );
+
+
+c4 = cbspline( 5,
+	       list( ctlpt( E2,  1.0,  1.0 ),
+		     ctlpt( E2,  0.3,  1.0 ),
+		     ctlpt( E2,  0.0, -0.6 ),
+		     ctlpt( E2, -0.3,  1.0 ),
+		     ctlpt( E2, -1.0,  1.0 ),
+		     ctlpt( E2, -1.0,  0.0 ),
+		     ctlpt( E2, -1.0, -1.0 ),
+		     ctlpt( E2, -0.3, -1.0 ),
+		     ctlpt( E2,  0.0, -0.6 ),
+		     ctlpt( E2,  0.3, -1.0 ),
+		     ctlpt( E2,  1.0, -1.0 ),
+		     ctlpt( E2,  1.0,  0.0 ) ),
+		list( KV_OPEN ) );
+color( c4, yellow );
+attrib( c4, "dwidth", 4 );
+
+s4 = cenvoff( c4, 2, 0.01 );
+color( s4, cyan );
+
+interact( list( c4, s4 ) );
+save( "cenvoff", list( c4, s4 ) );
+
+view_mat = save_mat;
+
+free( c4 );
+free( s4 );

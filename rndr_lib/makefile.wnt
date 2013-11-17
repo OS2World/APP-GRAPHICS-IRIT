@@ -1,0 +1,37 @@
+
+#
+# This is the make file for the rndr. lib subdirectory.
+#
+#				Gershon Elber, June 1993
+#
+
+# Get the destination directories:
+include ..\makeflag.wnt
+
+OBJS =  color.$(IRIT_OBJ_PF) \
+	fstalloc.$(IRIT_OBJ_PF) \
+	interpol.$(IRIT_OBJ_PF) \
+	lights.$(IRIT_OBJ_PF) \
+	nc_zbufr.$(IRIT_OBJ_PF) \
+	object.$(IRIT_OBJ_PF) \
+	polyline.$(IRIT_OBJ_PF) \
+	report.$(IRIT_OBJ_PF) \
+	rndr_lib.$(IRIT_OBJ_PF) \
+	scene.$(IRIT_OBJ_PF) \
+	stencil.$(IRIT_OBJ_PF) \
+	texture.$(IRIT_OBJ_PF) \
+	triangle.$(IRIT_OBJ_PF) \
+	vis_maps.$(IRIT_OBJ_PF) \
+	zbuffer.$(IRIT_OBJ_PF) \
+	zbufr_1d.$(IRIT_OBJ_PF)
+
+$(RNDR_LIB): $(OBJS)
+	-del $(RNDR_LIB)
+	$(IRITLIB) -out:$(RNDR_LIB) $(OBJS)
+
+$(IRIT_LIB_DIR)\$(RNDR_LIB): $(RNDR_LIB)
+	copy $(RNDR_LIB) $(IRIT_LIB_DIR)
+
+install: $(IRIT_LIB_DIR)\$(RNDR_LIB)
+
+# Dependencies starts here - do not touch, generated automatically.

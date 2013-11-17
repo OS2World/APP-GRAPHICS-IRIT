@@ -1,0 +1,75 @@
+#
+# A line tangent to two circles. Between zero and four solutions.
+#
+
+#
+# Given a C coefficent of line Ax + By + C = 0, compute A and B and
+# constructs a line from this geometry.
+#
+MakeLineFromC = function( Lc, X0, Y0, R0, X1, Y1, R1 ): La: Lb: Det: Pt1: Pt2:
+    Det = X0 * Y1 - X1 * Y0:
+    La = ( Y1 * (R0 - Lc) - Y0 * (R1 - Lc) ) / Det:
+    Lb = ( X0 * (R1 - Lc) - X1 * (R0 - Lc) ) / Det:
+    if ( abs( La ) > abs( Lb ),
+	Pt1 = ctlpt( E2, (-Lc - Lb * 10) / La,                10 ):
+	Pt2 = ctlpt( E2, (-Lc + Lb * 10) / La,               -10 ),
+	Pt1 = ctlpt( E2,                   10, (-Lc - La * 10) / Lb ):
+	Pt2 = ctlpt( E2,                  -10, (-Lc + La * 10) / Lb ) ):
+    return = Pt1 + Pt2;
+
+#
+# Compute the C coefficient of the line Ax + By + C = 0, and make lines.
+#
+LineTanCircCircAux = function( X0, Y0, R0, X1, Y1, R1 ):
+    Qa: Qb: Qc: A: B: C: Dsc:
+    Qa = sqr( Y1 - Y0 ) + sqr( X0 - X1 ):
+    Qb = -2 * ( Y1 - Y0 ) * ( Y1 * R0 - Y0 * R1 ) -
+	  2 * ( X0 - X1 ) * ( X0 * R1 - X1 * R0 ):
+    Qc = sqr( Y1 * R0 - Y0 * R1 ) +
+	 sqr( X0 * R1 - X1 * R0 ) -
+	 sqr( X0 * Y1 - X1 * Y0 ):
+    Dsc = sqr( Qb ) - 4 * Qa * Qc:
+    if ( Dsc < 0,
+	 return = nil(),
+         return = list( MakeLineFromC( ( -Qb + sqrt( Dsc ) ) / ( 2 * Qa ),
+				       X0, Y0, R0, X1, Y1, R1 ),
+			MakeLineFromC( ( -Qb - sqrt( Dsc ) ) / ( 2 * Qa ),
+				       X0, Y0, R0, X1, Y1, R1 ) ) );
+
+#
+# Compute all the possible lines Ax + By + C = 0 thru given two circles.
+#
+LineTanCircCirc = function( X0, Y0, R0, X1, Y1, R1 ): Circs:
+    Circs = list( circle( vector( X0, Y0, 0.0 ), R0 ),
+		  circle( vector( X1, Y1, 0.0 ), R1 ) ):
+    color( Circs, red ):
+    return = Circs +
+	     LineTanCircCircAux( X0, Y0,  R0, X1, Y1,  R1 ) +
+	     LineTanCircCircAux( X0, Y0,  R0, X1, Y1, -R1 ) +
+	     LineTanCircCircAux( X0, Y0, -R0, X1, Y1, -R1 ) +
+	     LineTanCircCircAux( X0, Y0, -R0, X1, Y1,  R1 );
+
+#
+# We do not deal with the generated cases here (i.e. Y0 = Y1 or X0 = X1).
+#
+
+save_mat = view_mat;
+view_mat = sc( 0.25 );
+viewobj( view_mat );
+
+All1 = LineTanCircCirc( -2, 0.5, 1.5, 2, 0.25, 1 );
+interact( All1 );
+
+All2 = LineTanCircCirc( -1, 0.15, 1.5, 0.5, -0.5, 1.25 );
+interact( All2 );
+
+All3 = LineTanCircCirc( -0.5, 0.5, 2, 0, 0.25, 1 );
+interact( All3 );
+
+save( "ln2circ1", list( All1, All2, All3 ) );
+
+free( All1 );
+free( All2 );
+free( All3 );
+
+view_mat = save_mat;

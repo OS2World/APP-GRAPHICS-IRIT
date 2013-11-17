@@ -1,0 +1,170 @@
+		IRIT at the CS department, TECHNION, IIT
+		----------------------------------------
+
+The IRIT solid modeller is installed at the Technion as /usr/local/irit
+on virtually all systems.
+
+	Several types of workstations are actively supported and these
+are subdirectories of /usr/local/irit. You can find under
+/usr/local/irit directories for indy (SGI Irix 5.0.x), sgi4d (SGI Irit
+4.0.xx), sun4 (Sun SPARC) etc. In src directory the complete source tree
+of the solid modeller can be found. In addition, you can find under
+/usr/local/irit two more important directories:
+
+data - contains a large set of models in the IRIT data file formats.
+docs - the Irit's Manual(s) in text, Postscript, and Latex formats.
+
+Each of the indy/sgi4d/sun4 trees are a complete copy (actually
+symbolic links to) the src directory. The executables on each tree are
+built and saved under the appropriate name in the bin subdir. That is,
+the executables (==binaries) for sun SPARC can be found in
+/usr/local/irit/sun4/bin. Object files (.o files) are likely to be removed
+from the trees to preserve space but you can find the different libraries
+under the lib subdir. That is IRIT libraries for indy can be found in
+/usr/local/irit/indy/lib.
+
+
+Setting up IRIT
+---------------
+
+Add the following to .cshrc:
+
+   set path = ($path /usr/local/irit/xxxx/bin)
+   setenv IRIT_PATH /usr/local/irit/xxxx/bin/
+   setenv IRIT_DISPLAY "x11drvs -s-"
+
+where xxxx is either sgi4d, indy, or sun4 according to the machine type
+you use. You might be able to use different display devices (than x11drvs)
+depending upon the machine type you use. Inspect the $IRIT_PATH directory
+for other possible devices.
+
+If you are using the emacs editor (if you dont, you better start because
+it is much more simple to use IRIT within emacs) add the following to your
+~/.emacs (and then exit and reenter emacs to activate):
+
+	; Load IRIT package
+	(condition-case ()
+	    (load (expand-file-name "/usr/local/irit/src/irit/irit"))
+	  (error (message "Can't load irit.el")))
+
+The irit[.el] file defines the following new emacs functions for you.
+Once a file with the type '.irt' is loaded, emacs shifts into IRIT mode
+with the following new three commands:
+
+	M-e - Executes one line of IRIT solid modling command upto the next
+	      semicolor (';'). The M-e binds send-line-to-irit.
+        M-r - Executes a whole regions of IRIT command between the cursor and
+              marks positions. The M-r binds send-region-to-irit.
+        M-s - Sends one IRIT command from the input buffer to IRIT.
+	      M-s binds send-mini-buffer-to-irit.
+
+It is very convenient to use IRIT within emacs to create new models, and
+it is the recommended way.
+In addition, while editing a C source file, the function
+
+	make-irit-c-function - will request a function prototype and will
+	      expand it into the coding style comment format that is
+	      required in IRIT.
+
+The source tree structure
+-------------------------
+
+The src subdir (and the sgi4d/indy/sun4 which are symbolic link duplicates)
+contains the full set of C sources for the IRIT solid modeller. The solid
+modeller has several libraries, each kept in a separated directory:
+
+amigalib - amiga specific library (not really useful here).
+bool_lib - Boolean operations between polyhedra models.
+cagd_lib - the library that deals with freeform Bezier and NURB curves
+	   and surfaces.
+geom_lib - general geometry is handled here, such as bounding boxes,
+           convexity of polygons, etc.
+misc_lib - miscellaneous staff - reading configuration files, parsing command
+           line arguments, malloc related, low level attributes, etc.
+prsr_lib - handles reading and writing geometrical data from/to files.
+           Also handles high level (object) attributes and allocation and
+           IPC between the server (IRIT) and the display devices.
+symb_lib - symbolic manipulation of freeform curves and surfaces. This
+           includes sum and product of scalar curves and surfaces, curvature
+           analysis, offsets, morphing of surfaces, prisa (layout), etc.
+trim_lib - trimmed surface's library (early development).
+triv_lib - Freefrom trivariate functions library.
+xtra_lib - tools that were not written by us, yet they are public domain and
+           we use them in IRIT. So far it includes an SVD solver from NR.
+circlink - not really a library, but a single object file that forces
+           linkage that resolves circularities in libraries.
+
+In addition there are several directories that include end applications
+that use these libraries:
+
+grapdrvs - the display devices. There are several display devices
+           that might be useful for you:
+           x11drvs - Vanilla X11 display device.
+           xmtdrvs - Motif/X11 display device. Renders x11drvs almost obsolete.
+           xgldrvs - SGI gl display device.
+irit -     the solid modeller. Mainly the interpreter and interface to all
+	   the geometric manipulation that is done in other libraries.
+	   This directory builds the solid modeller.
+scripts -  contains a whole set ofirit script examples (*.irt files).
+illustrt - a line illustration tool.
+poly3d-h - a hidden line removal algorithm.
+poly3d-r - a simple scan converter (obsolete).
+iritfltr - contains a set of filters to/from the IRIT data file format to
+           other formats/ray tracers/postscript etc.
+contrib -  this directory contains a whole subtree of unsupported and related
+	   staff.  Browse at your own risk.
+
+Compiling with IRIT
+-------------------
+
+In order to compile a program that uses IRIT you should do the
+following.  Copy the file /usr/local/irit/src/makeflag.unx to the
+current directory. At the beginning of your makefile add the line:
+
+include makeflag.unx
+
+The makeflag.unx defines a new rule to compile .c files to .o files
+with the "correct" flags. You do have to select these "correct" flags
+in the makeflag.unx by editing and removing the '#' comments from the
+appropriate selected machine. For example to use the makefile under
+SGI Irit 4.0 the following must be uncommented:
+
+    #
+    # Flags for SGI 4d, Irix 4.0, using GL or X11:
+    #
+    CC = cc -fullwarn -woff 302,303,269,927 -xansi
+    DFLAGS = -DFUNCPROTO -DSTRICMP -DSGINAP -DRAND48 -DTIMES -D__UNIX__ -D__GL__ -D__X11__
+    # CFLAGS = -O $(DFLAGS) -Olimit 1000 -Wf,-XNh10000 -Wf,-XNd10000 -G 4
+    CFLAGS = -g $(DFLAGS) -Olimit 1000 -Wf,-XNh10000 -Wf,-XNd10000 -G 4
+    MORELIBS = -lbsd
+    GRAPX11LIBS = -lX11
+    GRAPXMTLIBS = -lXm_s -lXt_s -lX11 -lgl_s
+    GRAPGLLIBS = -lgl_s
+    GRAPDRVS = xgldrvs xgladap x11drvs xmtdrvs nuldrvs
+
+Note that they are two options for CFLAGS, optimized (-O) and
+debugging (-g).
+
+Your makefile can be very simple hereafter. For example the makefile
+of the poly3d-h in the IRIT itself, looks like:
+
+    #
+    # Makefile for the POLY3D-H hidden line remover.
+    #
+    
+    include makeflag.unx
+    
+    OBJS	= out-edge.o poly3d-h.o prepdata.o
+    
+    poly3d-h:	$(OBJS)
+    	$(CC) $(CFLAGS) -o poly3d-h $(OBJS) $(LIBS) -lm $(MORELIBS)
+    
+    install: poly3d-h
+    	mv -f poly3d-h $(BIN_DIR)
+    	cp poly3d-h.cfg $(BIN_DIR)
+    
+    # Dependencies starts here - do not touch, generated automatically.
+    out-edge.o:	program.h
+    poly3d-h.o:	program.h
+    prepdata.o:	program.h
+

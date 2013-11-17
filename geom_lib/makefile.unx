@@ -1,0 +1,64 @@
+#
+# This is the make file for the geom lib subdirectory.
+#
+#				Gershon Elber, Aug 1991
+#
+
+include ../makeflag.unx
+
+OBJS =  analyfit.o$(IRIT_OBJ_PF) \
+	animate.o$(IRIT_OBJ_PF) \
+	anim_aux.o$(IRIT_OBJ_PF) \
+	bbox.o$(IRIT_OBJ_PF) \
+	cnvxhull.o$(IRIT_OBJ_PF) \
+	convex.o$(IRIT_OBJ_PF) \
+	decimate.o$(IRIT_OBJ_PF) \
+	dist_pts.o$(IRIT_OBJ_PF) \
+	fit1pts.o$(IRIT_OBJ_PF) \
+	fit2pts.o$(IRIT_OBJ_PF) \
+	geomat3d.o$(IRIT_OBJ_PF) \
+	geomvals.o$(IRIT_OBJ_PF) \
+	geom_bsc.o$(IRIT_OBJ_PF) \
+	geom_err.o$(IRIT_OBJ_PF) \
+	geom_ftl.o$(IRIT_OBJ_PF) \
+	intrnrml.o$(IRIT_OBJ_PF) \
+	ln_sweep.o$(IRIT_OBJ_PF) \
+	merge.o$(IRIT_OBJ_PF) \
+	ms_circ.o$(IRIT_OBJ_PF) \
+	ms_spher.o$(IRIT_OBJ_PF) \
+	plycrvtr.o$(IRIT_OBJ_PF) \
+	plyimprt.o$(IRIT_OBJ_PF) \
+	plystrct.o$(IRIT_OBJ_PF) \
+	polysimp.o$(IRIT_OBJ_PF) \
+	poly_cln.o$(IRIT_OBJ_PF) \
+	poly_cvr.o$(IRIT_OBJ_PF) \
+	poly_pts.o$(IRIT_OBJ_PF) \
+	poly_sil.o$(IRIT_OBJ_PF) \
+	polyofst.o$(IRIT_OBJ_PF) \
+	polyprop.o$(IRIT_OBJ_PF) \
+	polysmth.o$(IRIT_OBJ_PF) \
+	primitv1.o$(IRIT_OBJ_PF) \
+	primitv2.o$(IRIT_OBJ_PF) \
+	primitv3.o$(IRIT_OBJ_PF) \
+	pt_morph.o$(IRIT_OBJ_PF) \
+	quatrnn.o$(IRIT_OBJ_PF) \
+	scancnvt.o$(IRIT_OBJ_PF) \
+	sph_cone.o$(IRIT_OBJ_PF) \
+	sph_pts.o$(IRIT_OBJ_PF) \
+	sbdv_srf.o$(IRIT_OBJ_PF) \
+	text.o$(IRIT_OBJ_PF) \
+	zbuf_ogl.o$(IRIT_OBJ_PF) \
+	zbuffer.o$(IRIT_OBJ_PF)
+
+all:	libIritGeom$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+
+libIritGeom$(IRIT_LIB_PF).$(IRIT_LIB_SFX): $(OBJS)
+	rm -f libIritGeom$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+	$(IRIT_LIB_MAKE) libIritGeom$(IRIT_LIB_PF).$(IRIT_LIB_SFX) *.o$(IRIT_OBJ_PF)
+	-$(IRIT_LIB_RAN) libIritGeom$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+
+install: libIritGeom$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+	mv -f libIritGeom$(IRIT_LIB_PF).$(IRIT_LIB_SFX) $(IRIT_LIB_DIR)
+
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

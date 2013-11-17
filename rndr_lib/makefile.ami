@@ -1,0 +1,36 @@
+#
+# This is the make file for the rndr. lib subdirectory.
+#
+#				Gershon Elber, Aug 2003
+#
+
+include ../makeflag.ami
+
+OBJS =  color.o \
+	fstalloc.o \
+	interpol.o \
+	lights.o \
+	nc_zbufr.o \
+	object.o \
+	polyline.o \
+	report.o \
+	rndr_lib.o \
+	scene.o \
+	stencil.o \
+	texture.o \
+	triangle.o \
+	vis_maps.o \
+	zbuffer.o \
+	zbufr_1d.o
+
+all:	librndr.a
+
+librndr.a: $(OBJS)
+	rm -f librndr.a
+	ar rcv librndr.a *.o
+	-ranlib librndr.a
+
+install: librndr.a
+	mv -f librndr.a $(IRIT_LIB_DIR)
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

@@ -1,0 +1,297 @@
+#
+# Some examples of 2-d bisector computations.
+#
+#			Gershon Elber, August 1996.
+#
+
+save_res = resolution;
+
+view_mat3d = view_mat;
+view_mat2d = sc( 0.6 );
+
+viewstate( "WidthLines", 1 );
+
+Pl = list( poly( list( vector(  0,  0,  0 ),
+		       vector(  0,  1,  0 ),
+		       vector(  1,  1,  0 ),
+		       vector(  1,  0,  0 ) ), false ),
+	   poly( list( vector(  0,  0,  0 ),
+		       vector(  0,  1,  0 ),
+		       vector(  1,  1,  0 ),
+		       vector(  1,  0,  0 ),
+		       vector(  0,  0,  0 ) ), true ),
+	   poly( list( vector(  0.0, 1.2, 0 ),
+		       vector(  0.0, 0.0, 0 ),
+		       vector(  1.2, 0.0, 0 ) ), true ),
+	   poly( list( vector(  0.0, 0.0, 0.0 ),
+		       vector(  0.0, 0.0, 0.5 ) ), true ) );
+color( Pl, red );
+
+EvalUVtoE3 = function( Srf, UVs, clr ): UV: i:
+    return = nil():
+    for ( i = 1, 1, sizeof( UVs ),
+	UV = nth( UVs, i ):
+	snoc( seval( Srf, coord( UV, 1 ), coord( UV, 2 ) ), return ) ):
+    color( return, clr );
+
+CNormalPlnr = function( Crv, t ): V:
+    V = ctangent( Crv, t, true ):
+    return = vector( coord( v, 1 ), -coord( v, 0 ), 0.0 );
+
+GetBisectPt = function( Crv1, Crv2, Pt ): Pt1: Pt2: Nrml1: Nrml2: InterPts:
+    Pt1 = ceval( Crv1, coord( Pt, 0 ) ):
+    Pt2 = ceval( Crv2, coord( Pt, 1 ) ):
+    Nrml1 = cNormalPlnr( Crv1, coord( Pt, 0 ) ):
+    Nrml2 = cNormalPlnr( Crv2, coord( Pt, 1 ) ):
+    InterPts = PtsLnLn( coerce( Pt1, point_type ), Nrml1,
+		        coerce( Pt2, point_type ), Nrml2 ):
+    return = nth( InterPts, 1 );
+
+GetBisectCrv = function( Crv1, Crv2, Cntr ):
+	PtList: i: Pt: Pt1: Pt2: Nrml1: Nrml2: InterPts:
+    PtList = nil():
+    for ( i = 0, 1, sizeof( Cntr ) - 1,
+	Pt = coord( Cntr, i ):
+	Pt1 = ceval( Crv1, coord( Pt, 0 ) ):
+	Pt2 = ceval( Crv2, coord( Pt, 1 ) ):
+	Nrml1 = cNormalPlnr( Crv1, coord( Pt, 0 ) ):
+	Nrml2 = cNormalPlnr( Crv2, coord( Pt, 1 ) ):
+        InterPts = PtsLnLn( coerce( Pt1, point_type ), Nrml1,
+		            coerce( Pt2, point_type ), Nrml2 ):
+	snoc( nth( InterPts, 1 ), PtList ) ):
+    return = cbspline( 2, PtList, list( KV_OPEN ) );
+
+GetBisectLines = function( Crv1, Crv2, Cntr, n, Start, End ):
+	i: ii: Pt: Pt1: Pt2: Nrml1: Nrml2: InterPts:
+    if ( Start == -1, Start = 0 ):
+    if ( End == -1, End = sizeof( Cntr ) - 1 ):
+    return = nil():
+    for ( ii = Start, ( End - Start - 1 ) / n - 0.00001, End,
+	i = floor( ii ):
+	Pt = coord( Cntr, i ):
+	Pt1 = ceval( Crv1, coord( Pt, 0 ) ):
+	Pt2 = ceval( Crv2, coord( Pt, 1 ) ):
+	Nrml1 = cNormalPlnr( Crv1, coord( Pt, 0 ) ):
+	Nrml2 = cNormalPlnr( Crv2, coord( Pt, 1 ) ):
+        InterPts = PtsLnLn( coerce( Pt1, point_type ), Nrml1,
+		            coerce( Pt2, point_type ), Nrml2 ):
+	snoc( coerce( Pt1, e2 ) +
+	      coerce( nth( InterPts, 1 ), e2 ) +
+	      coerce( Pt2, e2 ), return ) ):
+    color( return, cyan ):
+    awidth( return, 0.0001 );
+
+AnimBisectCrv = procedure( Crv1, Crv2, Data, Cntr ):
+	i: Pt: Pt1: Pt2: Nrml1: Nrml2: InterPt:
+    color( Crv1, yellow ):
+    color( Crv2, yellow ):
+    adwidth( Crv1, 4 ):
+    adwidth( Crv2, 4 ):
+    for ( i = 0, 1, sizeof( Cntr ) - 1,
+	Pt = coord( Cntr, i ):
+	Pt1 = ceval( Crv1, coord( Pt, 0 ) ):
+	Pt2 = ceval( Crv2, coord( Pt, 1 ) ):
+	Nrml1 = cNormalPlnr( Crv1, coord( Pt, 0 ) ):
+	Nrml2 = cNormalPlnr( Crv2, coord( Pt, 1 ) ):
+        InterPt = nth( PtsLnLn( coerce( Pt1, point_type ), Nrml1,
+		                coerce( Pt2, point_type ), Nrml2 ), 1 ):
+	if ( thisobj("InterPt") == point_type,
+	    color( Pt1, green ):
+	    color( Pt2, green ):
+	    color( InterPt, white ):
+	    view( list( Crv1, Crv2, Pt1, Pt2, Data, InterPt ), 1 ) ) );
+
+AnimBisectCrv2 = procedure( Crv1, Crv2, Data, Cntr ):
+	i: Pt: Pt1: Pt2: Nrml1: Nrml2: InterPt: BisectLns:
+    color( Crv1, yellow ):
+    color( Crv2, yellow ):
+    adwidth( Crv1, 4 ):
+    adwidth( Crv2, 4 ):
+    for ( i = 0, 1, sizeof( Cntr ) - 1,
+	Pt = coord( Cntr, i ):
+	Pt1 = ceval( Crv1, coord( Pt, 0 ) ):
+	Pt2 = ceval( Crv2, coord( Pt, 1 ) ):
+	Nrml1 = cNormalPlnr( Crv1, coord( Pt, 0 ) ):
+	Nrml2 = cNormalPlnr( Crv2, coord( Pt, 1 ) ):
+        InterPt = nth( PtsLnLn( coerce( Pt1, point_type ), Nrml1,
+		                coerce( Pt2, point_type ), Nrml2 ), 1 ):
+	if ( thisobj("InterPt") == point_type,
+	    color( Pt1, green ):
+	    color( Pt2, green ):
+	    color( InterPt, white ):
+	    BisectLns = coerce( Pt1, E2 ) +
+		        coerce( InterPt, E2 ) +
+		        coerce( Pt2, E2 ):
+	    color( BisectLns, magenta ):
+	    if ( coord( InterPt, 1 ) < 10 &&
+	         coord( InterPt, 1 ) > -10 &&
+	         coord( InterPt, 2 ) < 10 &&
+	         coord( InterPt, 2 ) > -10,	    
+	        view( list( Crv1, Crv2, Data, Pt1, Pt2,
+			    InterPt, BisectLns ), 1 ) ) ) );
+
+#############################################################################
+#
+# Two quadratic curves
+#
+
+c1 = cbezier( list( ctlpt( E2, -0.5, -0.2 ),
+		    ctlpt( E2,  0.0, -0.2 ),
+		    ctlpt( E2,  0.6,  0.6 ) ) );
+c2 = cbezier( list( ctlpt( E2,  0.3, -0.7 ),
+		    ctlpt( E2, -0.2, -0.7 ),
+		    ctlpt( E2,  0.7,  0.6 ) ) );
+
+color( c1, yellow );
+attrib( c1, "dwidth", 2 );
+attrib( c1, "width", 0.007 );
+color( c2, yellow );
+attrib( c2, "dwidth", 2 );
+attrib( c2, "width", 0.007 );
+
+BisectSrf = cbisector2d( list( c1, c2 ), TRUE, 1, 20, true, false );
+BisectSrfE3 = coerce( BisectSrf, e3 ) * rotx( -90 ) * roty( -90 ) * sz( 0.1 );
+color( BisectSrfE3, green );
+attrib( BisectSrfE3, "width", 0.005 );
+
+resolution = 60;
+Cntrs = contour( BisectSrfE3, plane( 0, 0, 1, 1e-8 ) );
+adwidth( Cntrs, 2 );
+attrib( Cntrs, "width", 0.015 );
+
+interact( list( BisectSrfE3, Pl, Cntrs, view_mat3d ) );
+
+BisectCrvs = cbisector2d( list( c1, c2 ), FALSE, 1, 30, true, false );
+attrib( BisectCrvs, "dwidth", 4 );
+attrib( BisectCrvs, "width", 0.012 );
+attrib( BisectCrvs, "gray", 0.5 );
+color( BisectCrvs, green );
+
+All = list( c1, c2, BisectCrvs );
+interact( list( All, view_mat2d ) );
+free( All );
+
+for ( i = 0, 1, sizeof( Cntrs ) - 1,
+    AnimBisectCrv2( c1, c2, BisectCrvs, coord( Cntrs, i ) ) );
+free( i );
+
+#############################################################################
+#
+# Two cubic curves
+#
+
+c1 = cbezier( list( ctlpt( E2, -0.8, -0.6 ),
+		    ctlpt( E2, -0.2, -0.1 ),
+		    ctlpt( E2,  0.2, -0.6 ),
+		    ctlpt( E2,  0.8, -0.6 ) ) );
+c2 = cbezier( list( ctlpt( E2, -0.8,  0.6 ),
+		    ctlpt( E2, -0.2, -0.1 ),
+		    ctlpt( E2,  0.2, -0.6 ),
+		    ctlpt( E2,  0.8,  0.6 ) ) );
+color( c1, yellow );
+attrib( c1, "dwidth", 2 );
+color( c2, yellow );
+attrib( c2, "dwidth", 2 );
+
+#BisectSrf = cbisector( list( c1, c2 ), 0, -1, true, false );
+BisectSrf = cbisector2d( list( c1, c2 ), TRUE, 1, 20, true, false );
+BisectSrfE3 = coerce( BisectSrf, e3 ) * rotx( -90 ) * roty( -90 ) * sz( 0.01 );
+color( BisectSrfE3, green );
+attrib( BisectSrfE3, "width", 0.005 );
+
+resolution = 60;
+Cntrs = contour( BisectSrfE3, plane( 0, 0, 1, 1e-8 ) );
+adwidth( Cntrs, 2 );
+attrib( Cntrs, "width", 0.015 );
+
+UExtreme = EvalUVtoE3( BisectSrfE3, 
+		       ciextreme( BisectSrf, col, 0.01, -1e-9 ),
+		       yellow );
+adwidth( UExtreme, 2 );
+
+VExtreme = EvalUVtoE3( BisectSrfE3,
+		       ciextreme( BisectSrf, row, 0.01, -1e-9 ),
+		       cyan );
+adwidth( VExtreme, 2 );
+
+interact( list( BisectSrfE3, Pl, VExtreme, UExtreme, Cntrs, view_mat3d ) );
+
+#BisectCrvs = cbisector( list( c1, -c2 ), 0, 30, true, true );
+BisectCrvs = cbisector2d( list( c1, -c2 ), FALSE, 1, 30, true, true );
+attrib( BisectCrvs, "dwidth", 2 );
+attrib( BisectCrvs, "width", 0.012 );
+attrib( BisectCrvs, "gray", 0.5 );
+color( BisectCrvs, green );
+
+All = list( c1, c2, BisectCrvs );
+interact( list( All, view_mat2d ) );
+free( All );
+
+for ( i = 0, 1, sizeof( Cntrs ) - 1,
+    AnimBisectCrv2( c1, c2, BisectCrvs, coord( Cntrs, i ) ) );
+free( i );
+
+save( "cbisect1",  list( c1, c2, BisectCrvs ) );
+
+#############################################################################
+#
+# Self bisectors of a cubic Bspline curves
+#
+
+c1 = creparam( cbspline( 3,
+		         list( ctlpt( E2, -0.5,  0.5 ),
+			       ctlpt( E2,  0.0, -0.1 ),
+			       ctlpt( E2, -0.9, -1.9 ),
+			       ctlpt( E2,  0.9, -0.4 ),
+			       ctlpt( E2,  0.9,  0.5 ) ),
+		         list( KV_OPEN ) ), 0, 1 );
+color( c1, yellow );
+attrib( c1, "dwidth", 4 );
+
+#BisectSrf = cbisector( c1, 0, -1, true, false );
+BisectSrf = cbisector2d( c1, TRUE, 1, 20, true, false );
+BisectSrfE3 = coerce( BisectSrf, e3 ) * rotx( -90 ) * roty( -90 ) * sz( 0.0002 );
+color( BisectSrfE3, green );
+attrib( BisectSrfE3, "width", 0.005 );
+
+resolution = 60;
+Cntrs = contour( BisectSrfE3, plane( 0, 0, 1, 1e-8 ) );
+adwidth( Cntrs, 2 );
+attrib( Cntrs, "width", 0.015 );
+
+interact( list( BisectSrfE3, Pl * sc( 3 ), Cntrs, view_mat3d ) );
+
+#BisectCrvs = cbisector( c1, 0, 50, true, false );
+BisectCrvs = cbisector2d( c1, FALSE, 1, 50, true, false );
+attrib( BisectCrvs, "dwidth", 2 );
+attrib( BisectCrvs, "width", 0.012 );
+attrib( BisectCrvs, "gray", 0.5 );
+color( BisectCrvs, green );
+
+All = list( c1, BisectCrvs );
+interact( list( All, view_mat2d ) );
+free( All );
+
+#for ( i = 0, 1, sizeof( Cntrs ) - 1,
+#    AnimBisectCrv2( c1, c1, BisectCrvs, coord( Cntrs, i ) ) );
+#free( i );
+
+save( "cbisect2",  list( c1, BisectCrvs ) );
+
+#############################################################################
+
+viewstate( "WidthLines", 0 );
+
+resolution = save_res;
+
+free( c1 );
+free( c2 );
+free( Pl );
+free( Cntrs );
+free( BisectSrf );
+free( BisectSrfE3 );
+free( BisectCrvs );
+free( view_mat2d );
+free( view_mat3d );
+free( UExtreme );
+free( VExtreme );

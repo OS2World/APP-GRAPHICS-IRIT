@@ -1,0 +1,31 @@
+#
+# This is the make file for the trim_lib library.
+#
+#				Gershon Elber, Aug 1990
+#
+
+include ../makeflag.unx
+
+OBJS =  tr_prisa.o$(IRIT_OBJ_PF) \
+	trim_aux.o$(IRIT_OBJ_PF) \
+	trim_dbg.o$(IRIT_OBJ_PF) \
+	trim_err.o$(IRIT_OBJ_PF) \
+	trim_ftl.o$(IRIT_OBJ_PF) \
+	trim_gen.o$(IRIT_OBJ_PF) \
+	trim_iso.o$(IRIT_OBJ_PF) \
+	trim_sub.o$(IRIT_OBJ_PF) \
+	trim2ply.o$(IRIT_OBJ_PF) \
+	trim2pl2.o$(IRIT_OBJ_PF) \
+	trimcntr.o$(IRIT_OBJ_PF)
+
+all:	libIritTrim$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+
+libIritTrim$(IRIT_LIB_PF).$(IRIT_LIB_SFX): $(OBJS)
+	rm -f libIritTrim$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+	$(IRIT_LIB_MAKE) libIritTrim$(IRIT_LIB_PF).$(IRIT_LIB_SFX) *.o$(IRIT_OBJ_PF)
+	-$(IRIT_LIB_RAN) libIritTrim$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+
+install: libIritTrim$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+	mv -f libIritTrim$(IRIT_LIB_PF).$(IRIT_LIB_SFX) $(IRIT_LIB_DIR)
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

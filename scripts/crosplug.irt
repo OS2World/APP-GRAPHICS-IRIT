@@ -1,0 +1,34 @@
+#
+# An object that has three projections of a cross, circle and a square.
+#
+
+w = 0.4;
+Cross = ctlpt( E3, 1,  0, 0 ) +
+	ctlpt( E3, 1,  w, 0 ) +
+	ctlpt( E3, w,  w, 0 ) +
+	ctlpt( E3, w,  1, 0 ) +
+	ctlpt( E3, 0,  1, 0 );
+free( w );
+
+Cross = Cross +
+	Cross * rz( 90 ) +
+	Cross * rz( 180 ) +
+	Cross * rz( 270 );
+
+
+s1 = extrude( Cross * tz( -2 ), vector( 0, 0, 4 ), 0 );
+free( Cross );
+
+s2 = extrude( circle( vector( 0, 0, 0 ), 0.999 ) * tz( -2 ),
+	      vector( 0, 0, 4 ), 0 ) * rx( 90 );
+
+s = s1 * s2;
+free( s1 );
+free( s2 );
+
+view( list( axes, s ), 1 );
+save( "crosplug", s );
+
+free( s );
+
+

@@ -1,0 +1,293 @@
+#
+# A simple example of curve morphing.
+#
+#					Gershon Elber, July 1994.
+#
+
+#
+# Sets the viewing direction on the display device.
+#
+save_mat = view_mat;
+view_mat = rotx( 0 );
+viewobj( view_mat );
+view_mat = save_mat;
+
+#############################################################################
+crv1 = cbezier( list( ctlpt( E2,  0.3,  0.0 ),
+		      ctlpt( E2,  0.0,  0.5 ),
+		      ctlpt( E2, -0.2,  0.0 ) ) );
+crv1a = crv1 * trans( vector( -0.4, 0.0, 0.0 ) );
+crv1b = crv1a * scale( vector( -1.0, 1.0, 1.0 ) );
+color( crv1a, green );
+color( crv1b, green );
+view( list( crv1a, crv1b ), true );
+
+for ( i = 0, 1, 300,
+    c = cmorph( crv1a, crv1b, 0, i / 300.0 ):
+    color( c, yellow ):
+    viewobj( c )
+);
+
+crvs = cmorph( crv1a, crv1b, 2, 0.005 );
+snoc( crv1b, crvs );
+for ( i = 1, 1, sizeof( crvs ),
+    c = nth( crvs, i ):
+    color( c, yellow ):
+    viewobj( c )
+);
+
+crvs = cmorph( crv1a, crv1b, 4, 0.005 );
+snoc( crv1b, crvs );
+for ( i = 1, 1, sizeof( crvs ),
+    c = nth( crvs, i ):
+    color( c, yellow ):
+    viewobj( c )
+);
+
+crvs = cmorph( crv1a, crv1b, 5, 0.003 );
+snoc( crv1b, crvs );
+for ( i = 1, 1, sizeof( crvs ),
+    c = nth( crvs, i ):
+    color( c, yellow ):
+    viewobj( c )
+);
+
+pause();
+#############################################################################
+crv1 = cbspline( 3,
+		 list( ctlpt( E2,  0.0,  0.0 ),
+		       ctlpt( E2,  0.0,  0.1 ),
+		       ctlpt( E2,  0.1,  0.1 ),
+		       ctlpt( E2,  0.1, -0.1 ),
+		       ctlpt( E2, -0.1, -0.1 ),
+		       ctlpt( E2, -0.1,  0.2 ),
+		       ctlpt( E2,  0.2,  0.2 ),
+		       ctlpt( E2,  0.2, -0.2 ),
+		       ctlpt( E2, -0.2, -0.2 ),
+		       ctlpt( E2, -0.2,  0.3 ),
+		       ctlpt( E2,  0.0,  0.3 ) ),
+		 list( KV_OPEN ) );
+crv1a = crv1 * trans( vector( -0.4, 0.0, 0.0 ) );
+crv1b = crv1a * scale( vector( -1.0, 1.0, 1.0 ) );
+color( crv1a, green );
+color( crv1b, green );
+view( list( crv1a, crv1b ), true );
+
+for ( i = 0, 1, 300,
+    c = cmorph( crv1a, crv1b, 0, i / 300.0 ):
+    color( c, yellow ):
+    viewobj( c )
+);
+
+crvs = cmorph( crv1a, crv1b, 2, 0.01 );
+snoc( crv1b, crvs );
+for ( i = 1, 1, sizeof( crvs ),
+    c = nth( crvs, i ):
+    color( c, yellow ):
+    viewobj( c )
+);
+
+crvs = cmorph( crv1a, crv1b, 5, 0.003 );
+snoc( crv1b, crvs );
+for ( i = 1, 1, sizeof( crvs ),
+    c = nth( crvs, i ):
+    color( c, yellow ):
+    viewobj( c )
+);
+
+pause();
+#############################################################################
+crv1 = cbspline( 3,
+		 list( ctlpt( E2,  0.0,  0.0 ),
+		       ctlpt( E2,  0.0,  0.1 ),
+		       ctlpt( E2,  0.1,  0.1 ),
+		       ctlpt( E2,  0.1, -0.1 ),
+		       ctlpt( E2, -0.1, -0.1 ),
+		       ctlpt( E2, -0.1,  0.2 ),
+		       ctlpt( E2,  0.2,  0.2 ),
+		       ctlpt( E2,  0.2, -0.2 ),
+		       ctlpt( E2, -0.2, -0.2 ),
+		       ctlpt( E2, -0.2,  0.3 ),
+		       ctlpt( E2,  0.0,  0.3 ) ),
+		 list( KV_OPEN ) );
+crv1a = crv1 * trans( vector( -0.4, 0.0, 0.0 ) );
+crv1b = cbezier( list( ctlpt( E2, 0.3, -0.3 ),
+		       ctlpt( E2, 0.4, 0.0 ),
+		       ctlpt( E2, 0.3, 0.3 ) ) );
+free( crv1 );
+color( crv1a, green );
+color( crv1b, green );
+ffcompat( crv1a, crv1b );
+view( list( crv1a, crv1b ), true );
+
+for ( i = 0, 0.01, 1.0,
+    ( crv = cmorph( crv1a, crv1b, 0, i ) ):
+    color( crv, yellow ):
+    viewobj( crv )
+);
+
+crvs = cmorph( crv1a, crv1b, 1, 0.01 );
+snoc( crv1b, crvs );
+for ( i = 1, 1, sizeof( crvs ),
+    c = nth( crvs, i ):
+    color( c, yellow ):
+    viewobj( c )
+);
+
+crvs = cmorph( crv1a, crv1b, 3, 0.003 );
+snoc( crv1b, crvs );
+for ( i = 1, 1, sizeof( crvs ),
+    c = nth( crvs, i ):
+    color( c, yellow ):
+    viewobj( c )
+);
+
+crvs = cmorph( crv1a, crv1b, 5, 0.003 );
+snoc( crv1b, crvs );
+for ( i = 1, 1, sizeof( crvs ),
+    c = nth( crvs, i ):
+    color( c, yellow ):
+    viewobj( c )
+);
+
+pause();
+#############################################################################
+CrvB1 = cbspline( 3,
+		 list( ctlpt( E2,  0.0,  0.5 ),
+		       ctlpt( E2,  0.0, -0.48 ),
+		       ctlpt( E2,  0.0, -0.5 ),
+		       ctlpt( E2,  0.5, -0.5 ),
+		       ctlpt( E2,  0.5,  0.01 ),
+		       ctlpt( E2,  0.0,  0.02 ),
+		       ctlpt( E2,  0.0,  0.03 ),
+		       ctlpt( E2,  0.0,  0.04 ),
+		       ctlpt( E2,  0.45, 0.05 ),
+		       ctlpt( E2,  0.45, 0.5 ),
+		       ctlpt( E2,  0.0,  0.5 ) ),
+		 list( KV_OPEN ) );
+CrvB2 = cbspline( 3,
+		 list( ctlpt( E2,  0.0,  0.5 ),
+		       ctlpt( E2,  0.0, -0.48 ),
+		       ctlpt( E2,  0.0, -0.5 ),
+		       ctlpt( E2,  0.55,-0.5 ),
+		       ctlpt( E2,  0.55, 0.01 ),
+		       ctlpt( E2,  0.0,  0.02 ),
+		       ctlpt( E2,  0.0,  0.03 ),
+		       ctlpt( E2,  0.0,  0.04 ),
+		       ctlpt( E2,  0.35, 0.05 ),
+		       ctlpt( E2,  0.35, 0.5 ),
+		       ctlpt( E2,  0.0,  0.5 ) ),
+		 list( KV_OPEN ) );
+
+crv1a = CrvB2 * trans( vector( -0.7, 0.0, 0.0 ) );
+crv1b = CrvB1 * trans( vector(  0.2, 0.0, 0.0 ) );
+free( CrvB1 );
+free( CrvB2 );
+color( crv1a, green );
+color( crv1b, green );
+ffcompat( crv1a, crv1b );
+view( list( crv1a, crv1b ), true );
+
+for ( i = 0, 1, 300,
+    c = cmorph( crv1a, crv1b, 0, i / 300.0 ):
+    color( c, yellow ):
+    viewobj( c )
+);
+
+crvs = cmorph( crv1a, crv1b, 2, 0.03 );
+snoc( crv1b, crvs );
+for ( i = 1, 1, sizeof( crvs ),
+    c = nth( crvs, i ):
+    color( c, yellow ):
+    viewobj( c )
+);
+
+crvs = cmorph( crv1a, crv1b, 4, 0.1 );
+snoc( crv1b, crvs );
+for ( i = 1, 1, sizeof( crvs ),
+    c = nth( crvs, i ):
+    color( c, yellow ):
+    miliSleep(20):
+    viewobj( c )
+);
+
+crvs = cmorph( crv1a, crv1b, 5, 0.003 );
+snoc( crv1b, crvs );
+for ( i = 1, 1, sizeof( crvs ),
+    c = nth( crvs, i ):
+    color( c, yellow ):
+    viewobj( c )
+);
+
+
+pause();
+#############################################################################
+CrvB = ctlpt( E2,  0.0,  0.5 ) +
+       cbspline( 3,
+		 list( ctlpt( E2,  0.0, -0.5 ),
+		       ctlpt( E2,  0.5, -0.5 ),
+		       ctlpt( E2,  0.5,  0.05 ),
+		       ctlpt( E2,  0.0,  0.05 ) ),
+		 list( KV_OPEN ) ) +
+       cbspline( 3,
+		 list( ctlpt( E2,  0.0,  0.05 ),
+		       ctlpt( E2,  0.45, 0.05 ),
+		       ctlpt( E2,  0.45, 0.5 ),
+		       ctlpt( E2,  0.0,  0.5 ) ),
+		 list( KV_OPEN ) );
+CrvG = cbspline( 3,
+		 list( ctlpt( E2,  0.5,  0.1 ),
+		       ctlpt( E2,  0.5,  0.5 ),
+		       ctlpt( E2,  0.0,  0.5 ),
+		       ctlpt( E2,  0.0, -0.5 ),
+		       ctlpt( E2,  0.5, -0.5 ),
+		       ctlpt( E2,  0.5,  0.0 ) ),
+		 list( KV_OPEN ) ) +
+       ctlpt( E2,  0.25, 0.0 );
+crv1a = CrvG * trans( vector( -0.7, 0.0, 0.0 ) );
+crv1b = CrvB * trans( vector(  0.2, 0.0, 0.0 ) );
+free( CrvG );
+free( CrvB );
+color( crv1a, green );
+color( crv1b, green );
+ffcompat( crv1a, crv1b );
+view( list( crv1a, crv1b ), true );
+
+for ( i = 0, 1, 300,
+    c = cmorph( crv1a, crv1b, 0, i / 300.0 ):
+    color( c, yellow ):
+    viewobj( c )
+);
+
+crvs = cmorph( crv1a, crv1b, 2, 0.05 );
+snoc( crv1b, crvs );
+for ( i = 1, 1, sizeof( crvs ),
+    c = nth( crvs, i ):
+    color( c, yellow ):
+    miliSleep(20):
+    viewobj( c )
+);
+
+crvs = cmorph( crv1a, crv1b, 3, 0.05 );
+snoc( crv1b, crvs );
+for ( i = 1, 1, sizeof( crvs ),
+    c = nth( crvs, i ):
+    color( c, yellow ):
+    miliSleep(20):
+    viewobj( c )
+);
+
+crvs = cmorph( crv1a, crv1b, 5, 0.003 );
+snoc( crv1b, crvs );
+for ( i = 1, 1, sizeof( crvs ),
+    c = nth( crvs, i ):
+    color( c, yellow ):
+    viewobj( c )
+);
+
+free( i );
+free( c );
+free( crv );
+free( crv1a );
+free( crv1b );
+free( crvs );

@@ -1,0 +1,56 @@
+#
+# Some examples to manipulation of text in IRIT.
+#
+#				Gershon Elber, May 1996.
+#
+
+save_mat = view_mat;
+
+textGeom3dAux = function( Ply, Wdth, Dpth ):
+    return = nil():
+    if ( thisobj("Ply" ) == curve_type,
+	return = extrude( -Ply, vector( 0.0, 0.0, Dpth ), 0 ) ):
+    if ( thisobj("Ply" ) == poly_type,
+	return = extrude( ruledSrf( offset( Ply, -Wdth / 2, 0, 0 ),
+			            offset( Ply,  Wdth / 2, 0, 0 ) ),
+			  vector( 0.0, 0.0, Dpth ), 3 ) );
+
+textGeom3d = function( Txt, Wdth, Dpth ):
+    return = 1;
+textGeom3d = function( Txt, Wdth, Dpth ): i:
+    if ( thisobj( "Txt" ) == list_type,
+	return = nil():
+	for ( i = 1, 1, sizeof( Txt ),
+	     snoc( textGeom3d( nth( Txt, i ), Wdth, Dpth ),
+		   return ) ),
+	return = textGeom3dAux( Txt, Wdth, Dpth ) );
+
+TxtU = textgeom("ABCDEFGHIJKLMNOPQRSTUVWXYZ", vector( 0.02, 0, 0 ), 0.1 );
+TxtL = textgeom("a bcdefghijklmnopqrstuvwxyz", vector( 0.02, 0, 0 ), 0.1 );
+TxtN = textgeom("0 1  2   34567890#$&*()+-=;:/?.,", vector( 0.02, 0, 0 ), 0.1 );
+
+view_mat = sc( 0.8 ) * tx( -0.9 );
+All = list( TxtU,
+	    TxtL * ty( -0.2 ),
+	    TxtN * ty( -0.4 ) );
+interact( list( view_mat, All ) );
+save( "textgm1", list( view_mat, All ) );
+
+TxtU3d = textGeom3d( TxtU, 0.01, 0.1 );
+TxtL3d = textGeom3d( TxtL, 0.01, 0.1 );
+TxtN3d = textGeom3d( TxtN, 0.01, 0.1 );
+All = convex( list( TxtU3d,
+		    TxtL3d * ty( -0.2 ),
+		    TxtN3d * ty( -0.4 ) ) );
+interact( list( view_mat, All ) );
+save( "textgm2", list( view_mat, All ) );
+
+free( TxtU );
+free( TxtL );
+free( TxtN );
+free( TxtU3d );
+free( TxtL3d );
+free( TxtN3d );
+free( All );
+
+view_mat = save_mat;

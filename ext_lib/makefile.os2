@@ -1,0 +1,20 @@
+#
+# This is the make file for the extensions lib subdirectory (OS2, gcc 2.1,
+#								   gnumake).
+#
+#				Gershon Elber, Aug 2009
+#
+
+include ..\makeflag.os2
+
+OBJS =  crv2rect.o explfunc.o
+
+libext.a: $(OBJS)
+	-$(RM) libext.a
+	ar rc libext.a $(OBJS)
+
+install: libext.a
+	$(CP) libext.a $(IRIT_LIB_DIR)
+	ar s $(IRIT_LIB_DIR)/libext.a
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

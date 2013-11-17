@@ -1,0 +1,108 @@
+#
+# Simple loops demo - not really solid modelling...
+#
+viewclear();
+include("loops.irt");
+
+#
+# All the basic colors recognized by the system:
+#
+viewclear();
+include("colors.irt");
+
+#
+# All the basic primitives recognized by the system:
+#
+viewclear();
+include("primitiv.irt");
+
+#
+# Simple booleans between two boxes. This one is fast (as it is simple...)
+#
+viewclear();
+include("box-box.irt");
+
+#
+# And this boolean operations are between a cone and a cylinder (longer).
+#
+viewclear();
+include("cone-cyl.irt");
+
+#
+# Show the contouring capability from the intersection curves.
+#
+viewclear();
+include("contours.irt");
+
+#
+# The famous wire frame ambiguity:
+#
+viewclear();
+include("ambiguit.irt");
+
+#
+# Creates (manually) the IRIT letters extruded...
+#
+viewclear();
+include("solid0.irt");
+
+#
+# Real (but simple!) object (From Mortenson's book) .
+#
+viewclear();
+include("solid1.irt");
+
+#
+# Real (but more complex) object.
+#
+include("solid2.irt");
+
+#
+# Some free form curves and surfaces operators.
+#
+viewclear();
+include("freeform.irt");
+
+#
+# A "real life" model.
+#
+viewclear();
+include("b58.irt");
+
+#
+# Layout (prisa) of freeform surfaces.
+#
+viewclear();
+include("prisa.irt");
+
+#
+# Some simple surface morphing examples.
+#
+viewclear();
+include("cmorph2.irt");
+
+#
+# Some simple surface morphing examples.
+#
+viewclear();
+include("smorph.irt");
+
+#
+# Proper Hermite surface blend using matching and symbolic omputation.
+#
+viewclear();
+include("hermite.irt");
+
+#
+# Bisectors of freeform varieties.
+#
+viewclear();
+include("bisectrs.irt");
+
+#
+# A complete chess set.
+#
+viewclear();
+include("chess.irt");
+
+# exit();

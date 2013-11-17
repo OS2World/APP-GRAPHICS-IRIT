@@ -1,0 +1,98 @@
+#
+# A simple example of polygonal morphing.  Note the objects must assume the
+# same topology.
+#
+#					Gershon Elber, July 1998.
+#
+
+#
+# Animation speed. The lower this number, the faster the animations will be,
+# skipping more frames.
+#
+speed = 0.5;
+
+Output = nil();
+
+############################################################################
+
+Pl1 = con2( vector( 0.0, -0.5, -0.5 ), vector( 0.0, 0.0, 1.0 ), 0.4, 0.1, 3 );
+color( pl1, red );
+Pl2 = con2( vector( 0.0, 0.5, 0.0 ), vector( 0.0, 0.0, 1.0 ), 0.1, 0.4, 3 );
+color( pl2, magenta );
+
+for ( i = 0, 1, 300 * speed,
+    c = pmorph( Pl1, Pl2, i / ( 300.0 * speed ) ):
+    color( c, yellow ):
+    view( list( Pl1, Pl2, c ), on )
+);
+
+snoc( pmorph( Pl1, Pl2, 0.5 ) * tx( -4 ), Output );
+pause();
+
+############################################################################
+
+Pl1 = con2( vector( 0.0, -0.5, -0.5 ), vector( 0.0, 0.0, 1.0 ), 0.4, 0.1, 3 )
+	* rx( 90 );
+color( pl1, red );
+Pl2 = con2( vector( 0.0, 0.5, 0.0 ), vector( 0.0, 0.0, 1.0 ), 0.1, 0.4, 3 );
+color( pl2, magenta );
+
+for ( i = 0, 1, 300 * speed,
+    c = pmorph( Pl1, Pl2, i / ( 300.0 * speed ) ):
+    color( c, yellow ):
+    view( list( Pl1, Pl2, c ), on )
+);
+
+snoc( pmorph( Pl1, Pl2, 0.35 ) * tx( -2 ), Output );
+pause();
+
+#############################################################################
+
+Pl1 = ( box( vector( -3, -2, -1 ), 6, 4, 2 ) +
+        box( vector( -4, -3, -2 ), 2, 2, 4 ) )
+	* sc( 0.2 ) * trans( vector( 0.2, 0.1, 0.1 ) );
+color( pl1, red );
+Pl2 = ( box( vector( -3, -2, -1 ), 2, 2, 1 ) +
+        box( vector( -4, -3, -2 ), 2, 2, 4 ) )
+	* sc( 0.1 ) * trans( vector( -0.1, -0.2, -0.1 ) );
+color( pl2, magenta );
+
+for ( i = 0, 1, 300 * speed,
+    c = pmorph( Pl1, Pl2, i / ( 300.0 * speed ) ):
+    color( c, yellow ):
+    view( list( Pl1, Pl2, c ), on )
+);
+
+snoc( pmorph( Pl1, Pl2, 0.25 ) * tx( 0 ), Output );
+pause();
+
+#############################################################################
+
+Pl1 = ( con2( vector( 0, 0, -1 ), vector( 0, 0, 4 ), 2, 1, 3 ) -
+        cylin( vector( 0, 3, 0.1 ), vector( 0, -6, 0 ), 0.7, 3 ) )
+	* sc( 0.2 ) * trans( vector( 0.8, 0.1, -0.2 ) );
+color( pl1, red );
+Pl2 = ( con2( vector( 0, 0, -1 ), vector( 0, 0, 4 ), 2, 1, 3 ) -
+        cylin( vector( 0, 3, 1.1 ), vector( 0, -6, 0 ), 0.7, 3 ) )
+	* sc( 0.3 ) * trans( vector( -0.8, -0.2, -0.4 ) );
+color( pl2, magenta );
+
+for ( i = 0, 1, 300 * speed,
+    c = pmorph( Pl1, Pl2, i / ( 300.0 * speed ) ):
+    color( c, yellow ):
+    view( list( Pl1, Pl2, c ), on )
+);
+
+snoc( pmorph( Pl1, Pl2, 0.75 ) * tx( 2 ), Output );
+pause();
+
+#############################################################################
+
+save( "pmorph", Output );
+
+free( i );
+free( Speed );
+free( c );
+free( Pl1 );
+free( Pl2 );
+free( Output );

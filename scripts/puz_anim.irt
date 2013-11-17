@@ -1,0 +1,840 @@
+#
+# Simple (and not so simple) 3D puzzles animated using animation curves.
+#
+#					Gershon Elber, January 1994
+#
+
+save_mat = view_mat;
+
+#############################################################################
+# StickStar
+#
+sqrt2 = sqrt( 2 );
+eps = 0.015;
+rad = 0.3;
+len = ( rad + eps ) * 2;
+ItemAux1 = box( vector( -rad / sqrt2, -rad / sqrt2, -len ),
+	        rad * 2 / sqrt2, rad * 2 / sqrt2, len * 2 ) * rz( 45 );
+ItemAux2 = ( ItemAux1 * tx( rad ) -
+	     ItemAux1 * rotx( 90 ) * tz( rad + eps ) -
+	     ItemAux1 * rotx( 90 ) * tz( -rad - eps ) ) * tx( eps / 2 );
+diag = len + eps;
+diagPoly = poly( list( vector( diag, diag, 0 ),
+		       vector( -diag, diag, 0 ),
+		       vector( -diag, 0, diag ),
+		       vector(  diag, 0, diag ) ),
+		false);
+Item1 = ItemAux2 - diagPoly
+		 - diagPoly * sy( -1 )
+		 - diagPoly * sz( -1 )
+		 - diagPoly * sz( -1 ) * sy( -1 );
+Item1 = convex( Item1 );
+color(Item1, red);
+
+Item2 = Item1 * sx( -1 );
+color(Item2, magenta);
+
+Item3 = Item1 * rx( 90 ) * rz( 90 );
+color(Item3, green);
+
+Item4 = Item1 * rx( 90 ) * rz( -90 );
+color(Item4, yellow);
+
+Item5 = Item1 * rx( 90 ) * ry( 90 );
+color(Item5, blue);
+
+Item6 = Item1 * rx( 90 ) * ry( -90 );
+color(Item6, cyan);
+
+Grp1 = list( Item2, Item3, Item5 );
+Grp2 = list( Item1, Item4, Item6 );
+
+scl = creparam( cbspline( 3,
+			  list( ctlpt( E1,  1.0 ),
+			        ctlpt( E1,  1.0 ),
+		       		ctlpt( E1,  5.0 ) ),
+			  list( KV_OPEN ) ),
+		0, 1 );
+
+mov_xyz = creparam( cbspline( 4,
+		    	      list( ctlpt( E3,  0,   0,   -3 ),
+				    ctlpt( E3, -1,   1,   -3 ),
+				    ctlpt( E3, -0.5, 0.5, -0.5 ),
+				    ctlpt( E3,  0.0, 0.0,  0.0 ) ),
+			      list( KV_OPEN ) ),
+		    0, 1 );
+rot_x = creparam( cbspline( 4,
+			    list( ctlpt( E1,  250 ),
+			          ctlpt( E1,  100 ),
+			          ctlpt( E1,  0 ),
+		       		  ctlpt( E1,  0 ) ),
+			    list( KV_OPEN ) ),
+		  0, 1 );
+rot_y = creparam( cbspline( 4,
+			    list( ctlpt( E1,  350 ),
+			          ctlpt( E1,  100 ),
+			       	  ctlpt( E1,  0 ),
+		       		  ctlpt( E1,  0 ) ),
+			    list( KV_OPEN ) ),
+		  0, 1 );
+rot_z = creparam( cbspline( 4,
+			    list( ctlpt( E1, -200 ),
+			          ctlpt( E1,  100 ),
+			       	  ctlpt( E1,  0 ),
+		       		  ctlpt( E1,  0 ) ),
+		  list( KV_OPEN ) ),
+		  0, 1 );
+
+attrib( Grp1, "animation", list( rot_x, rot_y, rot_z, mov_xyz, scl ) );
+free( mov_xyz );
+
+mov_xyz = creparam( cbspline( 4,
+		    	      list( ctlpt( E3, 0,    0,   3 ),
+				    ctlpt( E3, 1,   -1,   3 ),
+				    ctlpt( E3, 0.5, -0.5, 0.5 ),
+				    ctlpt( E3, 0.0,  0.0, 0.0 ) ),
+			      list( KV_OPEN ) ),
+		    0, 1 );
+attrib( Grp2, "animation", list( rot_y, rot_z, rot_x, mov_xyz, scl ) );
+
+free( mov_xyz );
+free( rot_x );
+free( rot_y );
+free( rot_z );
+
+All = list( Grp1, Grp2 );
+
+view_mat = sc( 0.2 ) * rotx( 40 ) * roty( 30 );
+
+interact( list( All, view_mat ) );
+save( "puz1anim", All );
+
+free( ItemAux1 );
+free( ItemAux2 );
+free( DiagPoly );
+free( Diag );
+
+#############################################################################
+
+scl = creparam( cbspline( 3,
+			  list( ctlpt( E1,  5.0 ),
+			        ctlpt( E1,  5.0 ),
+			        ctlpt( E1,  2.0 ),
+		       		ctlpt( E1,  2.0 ),
+				ctlpt( E1,  5.0 ),
+			        ctlpt( E1,  5.0 ) ),
+			  list( 0, 0, 0, 1, 2, 3, 4, 4, 4 ) ),
+		0, 1 );
+mov_x = creparam( cbspline( 3,
+			    list( ctlpt( E1, 0 ),
+				  ctlpt( E1, 0 ),
+				  ctlpt( E1, 2 ),
+				  ctlpt( E1, 0 ),
+				  ctlpt( E1, 0 ) ),
+			    list( 0, 0, 0, 1, 1, 2, 2, 2 ) ),
+		  0, 1 );
+mov_y = mov_x;
+mov_z = mov_x;
+attrib( Item1, "animation", list( mov_x, scl ) );
+attrib( Item3, "animation", list( mov_y, scl ) );
+attrib( Item6, "animation", list( mov_z, scl ) );
+free( mov_x );
+free( mov_y );
+free( mov_z );
+
+mov_x = creparam( cbspline( 3,
+			    list( ctlpt( E1, 0 ),
+				  ctlpt( E1, 0 ),
+				  ctlpt( E1, -2 ),
+				  ctlpt( E1, 0 ),
+				  ctlpt( E1, 0 ) ),
+			    list( 0, 0, 0, 1, 1, 2, 2, 2 ) ),
+		  0, 1 );
+mov_y = mov_x;
+mov_z = mov_x;
+attrib( Item2, "animation", list( mov_x, scl ) );
+attrib( Item4, "animation", list( mov_y, scl ) );
+attrib( Item5, "animation", list( mov_z, scl ) );
+free( mov_x );
+free( mov_y );
+free( mov_z );
+
+All = list( Item1, Item2, Item3, Item4, Item5, Item6 );
+interact( All );
+save( "puz2anim", All );
+
+#############################################################################
+# Six Bricks - second version
+#
+sqrt2 = sqrt( 2 );
+eps = 0.015;
+rad = 0.3;
+len = (rad * 2 + eps) * 1.1;
+pln = box( vector( -len, -len, -len ), len * 2, len * 2, len * 2 )
+	* ry( 45 ) * tx( -0.2 );
+ItemAux1 = box(vector(-rad / sqrt2, -rad / sqrt2, -len),
+	       rad * 2 / sqrt2, rad * 2 / sqrt2, len * 2) * rz(45);
+Item1 = (ItemAux1 * tx(rad) -
+	 ItemAux1 * rotx(90) * tz(rad + eps) -
+	 ItemAux1 * rotx(90) * tz(-rad - eps)) * tx(eps / 2) * pln;
+color(Item1, red);
+
+Item2 = Item1 * sx( -1 );
+color(Item2, magenta);
+
+Item3 = Item1 * rx( 90 ) * rz( 90 );
+color(Item3, green);
+
+Item4 = Item1 * rx( 90 ) * rz( -90 );
+color(Item4, yellow);
+
+Item5 = Item1 * rx( 90 ) * ry( 90 );
+color(Item5, blue);
+
+Item6 = Item1 * rx( 90 ) * ry( -90 );
+color(Item6, cyan);
+
+Grp1 = list( Item2, Item3, Item5 );
+Grp2 = list( Item1, Item4, Item6 );
+
+scl = creparam( cbspline( 3,
+			  list( ctlpt( E1,  1.0 ),
+			        ctlpt( E1,  1.0 ),
+		       		ctlpt( E1,  5.0 ) ),
+			  list( KV_OPEN ) ),
+		0, 1 );
+
+mov_xyz = creparam( cbspline( 4,
+		    	      list( ctlpt( E3,  0,   0,   -3 ),
+				    ctlpt( E3, -1,   1,   -3 ),
+				    ctlpt( E3, -0.5, 0.5, -0.5 ),
+				    ctlpt( E3,  0.0, 0.0,  0.0 ) ),
+			      list( KV_OPEN ) ),
+		    0, 1 );
+rot_x = creparam( cbspline( 4,
+			    list( ctlpt( E1,  250 ),
+			          ctlpt( E1,  100 ),
+			          ctlpt( E1,  0 ),
+		       		  ctlpt( E1,  0 ) ),
+			    list( KV_OPEN ) ),
+		  0, 1 );
+rot_y = creparam( cbspline( 4,
+			    list( ctlpt( E1,  350 ),
+			          ctlpt( E1,  100 ),
+			       	  ctlpt( E1,  0 ),
+		       		  ctlpt( E1,  0 ) ),
+			    list( KV_OPEN ) ),
+		  0, 1 );
+rot_z = creparam( cbspline( 4,
+			    list( ctlpt( E1, -200 ),
+			          ctlpt( E1,  100 ),
+			       	  ctlpt( E1,  0 ),
+		       		  ctlpt( E1,  0 ) ),
+		  list( KV_OPEN ) ),
+		  0, 1 );
+
+attrib( Grp1, "animation", list( rot_x, rot_y, rot_z, mov_xyz, scl ) );
+free( mov_xyz );
+
+mov_xyz = creparam( cbspline( 4,
+		    	      list( ctlpt( E3, 0,    0,   3 ),
+				    ctlpt( E3, 1,   -1,   3 ),
+				    ctlpt( E3, 0.5, -0.5, 0.5 ),
+				    ctlpt( E3, 0.0,  0.0, 0.0 ) ),
+			      list( KV_OPEN ) ),
+		    0, 1 );
+attrib( Grp2, "animation", list( rot_y, rot_z, rot_x, mov_xyz, scl ) );
+
+free( mov_xyz );
+free( rot_x );
+free( rot_y );
+free( rot_z );
+
+All = list( Grp1, Grp2 );
+
+view_mat = sc( 0.2 ) * rotx( 40 ) * roty( 30 );
+
+interact( list( All, view_mat ) );
+save( "puz1anm2", All );
+
+free( ItemAux1 );
+free( pln );
+
+#############################################################################
+
+scl = creparam( cbspline( 3,
+			  list( ctlpt( E1,  5.0 ),
+			        ctlpt( E1,  5.0 ),
+			        ctlpt( E1,  2.0 ),
+		       		ctlpt( E1,  2.0 ),
+				ctlpt( E1,  5.0 ),
+			        ctlpt( E1,  5.0 ) ),
+			  list( 0, 0, 0, 1, 2, 3, 4, 4, 4 ) ),
+		0, 1 );
+
+mov_x = creparam( cbspline( 3,
+			    list( ctlpt( E1, 0 ),
+				  ctlpt( E1, 0 ),
+				  ctlpt( E1, 2 ),
+				  ctlpt( E1, 0 ),
+				  ctlpt( E1, 0 ) ),
+			    list( 0, 0, 0, 1, 1, 2, 2, 2 ) ),
+		  0, 1 );
+mov_y = mov_x;
+mov_z = mov_x;
+attrib( Item1, "animation", list( mov_x, scl ) );
+attrib( Item3, "animation", list( mov_y, scl ) );
+attrib( Item6, "animation", list( mov_z, scl ) );
+free( mov_x );
+free( mov_y );
+free( mov_z );
+
+
+mov_x = creparam( cbspline( 3,
+			    list( ctlpt( E1, 0 ),
+				  ctlpt( E1, 0 ),
+				  ctlpt( E1, -2 ),
+				  ctlpt( E1, 0 ),
+				  ctlpt( E1, 0 ) ),
+			    list( 0, 0, 0, 1, 1, 2, 2, 2 ) ),
+		  0, 1 );
+mov_y = mov_x;
+mov_z = mov_x;
+attrib( Item2, "animation", list( mov_x, scl ) );
+attrib( Item4, "animation", list( mov_y, scl ) );
+attrib( Item5, "animation", list( mov_z, scl ) );
+free( mov_x );
+free( mov_y );
+free( mov_z );
+
+All = list( Item1, Item2, Item3, Item4, Item5, Item6 );
+interact( All );
+save( "puz2anm2", All );
+
+#############################################################################
+#
+# Prism's puzzle.
+#
+
+eps = 0.025;
+an = 71;
+ca = cos( an * pi /180 );
+sa = sin( an * pi /180 );
+Vec1 = vector( 1.0,  0.0, 0.0 );
+Vec2 = vector( -ca,  sa, 0.0 );
+Vec3 = coerce( 0.5 * normalize( normalize( Vec1 + Vec2 ) +
+			        vector( 0.0, 0.0, 1.4 ) ),
+	       vector_type );
+Prism1 = gbox( vector(  0.0,  0.0, 0.0 ),
+	       Vec1, Vec2, Vec3 );
+
+RVec = Vec2 ^ Vec3;
+Prism2 = Prism1 * 
+	rotvec( RVec,
+	        180 * acos( normalize( Vec2 ) * normalize( Vec3 ) ) / pi ) *
+	trans( -Vec2 ) *
+	rotvec( Vec2, -60 ) *
+	trans( -Vec1 + 0.6 * normalize( Vec1 + Vec2 )  + vector( 0, 0, 0.81 ) );
+Item1 = Prism1 ^ Prism2;
+color( Item1, red );
+
+Prism2a = Prism2 * rotz( an ) * sy( -1 ) * tx( 1.0 ) * trans( -vec3 );
+Item2 = ( Prism1 ^ Prism2a ) * trans( Vec3 );
+color( Item2, magenta );
+
+Prism2b = Prism2 * trans( 2 * Vec1 - 2 * Vec3 + Vec2 );
+Item3 = ( Prism1 ^ Prism2b ) * rotz( 180 ) *
+		trans( 2 * Vec3 + ( Vec1 + Vec2 ) );
+color( Item3, green );
+
+Item4 = Item1 * rotx( 180 ) *
+	rotz( 180 - an ) * trans( 4 * Vec3 - Vec1 - Vec2 );
+color( Item4, yellow );
+
+mov_xyz = creparam( cbezier( list( ctlpt( E3, 0, 0, 0 ),
+			           ctlpt( E3, ( ca - 1 ) * 3,
+					      -sa * 3, 1.4 * 3 ) ) ),
+		    0, 0.25 );
+attrib( Item4, "animation", mov_xyz );
+free( mov_xyz );
+
+mov_xyz = creparam( cbezier( list( ctlpt( E3, 0, 0, 0 ),
+			           ctlpt( E3, ( ca - 1 ) * 2,
+					      -sa * 2, 1.4 * 2 ) ) ),
+		  0.25, 0.5 );
+attrib( Item3, "animation", mov_xyz );
+free( mov_xyz );
+
+mov_xyz = creparam( cbezier( list( ctlpt( E3, 0, 0, 0 ),
+			           ctlpt( E3, (1 - ca ) * 2,
+					      sa * 2, 1.4 * 2 ) ) ),
+		    0.5, 0.75 );
+attrib( Item2, "animation", mov_xyz );
+free( mov_xyz );
+
+mov_z = creparam( cbezier( list( ctlpt( E1, 0 ), ctlpt( E1, 2 ) ) ),
+		  0.75, 1 );
+attrib( Item1, "animation", mov_z );
+free( mov_z );
+
+All = list( Item1, Item2, Item3, Item4 );
+
+interact( All );
+save( "puz3anim", All );
+
+free( Prism1 );
+free( Prism2 );
+free( Prism2A );
+free( Prism2B );
+free( Vec1 );
+free( Vec2 );
+free( Vec3 );
+free( RVec );
+
+#############################################################################
+# 2-2-2 prisms
+#
+
+Len = 2;
+Wdt = 0.3;
+
+Item1Aux = box(vector(-Len / 2, -Wdt / 2, -Wdt / 2), Len, Wdt, Wdt);
+Item1 = Item1Aux * rz( 90 ) * tx( Wdt );
+color( Item1, magenta );
+attrib( Item1, "rgb", "255, 0, 155");
+
+Item2Aux = Item1Aux - box(vector(-Wdt, -Wdt, 0), Wdt * 2, Wdt * 2, Wdt * 2);
+Item2 = ( Item2Aux - box(vector(-Wdt / 2, 0, -Wdt), Wdt, Wdt * 2, Wdt * 2) )
+	* ry( 90 ) * rz( -90 ) * tx( Wdt / 2 ) * ty( Wdt / 2 );
+color( Item2, yellow );
+attrib( Item2, "rgb", "255, 255, 0");
+Item3 = Item2 * rx( 180 );
+color( Item3, yellow );
+attrib( Item3, "rgb", "200, 200, 0");
+
+Item4 = Item2Aux * tz( -Wdt / 2 ) * tx( Wdt / 2 );
+color( Item4, cyan );
+attrib( Item4, "rgb", "0, 255, 200");
+Item5 = Item2Aux * ry( 180 ) * tz( Wdt / 2 ) * tx( Wdt / 2 );
+color( Item5, green );
+attrib( Item5, "rgb", "0, 255, 0");
+
+Item6 = ( Item1Aux - box(vector(-Wdt, -Wdt, 0), Wdt / 2, Wdt * 2, Wdt * 2)
+		   - box(vector(Wdt / 2, -Wdt, 0), Wdt / 2, Wdt * 2, Wdt * 2) )
+	* rz( 90 ) * ry( 90 );
+color( Item6, red );
+attrib( Item6, "rgb", "255, 0, 100");
+
+#
+# Add the animation curves:
+#
+
+mov_xyz = creparam( cbspline( 3,
+			      list( ctlpt( E3, 0, 0, 0 ),
+			            ctlpt( E3, 0, Len, 0 ),
+			            ctlpt( E3, 0, Len * 2, 0 ),
+			            ctlpt( E3, Wdt * 2, Len * 2, 0 ) ),
+			      list( KV_OPEN ) ),
+		    0, 1 );
+attrib( Item1, "animation", mov_xyz );
+free( mov_xyz );
+
+mov_xyz = creparam( cbspline( 3,
+			      list( ctlpt( E3, 0, 0, 0 ),
+			            ctlpt( E3, Wdt, 0, 0 ),
+			            ctlpt( E3, Wdt * 2, 0, 0 ),
+			            ctlpt( E3, Len, Len, 0 ) ),
+			      list( KV_OPEN ) ),
+		    1, 2 );
+Attrib( Item2, "animation", mov_xyz );
+mov_xyz = mov_xyz * sy( -1 );
+attrib( Item3, "animation", mov_xyz );
+free( mov_xyz );
+
+mov_y = creparam( cbezier( list( ctlpt( E1, 0 ),
+			         ctlpt( E1, Len * 2 ) ) ),
+		    2, 3 );
+attrib( Item6, "animation", mov_y );
+free( mov_y );
+
+mov_z = creparam( cbezier( list( ctlpt( E1, 0 ),
+			         ctlpt( E1, -Len / 2 ) ) ),
+		    3, 4 );
+Attrib( Item4, "animation", mov_z );
+mov_z = creparam( cbezier( list( ctlpt( E1, 0 ),
+			         ctlpt( E1, Len / 2 ) ) ),
+		    3, 4 );
+attrib( Item5, "animation", mov_z );
+free( mov_z );
+
+All = list( Item1, Item2, Item3, Item4, Item5, Item6 );
+interact( All );
+
+save( "puz4anim", All );
+
+#############################################################################
+# 2-2-2 prisms (second version)
+#
+
+Len = 2;
+Wdt = 0.3;
+Eps = 0.001;
+
+Item1Aux = box(vector(-Len / 2, -Wdt / 2, -Wdt / 2), Len, Wdt, Wdt);
+Item1 = Item1Aux * rz( 90 ) * tx( Wdt / 2 ) 
+	- box(vector(-Wdt, Wdt / 2, 0), Wdt * 2, -Wdt, Wdt)
+	- box(vector(Wdt / 2, -Wdt, -Wdt), -Wdt, Wdt, Wdt * 2);
+
+color( Item1, magenta );
+attrib( Item1, "rgb", "255, 0, 155");
+
+Item2 = Item1Aux * ry( 90 ) * ty( Wdt / 2 )
+	- box(vector(-Wdt, Wdt / 2, 0), Wdt * 2, -Wdt, Wdt)
+	- box(vector(0, Wdt / 2, -Wdt), Wdt, -Wdt, Wdt - Eps)
+	- box(vector(Eps, Wdt, -Wdt / 2), Wdt, -Wdt * 2, Wdt);
+color( Item2, yellow );
+attrib( Item2, "rgb", "255, 255, 0");
+
+Item3 = Item1Aux * ry( 90 ) * ty( -Wdt / 2 )
+	- box(vector(-Wdt, -Wdt / 2, 0), Wdt * 2, Wdt, Wdt)
+	- box(vector(-Wdt, -Wdt / 2, -Wdt), Wdt * 2, Wdt * 2, Wdt / 2);
+color( Item3, yellow );
+attrib( Item3, "rgb", "200, 200, 0");
+
+Item4 = Item1Aux * tz( -Wdt / 2 ) 
+	- box(vector(-Wdt, -Wdt, -Wdt / 2), Wdt * 2, Wdt * 2, Wdt * 2)
+	- box(vector(-Wdt / 2, 0, -Wdt), Wdt / 2, Wdt, Wdt * 2);
+color( Item4, cyan );
+attrib( Item4, "rgb", "0, 255, 200");
+
+Item5 = Item1Aux * ry( 180 ) * tz( Wdt / 2 );
+color( Item5, green );
+attrib( Item5, "rgb", "0, 255, 0");
+
+Item6 = Item1Aux * rz( 90 ) * ry( 90 ) * tx( -Wdt / 2 )
+	- box(vector(-Wdt * 2, -Wdt / 2, 0), Wdt * 4, Wdt, Wdt)
+	- box(vector(-Wdt / 2, -Wdt, -Wdt), Wdt, Wdt * 2, Wdt * 2);
+color( Item6, red );
+attrib( Item6, "rgb", "255, 0, 100");
+
+#
+# Add the animation curves:
+#
+
+mov_xyz = creparam( cbspline( 3,
+			      list( ctlpt( E3, 0, 0, 0 ),
+			            ctlpt( E3, Len, 0, 0 ),
+			            ctlpt( E3, Len * 1.5, 0, 0 ),
+			            ctlpt( E3, Len * 1.5, 0, Wdt * 1.5 ) ),
+			      list( KV_OPEN ) ),
+		    0, 1 );
+attrib( Item5, "animation", mov_xyz );
+free( mov_xyz );
+
+mov_xyz = creparam( cbspline( 3,
+			      list( ctlpt( E3, 0, 0, 0 ),
+			            ctlpt( E3, 0, 0, Len ),
+			            ctlpt( E3, 0, 0, Len * 1.5 ),
+			            ctlpt( E3, -Wdt * 1.5, 0, Len * 1.5 ) ),
+			      list( KV_OPEN ) ),
+		    1, 2 );
+Attrib( Item6, "animation", mov_xyz );
+free( mov_xyz );
+
+mov_xyz = creparam( cbspline( 3,
+			      list( ctlpt( E3, 0, 0, 0 ),
+			            ctlpt( E3, 0, Len, 0 ),
+			            ctlpt( E3, 0, Len * 1.5, 0 ),
+			            ctlpt( E3, -Wdt * 1.5, Len * 1.5, 0 ) ),
+			      list( KV_OPEN ) ),
+		    2, 3 );
+Attrib( Item2, "animation", mov_xyz );
+free( mov_xyz );
+
+mov_xyz = creparam( ctlpt( E3, 0, 0, 0 ) +
+		    cbspline( 3,
+			      list( ctlpt( E3, -Wdt / 2, 0, 0 ),
+			            ctlpt( E3, -Wdt / 2, -Len, 0 ),
+			            ctlpt( E3, -Wdt / 2, -Len * 1.5, 0 ),
+			            ctlpt( E3, -Wdt * 1.5, -Len * 1.5, 0 ) ),
+			      list( KV_OPEN ) ),
+		    3, 5 );
+Attrib( Item3, "animation", mov_xyz );
+free( mov_xyz );
+
+mov_xyz = creparam( cbspline( 3,
+			      list( ctlpt( E3, 0, 0, 0 ),
+			            ctlpt( E3, 0, 0, Len ),
+			            ctlpt( E3, 0, 0, Len * 1.5 ),
+			            ctlpt( E3, Wdt * 1.5, 0, Len * 1.5 ) ),
+			      list( KV_OPEN ) ),
+		    5, 6 );
+Attrib( Item1, "animation", mov_xyz );
+free( mov_xyz );
+
+
+All = list( Item1, Item2, Item3, Item4, Item5, Item6 );
+interact( All );
+
+save( "puz4anm2", All );
+
+#############################################################################
+# 2-3-4 prisms
+#
+
+Len = 2;
+Wdt = 0.3;
+
+Item1Aux = box(vector(-Len / 2, -Wdt / 2, -Wdt / 2), Len, Wdt, Wdt);
+Item1 = Item1Aux * rz( 90 ) * tx( Wdt );
+color( Item1, cyan );
+attrib( Item1, "rgb", "0, 255, 255");
+
+Item2Aux = Item1Aux - box(vector(-Wdt, -Wdt, 0), Wdt * 2, Wdt * 2, Wdt * 2);
+Item2 = ( Item2Aux - box(vector(-Wdt / 2, 0, -Wdt), Wdt, Wdt * 2, Wdt * 2) )
+	* ry( 90 ) * rz( -90 ) * tx( Wdt / 2 ) * ty( Wdt / 2 );
+color( Item2, yellow );
+attrib( Item2, "rgb", "255, 255, 0");
+Item3 = Item2 * tx( -Wdt );
+color( Item3, yellow );
+attrib( Item3, "rgb", "200, 200, 0");
+
+Item4 = Item2 * rx( 180 );
+color( Item4, yellow );
+attrib( Item4, "rgb", "200, 155, 0");
+Item5 = Item3 * rx( 180 );
+color( Item5, yellow );
+attrib( Item5, "rgb", "255, 200, 0");
+
+Item6 = Item2Aux * rx( 90 ) * rz( 90 );
+color( Item6, cyan );
+attrib( Item6, "rgb", "0, 255, 200");
+Item7 = Item2Aux * rx( 90 ) * rz( 90 ) * tx( -Wdt );
+color( Item7, green );
+attrib( Item7, "rgb", "0, 255, 0");
+
+Item8 = ( Item1Aux - box(vector(-Wdt * 1.5, -Wdt, 0),
+			 Wdt * 3, Wdt * 2, Wdt * 2) )
+	* tz( -Wdt / 2 );
+color( Item8, red );
+attrib( Item8, "rgb", "255, 0, 100");
+Item9 = Item8 * ry( 180 );
+color( Item9, red );
+attrib( Item9, "rgb", "255, 0, 0");
+free( Item1Aux );
+
+#
+# Add the animation curves:
+#
+
+mov_xyz = creparam( cbspline( 3,
+			      list( ctlpt( E3, 0, 0, 0 ),
+			            ctlpt( E3, 0, Len, 0 ),
+			            ctlpt( E3, 0, Len * 2, 0 ),
+			            ctlpt( E3, Wdt * 2, Len * 2, 0 ) ),
+			      list( KV_OPEN ) ),
+		    0, 1 );
+attrib( Item1, "animation", mov_xyz );
+free( mov_xyz );
+
+mov_xyz = creparam( cbspline( 3,
+			      list( ctlpt( E3, 0, 0, 0 ),
+			            ctlpt( E3, Wdt, 0, 0 ),
+			            ctlpt( E3, Wdt * 2, 0, 0 ),
+			            ctlpt( E3, Len, Len, 0 ) ),
+			      list( KV_OPEN ) ),
+		    1, 2 );
+Attrib( Item2, "animation", mov_xyz );
+mov_xyz = mov_xyz * sy( -1 );
+attrib( Item4, "animation", mov_xyz );
+free( mov_xyz );
+
+mov_y = creparam( cbezier( list( ctlpt( E1, 0 ),
+			         ctlpt( E1, Len * 2 ) ) ),
+		    2, 3 );
+attrib( Item6, "animation", mov_y );
+free( mov_y );
+
+mov_xyz = creparam( cbspline( 3,
+			      list( ctlpt( E3, 0, 0, 0 ),
+			            ctlpt( E3, Wdt, 0, 0 ),
+			            ctlpt( E3, Wdt * 2, 0, 0 ),
+			            ctlpt( E3, Len, Len / 2, 0 ) ),
+			      list( KV_OPEN ) ),
+		    3, 4 );
+Attrib( Item3, "animation", mov_xyz );
+mov_xyz = mov_xyz * sy( -1 );
+attrib( Item5, "animation", mov_xyz );
+free( mov_xyz );
+
+mov_xyz = creparam( cbspline( 3,
+			      list( ctlpt( E3, 0, 0, 0 ),
+			            ctlpt( E3, 0, Len, 0 ),
+			            ctlpt( E3, 0, Len * 2, 0 ),
+			            ctlpt( E3, -Wdt * 2, Len * 2, 0 ) ),
+			      list( KV_OPEN ) ),
+		    4, 5 );
+attrib( Item7, "animation", mov_xyz );
+free( mov_xyz );
+
+mov_z = creparam( cbezier( list( ctlpt( E1, 0 ),
+			         ctlpt( E1, -Len / 2 ) ) ),
+		  5, 6 );
+attrib( Item8, "animation", mov_z );
+mov_z = creparam( cbezier( list( ctlpt( E1, 0 ),
+			         ctlpt( E1, Len / 2 ) ) ),
+		  5, 6 );
+attrib( Item9, "animation", mov_z );
+free( mov_z );
+
+All = list( Item1, Item2, Item3, Item4, Item5, Item6, Item7, Item8, Item9 );
+interact( All );
+save( "puz5anim", All );
+
+#############################################################################
+# Stairs prisms
+#
+
+Len = 0.3;
+
+Item1Aux1 = box( vector( 0, 0, 0 ), Len, Len, Len );
+Item1Aux2 = cylin( vector( -Len, 0, 0 ), vector( Len * 2, 0, 0 ),
+		   Len / 4 - 0.001, 3 );
+Item1 = list( Item1Aux1 * tx( Len * 0.5 ) +
+	      Item1Aux2 * ty( Len * 3 / 4 ) * tz( Len * 3 / 4 ) +
+	      Item1Aux1 * tx( -Len * 1.5 ) ) * ty( Len / 2 ) * tz( -Len / 2 );
+color( Item1, cyan );
+attrib( Item1, "rgb", "0, 255, 255");
+free( Item1Aux1 );
+free( Item1Aux2 );
+
+Item2Aux = box( vector( -Len * 1.5, 0, 0 ), Len * 3, Len, Len );
+Item2 = ( Item2Aux - box( vector(-Len * 0.5, Len / 2, -Len ),
+			  Len, Len * 3, Len * 3) )
+	* rx( -90 ) * tz( Len / 2 ) * ty( -Len * 1.5 );
+color( Item2, cyan );
+attrib( Item2, "rgb", "50, 255, 150");
+free( Item2Aux );
+
+Item3 = Item2 * ty( Len ) * ry( 90 ) * rz( -90 ) * tx( Len );
+color( Item3, yellow );
+attrib( Item3, "rgb", "255, 255, 0");
+Item4 = Item3 * tx( -Len * 2 );
+color( Item4, yellow );
+attrib( Item4, "rgb", "200, 200, 0");
+
+Item5 = Item3 * tx( -Len ) * rz( 90 ) * rx( 90 ) * tz( Len );
+color( Item5, yellow );
+attrib( Item5, "rgb", "200, 155, 100");
+Item6 = Item5 * tz( -2 * Len );
+color( Item6, yellow );
+attrib( Item6, "rgb", "255, 200, 100");
+
+Item7Aux1 = box( vector( -Len * 2.5, -Len / 2, -Len / 2 ), Len * 5, Len, Len );
+Item7Aux2 = box( vector( -Len * 1.5, 0, -Len ), Len * 3, -Len, Len * 2 );
+Item7Aux3 = box( vector( -Len * 0.5, -Len, -Len ), Len, Len * 2, Len );
+Item7 = Item7Aux1 - Item7Aux2 - Item7Aux3;
+color( Item7, red );
+attrib( Item7, "rgb", "200, 50, 100");
+
+Item8 = Item7 * ry( -90 ) * rz( 90 );
+color( Item8, red );
+attrib( Item8, "rgb", "255, 0, 100");
+
+Item9Aux3 = box( vector( 0, -Len, -Len ), Len / 2, Len * 2, Len );
+Item9Aux = Item7Aux1 - Item7Aux2 - Item9Aux3;
+
+Item9 = Item9Aux * rx( -90 ) * rz( -90 );
+color( Item9, red );
+attrib( Item9, "rgb", "255, 100, 0");
+free( Item7Aux1 );
+free( Item7Aux2 );
+free( Item7Aux3 );
+free( Item9Aux3 );
+free( Item9Aux );
+
+
+#
+# Add the animation curves:
+#
+
+mov_xyz1 = trans( vector( 0.0, -Len * 1.25, -Len * 0.25 ) );
+rot_x = creparam( cbezier( list( ctlpt( E1, 0.0 ),
+				 ctlpt( E1, -90.0 ) ) ),
+		  0.0, 1.0 );
+mov_xyz2 = mov_xyz1^-1;
+mov_z = creparam( cbezier( list( ctlpt( E1, 0.0 ),
+				 ctlpt( E1, Len * 8.0 ) ) ),
+		  4.0, 5.0 );
+attrib( Item1, "animation", list( mov_xyz1, rot_x, mov_xyz2, mov_z ) );
+free( mov_xyz1 );
+free( mov_xyz2 );
+free( rot_x );
+free( mov_z );
+
+mov_z = creparam( cbezier( list( ctlpt( E1, 0.0 ),
+				 ctlpt( E1, Len * 8.0 ) ) ),
+		  4.0, 5.0 );
+attrib( Item2, "animation", mov_z );
+free( mov_z );
+
+mov_z = creparam( cbezier( list( ctlpt( E1, 0.0 ),
+				 ctlpt( E1, -Len * 8.0 ) ) ),
+		  2.0, 3.0 );
+attrib( Item3, "animation", mov_z );
+attrib( Item4, "animation", mov_z );
+free( mov_z );
+
+mov_x = creparam( cbezier( list( ctlpt( E1, 0.0 ),
+				 ctlpt( E1, Len * 8.0 ) ) ),
+		  3.0, 4.0 );
+attrib( Item5, "animation", mov_x );
+attrib( Item6, "animation", mov_x );
+free( mov_x );
+
+mov_y = creparam( cbezier( list( ctlpt( E1, 0.0 ),
+				 ctlpt( E1, Len * 0.5 ) ) ),
+		  1.0, 2.0 );
+mov_z = creparam( cbezier( list( ctlpt( E1, 0.0 ),
+				 ctlpt( E1, Len * 5.0 ) ) ),
+		  5.0, 6.0 );
+attrib( Item7, "animation", list( mov_y, mov_z ) );
+free( mov_y );
+free( mov_z );
+
+mov_x = creparam( cbezier( list( ctlpt( E1, 0.0 ),
+				 ctlpt( E1, -Len * 4.0 ) ) ),
+		  6.0, 7.0 );
+attrib( Item8, "animation", mov_x );
+free( mov_x );
+
+All = list( Item1, Item2, Item3, Item4, Item5, Item6, Item7, Item8, Item9 );
+interact( All );
+save( "puz6anim", All );
+
+#############################################################################
+
+view_mat = save_mat;
+viewobj( view_mat );
+
+free( All );
+free( Scl );
+free( Grp1 );
+free( Grp2 );
+free( Len );
+free( Wdt );
+free( Rad );
+free( Eps );
+free( Sqrt2 );
+free( An );
+free( Ca );
+free( Sa );
+free( Item1 );
+free( Item2 );
+free( Item3 );
+free( Item4 );
+free( Item5 );
+free( Item6 );
+free( Item7 );
+free( Item8 );
+free( Item9 );

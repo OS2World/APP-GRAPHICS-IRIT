@@ -1,0 +1,99 @@
+#
+# Surface surface intersection examples.
+#
+#							Gershon Elber, Aug 99.
+#
+
+TestSSI = procedure( s1, s2, Eps ):Inter: Tm:
+    Tm = time( true ):
+    Inter = ssinter( s1, s2, 1, Eps, 0 ):
+    Tm = time( false ):
+    color( Inter, yellow ):
+    view( list( s1, s2, Inter ), true ):
+    printf( "No Alignment: Length of intersection curve %d, Time = %f Sec.\\n",
+	    list( sizeof( nth( nth( Inter, 1 ), 1 ) ), Tm ) ):
+    Tm = time( true ):
+    Inter = ssinter( s1, s2, 1, Eps, 1 ):
+    Tm = time( false ):
+    color( Inter, green ):
+    view( list( Inter ), false ):
+    printf( "Z Alignment:  Length of intersection curve %d, Time = %f Sec.\\n",
+	    list( sizeof( nth( nth( Inter, 1 ), 1 ) ), Tm ) ):
+    Tm = time( true ):
+    Inter = ssinter( s1, s2, 1, Eps, 2 ):
+    Tm = time( false ):
+    color( Inter, cyan ):
+    view( list( Inter ), false ):
+    printf( "RZ Alignment: Length of intersection curve %d, Time = %f Sec.\\n",
+	    list( sizeof( nth( nth( Inter, 1 ), 1 ) ), Tm ) );
+
+#############################################################################
+
+s1 = sbezier(
+        list( list( ctlpt( E3, 0, 0, 0 ),
+                    ctlpt( E3, 0.05, 0.2, 0.1 ),
+                    ctlpt( E3, 0.1, 0.05, 0.2 ) ),
+              list( ctlpt( E3, 0.1, -0.2, 0 ),
+                    ctlpt( E3, 0.15, 0.05, 0.1 ),
+                    ctlpt( E3, 0.2, -0.1, 0.2 ) ),
+              list( ctlpt( E3, 0.2, 0, 0 ),
+                    ctlpt( E3, 0.25, 0.2, 0.1 ),
+                    ctlpt( E3, 0.3, 0.05, 0.2 ) ) ) ) * sc( 4 ) * sy( 0.3 );
+color( s1, red );
+
+s2 = s1 * rx( 4 ) * rz( 2 );
+color( s2, blue );
+
+TestSSI( s1, s2, 0.1 );
+TestSSI( s1, s2, 0.01 );
+
+s1 = s1 * sy( 0.1 );
+s2 = s2 * sy( 0.1 );
+color( s1, red );
+color( s2, blue );
+
+TestSSI( s1, s2, 0.1 );
+TestSSI( s1, s2, 0.01 );
+
+#############################################################################
+
+wiggle = sbspline( 3, 3, 
+        list( list( ctlpt( E3, 0.013501, 0.46333, -1.01136 ),
+                    ctlpt( E3, 0.410664, -0.462427, -0.939545 ),
+                    ctlpt( E3, 0.699477, 0.071974, -0.381915 ) ),
+              list( ctlpt( E3, -0.201925, 1.15706, -0.345263 ),
+                    ctlpt( E3, 0.210717, 0.022708, -0.34285 ),
+                    ctlpt( E3, 0.49953, 0.557109, 0.21478 ) ),
+              list( ctlpt( E3, -0.293521, 0.182036, -0.234382 ),
+                    ctlpt( E3, 0.103642, -0.743721, -0.162567 ),
+                    ctlpt( E3, 0.392455, -0.20932, 0.395063 ) ),
+              list( ctlpt( E3, -0.508947, 0.875765, 0.431715 ),
+                    ctlpt( E3, -0.096305, -0.258586, 0.434128 ),
+                    ctlpt( E3, 0.192508, 0.275815, 0.991758 ) ),
+              list( ctlpt( E3, -0.600543, -0.099258, 0.542596 ),
+                    ctlpt( E3, -0.20338, -1.02502, 0.614411 ),
+                    ctlpt( E3, 0.085433, -0.490614, 1.17204 ) ) ),
+        list( list( kv_open ),
+              list( kv_open ) ) );
+color( wiggle, blue );
+wiggle2 = wiggle * rx( 4 ) * rz( 2 );
+color( wiggle2, red );
+
+
+TestSSI( wiggle, wiggle2, 0.1 );
+TestSSI( wiggle, wiggle2, 0.03 );
+
+#############################################################################
+
+color( s1, red );
+color( wiggle, blue );
+
+TestSSI( s1, wiggle, 0.1 );
+TestSSI( s1, wiggle, 0.03 );
+
+#############################################################################
+
+free( wiggle );
+free( wiggle2 );
+free( s1 );
+free( s2 );

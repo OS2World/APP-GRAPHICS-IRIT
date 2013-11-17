@@ -1,0 +1,97 @@
+#
+# Some comparison tests with LOFFSET.
+#
+#			Gershon Elber, OCtober 1994.
+#
+
+ComputeError = procedure(FName, Crv, Dist, OCrv):Dst:DstSqr:FFMin:FFMax:
+    Crv = creparam(Crv, 0, 1):
+    OCrv = creparam(OCrv, 0, 1):
+    Dst = symbdiff(Crv, OCrv):
+    DstSqr = symbdprod(Dst, Dst):
+    FFMin = max(coord(ffextreme(DstSqr, true), 1), 0):
+    FFMax = max(coord(ffextreme(DstSqr, false), 1), 0):
+    printf("\\n\\t%s: Min %lf, Max %lf, Max Error %lf (ctlpts = %1.0lf)",
+           list(FName, sqrt(FFMin), sqrt(FFMax),
+                max(abs(sqrt(FFMin) - Dist),
+                    abs(sqrt(FFMax) - Dist)),
+                sizeof(OCrv)));
+
+CompareOffset = procedure(Crv, Dist, c1, c2, c3, c4):
+    ComputeError("OFFSET ", Crv, Dist, c1):
+    ComputeError("OFFSETI", Crv, Dist, c2):
+    ComputeError("AOFFSET", Crv, Dist, c3):
+    ComputeError("LOFFSET", Crv, Dist, c4);
+
+CmpOffAllTols = procedure(Crv, Header, FName, Dist, Tol, Steps):i:c1:c2:c3:c4:
+    for (i = 0, 1, Steps,
+         printf("\\n\\n%s: TOLERANCE = %lf, Dist = %lf",
+		list(Header, Tol, Dist)):
+         c1 = offset(Crv, Dist, Tol, off):
+         c2 = offset(Crv, Dist, Tol, on):
+         c3 = aoffset(Crv, Dist, Tol, false, off):
+         c4 = loffset(Crv, Dist, 300, sizeof(c2), 4):
+	 attrib(c1, "dash", "[0.1 0.01] 0"):
+	 color(c1, red):
+	 attrib(c2, "dash", "[0.01 0.01] 0"):
+	 color(c2, green):
+	 attrib(c3, "dash", "[0.2 0.01 0.05 0.01] 0"):
+	 color(c3, yellow):
+	 attrib(c4, "dash", "[0.1 0.1 0.01 0.01] 0"):
+	 color(c4, cyan):
+	 save(FName + "_" + (i + 1), list(crv, c1, c2, c3, c4)):
+         CompareOffset(Crv, abs(Dist), c1, c2, c3, c4):
+         Tol = Tol * sqrt(0.1));
+
+#############################################################################
+
+bez = cbezier( list( ctlpt( E2, -0.95, 0.7 ),
+		     ctlpt( E2, -0.3,  0.5 ),
+		     ctlpt( E2,  0.3, -2.5 ),
+		     ctlpt( E2,  0.9, -0.2 ) ) );
+CmpOffAllTols(bez, "BEZIER CURVE", "bez_0.4", 0.4, 1.0, 5);
+
+cpawn = cbspline( 4,
+	list( ctlpt( E2, 0.95, 0.05 ),
+	      ctlpt( E2, 0.95, 0.76 ),
+	      ctlpt( E2, 0.30, 1.52 ),
+	      ctlpt( E2, 0.30, 1.90 ),
+	      ctlpt( E2, 0.50, 2.09 ),
+	      ctlpt( E2, 0.72, 2.24 ),
+	      ctlpt( E2, 0.72, 2.32 ),
+	      ctlpt( E2, 0.38, 2.50 ),
+	      ctlpt( E2, 0.42, 2.70 ),
+	      ctlpt( E2, 0.57, 2.81 ),
+	      ctlpt( E2, 0.57, 3.42 ),
+	      ctlpt( E2, 0.19, 3.57 ),
+	      ctlpt( E2, 0.00, 3.57 ) ),
+	 list( KV_OPEN ) );
+CmpOffAllTols(cpawn, "CHESS PAWN CSECTION", "pawn_0.5", 0.5, 1.0, 4);
+CmpOffAllTols(cpawn, "CHESS PAWN CSECTION", "pawn_1.5", 1.5, 1.0, 3);
+
+cross = cbspline( 4,
+                  list( ctlpt( E2,  0.5,  0.5 ),
+                        ctlpt( E2,  0.5, -0.5 ),
+                        ctlpt( E2, -0.5, -0.5 ),
+                        ctlpt( E2, -0.5,  0.5 ) ),
+                  list( KV_PERIODIC ) );
+cross = coerce( cross, kv_open );
+CmpOffAllTols(cross, "CROSS SECTION", "cross_0.3", 0.3, 0.1, 4);
+
+circ = circle( vector(0, 0, 0), 1 );
+CmpOffAllTols(circ, "CIRC", "circ_0.5",  0.5, 0.1, 2);
+CmpOffAllTols(circ, "CIRC", "circ-0.6", -0.6, 0.1, 2);
+
+Crv = cbspline( 3,
+                list( ctlpt( E2, 0.7, 0.0 ),
+                      ctlpt( E2, 0.7, 0.06 ),
+                      ctlpt( E2, 0.1, 0.1 ),
+                      ctlpt( E2, 0.1, 0.6 ),
+                      ctlpt( E2, 0.6, 0.6 ),
+                      ctlpt( E2, 0.8, 0.8 ),
+                      ctlpt( E2, 0.8, 1.4 ),
+                      ctlpt( E2, 0.6, 1.6 ) ),
+                list( KV_OPEN ) );
+CmpOffAllTols(Crv, "OFFSET DOCS CRV", "doc_crv_0.4", 0.4, 0.1, 2);
+CmpOffAllTols(Crv, "OFFSET DOCS CRV", "doc_crv-0.2", -0.2, 0.1, 2);
+# CmpOffAllTols(Crv, "OFFSET DOCS CRV", -0.8, 1.0, 2); creates NAN

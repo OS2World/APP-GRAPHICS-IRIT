@@ -1,0 +1,128 @@
+#
+# Intersection of cone and a cylinder:
+# Try this one with resolution equal 20 - slower, but much nicer!
+#
+#			Created by Gershon Elber,	Jan. 89
+#
+
+view_mat1 = view_mat * sc( 0.2 );
+save_res = resolution;
+resolution = 8;
+
+#############################################################################
+
+cone1 = con2( vector( 0, 0, -1 ), vector( 0, 0, 4 ), 2, 1, 3 );
+cylin1= cylin( vector( 0, 3, 0 ), vector( 0, -6, 2 ), 0.7, 3 );
+
+a = cone1 + cylin1;
+free( cylin1 );
+free( cone1 );
+interact( list( view_mat1, a ) );
+
+#
+# Currently variables can not be introduced in a loop (except the iteration
+# variable), so we prepare all variables in advance.
+#
+cntrs = nil();
+IntrCrv = iritstate( "intercrv", true );
+for ( i = -0.9, 0.1, 2.9,
+	p = circpoly( vector( 0.0, 0.0, 1.0 ), vector( 0.0, 0.0, i ), 6.0 ):
+	c = a * p:
+	viewobj( c ):
+	snoc(c, cntrs)
+    );
+free( i );
+IntrCrv = iritstate( "intercrv", IntrCrv );
+free( IntrCrv );
+
+viewremove("c");
+viewobj(cntrs);
+pause();
+
+save( "contour1", cntrs );
+free( a );
+free( p );
+free( c );
+free( cntrs );
+
+#############################################################################
+
+resolution = 50;
+view_mat1 = view_mat * sc( 0.9 );
+
+x = sphere( vector( 0, 0, 0 ), 1 );
+color( x, red );
+view( list( view_mat1, axes, x ), 1 );
+
+allCntrs = nil();
+for ( l = -0.95, 0.1, 0.99,
+    c = contour( x, plane( 1/sqrt(3), 1/sqrt(3), 1/sqrt(3), l ) ):
+    viewobj( c ):
+    miliSleep( 50 ):
+    snoc( c * tx( 0 ), allCntrs ) ):
+
+interact( list( axes, x, allCntrs ) );
+
+#############
+view_mat1 = view_mat * sc( 0.7 );
+
+x = torus( vector( 0, 0, 0 ), vector( 0, 0, 1 ), 1, .3 );
+color( x, red );
+view( list( view_mat1, axes, x ), 1 );
+
+allCntrs = nil();
+for ( l = -1.05, 0.1, 1.1,
+    c = contour( x, plane( 1/sqrt(3), 1/sqrt(3), 1/sqrt(3), l ) ):
+    viewobj( c ):
+    miliSleep( 50 ):
+    snoc( c * tx( 0 ), allCntrs ) ):
+free( l );
+
+interact( list( axes, x, allCntrs ) );
+
+save( "contour2", list( axes, x, allCntrs ) );
+
+free( x );
+free( c );
+free( allCntrs );
+
+#############################################################################
+
+c = cbspline( 4,
+    list( ctlpt( E2,  0.7,   0.6 ),
+          ctlpt( E2,  0.17, -0.13 ),
+          ctlpt( E2, -0.03,  0.7 ),
+          ctlpt( E2, -0.8,   0.7 ),
+          ctlpt( E2, -0.8,  -0.7 ),
+          ctlpt( E2, -0.03, -0.7 ),
+          ctlpt( E2,  0.17,  0.13 ),
+          ctlpt( E2,  0.7,  -0.6 ) ),
+    list( kv_open ) );
+color( c, red );
+view( list( axes, c ), 1 );
+
+allCntrs = nil();
+for ( x = -0.7, 0.1, 0.7,
+    CntrPts = contour( c, plane( 1, 0.0, 0.0, x ) ):
+    Cntr = ceval( c, coord( coord( CntrPts, 0 ), 0 ) ) +
+	   ceval( c, coord( coord( CntrPts, 1 ), 0 ) ):
+    viewobj( Cntr ):
+    miliSleep( 50 ):
+    snoc( Cntr * tx( 0 ), allCntrs ) ):
+
+view( list( axes, c, allCntrs ), 1 );
+
+save( "contour3", list( axes, x, allCntrs ) );
+
+free( x );
+free( c );
+free( allCntrs );
+free( CntrPts );
+free( Cntr );
+
+#############################################################################
+
+resolution = save_res;
+
+
+

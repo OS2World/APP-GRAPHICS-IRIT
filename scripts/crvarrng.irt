@@ -1,0 +1,251 @@
+#
+# Arrangment of curves - intersections & linear/radial lower envelops
+#
+#				Gershon Elber, May 2005
+#
+
+save_mat = view_mat;
+view_mat = sc( 0.5 );
+viewobj( view_mat );
+view_mat = save_mat;
+
+ri = iritstate( "RandomInit", 1964 );  # Seed-initiate the randomizer,
+free( ri );
+
+GetRandRGB = function():
+    return = random( 50, 255 ) + "," +
+	     random( 50, 255 ) + "," +
+	     random( 50, 255 );
+
+MakeBBoxUnit = function( Obj ): XMin: XMax: YMin: YMax: b:
+    b = bbox( Obj ):
+    XMin = nth( b, 1 ):
+    XMax = nth( b, 2 ):
+    YMin = nth( b, 3 ):
+    YMax = nth( b, 4 ):
+    return = Obj * tx( -XMin ) * ty( -YMin )
+	         * sx( 1.0 / ( XMax - XMin ) ) * sy( 1.0 / ( YMax - YMin ) );
+
+GenRandomCrv = function( d, n, size ): CtlPts: CPt: i: kv:
+    CtlPts = nil():
+    for ( i = 1, 1, n,
+	snoc( ctlpt( E2, random( -size, size ), random( -size, size ) ),
+	      CtlPts ) ):
+    if ( random( 0, 1 ) > 0.3,
+	kv = kv_periodic,
+	kv = kv_open ):
+    return = cbspline( d,
+		       CtlPts * tx( random( -0.2, 0.2 ) ) * ty( random( -0.2, 0.2 ) ),
+		       list( kv ) ):
+    return = coerce( return, kv_open );
+
+RandomCrvs = function( NumCrvs, CrvDeg, CrvLen, size, DWidth ): i: l:
+    l = nil():
+    for ( i = 1, 1, NumCrvs,
+        snoc( GenRandomCrv( CrvDeg, CrvLen, size ), l ):
+	attrib( nref( l, i ), "gray", random( 0.01, 0.7 ) ) ):
+    for ( i = 1, 1, NumCrvs,
+	attrib( nref( l, i ), "rgb", GetRandRGB() ) ):
+    return = l:
+    color( return, red ):
+    awidth( return, 0.01 ):
+    adwidth( return, DWidth );
+
+InterPtsEval = function( Crvs ): Crv: InterPts: InterPtsE2: i: j:
+    return = nil():
+    for (i = 1, 1, sizeof( Crvs ),
+	Crv = nth( Crvs, i ):
+	InterPts = getAttr( Crv, "InterPts" ):
+	for (j = 1, 1, sizeof( InterPts ), 
+	    snoc( ceval( Crv, nth( InterPts, j ) ), return ) ) ):
+    printf( "Numer of intersections detected = %d\\n",
+	    list( sizeof( return ) ) );
+
+InterCrvsPaint = function( Crvs ): i: Crv:
+    return = nil():
+    for (i = 1, 1, sizeof( Crvs ),
+	Crv = nth( Crvs, i ):
+	attrib( Crv, "rgb", GetRandRGB() ):
+	snoc( Crv * sc( 1 ), return ) );
+
+#############################################################################
+
+Crvs = RandomCrvs( 14, 5, 8, 0.8, 3 );
+
+InterCrvs = carrangmnt( Crvs, 1e-8, 1, 0 );
+
+InterPts = InterPtsEval( InterCrvs );
+color( InterPts, yellow );
+
+All = list( axes, Crvs, InterPts );
+interact( All );
+
+save( "crv1arng", All );
+
+free( InterPts );
+
+#############################################################################
+
+Crvs = RandomCrvs( 12, 4, 7, 0.8, 3 );
+
+InterCrvs = carrangmnt( Crvs, 1e-12, 2, 0 );
+
+InterCrvs = InterCrvsPaint( InterCrvs );
+adwidth( InterCrvs, 3 );
+All = list( axes, InterCrvs );
+interact( All );
+
+save( "crv2arng", All );
+
+#############################################################################
+
+Crvs = RandomCrvs( 11, 3, 3, 0.8, 2 );
+
+LinearLowEnv = carrangmnt( Crvs, 1e-12, 3, 0 );
+attrib( LinearLowEnv, "rgb", "255, 255, 200" );
+adwidth( LinearLowEnv, 5 );
+
+All = list( axes, Crvs, LinearLowEnv * tz( -0.2 ) );
+interact( All );
+
+save( "crv3arng", All );
+	 
+#############################################################################
+
+Crvs = RandomCrvs( 8, 3, 3, 0.8, 2 );
+b = bbox(Crvs);
+Crvs = Crvs * ty( 0.1 - coord( b, 3 ) );
+free( b );
+
+RadialLowEnv = carrangmnt( Crvs, 1e-12, 4, point( 0, 0, 0 ) );
+attrib( RadialLowEnv, "rgb", "255, 255, 200" );
+adwidth( RadialLowEnv, 5 );
+
+All = list( axes, Crvs, RadialLowEnv * tz( -0.2 ) );
+interact( All );
+
+save( "crv4arng", All );
+
+#############################################################################
+
+C1 = cbspline( 3,
+	       list( ctlpt( E2, -0.2, 0.5 ),
+		     ctlpt( E2,  0.2, 0.5 ),
+		     ctlpt( E2,  0.1, 0.2 ) ),
+	       list( kv_periodic ) );
+C1 = coerce( C1, kv_open );
+
+Crvs = list( C1,
+	     C1 * tx( 0.1 ),
+	     C1 * tx( 0.3 ),
+	     C1 * tx( 0.45 ),
+	     C1 * tx( 0.5 ),
+	     C1 * tx( 0.61 ),
+	     C1 * tx( 1 ) );
+color( Crvs, red );
+
+#################################
+
+InterCrvs = carrangmnt( Crvs, 1e-12, 2, point( 0, 0, 0 ) );
+InterCrvs = InterCrvsPaint( InterCrvs );
+
+All1 = list( axes, InterCrvs );
+
+free( InterCrvs );
+
+#################################
+
+for ( Theta = 45, -1, 0,
+    RCrvs = Crvs * rz( Theta ) * tx( -0.35 ):
+    LinearLowEnv = carrangmnt( RCrvs, 1e-9, 3, 0 ) * tz( -0.2 ):
+    color( LinearLowEnv, yellow ):
+    adwidth( LinearLowEnv, 3 ):
+    view( list( axes, RCrvs, LinearLowEnv ), 1 ) );
+
+All2 = list( axes, Crvs * tx( -0.35 ), LinearLowEnv );
+
+free( RCrvs );
+
+#################################
+
+C1 = cbspline( 3,
+	       list( ctlpt( E2, -0.2, 0.5 ),
+		     ctlpt( E2,  0.2, 0.5 ),
+		     ctlpt( E2,  0.1, 0.2 ) ),
+	       list( kv_periodic ) );
+C1 = coerce( C1, kv_open );
+
+Crvs = list( C1,
+	     C1 * tx( 0.1 ),
+	     C1 * tx( 0.3 ),
+	     C1 * tx( 0.45 ),
+	     C1 * tx( 0.5 ),
+	     C1 * tx( 0.61 ),
+	     C1 * tx( 1 ) );
+color( Crvs, red );
+
+for ( x = 0, 0.05, 0.5,
+    RadialLowEnv = carrangmnt( Crvs * tx( -0.4 ), 1e-8, 4,
+			       Pt = point( x, 0, 0 ) ) * tz( -0.2 ):
+    color( RadialLowEnv, yellow ):
+    adwidth( RadialLowEnv, 3 ):
+    view( list( axes, Pt, Crvs * tx( -0.4 ), RadialLowEnv ), 1 ) );
+
+All3 = list( axes, Pt, Crvs * tx( -0.4 ), RadialLowEnv );
+
+#################################
+
+All = list( All1 * ty( 0.8 ), All2, All3 * ty( -0.8 ) );
+interact( All );
+
+free( All1 );
+free( All2 );
+free( All3 );
+
+save( "crv5arng", All );
+
+#############################################################################
+
+C2 = cbspline( 3,
+	       list( ctlpt( E2, -0.2, 0.5 ),
+		     ctlpt( E2,  0.3, 0.2 ),
+		     ctlpt( E2, -0.2,-0.5 ),
+		     ctlpt( E2,  0.1, 0.2 ) ),
+	       list( kv_periodic ) );
+C2 = coerce( C2, kv_open );
+
+Crvs = list( C2 * ty( 0.3 ) * tx( -0.2 ),
+	     C2 * rz( 140 ) * tx( 0.4 ) * ty( -0.5 ),
+	     C1 * sy( 3 ) * rz( 160 ) * tx( 0.1 ) * ty( 0.8 ),
+	     C1 * sy( 2 ) * rz( 230 ) * ty( 0.35 ),
+	     C2 * rz( -10 ) * tx( 0.6 ) * ty( 0.2 ),
+	     C2 * rz( 110 ) * ty( -0.61 ),
+	     C2 * rz( 110 ) * tx( 0.25 ) * ty( 0.6 ) );
+color( Crvs, red );
+
+view( list( axes, Crvs ), 1 );
+
+All = nil();
+for ( x = -1, 0.05, 1,
+    RadialLowEnv = carrangmnt( Crvs, 1e-10, 4,
+			       Pt = point( x, x * x, 0 ) ) * tz( -0.2 ):
+    color( RadialLowEnv, yellow ):
+    adwidth( RadialLowEnv, 3 ):
+    if ( x == -1 || x == 0.05 || x == 1,
+	snoc( list( axes, Pt, Crvs, RadialLowEnv ) * tx( x * 2 ), All ) ):
+    view( list( axes, Pt, Crvs, RadialLowEnv ), 1 ) );
+
+interact( All );
+save( "crv6arng", All );
+
+#############################################################################
+
+free( x );
+free( Pt );
+free( C1 );
+free( C2 );
+free( Crvs );
+free( All );
+free( Theta );
+free( RadialLowEnv );
+free( LinearLowEnv );

@@ -1,0 +1,214 @@
+#
+# Hausdorff distances between freeforms
+#
+#					Gershon Elber, October 2006.
+#
+
+#############################################################################
+
+ri = iritstate( "RandomInit", 1960 );  # Seed-initiate the randomizer,
+free( ri );
+
+GlblRes = nil();
+GlblTransX = -5;
+DisplayObjObjHDRes = procedure( O1, O2, Eps, OneSided ):
+    HDRes: Dist: Param1: Param2: t: Pt1: Pt2: i: DType: L: All:
+    HDRes = hausdorff( O1, O2, Eps, OneSided ):
+    Dist = nth( HDres, 1 ):
+    Param1 = nth( HDres, 2 ):
+    if ( OneSided,
+	DType = "ONE Sided ",
+	DType = "TWO Sided " ):
+    if ( sizeof( Param1 ) == 0,
+	Pt1 = coerce( O1, E3 ),
+        for (i = 1, 1, sizeof( Param1 ),
+	    t = nth( Param1, i ):
+	    printf( "%sHausdorff distance %f detected at t1 = %f\\n",
+		    list( DType, Dist, t ) ) ):
+        Pt1 = ceval( O1, t ) ):
+    Param2 = nth( HDres, 3 ):
+    if ( sizeof( Param2 ) == 0,
+	Pt2 = coerce( O2, E3 ),
+        for (i = 1, 1, sizeof( Param2 ),
+	    t = nth( Param2, i ):
+	    printf( "%sHausdorff distance %f detected at t2 = %f\\n",
+		    list( DType, Dist, t ) ) ):
+        Pt2 = ceval( O2, t ) ):
+    color( Pt1, magenta ):
+    color( o1, magenta ):
+    color( Pt2, yellow ):
+    color( o2, yellow ):
+    L = Pt1 + Pt2:
+    if ( OneSided == 0,
+	attrib( L, "dwidth", 3 ) ):
+    All = list( O1, O2, Pt1, Pt2, L ):
+    snoc( All * tx( GlblTransX ), GlblRes ):
+    GlblTransX = GlblTransX + 0.5:
+    interact( All );
+
+#############################################################################
+
+# Faster product using Bezier decomposition.
+IProd = iritstate( "BspProdMethod", 0 );
+
+view_mat1 = sc( 3 ) * tx( -1 ) * ty( -0.5 );
+viewobj( view_mat1 );
+free( view_mat1 );
+
+viewstate( "PllnAprx", on );
+viewstate( "PllnAprx", on );
+
+#############################################################################
+
+pt1 = point( 0.43, 0.33, 0 );
+
+pt2 = point( 0.55, 0.17, 0 );
+
+c1 = cbspline( 2,
+    list( ctlpt( E2, 0.56, 0.4 ),
+          ctlpt( E2, 0.43, 0.1 ) ),
+    list(  kv_open ) );
+color( c1, green );
+
+c2 = cbspline( 3,
+    list( ctlpt( E2, 0.546, 0.42 ),
+          ctlpt( E2, 0.5, -0.2 ),
+          ctlpt( E2, 0.398, 0.4 ),
+          ctlpt( E2, 0.54, 0.44 ) ),
+    list( kv_open ) );
+color( c2, cyan );
+
+c2a = cbspline( 3,
+    list( ctlpt( E3, 0.546,  0.42, -0.3 ),
+          ctlpt( E3, 0.5,   -0.2,   0.5 ),
+          ctlpt( E3, 0.398,  0.4,  -0.3 ),
+          ctlpt( E3, 0.54,   0.44, -0.1 ) ),
+    list( kv_open ) );
+color( c2a, cyan );
+
+c3 =  cbspline( 4,
+    list( ctlpt( E2, 0.546, 0.0652 ),
+          ctlpt( E2, 0.56, -0.164 ),
+          ctlpt( E2, 0.198, -0.192 ),
+          ctlpt( E2, 0.263, 0.376 ),
+          ctlpt( E2, 0.432, 0.478 ),
+          ctlpt( E2, 0.497, 0.254 ) ),
+    list( kv_open ) );
+color( c3, yellow );
+
+c4 = cbspline( 4,
+    list( ctlpt( E2, 0.53, 0.35 ),
+          ctlpt( E2, 0.423, -0.00924 ),
+          ctlpt( E2, 0.198, -0.192 ),
+          ctlpt( E2, 0.263, 0.376 ),
+          ctlpt( E2, 0.432, 0.478 ),
+          ctlpt( E2, 0.521, -0.0762 ) ),
+    list(  kv_open ) );
+color( c4, magenta );
+
+c4a = cbspline( 4,
+    list( ctlpt( E3, 0.53,   0.35, -0.3 ),
+          ctlpt( E3, 0.423, -0.01,  0.3 ),
+          ctlpt( E3, 0.198, -0.19,  0.4 ),
+          ctlpt( E3, 0.263,  0.38, -0.2),
+          ctlpt( E3, 0.432,  0.48, -0.3 ),
+          ctlpt( E3, 0.521, -0.08,  0.4) ),
+    list(  kv_open ) );
+color( c4a, magenta );
+
+c5 = pcircle( vector( 0, 0, 0 ), 0.2 );
+color( c5, green );
+
+pts = nil();
+for ( i = 0, 1, 20,
+    snoc( point( cos( 2 * pi * i / 20 ) + random( -0.1, 0.1 ),
+		 sin( 2 * pi * i / 20 ) + random( -0.1, 0.1 ),
+		 random( -0.1, 0.1 ) ),
+	  pts ) );
+c6 = cbspline( 3, pts, list( kv_periodic ) );
+free( pts );
+free( i );
+c6 = coerce( c6, kv_open );
+color( c6, red );
+
+Eps = 1e-10;
+
+# view( list( c1, c2, c3, c4, c5, pt1, pt2 ), 1 );
+
+#############################################################################
+
+DisplayObjObjHDRes( c1, pt1, Eps, false );
+
+DisplayObjObjHDRes( c1, pt1, Eps, true );
+
+DisplayObjObjHDRes( pt1, c1, Eps, false );
+
+DisplayObjObjHDRes( pt1, c1, Eps, true );
+
+DisplayObjObjHDRes( c2, pt1, Eps, false );
+
+DisplayObjObjHDRes( c2, pt1, Eps, true );
+
+DisplayObjObjHDRes( pt1, c2, Eps, false );
+
+DisplayObjObjHDRes( pt1, c2, Eps, true );
+
+DisplayObjObjHDRes( pt2, c3, Eps, false );
+
+DisplayObjObjHDRes( pt2, c3, Eps, true );
+
+DisplayObjObjHDRes( c3, pt2, Eps, false );
+
+DisplayObjObjHDRes( c3, pt2, Eps, true );
+
+DisplayObjObjHDRes( c1, c2, Eps, false );
+
+DisplayObjObjHDRes( c1, c2, Eps, true );
+
+DisplayObjObjHDRes( c2, c1, Eps, true );
+
+DisplayObjObjHDRes( c3, c2, Eps, false );
+
+DisplayObjObjHDRes( c3, c2, Eps, true );
+
+DisplayObjObjHDRes( c2, c3, Eps, true );
+
+DisplayObjObjHDRes( c3, c4, Eps, false );
+
+DisplayObjObjHDRes( c3, c4, Eps, true );
+
+DisplayObjObjHDRes( c4, c3, Eps, true );
+
+DisplayObjObjHDRes( c4, c4a * tx( -0.5 ), Eps, false );
+
+DisplayObjObjHDRes( c2, c4a * tx( -0.5 ), Eps, false );
+
+DisplayObjObjHDRes( c2, c4a * sx( -3 ) * tx( 0.5 ), Eps, false );
+
+DisplayObjObjHDRes( c2, c2a * sx( -3 ) * tx( 0.5 ), Eps, false );
+
+DisplayObjObjHDRes( c5, c5 * sx( 0.7 ) * sy( 0.95 ) * ry( 20 ), Eps, false );
+
+DisplayObjObjHDRes( c6, c6 * rz( 20 ), Eps, false );
+
+save( "hausdorf", GlblRes );
+# view( GlblRes, 1 );
+
+#############################################################################
+free( GlblRes );
+free( GlblTransX );
+
+IProd = iritstate( "BspProdMethod", IProd );
+free( IProd );
+
+free( Eps );
+free( pt1 );
+free( pt2 );
+free( c1 );
+free( c2 );
+free( c2a );
+free( c3 );
+free( c4 );
+free( c4a );
+free( c5 );
+free( c6 );

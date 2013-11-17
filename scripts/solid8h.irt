@@ -1,0 +1,45 @@
+#
+# Yet another simple 3D mechanical object.
+#
+#				Created by Gershon Elber,	Sep 89
+#
+
+save_mat = view_mat;
+save_res = resolution;
+
+resolution = 32;
+view_mat = view_mat * trans( vector( 0.0, -0.3, 0.0 ) ) *
+			scale( vector( 0.8, 0.8, 0.8 ) );
+
+b1 = box( vector( -0.6, -0.3, 0.0 ), 1.2, 0.6, 0.6 );
+c1 = cylin( vector( 0.0, -0.25, 0.59 ), vector( 0.0, 0.5, 0.0 ), 0.55, 3 );
+s1 = b1 + c1;
+color( s1, yellow );
+free( b1 );
+free( c1 );
+view( list( view_mat, s1 ), true );
+
+b2 = box( vector( -0.4, -0.4, -0.1 ), 0.8, 0.8, 0.35 );
+view( b2, false );
+s2 = s1 - b2;
+free( s1 );
+free( b2 );
+color( s2, yellow );
+view( s2, true );
+
+c2 = cylin( vector( 0.0, -0.4, 0.595 ), vector( 0.0, 0.8, 0.0 ), 0.3, 3 );
+view( c2, false );
+s3 = s2 - c2;
+free( s2 );
+free( c2 );
+
+final = convex( s3 );
+free( s3 );
+
+interact( final );
+
+save( "solid8h", final );
+free( final );
+
+resolution = save_res;
+view_mat = save_mat;

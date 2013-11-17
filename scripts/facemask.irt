@@ -1,0 +1,68 @@
+#
+# A trimmed surface in the shape of a mask.
+#
+#						Gershon Elber, March 1999
+#
+
+Crv = creparam( cbspline( 4,
+        list( ctlpt( E2, -0.5, 0.0 ),
+              ctlpt( E2, -0.4, 0.4 ),
+              ctlpt( E2,  0.0, 0.5 ),
+              ctlpt( E2,  0.4, 0.4 ),
+              ctlpt( E2,  0.5, 0.0 ) ),
+         list( kv_open ) ), 0, 2 );
+Crv2 = cbspline( 4,
+        list( ctlpt( E3, -0.5,  0,    0 ),
+              ctlpt( E3, -0.4,  0.3,  0 ),
+              ctlpt( E3, -0.3,  0.4,  0 ),
+              ctlpt( E3, -0.07, 0.46, 0 ),
+              ctlpt( E3,  0.0,  0.75, 0 ),
+              ctlpt( E3,  0.07, 0.46, 0 ),
+              ctlpt( E3,  0.3,  0.4,  0 ),
+              ctlpt( E3,  0.4,  0.3,  0 ),
+              ctlpt( E3,  0.5,  0,    0 ) ),
+         list( 0, 0, 0, 0, 0.8, 0.85, 1, 1.15, 1.2, 2, 2, 2, 2 ) );
+
+Srf = sFromCrvs( list( Crv2,
+		       Crv2 * tz( 0.02 ),
+		       Crv * sc( 0.96 ) * tz( 0.2 ),
+		       Crv * sc( 0.87 )* tz( 0.35 ),
+		       Crv * sc( 0.7 ) * tz( 0.5 ) ), 3, KV_OPEN );
+free( Crv );
+free( Crv2 );
+
+TCrvs1 = cbspline( 3,
+        list( ctlpt( E2, 0.3, 1.4 ),
+              ctlpt( E2, 0.7, 1.4 ),
+              ctlpt( E2, 0.7, 2.2 ),
+              ctlpt( E2, 0.3, 2.2 ) ),
+         list( kv_periodic ) );
+TCrvs2 = cbspline( 3,
+        list( ctlpt( E2, 1.3, 1.4 ),
+              ctlpt( E2, 1.7, 1.4 ),
+              ctlpt( E2, 1.7, 2.2 ),
+              ctlpt( E2, 1.3, 2.2 ) ),
+         list( kv_periodic ) );
+TCrvs3 = cbspline( 3,
+        list( ctlpt( E2, 0, 0 ),
+              ctlpt( E2, 1, 0 ),
+              ctlpt( E2, 2, 0 ),
+              ctlpt( E2, 2, 2.9 ),
+              ctlpt( E2, 1, 2.6),
+              ctlpt( E2, 0, 2.9 ) ),
+         list( kv_periodic ) );
+
+TSrf = trimsrf( Srf, list( TCrvs3, TCrvs2, TCrvs1 ), true );
+
+free( Srf );
+free( TCrvs3 );
+free( TCrvs2 );
+free( TCrvs1 );
+
+attrib( Tsrf, "rgb", "200,255,100" );
+
+view( TSrf, 1 );
+
+save( "facemask", TSrf );
+
+free( TSrf );

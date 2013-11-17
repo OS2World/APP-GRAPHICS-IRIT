@@ -1,0 +1,111 @@
+			IRIT Solid Modeling System
+			--------------------------
+
+The IRIT solid modeling system is a simple environment that allows one
+to model basic, primitive based, models using Boolean operations as
+well as freeform surface's based models.
+
+The system is designed for simplicity and is geared toward research.
+As such, no graphical user interface (GUI) exists or is planned in the
+near future.  The modeling is performed using the main
+module/executable of the system which is called (surprise!) IRIT. A
+textual interface (or PUI for programmable user interface) is
+available which provides the interaction interface. An interpreter
+processes the user's command and executes them.  This interpreter
+includes general mechanisms that are common in high level programming
+languages such as loops, conditional sentences, and functions. In
+addition, features that can be found in modern languages such as
+operator overloading and object oriented design are extensively used.
+
+Version 8.0 of the IRIT solid modeling system contains tools that can
+aid in research and development in the areas of computer aided
+geometric design and computer graphics. Here is a list of the features
+that can be found:
+
+* Full featured points/vectors/homogeneous matrices algebra by overloading
+  the basic operators +,-,*,/,^.
+
+* Polygonal based modeling. Constructors for basic primitives (box, cone,
+  torus, etc.) are provided as well as low level constructors for direct
+  polygonal model's construction. Boolean operations between polygonal
+  models is also supported.
+
+* Freeform curve and surface manipulation tools. Supported are
+  polynomial and rational Bezier and piecewise polynomial/rational NURB
+  curves and surfaces. A large set of tools to manipulate freeform curves
+  and surfaces is provided and includes (for both curves and surfaces):
+  + Low level Constructors (direct control points control).
+  + High Level Constructors (Sweep, Extrude, Boolean Sum, etc.).
+  + Merging and Profiling tools.
+  + Evaluation.
+  + Subdivision.
+  + Refinement.
+  + Degree Raising.
+  + Differentiation and Integration.
+  + Symbolic Computation (Difference, Sum, and Product).
+  + Polygonal/Polyline approximation.
+  + Composition.
+  + Offset.
+  + Trimmed surfaces.
+
+	Tools to compute the zero set of curves, the extreme points,
+the minimal or maximal distance from a curve to a point or a line,
+the inflection points and/or points of extreme curvature, and the
+intersection points of two curves are also available.
+
+	The symbolic tools provided allow one to represent scalar and
+vector fields of differential properties of the curves and surfaces
+such as normals and curvature. The curve's inflection and extreme
+curvature detection tools, mentioned above, exploits these symbolic
+tool and are therefore robust.
+
+* Trivariate Bspline and bezier support that includes evaluation, iso surface
+  extraction, subdivision, differentiation etc.
+
+	In addition to the main module of IRIT, several other tools
+are provided:
+
+  + poly3d-h: A hidden line removal tool.
+  + illustrt: A line drawing illustration tool.
+  + xgldrvs/xglmdrvs/xmtdrvs/x11drvs/wntdrvs/os2drvs/amidrvs: Display
+    devices (and viewing programs at the same time) for SGI's gl, gl/Motif,
+    X11, X11/Motif, Window NT, OS2 2.x, and AMIGA. All these drivers
+    supports the display of animation using animation curves.
+  + irit2ps/irit2dxf/irit2iv/irit2nff/irit2plg/irit2ray/irit2scn/irit2xfg:
+    Filters to convert data files created by IRIT to PostScript, DXF,
+    SGI Inventor, NFF, REND386, Rayshade, SCN, and Xfig format.
+  + dat2irit/dxf2irit: Filters to convert from data file of IRIT to IRIT's
+    solid modeling scripts and from DXF to IRIT.
+
+	The IRIT solid modeller is actively used in various research areas:
+
+  + Adaptive Isocurve Algorithm. A coverage based on adaptive extraction
+    of isocurves can be used for various purposes from toolpath for
+    machining purposes to image rendering. This algorithm, that is
+    exploiting symbolic computation, is implemented using the IRIT
+    solid modeller and a tool named xgladap make use of the hardware of
+    the SGI systems to provide real time rendering using adaptive
+    isocurves.
+  + Layout. A new fabrication scheme automatically computes an
+    approximated layout of a free form surface, on the plane, so it
+    can be cut from planar sheets (such as paper or fabric) and
+    stitched together to form an approximation of the original
+    surface. Tools to automatically compute the layout were implemented
+    using IRIT.
+  + Morphing. Using refinement and degree raising, two tools that are
+    available in this system, different surfaces can be brought to
+    a common function space and be continuously morphed or transformed
+    from one to the other. Again, a successful implementation exists in
+    IRIT.
+  + Illustrt. Line drawings is a neglected area of computer graphics.
+    Illustrt is a tool developed with the aid of IRIT, and now is part
+    of IRIT, to automatically generate line drawings with special effects
+    such as width/size and intensity depth cueing, Z sorting, and end of
+    edge clipping etc.
+
+        The system is written in C and is running on virtually all
+Unix environments, including but not limited to SUN's SPARC, SGI's
+SGI4D, HP3xx/4xx/7xx, DEC 5000, IBM RS6000, E&S ESV, and i386 SVR4,
+using either X11 or, when available, SGI's GL. In addition, other
+environments such as Window NT and OS2 using IBM PC 386 and above or
+68xxx AMIGA are also supported.

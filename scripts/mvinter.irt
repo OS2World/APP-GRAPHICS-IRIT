@@ -1,0 +1,290 @@
+#
+# Solving for intersections/contacts of piecewise polynomials/rational
+# manifolds, possibly using multivariate expression trees.
+#
+#						    Gershon Elber, Dec 2006
+#
+EvalCrvInterPts = function( Sln, Crv, Clr ): i: s:
+    return = nil():
+    for (i = 1, 1, sizeof( Sln ),
+	s = nth( sln, i ):
+	snoc( ceval( Crv, coord( s, 1 ) ),
+	      return ) ):
+    color( return, Clr );
+
+EvalSrfInterPts = function( Sln, Srf, Clr ): i: s:
+    return = nil():
+    for (i = 1, 1, sizeof( Sln ),
+	s = nth( sln, i ):
+	snoc( seval( Srf, coord( s, 1 ), coord( s, 2 ) ),
+	      return ) ):
+    color( return, Clr );
+
+ri = iritstate( "RandomInit", 1964 );  # Seed-initiate the randomizer,
+free( ri );
+
+#############################################################################
+#
+# Intersection of two curves in the plane.
+#
+
+c1 = pcircle( vector( 0, 0, 0 ), 1 ) * sx( .5 );
+c2 = pcircle( vector( 0, 0, 0 ), 1 ) * sy( .5 );
+color( c1, red );
+color( c2, blue );
+
+view( list( c1, c2 ), 1 );
+
+Sln1 = mvinter( list( c1, c2 ), 0.001, 1e-8, false );
+Sln2 = mvinter( list( c1, c2 ), 0.001, 1e-8, true );
+
+view( EvalCrvInterPts( Sln1, c1, yellow ), 0 );
+pause();
+
+view( EvalCrvInterPts( Sln2, c1, cyan ), 0 );
+pause();
+
+#################################
+
+c1 = circle( vector( 0, 0, 0 ), 1 ) * sx( .5 );
+c2 = circle( vector( 0, 0, 0 ), 1 ) * sy( .5 );
+color( c1, red );
+color( c2, blue );
+
+view( list( c1, c2 ), 1 );
+
+Sln1 = mvinter( list( c1, c2 ), 0.0001, 1e-8, false );
+Sln2 = mvinter( list( c1, c2 ), 0.0001, 1e-8, true );
+
+view( EvalCrvInterPts( Sln1, c1, yellow ), 0 );
+pause();
+
+view( EvalCrvInterPts( Sln2, c1, cyan ), 0 );
+pause();
+
+#################################
+
+n = 200:
+Pts = nil():
+for (i = 0, 1, n,
+    snoc( ctlpt( E2, (i - n/2) / (n/2), sin( pi * i / (n/10) ) ),
+	  Pts ) );
+c1 = cbspline( 4, Pts, list( KV_OPEN ) );
+c2 = c1 * rz( 90 );
+color( c1, red );
+color( c2, blue );
+
+view( list( c1, c2 ), 1 );
+
+Sln1 = mvinter( list( c1, c2 ), 0.0001, 1e-8, false );
+Sln2 = mvinter( list( c1, c2 ), 0.0001, 1e-8, true );
+
+view( x1 = EvalCrvInterPts( Sln1, c1, yellow ), 0 );
+pause();
+
+view( x2 = EvalCrvInterPts( Sln2, c1, cyan ), 0 );
+pause();
+
+save( "mvinter1", list( c1, c2, x1, x2 ) );
+
+#################################
+
+Pts = nil():
+for (i = 0, 1, 100,
+    snoc( ctlpt( E2, random( -1, 1 ), random( -1, 1 ) ),
+	  Pts ) );
+c1 = cbspline( 4, Pts, list( KV_OPEN ) );
+c2 = c1 * rz( 90 );
+color( c1, red );
+color( c2, blue );
+
+view( list( c1, c2 ), 1 );
+
+Sln1 = mvinter( list( c1, c2 ), 0.0001, -1e-8, false );
+Sln2 = mvinter( list( c1, c2 ), 0.0001, -1e-8, true );
+
+view( x1 = EvalCrvInterPts( Sln1, c1, yellow ), 0 );
+pause();
+
+view( x2 = EvalCrvInterPts( Sln2, c1, cyan ), 0 );
+pause();
+
+save( "mvinter1b", list( c1, c2, x1, x2 ) );
+
+#############################################################################
+#
+# Intersection of two surfaces in R^3.
+#
+
+s1 = sphereSrf( 1 ) * sc( 0.9 ) * sx( .5 );
+s2 = sphereSrf( 1 ) * sc( 0.8 ) * sy( .5 );
+
+color( s1, red );
+color( s2, blue );
+
+view( list( s1, s2 ), 1 );
+
+Sln1 = mvinter( list( s1, s2 ), 0.1, -1e-8, false );
+Sln2 = mvinter( list( s1, s2 ), 0.1, -1e-8, true );
+
+view( x1 = EvalSrfInterPts( Sln1, s1, yellow ), 0 );
+pause();
+
+view( x2 = EvalSrfInterPts( Sln2, s1, cyan ), 0 );
+pause();
+
+save( "mvinter2", list( s1, s2, x1, x2 ) );
+
+#################################
+
+n = 7:
+Pts = nil():
+for (i = 0, 1, n,
+    snoc( ctlpt( E2, (i - n/2) / (n/2), sin( pi/2 + pi * i / (n/160) ) * 0.3 ),
+	  Pts ) );
+c1 = cbspline( 4, Pts, list( KV_OPEN ) );
+
+c11 = list( c1,
+	    c1 * sy( -1 ) * tz( 0.2 ) );
+
+s1 = sFromCrvs( c11 * tz( -1 ) +
+		c11 * tz( -0.4 ) +
+		c11 * tz(  0.2 ) +
+		c11 * tz(  0.5 ) +
+		c11 * tz(  1.0 ),
+		3, kv_open ) * rz( 20 );
+s2 = s1 * rx( 90 ) * rz( -20 );
+
+color( s1, red );
+color( s2, blue );
+
+view( list( s1, s2 ), 1 );
+
+Sln1 = mvinter( list( s1, s2 ), 0.1, -1e-8, false );
+Sln2 = mvinter( list( s1, s2 ), 0.1, -1e-8, true );
+
+view( EvalSrfInterPts( Sln1, s1, yellow ), 0 );
+pause();
+
+view( EvalSrfInterPts( Sln2, s1, cyan ), 0 );
+pause();
+
+#############################################################################
+#
+# Intersection of three surfaces in R^3.
+#
+
+s1 = sphereSrf( 1 ) * sc( 0.9 ) * sx( .5 );
+s2 = sphereSrf( 1 ) * sc( 0.8 ) * sy( .5 );
+s3 = sphereSrf( 1 ) * sz( .5 );
+color( s1, red );
+color( s2, blue );
+color( s3, green );
+
+view( list( s1, s2, s3 ), 1 );
+
+Sln1 = mvinter( list( s1, s2, s3 ), 0.001, 1e-8, false );
+Sln2 = mvinter( list( s1, s2, s3 ), 0.001, 1e-8, true );
+
+view( x2 = EvalSrfInterPts( Sln1, s1, yellow ), 0 );
+pause();
+
+view( x1 = EvalSrfInterPts( Sln2, s1, cyan ), 0 );
+pause();
+
+save( "mvinter3", list( s1, s2, s3, x1, x2 ) );
+
+#################################
+
+n = 11:  # Try with 30 to 50
+Pts = nil():
+for (i = 0, 1, n,
+    snoc( ctlpt( E2, (i - n/2) / (n/2), sin( pi/2 + pi * i / (n/160) ) * 0.1 ),
+	  Pts ) );
+c1 = cbspline( 4, Pts, list( KV_OPEN ) );
+
+c11 = list( c1,
+	    c1 * sy( -1 ) * tz( 0.1 ) );
+
+s1 = sFromCrvs( c11 * tz( -1.0 ) +
+		c11 * tz( -0.6 ) +
+		c11 * tz( -0.2 ) +
+		c11 * tz(  0.2 ) +
+		c11 * tz(  0.6 ) +
+		c11 * tz(  1.0 ),
+		3, kv_open );
+s2 = s1 * rx( 90 );
+s3 = s1 * rz( 90 );
+
+color( s1, red );
+color( s2, blue );
+color( s3, green );
+
+view( list( s1, s2, s3 ), 1 );
+
+Sln1 = mvinter( list( s1, s2, s3 ), 0.001, 1e-8, false );
+Sln2 = mvinter( list( s1, s2, s3 ), 0.001, 1e-8, true );
+
+view( x1 = EvalSrfInterPts( Sln1, s1, yellow ), 0 );
+pause();
+
+view( x2 = EvalSrfInterPts( Sln2, s1, cyan ), 0 );
+pause();
+
+save( "mvinter4", list( s1, s2, s3, x1, x2 ) );
+
+#############################################################################
+#
+# Contact of two surfaces in R^3.
+#
+
+s1 = sphereSrf( 0.1 );
+s1 = coerce( s1, e3 );
+s1 = sregion( s1, row, 0.01, 1.99 );
+color( s1, yellow );
+
+s2 = s1 * tx( 0.8 ) * tz( 0.02 );
+color( s2, cyan );
+
+MOV_XYZ = cbspline( 4,
+    list( ctlpt( E2, 1.1,  0.09 ),
+          ctlpt( E3, 1.0,  0.05, -0.05 ),
+          ctlpt( E2, 0.91, 0.02 ),
+          ctlpt( E3, 0.81, 0.0, 0.02 ) ),
+    list( kv_open ) );
+
+c1 = mvcontact( s1, s2, list( mov_xyz ), 0.035, -1e-14, false );
+c2 = mvcontact( s1, s2, list( mov_xyz ), 0.035, -1e-14, true );
+printf( "MVContact: Solution test equality = %d\\n", list( c1 == c2 ) );
+
+t = coord( c1 = nth( c1, 1 ), 5 );
+xyz = trans( coerce( ceval( mov_xyz, t ), vector_type ) );
+
+ContactPt = seval( s2, coord( c1, 3 ), coord( c1, 4 ) );
+color( COntactPt, red );
+
+interact( list( list( s1, point( 0, 0, 0 ) ) * xyz, s2, mov_xyz, ContactPt ) );
+
+save( "mvinter5", list( c1, c2, list( s1, point( 0, 0, 0 ) ) * xyz, s2,
+			mov_xyz, ContactPt ) );
+
+free( mov_xyz );
+free( ContactPt );
+free( XYZ );
+free( t );
+
+#############################################################################
+
+free( i );
+free( n );
+free( Pts );
+free( x1 );
+free( x2 );
+free( c1 );
+free( c11 );
+free( c2 );
+free( s1 );
+free( s2 );
+free( s3 );
+free( sln1 );
+free( sln2 );

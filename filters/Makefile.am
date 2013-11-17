@@ -1,0 +1,55 @@
+
+INCLUDES = -I$(top_srcdir)/$(IRIT_INC_DIR)
+
+bin_PROGRAMS = irit2dxf irit2hgl irit2igs irit2iv irit2nff irit2obj irit2off irit2plg irit2pov irit2ps irit2ray irit2scn irit2stl irit2wrl irit2xfg 3ds2irit dat2bin dat2irit dxf2irit igs2irit obj2irit off2irit skeletn1 stl2irit
+irit2dxf_SOURCES = irit2dxf.c
+irit2hgl_SOURCES = irit2hgl.c
+irit2igs_SOURCES = irit2igs.c
+irit2iv_SOURCES = irit2iv.c
+irit2nff_SOURCES = irit2nff.c
+irit2obj_SOURCES = irit2obj.c
+irit2off_SOURCES = irit2off.c
+irit2plg_SOURCES = irit2plg.c
+irit2pov_SOURCES = irit2pov.c
+irit2ps_SOURCES = irit2ps.c
+irit2ray_SOURCES = irit2ray.c
+irit2scn_SOURCES = irit2scn.c
+irit2stl_SOURCES = irit2stl.c
+irit2wrl_SOURCES = irit2wrl.c
+irit2xfg_SOURCES = irit2xfg.c
+3ds2irit_SOURCES = 3ds2irit.c
+dat2bin_SOURCES = dat2bin.c
+dat2irit_SOURCES = dat2irit.c
+dxf2irit_SOURCES = dxf2irit.c
+igs2irit_SOURCES = igs2irit.c
+obj2irit_SOURCES = obj2irit.c
+off2irit_SOURCES = off2irit.c
+skeletn1_SOURCES = skeletn1.c
+stl2irit_SOURCES = stl2irit.c
+
+irit2dxf_LDADD = $(IRIT_LIBS)
+irit2hgl_LDADD = $(IRIT_LIBS)
+irit2igs_LDADD = $(IRIT_LIBS)
+irit2iv_LDADD = $(IRIT_LIBS)
+irit2nff_LDADD = $(IRIT_LIBS)
+irit2obj_LDADD = $(IRIT_LIBS)
+irit2off_LDADD = $(IRIT_LIBS)
+irit2plg_LDADD = $(IRIT_LIBS)
+irit2pov_LDADD = $(IRIT_LIBS)
+irit2ps_LDADD = $(IRIT_LIBS)
+irit2ray_LDADD = $(IRIT_LIBS)
+irit2scn_LDADD = $(IRIT_LIBS)
+irit2stl_LDADD = $(IRIT_LIBS)
+irit2wrl_LDADD = $(IRIT_LIBS)
+irit2xfg_LDADD = $(IRIT_LIBS)
+3ds2irit_LDADD = $(IRIT_LIBS)
+dat2bin_LDADD = $(IRIT_LIBS)
+dat2irit_LDADD = $(IRIT_LIBS)
+dxf2irit_LDADD = $(IRIT_LIBS)
+igs2irit_LDADD = $(IRIT_LIBS)
+obj2irit_LDADD = $(IRIT_LIBS)
+off2irit_LDADD = $(IRIT_LIBS)
+skeletn1_LDADD = $(IRIT_LIBS)
+stl2irit_LDADD = $(IRIT_LIBS)
+
+LIBS = -lm $(IRIT_MORE_LIBS)

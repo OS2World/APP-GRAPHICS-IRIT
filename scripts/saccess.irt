@@ -1,0 +1,163 @@
+#
+# Examples of surface accessibility analysis.
+#
+#				Gershon Elber, December 1999
+#
+
+#############################################################################
+#
+# Plane surface - sphere check surface example.
+#
+
+c = cregion( pcircle( vector( 0, 0, 0 ), 1 ), 0, 2 ) * ry( 90 );
+
+pSphere = surfPRev( c ) * sc( 0.3 ) * tz( 1 );
+color( pSphere, yellow );
+
+Pln = ruledSrf( ctlpt( E3, -1, -1, 0 ) + ctlpt( E3, -1,  1, 0 ),
+		ctlpt( E3,  1, -1, 0 ) + ctlpt( E3,  1,  1, 0 ) );
+color( Pln, red );
+
+Pts = sAccess( Pln, 0, pSphere, 0, 0.1, 1e-5 );
+
+sPts = nil();
+sPtsErr = nil();
+for ( i = 1, 1, sizeof( Pts ),
+    Pt = nth( Pts, i ):
+    Err = getAttr( Pt, "RngError"):
+    if ( Err > 1e-5,
+         snoc( seval( Pln, coord( Pt, 1 ), coord( Pt, 2 ) ), sPtsErr ),
+         snoc( seval( Pln, coord( Pt, 1 ), coord( Pt, 2 ) ), sPts ) ) );
+color( sPts, green );
+color( sPtsErr, red );
+
+All = list( pSphere, Pln, sPts, sPtsErr );
+save( "saccess1", All );
+	     
+interact( All );
+
+Pts = sAccess( Pln, 0, pSphere, 0, 0.1, 1e-5 );
+
+sPts = nil();
+for ( i = 1, 1, sizeof( Pts ),
+    Pt = nth( Pts, i ):
+    Err = getAttr( Pt, "RngError"):
+    if ( Err < 1e-5,
+         snoc( point( coord( Pt, 1 ), coord( Pt, 2 ), 0.0 ), sPts ) ) );
+
+TrimPln = trimsrf( Pln, CnvrtPolyToCrv( Pts2Plln( sPts, 0.1 ),
+					2, kv_periodic ),
+		   false );
+
+All = list( pSphere, TrimPln );
+save( "saccess1t", All );
+
+interact( All );
+
+#############################################################################
+#
+# Sphere surface - sphere check surface example.
+#
+
+PosSrf = pSphere * sc( 2 );
+
+Pts = sAccess( PosSrf, 0, pSphere, vector( 1, 0, 0 ), 0.1, 1e-5 );
+
+sPts = nil();
+sPtsErr = nil();
+for ( i = 1, 1, sizeof( Pts ),
+    Pt = nth( Pts, i ):
+    Err = getAttr( Pt, "RngError"):
+    if ( Err > 1e-5,
+         snoc( seval( PosSrf, coord( Pt, 1 ), coord( Pt, 2 ) ), sPtsErr ),
+         snoc( seval( PosSrf, coord( Pt, 1 ), coord( Pt, 2 ) ), sPts ) ) );
+color( sPts, green );
+color( sPtsErr, red );
+
+All = list( pSphere, PosSrf, sPts, sPtsErr );
+save( "saccess2", All );
+
+interact( All );
+
+#############################################################################
+#
+# Cuboid surface - sphere check surface example.
+#
+
+RSquare = cbspline( 3,
+		    list( ctlpt( E3, -1.0,  0.8, 0.0 ),
+			  ctlpt( E3, -0.8,  1.0, 0.0 ),
+			  ctlpt( E3,  0.8,  1.0, 0.0 ),
+			  ctlpt( E3,  1.0,  0.8, 0.0 ),
+			  ctlpt( E3,  1.0, -0.8, 0.0 ),
+			  ctlpt( E3,  0.8, -1.0, 0.0 ),
+			  ctlpt( E3, -0.8, -1.0, 0.0 ),
+			  ctlpt( E3, -1.0, -0.8, 0.0 ) ),
+		    list( kv_periodic ) );
+RSquare = coerce( RSquare, kv_open );
+
+Cuboid = sFromCrvs( list( RSquare * sc( 0.002 ) * tz( -1.0 ),
+			  RSquare * sc( 0.8 )   * tz( -1.0 ),
+			  RSquare * sc( 1.0 )   * tz( -0.8 ),
+			  RSquare * sc( 1.0 )   * tz(  0.8 ),
+			  RSquare * sc( 0.8 )   * tz(  1.0 ),
+			  RSquare * sc( 0.002 ) * tz(  1.0 ) ),
+		    3, kv_open );
+			     
+CheckSrf = pSphere * tz( -1 );
+
+Pts = sAccess( Cuboid, 0, CheckSrf, 0, 0.1, 1e-5 );
+
+sPts = nil();
+sPtsErr = nil();
+for ( i = 1, 1, sizeof( Pts ),
+    Pt = nth( Pts, i ):
+    Err = getAttr( Pt, "RngError"):
+    if ( Err > 1e-5,
+         snoc( seval( Cuboid, coord( Pt, 1 ), coord( Pt, 2 ) ), sPtsErr ),
+         snoc( seval( Cuboid, coord( Pt, 1 ), coord( Pt, 2 ) ), sPts ) ) );
+color( sPts, green );
+color( sPtsErr, red );
+
+All = list( Cuboid, CheckSrf, sPts, sPtsErr );
+
+interact( All );
+
+#################################
+
+Pts = sAccess( Cuboid, 0, CheckSrf, vector( 1, 1, 1 ), 0.1, 1e-5 );
+
+sPts = nil();
+sPtsErr = nil();
+for ( i = 1, 1, sizeof( Pts ),
+    Pt = nth( Pts, i ):
+    Err = getAttr( Pt, "RngError"):
+    if ( Err > 1e-5,
+         snoc( seval( Cuboid, coord( Pt, 1 ), coord( Pt, 2 ) ), sPtsErr ),
+         snoc( seval( Cuboid, coord( Pt, 1 ), coord( Pt, 2 ) ), sPts ) ) );
+color( sPts, green );
+color( sPtsErr, red );
+
+All = list( Cuboid, CheckSrf, sPts, sPtsErr );
+save( "saccess3", All );
+
+interact( All );
+
+
+#################################
+
+free( i );
+free( All );
+free( Pts );
+free( sPts );
+free( sPtsErr );
+free( Cuboid );
+free( CheckSrf );
+free( RSquare );
+free( PosSrf );
+free( pSphere );
+free( TrimPln );
+free( Err );
+free( Pt );
+free( Pln );
+free( c );

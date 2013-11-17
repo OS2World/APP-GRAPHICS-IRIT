@@ -1,0 +1,25 @@
+#
+# This is the make file for the extra lib subdirectory.
+#
+#				Gershon Elber, Aug 1991
+#
+
+include ../makeflag.unx
+
+OBJS =  bzrintrp.o$(IRIT_OBJ_PF) \
+	diag_mat.o$(IRIT_OBJ_PF) \
+	filt.o$(IRIT_OBJ_PF) \
+	mt19937i.o$(IRIT_OBJ_PF) \
+	nure_svd.o$(IRIT_OBJ_PF)
+
+all:	libIritXtra$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+
+libIritXtra$(IRIT_LIB_PF).$(IRIT_LIB_SFX): $(OBJS)
+	rm -f libIritXtra$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+	$(IRIT_LIB_MAKE) libIritXtra$(IRIT_LIB_PF).$(IRIT_LIB_SFX) *.o$(IRIT_OBJ_PF)
+	-$(IRIT_LIB_RAN) libIritXtra$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+
+install: libIritXtra$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+	mv -f libIritXtra$(IRIT_LIB_PF).$(IRIT_LIB_SFX) $(IRIT_LIB_DIR)
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

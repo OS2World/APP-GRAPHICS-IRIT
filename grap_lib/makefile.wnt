@@ -1,0 +1,32 @@
+#
+# This is the make file for the grap_lib library.
+#
+#				Gershon Elber, June 2006
+#
+
+# Get the destination directories:
+include ..\makeflag.wnt
+
+OBJS =  draw_crv.$(IRIT_OBJ_PF) \
+	draw_mdl.$(IRIT_OBJ_PF) \
+	draw_srf.$(IRIT_OBJ_PF) \
+	draw_str.$(IRIT_OBJ_PF) \
+	drawpoly.$(IRIT_OBJ_PF) \
+	drawtris.$(IRIT_OBJ_PF) \
+	drawtriv.$(IRIT_OBJ_PF) \
+	drawtsrf.$(IRIT_OBJ_PF) \
+	grap_gen.$(IRIT_OBJ_PF) \
+	oglcgdmy.$(IRIT_OBJ_PF) \
+	sketches.$(IRIT_OBJ_PF)
+
+
+$(GRAP_LIB): $(OBJS)
+	-del $(GRAP_LIB)
+	$(IRITLIB) -out:$(GRAP_LIB) $(OBJS)
+
+$(IRIT_LIB_DIR)\$(GRAP_LIB): $(GRAP_LIB)
+	copy $(GRAP_LIB) $(IRIT_LIB_DIR)
+
+install: $(IRIT_LIB_DIR)\$(GRAP_LIB)
+
+# Dependencies starts here - do not touch, generated automatically.

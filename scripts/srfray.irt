@@ -1,0 +1,249 @@
+#
+# This file employs surface ray intersector (srinter) to compute arbitrary
+# precise mapping in the parametric space of a given surface to a rectangle
+# projection in space of a surface region.
+#
+#   This module can be used, for example, for texture mapping computation
+# of symbols and marks on planes and ships. Herein, we demonstrate its use
+# on parts of the 58 model (b58.irt).
+#
+#			Gershon Elber, June 1995.
+#
+
+Param = PARAM_UNIFORM;
+NumCols = 16;
+NumRows = 4;
+Tolerance = 0.001;
+Postfix = "Unif16x4";
+
+save_mat = view_mat;
+save_res = resolution;
+
+#
+# Blends two points into a point in between.
+#
+PPBlend = function( Pt1, Pt2, t ):
+    return = coerce( Pt1 * t + Pt2 * (1 - t), point_type );
+
+#
+# Intersects the given surface with a line swept in dir Dir from Pt1 to Pt2
+# The intersection is approximated using a cubic Bezier curve.
+#
+SrfLineInter = function( Srf, Pt1, Pt2, Dir, Param, NumSegs, Tol ):
+    Pta : Ptb : Ptc : Ptd : Crv : Crvs : c : i :
+    Pta = srinter( Srf, Pt1, Dir, Tol ):
+    Ptb = srinter( Srf, PPBlend( Pt1, Pt2, 2 / 3 ), Dir, Tol ):
+    Ptc = srinter( Srf, PPBlend( Pt1, Pt2, 1 / 3 ), Dir, Tol ):
+    Ptd = srinter( Srf, Pt2, Dir, Tol ):
+    Crv = bsp2bzr( cinterp( list( Pta, Ptb, Ptc, Ptd ), 4, 4, Param, false ) ):
+    Crvs = nil():
+    for ( i = 1, 1, NumSegs,
+	c = cregion( Crv, (i - 1) / NumSegs, i / NumSegs ):
+	color( c, i ):
+	snoc( c, Crvs ) ):
+    return = Crvs;
+
+#
+# Sample the surface at a rectangle as well as three interior curves.
+#
+MakeBezierCurves = function( Srf, Pt1, Pt2, Pt3, Pt4, Dir, Param, n, m, Tol ):
+    Rows : Cols : i :
+    Rows = nil():
+    for ( i = 0, 1, n,
+	snoc( SrfLineInter( Srf,
+			    PPBlend( Pt4, Pt1, i / n ),
+			    PPBlend( Pt3, Pt2, i / n ), Dir, Param, m, Tol ),
+	      Rows ) ):
+    Cols = nil():
+    for ( i = 0, 1, m,
+	snoc( SrfLineInter( Srf,
+			    PPBlend( Pt2, Pt1, i / m ),
+			    PPBlend( Pt3, Pt4, i / m ), Dir, Param, n, Tol ),
+	      Cols ) ):
+    return = srinter( Srf, Pt1, Dir, 0.0 ):          # Free cached data.
+    return = list( Rows, Cols );
+
+#############################################################################
+#
+# Back part of the fuselage:
+#
+c1 = cbspline( 3,
+	       list( ctlpt( P3, 1,     2.5,   0.0,   -0.1 ),
+		     ctlpt( P3, 0.707, 1.77,  0.283, -0.071 ),
+		     ctlpt( P3, 1,     2.5,   0.4,    0.0 ),
+		     ctlpt( P3, 0.707, 1.77,  0.283,  0.566 ),
+		     ctlpt( P3, 1,     2.5,   0.0,    0.8 ),
+		     ctlpt( P3, 0.707, 1.77, -0.283,  0.566 ),
+		     ctlpt( P3, 1,     2.5,  -0.4,    0.0 ),
+		     ctlpt( P3, 0.707, 1.77, -0.283, -0.071 ),
+		     ctlpt( P3, 1,     2.5,   0.0,   -0.1 ) ),
+	       list( 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 4 ) ) *
+     trans( vector( 0.0, 0.0, 0.0 ) );
+color( c1, red );
+c2 = c1 * scale( vector( 1.05, 1.05, 1.05 ) ) *
+          trans( vector( 0.3, 0.0, 0.0 ) );
+color( c2, red );
+c3 = c1 * scale( vector( 0.95, 0.95, 0.95 ) ) *
+	  trans( vector( 1.7, 0.0, -0.02 ) );
+color( c3, red );
+c4 = circle( vector( 0.0, 0.0, 0.0 ), 0.35 ) *
+     roty( 90 ) *
+     trans( vector( 5.0, 0.0, 0.2 ) );
+color( c4, red );
+c5 = c4 * trans( vector( 0.2, 0.0, 0.0 ) );
+color( c5, red );
+c6 = circle( vector( 0.0, 0.0, 0.0 ), 0.3 ) *
+     roty( 90 ) *
+     trans( vector( 10.5, 0.0, 0.2 ) );
+color( c6, red );
+c7 = circle( vector( 0.0, 0.0, 0.0 ), 0.01 ) *
+     roty( 90 ) *
+     trans( vector( 11.0, 0.0, 0.25 ) );
+color( c7, red );
+
+fuseBack = sFromCrvs( list( c1, c2, c3, c4, c5, c6, c7 ), 3, KV_OPEN );
+color( fuseBack, red );
+
+view_mat = rotx( -90 ) *
+	   trans( vector( -3.0, 0.0, 0.0 ) )
+	   * scale( vector( 0.5, 0.5, 0.5 ) );
+
+FuseParamSpace = poly( list( point( 0, 0, 0 ),
+			     point( 4, 0, 0 ),
+			     point( 4, 5, 0 ),
+			     point( 0, 5, 0 ),
+			     point( 0, 0, 0 ) ),
+		       true );
+color( FuseParamSpace, yellow );
+
+Pt1 = point( 2.7, 5, -0.05 );
+Pt2 = point( 4.0, 5, -0.05 );
+Pt3 = point( 4.0, 5,  0.7 );
+Pt4 = point( 2.7, 5,  0.7 );
+Dir = vector( 0, -1, 0 );
+view( list( fuseBack, Pt1, Pt2, Pt3, Pt4 ), on );
+BezList1 = MakeBezierCurves( fuseBack, Pt1, Pt2, Pt3, Pt4, Dir,
+                             Param, NumCols, NumRows, Tolerance );
+
+Pt1 = point( 2.7, -5, -0.05 );
+Pt2 = point( 4.0, -5, -0.05 );
+Pt3 = point( 4.0, -5,  0.7 );
+Pt4 = point( 2.7, -5,  0.7 );
+Dir = vector( 0, 1, 0 );
+view( list( fuseBack, Pt1, Pt2, Pt3, Pt4 ), on );
+BezList2 = MakeBezierCurves( fuseBack, Pt1, Pt2, Pt3, Pt4, Dir,
+                             Param, NumCols, NumRows, Tolerance );
+
+Pt1 = point( 10.0, 5, 0.1 );
+Pt2 = point( 10.5, 5, 0.1 );
+Pt3 = point( 10.5, 5, 0.37 );
+Pt4 = point( 10.0, 5, 0.37 );
+Dir = vector( 0, -1, 0 );
+view( list( fuseBack, Pt1, Pt2, Pt3, Pt4 ), on );
+BezList3 = MakeBezierCurves( fuseBack, Pt1, Pt2, Pt3, Pt4, Dir,
+                             Param, NumCols, NumRows, Tolerance );
+
+Pt1 = point( 10.0, -5, 0.1 );
+Pt2 = point( 10.5, -5, 0.1 );
+Pt3 = point( 10.5, -5, 0.37 );
+Pt4 = point( 10.0, -5, 0.37 );
+Dir = vector( 0, 1, 0 );
+view( list( fuseBack, Pt1, Pt2, Pt3, Pt4 ), on );
+BezList4 = MakeBezierCurves( fuseBack, Pt1, Pt2, Pt3, Pt4, Dir,
+                             Param, NumCols, NumRows, Tolerance );
+
+view( list( BezList1, BezList2, BezList3, BezList4, FuseParamSpace ), on );
+All = list( list( NumCols, NumRows ),
+	    BezList1, BezList2, BezList3, BezList4, FuseParamSpace );
+save( "FuseBez" + Postfix, All );
+free( BezList1 );
+free( BezList2 );
+free( BezList3 );
+free( BezList4 );
+free( FuseParamSpace );
+free( All );
+free( fuseBack );
+
+#############################################################################
+#
+# The steering (vertical) tail.
+#
+
+c1 = ( cbspline( 3,
+	         list( ctlpt( E3, 0.0,  0.0,  0.0 ),
+		       ctlpt( E3, 0.0,  0.02, 0.0 ),
+		       ctlpt( E3, 1.5,  0.07, 0.0 ),
+		       ctlpt( E3, 3.0,  0.0,  0.0 ) ),
+	         list( KV_OPEN ) ) +
+       cbspline( 3,
+	         list( ctlpt( E3, 3.0,  0.0, 0.0 ),
+		       ctlpt( E3, 1.5, -0.07, 0.0 ),
+		       ctlpt( E3, 0.0, -0.02, 0.0 ),
+		       ctlpt( E3, 0.0,  0.0,  0.0 ) ),
+	         list( KV_OPEN ) ) ) *
+     trans( vector( 7.7, 0.0, 0.3 ) );
+c2 = c1 * scale( vector( 0.65, 0.65, 0.65 ) )
+	* trans( vector( 3.75, 0.0, 0.4 ) );
+c3 = c1 * scale( vector( 0.16, 0.16, 0.16 ) )
+	* trans( vector( 9.5, 0.0, 2.0 ) );
+vTail2 = ruledsrf( c2, c3 );
+color( vTail2, red );
+
+TailParamSpace = poly( list( point( 0, 0, 0 ),
+			     point( 4, 0, 0 ),
+			     point( 4, 1, 0 ),
+			     point( 0, 1, 0 ),
+			     point( 0, 0, 0 ) ),
+		       true );
+color( TailParamSpace, yellow );
+
+Pt1 = point(  9.9, -5, 0.7 );
+Pt2 = point( 10.65, -5, 0.7 );
+Pt3 = point( 10.65, -5, 1.35 );
+Pt4 = point(  9.9, -5, 1.35 );
+Dir = vector( 0, 1, 0 );
+view( list( vTail2, Pt1, Pt2, Pt3, Pt4 ), on );
+BezList5 = MakeBezierCurves( vTail2, Pt1, Pt2, Pt3, Pt4, Dir,
+			     Param, NumCols, NumRows, Tolerance );
+
+Pt1 = point(  9.9, 5, 0.7 );
+Pt2 = point( 10.65, 5, 0.7 );
+Pt3 = point( 10.65, 5, 1.35 );
+Pt4 = point(  9.9, 5, 1.35 );
+Dir = vector( 0, -1, 0 );
+view( list( vTail2, Pt1, Pt2, Pt3, Pt4 ), on );
+BezList6 = MakeBezierCurves( vtail2, Pt1, Pt2, Pt3, Pt4, Dir,
+                             Param, NumCols, NumRows, Tolerance );
+
+view( list( BezList5, BezList6, tailParamSpace ), on );
+All = list( list( NumCols, NumRows ), BezList5, BezList6, tailParamSpace );
+save( "TailBez" + Postfix, All );
+free( BezList5 );
+free( BezList6 );
+free( tailParamSpace );
+free( All );
+free( vtail2 );
+
+#############################################################################
+
+view_mat = save_mat;
+resolution = save_res;
+
+free( Param );
+free( NumCols );
+free( NumRows );
+free( Postfix );
+free( Tolerance );
+
+free( c1 );
+free( c2 );
+free( c3 );
+free( c4 );
+free( c5 );
+free( c6 );
+free( c7 );
+free( Pt1 );
+free( Pt2 );
+free( Pt3 );
+free( Pt4 );
+free( Dir );

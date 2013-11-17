@@ -1,0 +1,72 @@
+#
+# Following "Tiling the Sphere with Rational Bezier Patches" by Jim Cobb.
+#
+
+s2 = sqrt( 2 );
+s3 = sqrt( 3 );
+s6 = sqrt( 6 );
+
+c1pts = list( ctlpt( P3, 4 * ( 3 - s3 ), 4 * ( 1 - s3 ), 4 * ( 1 - s3 ), 4 * ( 1 - s3 ) ),
+	      ctlpt( P3, s2 * ( 3 * s3 - 2 ), -s2, s2 * ( s3 - 4 ), s2 * ( s3 - 4 ) ), 
+	      ctlpt( P3, 4 * ( 5 - s3 ) / 3, 0, 4 * ( 1 - 2 * s3 ) / 3, 4 * ( 1 - 2 * s3 ) / 3 ),
+	      ctlpt( P3, s2 * ( 3 * s3 - 2 ), s2, s2 * ( s3 - 4 ), s2 * ( s3 - 4 ) ),
+	      ctlpt( P3, 4 * ( 3 - s3 ), 4 * ( s3 - 1 ), 4 * ( 1 - s3 ), 4 * ( 1 - s3 ) ) );
+c1 = cbezier( c1pts );
+
+c2pts = list( ctlpt( P3, s2 * ( 3 * s3 - 2 ), s2 * ( s3 - 4 ), -s2, s2 * ( s3 - 4 ) ),
+	      ctlpt( P3, ( s3 + 6 ) / 2, ( 2 - 3 * s3 ) / 2, ( 2 - 3 * s3 ) / 2, -( s3 + 6 ) / 2 ), 
+	      ctlpt( P3, s2 * ( s3 + 6 ) / 3, 0, s2 * ( 2 * s3 - 7 ) / 3, -5 * s6 / 3 ),
+	      ctlpt( P3, ( s3 + 6 ) / 2, ( 3 * s3 - 2 ) / 2, ( 2 - 3 * s3 ) / 2, -( s3 + 6 ) / 2 ), 
+	      ctlpt( P3, s2 * ( 3 * s3 - 2 ), s2 * ( 4 - s3 ), -s2, s2 * ( s3 - 4 ) ) );
+c2 = cbezier( c2pts );
+
+c3pts = list( ctlpt( P3, 4 * ( 5 - s3 ) / 3, 4 * ( 1 - 2 * s3 ) / 3, 0, 4 * ( 1 - 2 * s3 ) / 3 ),
+	      ctlpt( P3, s2 * ( s3 + 6 ) / 3, s2 * ( 2 * s3 - 7 ) / 3,  0, -5 * s6 / 3 ), 
+	      ctlpt( P3, 4 * ( 5 * s3 - 1 ) / 9, 0, 0, 4 * ( s3 - 5 ) / 3 ),
+	      ctlpt( P3, s2 * ( s3 + 6 ) / 3, s2 * ( 7 - 2 * s3 ) / 3,  0, -5 * s6 / 3 ), 
+	      ctlpt( P3, 4 * ( 5 - s3 ) / 3, 4 * ( 2 * s3 - 1 ) / 3, 0, 4 * ( 1 - 2 * s3 ) / 3 ) );
+c3 = cbezier( c3pts );
+
+c4 = c2 * sy( -1 );
+
+c5 = c1 * sy( -1 );
+
+view( list( axes, c1, c2, c3, c4, c5 ), 1 );
+free( c1 );
+free( c2 );
+free( c3 );
+free( c4 );
+free( c5 );
+
+
+s1 = sbezier( list( c1pts,
+		    c2pts,
+		    c3pts,
+		    c2pts * sy( -1 ),
+		    c1pts * sy( -1 ) ) );
+free( c1pts );
+free( c2pts );
+free( c3pts );
+
+s2 = s1 * rx( 90 );
+s3 = s1 * ry( 90 );
+s4 = s1 * rx( -90 );
+s5 = s1 * ry( -90 );
+s6 = s1 * rx( 180 );
+
+s = sphereSrf( 1 );
+color( s, red );
+
+view( list( axes, s1, s2, s3, s4, s5, s6, s ), 1 );
+save( "CubeSpr", list( s1, s2, s3, s4, s5, s6 ) );
+
+#################################
+
+free( s );
+free( s1 );
+free( s2 );
+free( s3 );
+free( s4 );
+free( s5 );
+free( s6 );
+

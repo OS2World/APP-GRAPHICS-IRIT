@@ -1,0 +1,24 @@
+#
+# Makefile for the ILLUSTRT program.
+#
+#					Gershon Elber, June 1993
+#
+
+include ../makeflag.unx
+
+OBJS =	illustrt.o$(IRIT_OBJ_PF) \
+	intersct.o$(IRIT_OBJ_PF) \
+	spltsort.o$(IRIT_OBJ_PF)
+
+all:	illustrt$(IRIT_EXE_PF)
+
+illustrt$(IRIT_EXE_PF):	$(OBJS)
+	$(CC) $(CFLAGS) -o illustrt$(IRIT_EXE_PF) $(OBJS) $(MOREOBJS) \
+	$(IRIT_LIBS) $(IRIT_MORE_LIBS) -lm
+
+install: illustrt$(IRIT_EXE_PF)
+	mv -f illustrt$(IRIT_EXE_PF) $(IRIT_BIN_DIR)
+	cp illustrt.cfg $(IRIT_BIN_DIR)
+
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

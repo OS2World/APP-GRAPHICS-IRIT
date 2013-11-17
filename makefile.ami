@@ -1,0 +1,85 @@
+#
+# This make file is the main make file of the IRIT solid modeller and its
+# auxilary tools, under UNIX.
+#
+#				Gershon Elber, Nov. 1991
+#
+
+include makeflag.ami
+
+#
+# All subdirectories to recurse into.
+#
+ALL_DIRS = amigalib xtra_lib misc_lib grap_lib cagd_lib symb_lib \
+	 triv_lib trng_lib trim_lib mdl_lib mvar_lib user_lib \
+	 prsr_lib geom_lib bool_lib rndr_lib ext_lib circlink \
+	 irit grapdrvs poly3d-h irender ihidden illustrt filters docs
+
+#
+# Uncommend the following variable to only see the actions taken.
+#
+# VIEW_ONLY = -n
+
+SHELL = /bin/sh
+
+all: 	binaries doc init
+
+#
+# Print info regarding initialization.
+#
+init:
+	@echo "Before executing the test suite and/or any usage of this"
+	@echo "package you will have to issue the following commands:"
+	@echo ""
+	@echo "path $(IRIT_BIN_DIR) add"
+	@echo "setenv IRIT_PATH $(IRIT_BIN_DIR)/"
+	@echo "setenv IRIT_DISPLAY \"amidrvs -s-\""
+	@echo ""
+	@echo "and optionally the following commands:"
+	@echo ""
+	@echo "setenv IRIT_BIN_IPC 1"
+	@echo ""
+	@echo "or similar."
+
+binaries:
+	-for f in $(ALL_DIRS); do \
+		(cd $$f \
+		 && /bin/echo ----------- `pwd` ------------- \
+		 && make $(VIEW_ONLY) -f makefile.ami install); \
+	done
+#	-strip $(IRIT_BIN_DIR)/*
+
+#
+# Make hardcopy documentation.
+#
+doc:
+	(cd docs && \
+	 make $(VIEW_ONLY) -f makefile.ami irit.tex irit.doc)
+
+clean:
+	-rm .~* .\#*			# Emacs backup files.
+	-for f in $(ALL_DIRS); do \
+		(rm $$f/*.a $$f/*.o $$f/*mon.out $$f/.~* $$f/.\#* $$f/*mon.out); \
+	done
+	-rm poly3d-h/*.hdn
+	-rm irender/*.rle
+	-rm ihidden/*.ps
+	-rm irit/*.dat
+	-rm lib/*.a
+	-rm docs/irithlp docs/irithlp.o
+
+#
+# Test some of the above programs. Make sure $(IRIT_BIN_DIR) is in your path
+# and that IRIT_LCLDISP is set ('setenv IRIT_LCLDISP x11drvs').
+#
+test:
+	-(cd irit && irit demo)
+	-for f in poly3d-h irender ihidden illustrt filters; do \
+		(cd $$f && csh -f test-unx); \
+	done
+
+depend:
+	-for f in $(ALL_DIRS); do \
+		(cd $$f && makedepend -Y -I../include -fmakefile.unx *.c \
+			&& makedepend -Y -I../include -fmakefile.os2 *.c ) \
+	done

@@ -1,0 +1,93 @@
+#
+# A model of a handset.
+#
+#				Gershon Elber, June 1998
+#
+
+save_res = resolution;
+
+res = 8;
+
+Cross = cbspline( 3,
+		  list( ctlpt( E3, -1.0,  0.0,  0.0 ),
+		        ctlpt( E3, -1.1,  0.2,  0.0 ),
+		        ctlpt( E3, -1.1,  0.6,  0.0 ),
+		        ctlpt( E3, -0.7,  1.1,  0.0 ),
+		        ctlpt( E3, -0.5,  1.3,  0.0 ),
+		        ctlpt( E3,  0.5,  1.3,  0.0 ),
+		        ctlpt( E3,  0.7,  1.1,  0.0 ),
+		        ctlpt( E3,  1.1,  0.6,  0.0 ),
+		        ctlpt( E3,  1.1,  0.2,  0.0 ),
+		        ctlpt( E3,  1.0,  0.0,  0.0 ) ),
+		  list( KV_PERIODIC ) ) * rz( -90 ) * sc( 0.3 );
+Direc = cbspline( 3,
+		  list( ctlpt( E3, -1.2,  0.0,  0.0 ),
+		        ctlpt( E3,  0.0,  0.24, 0.0 ),
+		        ctlpt( E3,  1.2,  0.0,  0.0 ) ),
+		  list( KV_OPEN ) );
+
+resolution = res;
+Srf1 = gpolygon( -sweepSrf( coerce( Cross, KV_OPEN ), Direc, off ), true );
+free( Cross );
+free( Direc );
+
+resolution = res * 5;
+Cyl1 = cylin( vector( 0.0, 0.0, -1.0 ), vector( 0.0, 0.0, 2.0 ), 1.15, 3 );
+
+Srf2 = Srf1 * Cyl1;
+free( Cyl1 );
+
+resolution = res * 5;
+Cyl2 = cylin( vector( 0.0, 0.2, -1.0 ), vector( 0.0, 0.0, 2.0 ), 0.6, 3 );
+
+Srf3 = ( Srf1 * Cyl2 ) * sz( 4.0 ) * sx( 0.9 ) * ty( -0.15 );
+free( Srf1 );
+free( Cyl2 );
+
+Srf4 = Srf2 - Srf3;
+free( Srf2 );
+free( Srf3 );
+
+Cross = cbspline( 3,
+		  list( ctlpt( E3, -0.5,  0.0,  0.5 ),
+		        ctlpt( E3, -0.5,  0.0,  0.23 ),
+		        ctlpt( E3, -0.3,  0.0,  0.23 ),
+		        ctlpt( E3,  0.3,  0.0,  0.23 ),
+		        ctlpt( E3,  0.5,  0.0,  0.23 ),
+		        ctlpt( E3,  0.5,  0.0,  0.5 ) ),
+		  list( KV_OPEN ) );
+
+resolution = res;
+Srf5 = gpolygon( sFromCrvs( list( Cross,
+				  Cross * ty( 0.4 ),
+				  Cross * ty( 0.6 ) * tz( -0.1 ) ),
+			    3, KV_OPEN ),
+		 true );
+free( Cross );
+
+Srf6 = Srf4 * Srf5 * ( Srf5 * ry( 180 ) );
+free( Srf4 );
+free( Srf5 );
+
+resolution = res * 7;
+Srf7 = sphere( vector( 0.0, 0.0, 0.0 ), 1.4 ) * tx( 0.65 ) * ty( -1.305 );
+
+Srf8 = Srf6 - Srf7;
+free( Srf6 );
+free( Srf7 );
+
+resolution = res * 7;
+Srf9 = sphere( vector( 0.0, 0.0, 0.0 ), 1.4 ) * tx( -0.65 ) * ty( -1.305 );
+
+Handset = convex( Srf8 - Srf9 );
+free( Srf8 );
+free( Srf9 );
+
+color( Handset, white );
+
+interact( list( axes, Handset ) );
+save( "handset", handset );
+
+free( handset );
+
+resolution = save_res;

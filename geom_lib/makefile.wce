@@ -1,0 +1,64 @@
+
+#
+# This is the make file for the geom. lib subdirectory.
+#
+#				Gershon Elber, June 1993
+#
+
+# Get the destination directories:
+include ..\makeflag.wce
+
+OBJS =  analyfit.$(IRIT_OBJ_PF) \
+	animate.$(IRIT_OBJ_PF) \
+	anim_aux.$(IRIT_OBJ_PF) \
+	bbox.$(IRIT_OBJ_PF) \
+	cnvxhull.$(IRIT_OBJ_PF) \
+	convex.$(IRIT_OBJ_PF) \
+	decimate.$(IRIT_OBJ_PF) \
+	dist_pts.$(IRIT_OBJ_PF) \
+	fit1pts.$(IRIT_OBJ_PF) \
+	fit2pts.$(IRIT_OBJ_PF) \
+	geomat3d.$(IRIT_OBJ_PF) \
+	geomvals.$(IRIT_OBJ_PF) \
+	geom_bsc.$(IRIT_OBJ_PF) \
+	geom_err.$(IRIT_OBJ_PF) \
+	geom_ftl.$(IRIT_OBJ_PF) \
+	intrnrml.$(IRIT_OBJ_PF) \
+	ln_sweep.$(IRIT_OBJ_PF) \
+	merge.$(IRIT_OBJ_PF) \
+	ms_circ.$(IRIT_OBJ_PF) \
+	ms_spher.$(IRIT_OBJ_PF) \
+	plycrvtr.$(IRIT_OBJ_PF) \
+	plyimprt.$(IRIT_OBJ_PF) \
+	plystrct.$(IRIT_OBJ_PF) \
+	poly_cln.$(IRIT_OBJ_PF) \
+	poly_cvr.$(IRIT_OBJ_PF) \
+	poly_pts.$(IRIT_OBJ_PF) \
+	poly_sil.$(IRIT_OBJ_PF) \
+	polyofst.$(IRIT_OBJ_PF) \
+	polyprop.$(IRIT_OBJ_PF) \
+	polysimp.$(IRIT_OBJ_PF) \
+	polysmth.$(IRIT_OBJ_PF) \
+	primitv1.$(IRIT_OBJ_PF) \
+	primitv2.$(IRIT_OBJ_PF) \
+	primitv3.$(IRIT_OBJ_PF) \
+	pt_morph.$(IRIT_OBJ_PF) \
+	quatrnn.$(IRIT_OBJ_PF)  \
+	scancnvt.$(IRIT_OBJ_PF) \
+	sph_pts.$(IRIT_OBJ_PF) \
+	sph_cone.$(IRIT_OBJ_PF) \
+	sbdv_srf.$(IRIT_OBJ_PF) \
+	text.$(IRIT_OBJ_PF) \
+	zbuf_ogl.$(IRIT_OBJ_PF) \
+	zbuffer.$(IRIT_OBJ_PF)
+
+$(GEOM_LIB): $(OBJS)
+	-del $(GEOM_LIB)
+	$(IRITLIB) -out:$(GEOM_LIB) $(OBJS)
+
+$(IRIT_LIB_DIR)\$(GEOM_LIB): $(GEOM_LIB)
+	copy $(GEOM_LIB) $(IRIT_LIB_DIR)
+
+install: $(IRIT_LIB_DIR)\$(GEOM_LIB)
+
+# Dependencies starts here - do not touch, generated automatically.

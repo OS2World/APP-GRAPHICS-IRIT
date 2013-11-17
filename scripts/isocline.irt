@@ -1,0 +1,244 @@
+#
+# Some routines to test surface/curve operators
+#
+
+#
+# Set states.
+#
+save_res = resolution;
+
+#############################################################################
+
+gcross = cbspline( 4, 
+    list( ctlpt( E3, 0.3,  0., 0. ),
+          ctlpt( E3, 0.3,  0., 0.05 ),
+          ctlpt( E3, 0.1,  0., 0.1 ),
+          ctlpt( E3, 0.1,  0., 0.35 ),
+          ctlpt( E3, 0.4,  0., 0.4 ),
+          ctlpt( E3, 0.53, 0., 0.57 ),
+          ctlpt( E3, 0.47, 0., 0.79 ),
+          ctlpt( E3, 0.32, 0., 1.0 ) ),
+    list( kv_open ) ) * tz( -0.5 );
+
+color( gcross, white );
+glass = surfprev( gcross );
+color( glass, cyan );
+interact( glass );
+
+# Isoclines:
+resolution = 25;
+isocs = list( isocline( glass, vector( 1, -2, 1 ), 90, true, 0 ),
+	      isocline( glass, vector( 1, -2, 1 ), 75, true, 0 ),
+	      isocline( glass, vector( 1, -2, 1 ), 60, true, 0 ),
+	      isocline( glass, vector( 1, -2, 1 ), 45, true, 0 ),
+	      isocline( glass, vector( 1, -2, 1 ), 30, true, 0 ),
+	      isocline( glass, vector( 1, -2, 1 ), 15, true, 0 ) );
+color( isocs, yellow );
+adwidth( isocs, 3 );
+
+interact( list( axes, glass, isocs, vector( 1, -2, 1 ) ) );
+
+save( "isoclin1", list( glass, isocs, vector( 1, -2, 1 ) ) );
+
+#############################################################################
+
+resolution = 30;
+
+sils = silhouette( glass, vector( 1, 3, 2 ), true );
+color( sils, green );
+adwidth( sils, 3 );
+
+isocs1 = isocline( glass, vector( 1, 3, 2 ), 80, true, -1 );
+color( isocs1, cyan );
+adwidth( isocs1, 2 );
+
+isocs2 = isocline( glass, vector( 1, 3, 2 ), 80, true, 1 );
+color( isocs2, yellow );
+adwidth( isocs2, 2 );
+
+interact( list( axes, isocs1, isocs2, sils, vector( 1, 3, 2 ) ) );
+
+save( "isoclin2", list( isocs1, isocs2, sils, vector( 1, 3, 2 ) ) );
+
+#############################################################################
+
+resolution = 30;
+
+sils = silhouette( glass, vector( 1, 3, 2 ), true );
+color( sils, green );
+adwidth( sils, 3 );
+
+isocs1 = isocline( glass, vector( 1, 3, 2 ), 70, true, -1 );
+color( isocs1, cyan );
+adwidth( isocs1, 2 );
+
+isocs2 = isocline( glass, vector( 1, 3, 2 ), 70, true, 1 );
+color( isocs2, yellow );
+adwidth( isocs2, 2 );
+
+interact( list( axes, isocs1, isocs2, sils, vector( 1, 3, 2 ) ) );
+
+save( "isoclin3", list( isocs1, isocs2, sils, vector( 1, 3, 2 ) ) );
+
+#############################################################################
+
+resolution = 30;
+
+sils = silhouette( glass, vector( 2, -3, 1 ), true );
+color( sils, green );
+adwidth( sils, 3 );
+
+isocs1 = isocline( glass, vector( 2, -3, 1 ), 45, true, -1 );
+color( isocs1, cyan );
+adwidth( isocs1, 2 );
+
+isocs2 = isocline( glass, vector( 2, -3, 1 ), 45, true, 1 );
+color( isocs2, yellow );
+adwidth( isocs2, 2 );
+
+interact( list( axes, isocs1, isocs2, sils, vector( 2, -3, 1 ) ) );
+
+save( "isoclin4", list( isocs1, isocs2, sils, vector( 2, -3, 1 ) ) );
+
+#############################################################################
+
+resolution = 30;
+
+sils = silhouette( glass, vector( 1, 0, 0 ), true );
+color( sils, green );
+adwidth( sils, 3 );
+
+isocs1 = isocline( glass, vector( 1, 0, 0 ), 80, true, -1 );
+color( isocs1, cyan );
+adwidth( isocs1, 2 );
+
+isocs2 = isocline( glass, vector( 1, 0, 0 ), 80, true, 1 );
+color( isocs2, yellow );
+adwidth( isocs2, 2 );
+
+interact( list( axes, isocs1, isocs2, sils, vector( 2, 0, 0 ) ) );
+
+save( "isoclin5", list( isocs1, isocs2, sils, vector( 2, 0, 0 ) ) );
+
+#############################################################################
+
+isocs = isocline( glass, vector( 1, 0, 0 ), 80, true, -2 );
+color( isocs, cyan );
+adwidth( isocs, 3 );
+
+interact( list( axes, isocs, vector( 2, 0, 0 ) ) );
+
+save( "isoclin6", list( isocs, vector( 2, 0, 0 ) ) );
+
+#############################################################################
+
+Handle = -sbspline( 4, 4, 
+	list( list( ctlpt( E3, -1.595, 1.875, 0 ),
+	            ctlpt( E3, -2.295, 1.875, 0 ),
+	            ctlpt( E3, -2.695, 1.875, 0 ),
+	            ctlpt( E3, -2.695, 1.65, 0 ),
+	            ctlpt( E3, -2.695, 1.425, 0 ),
+	            ctlpt( E3, -2.495, 0.975, 0 ),
+	            ctlpt( E3, -1.995, 0.75, 0 ) ),
+	      list( ctlpt( E3, -1.595, 1.875, 0.3 ),
+	            ctlpt( E3, -2.295, 1.875, 0.3 ),
+	            ctlpt( E3, -2.695, 1.875, 0.3 ),
+	            ctlpt( E3, -2.695, 1.65, 0.3 ),
+	            ctlpt( E3, -2.695, 1.425, 0.3 ),
+	            ctlpt( E3, -2.495, 0.975, 0.3 ),
+	            ctlpt( E3, -1.995, 0.75, 0.3 ) ),
+	      list( ctlpt( E3, -1.495, 2.1, 0.3 ),
+	            ctlpt( E3, -2.495, 2.1, 0.3 ),
+	            ctlpt( E3, -2.995, 2.1, 0.3 ),
+	            ctlpt( E3, -2.995, 1.65, 0.3 ),
+	            ctlpt( E3, -2.995, 1.2, 0.3 ),
+	            ctlpt( E3, -2.645, 0.7875, 0.3 ),
+	            ctlpt( E3, -1.895, 0.45, 0.3 ) ),
+	      list( ctlpt( E3, -1.495, 2.1, 0 ),
+	            ctlpt( E3, -2.495, 2.1, 0 ),
+	            ctlpt( E3, -2.995, 2.1, 0 ),
+	            ctlpt( E3, -2.995, 1.65, 0 ),
+	            ctlpt( E3, -2.995, 1.2, 0 ),
+	            ctlpt( E3, -2.645, 0.7875, 0 ),
+	            ctlpt( E3, -1.895, 0.45, 0 ) ),
+	      list( ctlpt( E3, -1.495, 2.1, -0.3 ),
+	            ctlpt( E3, -2.495, 2.1, -0.3 ),
+	            ctlpt( E3, -2.995, 2.1, -0.3 ),
+	            ctlpt( E3, -2.995, 1.65, -0.3 ),
+	            ctlpt( E3, -2.995, 1.2, -0.3 ),
+	            Ctlpt( E3, -2.645, 0.7875, -0.3 ),
+	            ctlpt( E3, -1.895, 0.45, -0.3 ) ),
+	      list( ctlpt( E3, -1.595, 1.875, -0.3 ),
+	            ctlpt( E3, -2.295, 1.875, -0.3 ),
+	            ctlpt( E3, -2.695, 1.875, -0.3 ),
+	            ctlpt( E3, -2.695, 1.65, -0.3 ),
+	            ctlpt( E3, -2.695, 1.425, -0.3 ),
+	            ctlpt( E3, -2.495, 0.975, -0.3 ),
+	            ctlpt( E3, -1.995, 0.75, -0.3 ) ),
+	      list( ctlpt( E3, -1.595, 1.875, 0 ),
+	            ctlpt( E3, -2.295, 1.875, 0 ),
+	            ctlpt( E3, -2.695, 1.875, 0 ),
+	            ctlpt( E3, -2.695, 1.65, 0 ),
+	            ctlpt( E3, -2.695, 1.425, 0 ),
+	            ctlpt( E3, -2.495, 0.975, 0 ),
+	            ctlpt( E3, -1.995, 0.75, 0 ) ) ),
+	list( list( 0, 0, 0, 0, 1, 1, 1, 2, 2, 2, 2 ),
+	      list( 0, 0, 0, 0, 1, 1, 1, 2, 2, 2, 2 ) ) )
+	* tx( 2.5 ) * ty( -1 );
+
+resolution = 30;
+
+sils = silhouette( Handle, vector( 1, 0, 0 ), true );
+color( sils, green );
+adwidth( sils, 3 );
+
+isocs1 = isocline( Handle, vector( 1, 0, 0 ), 70, true, -1 );
+color( isocs1, cyan );
+adwidth( isocs1, 2 );
+
+isocs2 = isocline( Handle, vector( 1, 0, 0 ), 70, true, 1 );
+color( isocs2, yellow );
+adwidth( isocs2, 2 );
+
+interact( list( axes, isocs1, isocs2, sils, vector( 2, 0, 0 ) ) );
+
+save( "isoclin7", list( isocs1, isocs2, sils, vector( 2, 0, 0 ) ) );
+
+#################################
+
+sils = silhouette( Handle, vector( 0, 0, 1 ), true );
+color( sils, green );
+adwidth( sils, 3 );
+
+isocs1 = isocline( Handle, vector( 0, 0, 1 ), 82, true, -1 );
+color( isocs1, cyan );
+adwidth( isocs1, 2 );
+
+isocs2 = isocline( Handle, vector( 0, 0, 1 ), 82, true, 1 );
+color( isocs2, yellow );
+adwidth( isocs2, 2 );
+
+interact( list( axes, isocs1, isocs2, sils, vector( 0, 0, 2 ) ) );
+
+save( "isoclin8", list( isocs1, isocs2, sils, vector( 0, 0, 2 ) ) );
+
+isocs = isocline( Handle, vector( 0, 0, 1 ), 75, true, -2 );
+color( isocs, cyan );
+adwidth( isocs, 3 );
+
+interact( list( axes, isocs, vector( 0, 0, 2 ) ) );
+
+save( "isoclin9", list( isocs, vector( 0, 0, 2 ) ) );
+
+#############################################################################
+
+resolution = save_res;
+
+free( sils );
+free( isocs1 );
+free( isocs2 );
+free( isocs );
+
+free( handle );
+free( gcross );
+free( glass );

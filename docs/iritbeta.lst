@@ -1,0 +1,297 @@
+IRIT 7.0
+--------
+
+Name: Kriton Kyrimis
+Email: kyrimis@cti.gr
+Machine: Amiga 2000+Fusion Forty+Picasso II
+O.S.: AmigaOS 3.1
+
+IRIT 6.0
+--------
+
+Name: H. Ted Lin
+Email: ted.lin@owens-corning.com
+Machines: Compaq dx4-75 notebook (Windows 95 1.0) VC4.0/WNTDRVS and
+	  Compaq XL 566 Pentium  (Windows NT 3.51) VC2.2/WNTGDRV.
+
+Name: Kriton Kyrimis
+Email: kyrimis@cti.gr
+Machines: Amiga 2000/Fusion Forty, AmigaOS 3.0
+
+Name: Alexander Mai
+Email: amai@rbg.informatik.th-darmstadt.de
+Machines: 486-100
+OS: OS/2 Warp, emx09b fixpack 1, gnumake
+
+
+IRIT 5.0
+--------
+Name: Kriton Kyrimis
+Email: kyrimis@cti.gr
+Machine: Amiga 2000+Fusion Forty, Sun IPX, Sun IPC
+O.S.: AmigaDOS 2.1, SunOS 4.1.3
+
+Name: Thomas Nhan 
+Email: mnhan@u.washington.edu
+Machine: Intel Pentium-90
+O.S.: Linux 1.1.76 running XFree86 3.1 (X11R6)
+
+Name: Ted Lin
+Email:LIN@ocf.compuserve.com
+Machine: HP UNIX 9.05 and WINDOWS NT 3.5
+O.S.:
+
+Name: Paul Thomas
+Email: ast@world.std.com
+Machine: SGI Indigo r3000
+O.S.: Irix 5.1.1
+Machine: 486/33mhz PC
+0.S.: OS2
+
+IRIT 4.0
+--------
+Email:	A.D.Bray@uk.ac.lut
+Name:	Andy Bray
+Machines: SUN 4, X11,    (SunOS Release 4.1.2)
+
+Email:	drobs@welfah.elektro.uni-wuppertal.de
+Name:	Dongchen Wang
+Machines: SGI Indigo (Irix ???), IBM PC (LINUX), DEC (5000?) (Ultrix)
+
+Email: najera@cs.tulane.edu
+Name:  Jose Najera
+Machines: SUN 4, X11,    (SunOS Release 4.1.2)
+
+Email: nfotis@softlab.ece.ntua.gr
+Name:  Nick Fotis
+Machines: HP 9000 720 , X11R4, (HP-UX 9.01)
+          Commodore Amiga, (AmigaDOS 2.04 / NetBSD)
+          IBM PC 386 (Linux)
+
+Email: kyrimis@cti.gr
+Name:  Kriton Kyrimis
+Machines: Amiga 2000 with Fusion-Forty 68040 CPU accelerator (AmigaDOS 2.1)
+
+Email:  marvinl@amber.rc.arizona.edu
+Name:   Marvin Landis
+Machines: SGI 4D/35GT, X11/GL    (IRIX 4.0.5)
+	  Sun 4/60, X11          (SunOS 4.1.2)
+          IBM RS/6000, X11/GL    (AIX 3.2.3)
+
+Email: perelet@wri.com
+Name:  Oleg Perelet
+Machines: IBM PC,         (Windows NT)
+          MIPS MAGNUM 4400 (Windows NT)
+          ALPHA AXP       (Windows NT)
+          ALPHA 3000      (ULTRIX)
+
+Email: jrivera@evans.den.mmc.com
+Name:  Joe Rivera
+Machines: SUN 4, X11,    (SunOS Release 4.1.2)
+          IBM PC, X11    (Linux .99pl13)
+
+Email: tjgorn01@starbase.spd.louisville.edu
+Name:  Tim Gornet
+Machines: HP 700 series (735 and 755)     HP-UX 9.01, X11
+	  IBM PC                          OS2 2.1
+
+
+IRIT 3.0
+--------
+Email: joel@erdas.com 
+Name: Joel Skelton
+Machines: Sun 4(?) sunos 4.1.1, SGI's Indigo Irix version (?).
+
+Email: spencer@cgrg.ohio-state.edu
+Name: Stephen N. Spencer
+Machines: Sun 4 X11R4,
+
+Email: npw@coos.dartmouth.edu
+Name: Nicholas Wilt
+Machines: Compaq 386/7, BC++ 3.0.
+
+Email: cooper@holodeck.jpl.nasa.gov
+Name: Brian K. Cooper
+Machines: IRIS 4D 310 VGX Irix version 3.3.3 (4.0.1).
+
+Email: rjm@berlin.asd.sgi.com
+Name: Rolf Mueller
+Machines: SGI 210/GTX Irix 4.0.1
+
+Email: mattel@mattel.Auto-trol.COM
+Name: Matt Telles
+Machines: ????
+
+Email: KASPROW@DALHQIC1.VNET.IBM.COM
+Name: ???
+Machines: IBM/PC OS/2 
+
+Email: garyc@voxel2.wv.tek.com
+Name: Gary Combs
+Machines: Solbourne S4000 (Sun4 clone) and XD88/30, a SYSV based machine.
+
+Email: nthropy!blake@cs.utexas.edu
+Name: Blake Freeburg
+Machines: 3/486 with FPU, BC++ 2.0, Oki, Intel, and Samsung i860 using X.
+
+Email: adtaiwo@peponi.mats.washington.edu
+Name: Ademola O. Taiwo
+Machines: IBMPC DJGCC 
+
+Email: perelet@wri.com
+Name: Oleg Perelet
+Machines: RS6000, Stardent.
+
+Email: megatek!gambale@UCSD.EDU
+Name: Jim Gambale
+Machines: i486, ISC Unix 3.2 X11/R5.
+
+Email: kaufman@delta.eecs.nwu.edu
+Name: Michael L. Kaufman
+Machines: 486 PC, BC++ 2.0 ???
+
+Email: ughtas@pencom.com
+Name: Thomas A Stewart
+Machines: Next X11R4 
+
+Email: dgh@ecr.mu.oz.au
+Name: David Hook
+Machines: Sun 4
+
+Email: fontenot@ravl.rice.edu
+Name: Dwayne Fontenot
+Machines: RS6000
+
+Email: jtwamley@physics.adelaide.edu.au
+Name: Jason Twamley
+Machines: Sun 4 X11.
+
+Email: erlebach@icase.edu
+Name: Gordon Erlebacher
+Machines: SGI VGX 320 Irit 3.3
+
+Email: rec@arris.com
+Name: Roger Critchlow
+Machines: SGI Indigo Irix 4.0
+
+Email: eliel@stanley.cis.brown.edu
+Name: Eliel Mamousette
+Machines: IBM PC Zortech C++
+
+Email: darken@enews.nrl.navy.mil
+Name: Rudy Darken
+Machines: SGI 4d
+
+Email: erich@eye.com
+Name: Eric Haines
+Machines: HP300/700 X11R4
+
+Email: tjgorn01@starbase.spd.louisville.edu
+Name: Tim Gornet
+Machines: HP730 HP-UX8.05 X11R4
+
+Email: RKOHLI@aardvark.ucs.uoknor.edu
+Name: ranjan kohli
+Machines: ALLIANT FX/8 - running Concentrix a flavor of UNIX, X11R4.
+
+
+Email: wvr@world.std.com
+Name: William J vanRiper
+Machines: 486, BC++ ?.?
+
+Email: mr_hudso@csd.bristol-poly.ac.uk
+Name: Mark Hudson
+Machines: Sun4 clone, X11
+
+Email: lilleyc@computer-science.manchester.ac.uk
+Name: Chris Lilley
+Machines: Sun 3 X11R?, Stardent Titan, X11R?.
+
+Email: topix@utcs.utoronto.ca
+Name: R. Munroe
+Machines: SGI 4D/70
+
+Email: merlyn9@cbnewsd.att.com
+Name: Michael T Sedwick
+Machines: Sun 4, SunOS 4.1.1, X11R?
+
+Email: arir@cs.huji.ac.il
+Name: Ari Rappoport
+Machines: Sun4 X11R5
+
+Email: stefans@bauv106.informatik.unibw-muenchen.de
+Name: Stefan Schwarz
+Machines: SGI 4D/35 Irix 3.2.2.
+
+Email: daniel@bdmabq.bdm.com
+Name: Tommie Daniel
+Machines: SGI 3000 (!), SGI 340 VGX Irix ???
+
+Email: koussari@dorsai.com
+Name: Vahid Koussari
+Machines: 386, BC++ 3.0
+
+Email: rbeno@elf.stuba.cs
+Name: Richard Beno
+Machines: IBMPC 386, MSDOS 5.0, BC++ 3.0
+
+Email: autodesk!maserati!rajiv@fernwood.mpk.ca.us
+Name: Rajiv Jain
+Machines: Sun 4 X11R?
+
+Email: bernie@ecr.mu.oz.au
+Name: Bernie Kirby
+Machines: ???
+
+Email: darose@cory.Berkeley.EDU
+Name: David Rose
+Machines: 386 BC ?.?
+
+Email: nfotis@softlab.ece.ntua.gr
+Name: Nick (Nikolaos) C. Fotis
+Machines: HP9000/720, X11R4, HPUX8.05
+
+Email: dwex@mtgzz.att.com
+Name: David E Wexelblat
+Machines: 486 SVR4, X11R4.
+
+Email: ARUN@AC.DAL.CA
+Name: George Taylor
+Machines: Next (NeXTstep 2.1, NeXTDimension, 68040).
+
+Email: marvinl@amber.rc.arizona.edu
+Name: Marvin Landis
+Machines: SGI 4D/25GT
+
+Email: mah@ic.co.at
+Name: Michael Haberler
+Machines: IBM PC, SYSV3.2, Interactive 2.2.1/Roell X11R4 and gcc1.40.
+
+Email: reid@sunpix.East.Sun.COM
+Name: Reid Judd
+Machines: Sun 4(?), X11R?
+
+Email: cek@Princeton.EDU
+Name: Craig Kolb
+Machines: SGI 4D, Irix ???
+
+Email: darose@cory.Berkeley.EDU
+Name: David Rose
+Machines: 386/7, BC++ 2.0
+
+Email: bcalvert@cadsun.corp.mot.com
+Name: Brian Calvert
+Machines: SGI 4D, Irix ???
+
+Email: lipp@sierra.com
+Name: Damon Lipparelli
+Machines: SPARC2, X11
+
+Email: ingr!b17c!hng!nebi
+Name: Nebi Gursoy
+Machines: Intergraph Clipper, CLIX, X11
+
+Email: guiberte@geocub.greco-prog.fr
+Name: F. Guiberteau
+Machines: SGI 4D Irix ?.?, Sun 3/80 sun O.S. ?.?
+

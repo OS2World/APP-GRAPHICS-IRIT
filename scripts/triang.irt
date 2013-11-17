@@ -1,0 +1,52 @@
+#
+# Triangular confusing shapes...
+#
+#				Gershon Elber, January 1995.
+#
+
+Wid = 0.5;
+Frame = ( ctlpt( E3, 0, -1, -Wid ) +
+	  ctlpt( E3, 0, -1,  Wid ) +
+	  ctlpt( E3, 0,  1,  Wid ) +
+	  ctlpt( E3, 0,  1, -Wid ) +
+	  ctlpt( E3, 0, -1, -Wid ) ) * sc( 0.2 ) * ty( 0.8 );
+Frame1 = Frame;
+Frame2 = Frame * rz( 120 );
+Frame3 = Frame * rz( 240 );
+Frame4 = Frame;
+Tri1 = sFromCrvs( list( Frame1, Frame2, Frame3, frame4 ), 2, KV_OPEN );
+interact( list( Tri1, axes ) );
+free( Tri1 );
+
+Wid = 0.5;
+Frame1 = ( ctlpt( E3, 0, -1, -Wid ) +
+	   ctlpt( E3, 0, -1,  Wid ) +
+	   ctlpt( E3, 0,  1,  Wid ) +
+	   ctlpt( E3, 0,  1, -Wid ) +
+	   ctlpt( E3, 0, -1, -Wid ) ) * sc( 0.2 ) * ty( 0.8 );
+Frame2 = ( ctlpt( E3, 0, -1,  Wid ) +
+	   ctlpt( E3, 0,  1,  Wid ) +
+	   ctlpt( E3, 0,  1, -Wid ) +
+	   ctlpt( E3, 0, -1, -Wid ) +
+	   ctlpt( E3, 0, -1,  Wid ) ) * sc( 0.2 ) * ty( 0.8 ) * rz( 120 );
+Frame3 = ( ctlpt( E3, 0,  1,  Wid ) +
+	   ctlpt( E3, 0,  1, -Wid ) +
+	   ctlpt( E3, 0, -1, -Wid ) +
+	   ctlpt( E3, 0, -1,  Wid ) +
+	   ctlpt( E3, 0,  1,  Wid ) ) * sc( 0.2 ) * ty( 0.8 ) * rz( 240 );
+Frame4 = ( ctlpt( E3, 0,  1, -Wid ) +
+	   ctlpt( E3, 0, -1, -Wid ) +
+	   ctlpt( E3, 0, -1,  Wid ) +
+	   ctlpt( E3, 0,  1,  Wid ) +
+	   ctlpt( E3, 0,  1, -Wid ) ) * sc( 0.2 ) * ty( 0.8 );
+Tri2 = sFromCrvs( list( Frame1, Frame2, Frame3, frame4 ), 2, KV_OPEN );
+interact( Tri2 );
+save( "triang", Tri2 );
+free( Tri2 );
+
+free( Wid );
+free( Frame );
+free( Frame1 );
+free( Frame2 );
+free( Frame3 );
+free( Frame4 );

@@ -1,0 +1,57 @@
+
+#
+# Makefile for the IRIT solid modeler.
+#
+#
+# This makefile is for Window NT.
+#
+
+# Includes generic definitions.
+include ..\makeflag.wnt
+
+IRIT_INTERP_OBJS = \
+	bsc_geom.$(IRIT_OBJ_PF) dosintr.$(IRIT_OBJ_PF) \
+	freefrm1.$(IRIT_OBJ_PF) freefrm2.$(IRIT_OBJ_PF) freefrm3.$(IRIT_OBJ_PF) \
+	freefrm4.$(IRIT_OBJ_PF) freefrm5.$(IRIT_OBJ_PF) \
+	freefrm6.$(IRIT_OBJ_PF) freefrm7.$(IRIT_OBJ_PF) freefrm8.$(IRIT_OBJ_PF) \
+	inptevl0.$(IRIT_OBJ_PF) inptevl1.$(IRIT_OBJ_PF) inptevl2.$(IRIT_OBJ_PF) \
+	inptevl3.$(IRIT_OBJ_PF) inptevl4.$(IRIT_OBJ_PF) \
+	inptgetc.$(IRIT_OBJ_PF) inptprsr.$(IRIT_OBJ_PF) \
+	support.$(IRIT_OBJ_PF) objects1.$(IRIT_OBJ_PF) objects2.$(IRIT_OBJ_PF) \
+	overload.$(IRIT_OBJ_PF)
+
+OBJS = 	ctrl-brk.$(IRIT_OBJ_PF) irit.$(IRIT_OBJ_PF) \
+        irit_db.$(IRIT_OBJ_PF)  irit_io.$(IRIT_OBJ_PF) \
+	$(IRIT_INTERP_OBJS)
+
+#
+# The Irit interpreter program:
+#
+
+irit$(IRIT_EXE_PF).exe: $(OBJS)
+	$(IRITCONLINK) -out:$@ $(OBJS) $(IRIT_LIBS) $(W32CONMTLIBS)
+		$(IRITMANIFEST) -manifest $@.manifest -outputresource:$@;1
+
+#
+# The Irit interpreter core as a library:
+#
+
+$(INTP_LIB): $(IRIT_INTERP_OBJS)
+	-del $(INTP_LIB)
+	$(IRITLIB) -out:$(INTP_LIB) $(IRIT_INTERP_OBJS)
+
+$(IRIT_LIB_DIR)\$(INTP_LIB): $(INTP_LIB)
+	copy $(INTP_LIB) $(IRIT_LIB_DIR)
+
+install-lib: $(IRIT_LIB_DIR)\$(INTP_LIB)
+
+
+install: irit$(IRIT_EXE_PF).exe $(INTP_LIB)
+	copy irit$(IRIT_EXE_PF).exe $(IRIT_BIN_DIR)
+	del irit$(IRIT_EXE_PF).exe 
+	copy iritinit.irt $(IRIT_BIN_DIR)
+	copy iritfont.itd $(IRIT_BIN_DIR)
+	copy irit-wnt.cfg $(IRIT_BIN_DIR)\irit.cfg
+	copy $(INTP_LIB) $(IRIT_LIB_DIR)
+
+# Dependencies starts here - do not touch, generated automatically.

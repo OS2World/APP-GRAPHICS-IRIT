@@ -1,0 +1,103 @@
+#
+# Some simple tests of running clients.
+#
+
+Client = "xmtdrvs -s-";
+if ( machine == ibmos2, Client = "os2drvs -s-" );
+if ( machine == windows, Client = "wntgdrvs -s-" );
+if ( machine == sgi || machine == linux, Client = "xogldrvs -s-" );
+
+printf( "Executing Client \"%s\"\\n", list( Client ) );
+
+h1 = clntexec( Client );
+h2 = clntexec( Client );
+h3 = clntexec( Client );
+
+sp1 = sphere( vector( 0, 0, 0 ), 0.6 );
+sp2 = sp1 * sx( 0.1 );
+sp3 = sp2 * sx( 0.1 ) * rz( 45 ) * rx( 40 );
+
+axes1 = axes;
+axes2 = axes * sy( 0.2 );
+axes3 = axes * sz( 0.2 );
+
+str1 = textgeom("H1", vector( 0.5, 0, 0 ), 0.45 );
+str2 = textgeom("H2", vector( 0.5, 0, 0 ), 0.45 );
+str3 = textgeom("H3", vector( 0.5, 0, 0 ), 0.45 );
+adwidth( str1, 3 );
+adwidth( str2, 3 );
+adwidth( str3, 3 );
+color( str1, red );
+color( str2, red );
+color( str3, red );
+
+cyl = cylin( vector( -1.5, 0, 0 ), vector( 3, 0, 0 ), 0.2, 3 );
+adwidth( cyl, 2 );
+color( cyl, green );
+
+clntwrite( h1, axes1 );
+clntwrite( h2, axes2 );
+clntwrite( h3, axes3 );
+clntwrite( h1, sp1 );
+clntwrite( h2, sp2 );
+clntwrite( h3, sp3 );
+clntwrite( h1, str1 );
+clntwrite( h2, str2 );
+clntwrite( h3, str3 );
+clntwrite( CLIENTS_ALL, cyl );
+
+#
+# Pick objects (Middle-Button or Shift-Left-Button, depends on device):
+#
+
+for ( i = 1, 1, 3,
+     clntpickname( h1 ):
+     clntread( h1, 10000 ) );
+for ( i = 1, 1, 3,
+     clntpickname( h2 ):
+     clntread( h2, 10000 ) );
+for ( i = 1, 1, 3,
+     clntpickname( h3 ) );
+
+pause();
+
+viewset( h3 );
+
+viewclear();
+viewobj( list( str3, axes ) );
+pause();
+viewexit();
+
+viewset( h2 );
+viewobj( list( str2, axes ) );
+pause();
+b = surfRev( ctlpt( E3, 0.0, 0.0, -0.5 ) +
+	     ctlpt( E3, 0.3, 0.0, -0.5 ) +
+	     ctlpt( E3, 0.0, 0.0,  0.5 ) );
+for ( a = 1, 1, 360 / 10,
+	view_mat = rx( 10 ) * view_mat:
+	view( list( view_mat, b, axes ), on )
+    );
+
+viewexit();
+
+pause();
+viewset( h1 );
+viewexit();
+
+free( axes1 );
+free( axes2 );
+free( axes3 );
+free( sp1 );
+free( sp2 );
+free( sp3 );
+free( str1 );
+free( str2 );
+free( str3 );
+free( h1 );
+free( h2 );
+free( h3 );
+free( i );
+free( a );
+free( b );
+free( Client );

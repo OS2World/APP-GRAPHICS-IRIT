@@ -1,0 +1,328 @@
+#
+# Curve - point/line/curve closest/"farest" location/intersection.
+#
+#					Gershon Elber, May 1993.
+#
+
+#
+# Curve point distance.
+#
+crv1 = cbspline( 3,
+		 list( ctlpt( E2,  0.5, -1.0 ),
+		       ctlpt( E2, -1.5, -0.5 ),
+		       ctlpt( E2,  1.5,  0.0 ),
+		       ctlpt( E2, -0.5,  2.0 ),
+		       ctlpt( E2, -0.5,  1.0 ) ),
+		 list( KV_OPEN ) );
+color( crv1, green );
+attrib( crv1, "width", 0.02 );
+
+pt_param = crvptdst( crv1, point( 0, 0, 0 ), false, -0.001 );
+pt_extrem = nil();
+
+for ( i = 1, 1, sizeof( pt_param ),
+	pt = ceval( crv1, nth( pt_param, i ) ):
+	snoc( coerce( pt, vector_type ) , pt_extrem )
+    );
+interact( list( axes, crv1, pt_extrem ) );
+save( "crv1dist", list( axes, crv1, pt_extrem ) );
+
+pt_min = ceval( crv1, crvptdst( crv1, point( 0, 0, 0 ), true, 0.001 ) );
+interact( list( axes, crv1, coerce( pt_min, vector_type ) ) );
+
+pt_max = ceval( crv1, crvptdst( crv1, point( 0, 0, 0 ), false, 0.001 ) );
+interact( list( axes, crv1, coerce( pt_max, vector_type ) ) );
+save( "crv2dist", list( axes, crv1, coerce( pt_max, vector_type ) ) );
+
+crv2 = cbspline( 3,
+		 list( ctlpt( E2, 0,  1 ),
+		       ctlpt( E2, 1, -1 ),
+		       ctlpt( E2, 0, -1 ),
+		       ctlpt( E2, 1,  1 ) ),
+		 list( KV_OPEN ) );
+color( crv2, green );
+attrib( crv2, "width", 0.02 );
+
+pt_param = crvptdst( crv2, point( 0, 0, 0 ), false, -0.001 );
+pt_extrem = nil();
+for ( i = 1, 1, sizeof( pt_param ),
+	pt = ceval( crv2, nth( pt_param, i ) ):
+	snoc( coerce( pt, vector_type ) , pt_extrem )
+    );
+interact( list( axes, crv2, pt_extrem ) );
+save( "crv3dist", list( axes, crv2, pt_extrem ) );
+
+pt_min = ceval( crv2, crvptdst( crv2, point( 0, 0, 0 ), true, 0.001 ) );
+interact( list( axes, crv2, coerce( pt_min, vector_type ) ) );
+pt_max = ceval( crv2, crvptdst( crv2, point( 0, 0, 0 ), false, 0.001 ) );
+interact( list( axes, crv2, coerce( pt_max, vector_type ) ) );
+save( "crv4dist", list( axes, crv2, coerce( pt_max, vector_type ) ) );
+
+crv3a = cbspline( 3,
+		  list( ctlpt( E2, 0.0,  1.0 ),
+		        ctlpt( E2, 0.1,  1.0 ),
+		        ctlpt( E2, 0.1,  0.1 ),
+		        ctlpt( E2, 0.5,  0.1 ),
+		        ctlpt( E2, 0.5, -0.1 ),
+		        ctlpt( E2, 0.1, -0.1 ),
+		        ctlpt( E2, 0.1, -1.0 ),
+		        ctlpt( E2, 0.0, -1.0 ) ),
+		  list( KV_OPEN ) );
+crv3b = crv3a * rotz( 180 );
+crv3 = ( crv3a + crv3b ) * trans( vector( 0.1, 0.1, 0.0 ) );
+color( crv3, green );
+attrib( crv3, "width", 0.02 );
+
+pt_param = crvptdst( crv3, point( 0, 0, 0 ), false, -0.001 );
+pt_extrem = nil();
+for ( i = 1, 1, sizeof( pt_param ),
+	pt = ceval( crv3, nth( pt_param, i ) ):
+	snoc( coerce( pt, vector_type ) , pt_extrem )
+    );
+interact( list( axes, crv3, pt_extrem ) );
+save( "crv5dist", list( axes, crv3, pt_extrem ) );
+
+pt_min = ceval( crv3, crvptdst( crv3, point( 0, 0, 0 ), true, 0.001 ) );
+interact( list( axes, crv3, coerce( pt_min, vector_type ) ) );
+pt_max = ceval( crv3, crvptdst( crv3, point( 0, 0, 0 ), false, 0.001 ) );
+interact( list( axes, crv3, coerce( pt_max, vector_type ) ) );
+save( "crv6dist", list( axes, crv3, coerce( pt_max, vector_type ) ) );
+
+#
+# Curve line distance.
+#
+line_pt = point( -1, 1.2, 0 );
+line_vec = vector( 1, -1, 0 );
+line_pt2 = line_pt + ( line_vec * 2 );
+line = poly( list( line_pt, line_pt2 ), true );
+crv1 = cbspline( 3,
+		 list( ctlpt( E2,  1.5, -0.5 ),
+		       ctlpt( E2,  0.5, -1.0 ),
+		       ctlpt( E2, -1.5, -0.5 ),
+		       ctlpt( E2,  2.5,  0.0 ),
+		       ctlpt( E2, -1.5,  0.5 ) ),
+		 list( KV_OPEN ) );
+color( crv1, green );
+attrib( crv1, "width", 0.02 );
+
+pt_param = crvlndst( crv1, line_pt, line_vec, false, -0.001 );
+pt_extrem = nil();
+for ( i = 1, 1, sizeof( pt_param ),
+	pt = ceval( crv1, nth( pt_param, i ) ):
+	snoc( pt, pt_extrem )
+    );
+
+crv1A = cbspline( 4,
+		  list( ctlpt( E2,  1.5, -0.5 ),
+		        ctlpt( E2,  0.5, -1.0 ),
+		        ctlpt( E2, -1.5, -0.5 ),
+		        ctlpt( E2,  2.5,  0.0 ),
+		        ctlpt( E2, -1.5,  0.5 ) ),
+		  list( KV_OPEN ) );
+color( crv1A, green );
+attrib( crv1A, "width", 0.02 );
+
+pt_paramA = crvlndst( crv1A, line_pt, line_vec, false, -0.001 );
+pt_extremA = nil();
+for ( i = 1, 1, sizeof( pt_paramA ),
+	pt = ceval( crv1A, nth( pt_paramA, i ) ):
+	snoc( pt, pt_extremA )
+    );
+
+crv1B = cbspline( 5,
+		  list( ctlpt( E2,  1.5, -0.5 ),
+		        ctlpt( E2,  0.5, -1.0 ),
+		        ctlpt( E2, -1.5, -0.5 ),
+		        ctlpt( E2,  2.5,  0.0 ),
+		        ctlpt( E2, -1.5,  0.5 ) ),
+		  list( KV_OPEN ) );
+color( crv1B, green );
+attrib( crv1B, "width", 0.02 );
+
+pt_paramB = crvlndst( crv1B, line_pt, line_vec, false, -0.001 );
+pt_extremB = nil();
+for ( i = 1, 1, sizeof( pt_paramB ),
+	pt = ceval( crv1B, nth( pt_paramB, i ) ):
+	snoc( pt, pt_extremB )
+    );
+
+interact( list( axes, crv1, crv1A, crv1B, line,
+		pt_extrem, pt_extremA, pt_extremB ) );
+
+save( "crv1line", list( axes, crv1, crv1A, crv1B, line,
+			pt_extrem, pt_extremA, pt_extremB ) );
+
+free( pt_paramA );
+free( pt_paramB );
+free( pt_extremA );
+free( pt_extremB );
+free( crv1A );
+free( crv1B );
+
+pt_min = ceval( crv1, crvlndst( crv1, line_pt, line_vec, true, 0.001 ) );
+interact( list( axes, crv1, line, pt_min ) );
+pt_max = ceval( crv1, crvlndst( crv1, line_pt, line_vec, false, 0.001 ) );
+interact( list( axes, crv1, line, pt_max ) );
+save( "crv2line", list( axes, crv1, line, pt_max ) );
+
+line_pt = point( -1, -1.5, 0 );
+line_vec = vector( 1, 2, 0 );
+line_pt2 = line_pt + ( line_vec * 2 );
+line = poly( list( line_pt, line_pt2 ), true );
+free( line_pt2 );
+
+crv2 = cbspline( 3,
+		 list( ctlpt( E2, 0,  1 ),
+		       ctlpt( E2, 1, -1 ),
+		       ctlpt( E2, 0, -1 ),
+		       ctlpt( E2, 1,  1 ) ),
+		 list( KV_OPEN ) );
+color( crv2, green );
+attrib( crv2, "width", 0.02 );
+
+pt_param = crvlndst( crv2, line_pt, line_vec, false, -0.001 );
+pt_extrem = nil();
+for ( i = 1, 1, sizeof( pt_param ),
+	pt = ceval( crv2, nth( pt_param, i ) ):
+	snoc( pt, pt_extrem )
+    );
+interact( list( axes, crv2, line, pt_extrem ) );
+save( "crv3line", list( axes, crv2, line, pt_extrem ) );
+
+pt_min = ceval( crv2, crvlndst( crv2, line_pt, line_vec, true, 0.001 ) );
+interact( list( axes, crv2, line, pt_min ) );
+pt_max = ceval( crv2, crvlndst( crv2, line_pt, line_vec, false, 0.001 ) );
+interact( list( axes, crv2, line, pt_max ) );
+save( "crv4line", list( axes, crv2, line, pt_max ) );
+
+crv3a = cbspline( 3,
+		  list( ctlpt( E2, 0.0,  1.0 ),
+		        ctlpt( E2, 0.1,  1.0 ),
+		        ctlpt( E2, 0.1,  0.1 ),
+		        ctlpt( E2, 0.5,  0.1 ),
+		        ctlpt( E2, 0.5, -0.1 ),
+		        ctlpt( E2, 0.1, -0.1 ),
+		        ctlpt( E2, 0.1, -1.0 ),
+		        ctlpt( E2, 0.0, -1.0 ) ),
+		  list( KV_OPEN ) );
+crv3b = crv3a * rotz( 180 );
+crv3 = ( crv3a + crv3b ) * trans( vector( 0.1, 0.1, 0.0 ) );
+free( crv3a );
+free( crv3b );
+color( crv3, green );
+attrib( crv3, "width", 0.02 );
+
+pt_param = crvlndst( crv3, line_pt, line_vec, false, -0.001 );
+pt_extrem = nil();
+for ( i = 1, 1, sizeof( pt_param ),
+	pt = ceval( crv3, nth( pt_param, i ) ):
+	snoc( pt, pt_extrem )
+    );
+free( pt_param );
+interact( list( axes, crv3, line, pt_extrem ) );
+save( "crv5line", list( axes, crv3, line, pt_extrem ) );
+
+pt_min = ceval( crv3, crvlndst( crv3, line_pt, line_vec, true, 0.001 ) );
+interact( list( axes, crv3, line, pt_min ) );
+pt_max = ceval( crv3, crvlndst( crv3, line_pt, line_vec, false, 0.001 ) );
+interact( list( axes, crv3, line, pt_max ) );
+save( "crv6line", list( axes, crv3, line, pt_max ) );
+
+free( line );
+free( line_pt );
+free( line_vec );
+free( crv3 );
+free( pt_extrem );
+free( pt_min );
+free( pt_max );
+
+#
+# Curve curve intersetion/distance square scalar field.
+#
+crv1 = cbspline( 3,
+		 list( ctlpt( E2, 0, 0 ),
+		       ctlpt( E2, 0.25, 0.5 ),
+		       ctlpt( E2, 0.5, 0.7 ),
+		       ctlpt( E2, 1, 1 ) ),
+		  list( 0.0, 0.0, 0.0, 0.5, 1.0, 1.0, 1.0 ) );
+crv2 = cbspline( 3,
+		 list( ctlpt( E2, 1, 0 ),
+		       ctlpt( E2, 0.7, 0.25 ),
+		       ctlpt( E2, 0.3, 0.5 ),
+		       ctlpt( E2, 0, 1 ) ),
+		 list( 0.0, 0.0, 0.0, 0.5, 1.0, 1.0, 1.0 ) );
+inter_pts = ccinter( crv1, crv2, 0.0001, false );
+pt_inters = nil();
+pt = nil();
+for ( i = 1, 1, sizeof( inter_pts ),
+	pt = ceval( crv1, coord( nth( inter_pts, i ), 0 ) ):
+	snoc( pt, pt_inters ):
+	pt = ceval( crv2, coord( nth( inter_pts, i ), 1 ) ):
+	snoc( pt, pt_inters )
+    );
+interact( list( axes, crv1, crv2, pt_inters ) );
+save( "crv1crv", list( axes, crv1, crv2, pt_inters ) );
+
+dist_srf = ccinter( crv1, crv2, -1, true );
+color( dist_srf, magenta );
+interact( list( axes, dist_srf ) );
+save( "crv2crv", list( axes, dist_srf ) );
+
+crv1 = cbspline( 3,
+		 list( ctlpt( E2, 0, 0 ),
+		       ctlpt( E2, 0.25, 2 ),
+		       ctlpt( E2, 0.5, -1 ),
+		       ctlpt( E2, 1, 1 ) ),
+		 list( 0.0, 0.0, 0.0, 0.5, 1.0, 1.0, 1.0 ) );
+crv2 = cbspline( 3,
+		 list( ctlpt( E2, 1, 0 ),
+		       ctlpt( E2, -1, 0.25 ),
+		       ctlpt( E2, 2, 0.5 ),
+		       ctlpt( E2, 0, 1 ) ),
+		 list( 0.0, 0.0, 0.0, 0.5, 1.0, 1.0, 1.0 ) );
+
+inter_pts = ccinter( crv1, crv2, 0.001, false );
+pt_inters = nil();
+pt = nil();
+for ( i = 1, 1, sizeof( inter_pts ),
+	pt = ceval( crv1, coord( nth( inter_pts, i ), 0 ) ):
+	snoc( pt, pt_inters ):
+	pt = ceval( crv2, coord( nth( inter_pts, i ), 1 ) ):
+	snoc( pt, pt_inters )
+    );
+interact( list( axes, crv1, crv2, pt_inters ) );
+save( "crv3crv", list( axes, crv1, crv2, pt_inters ) );
+
+dist_srf = ccinter( crv1, crv2, -1, true );
+color( dist_srf, magenta );
+interact( list( axes, dist_srf ) );
+save( "crv4crv", list( axes, dist_srf ) );
+
+crv1 = cbspline( 3,
+		 list( ctlpt( E2, 0, 1 ),
+		       ctlpt( E2, 1, 0 ),
+		       ctlpt( E2, 0, 0 ),
+		       ctlpt( E2, 1, 1 ) ),
+		 list( 0.0, 0.0, 0.0, 0.5, 1.0, 1.0, 1.0 ) );
+inter_pts = ccinter( crv1, crv1, 0.001, true );
+pt_inters = nil();
+pt = nil();
+for ( i = 1, 1, sizeof( inter_pts ),
+	pt = ceval( crv1, coord( nth( inter_pts, i ), 0 ) ):
+	snoc( pt, pt_inters )
+    );
+free( i );
+interact( list( axes, crv1, pt_inters ) );
+save( "crv5crv", list( axes, crv1, pt_inters ) );
+
+dist_srf = ccinter( crv1, crv1, -1, true );
+color( dist_srf, magenta );
+interact( list( axes, dist_srf ) );
+save( "crv6crv", list( axes, dist_srf ) );
+
+free( dist_srf );
+free( inter_pts );
+free( pt_inters );
+free( crv1 );
+free( crv2 );
+free( pt );

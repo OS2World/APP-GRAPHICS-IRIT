@@ -1,0 +1,29 @@
+#
+# This is the make file for the graphic driver's subdirectory.
+#
+#				Gershon Elber, June 1993
+#
+
+include ..\makeflag.wce
+
+nuldrvs$(IRIT_EXE_PF).exe: nuldrvs.$(IRIT_OBJ_PF) gen_grap.$(IRIT_OBJ_PF)
+	$(IRITCONLINK) -out:nuldrvs$(IRIT_EXE_PF).exe nuldrvs.$(IRIT_OBJ_PF) \
+	 gen_grap.$(IRIT_OBJ_PF) $(IRIT_LIBS) $(WCECONLIBS)
+
+GLUTDRVS_DRAW =  gen_grap.$(IRIT_OBJ_PF) \
+	open_gl.$(IRIT_OBJ_PF) oglesemu.$(IRIT_OBJ_PF)
+
+glutdrvs$(IRIT_EXE_PF).exe: glutdrvs.$(IRIT_OBJ_PF) $(GLUTDRVS_DRAW)
+	$(IRITCONLINK) -subsystem:windows -machine:arm -out:glutdrvs$(IRIT_EXE_PF).exe glutdrvs.$(IRIT_OBJ_PF) \
+	$(GLUTDRVS_DRAW) $(IRIT_LIBS) $(WCEGUIOGLLIBS)
+
+wntdrvs.res: wntdrvs.rc wntdrvs.h
+	rc /r wntdrvs.rc
+
+install: $(GRAPDRVS)
+	copy *$(IRIT_EXE_PF).exe $(IRIT_BIN_DIR)
+	copy *.cg $(IRIT_BIN_DIR)
+	del *$(IRIT_EXE_PF).exe
+	copy glutdrvs.cfg $(IRIT_BIN_DIR)
+
+# Dependencies starts here - do not touch, generated automatically.

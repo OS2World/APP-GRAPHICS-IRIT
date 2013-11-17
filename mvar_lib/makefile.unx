@@ -1,0 +1,85 @@
+#
+# This is the make file for the mvar_lib library.
+#
+#                               Gershon Elber, May 1997
+#
+
+include ../makeflag.unx
+
+MAT_OBJS = \
+	mvbiscon.o$(IRIT_OBJ_PF) \
+	mvlowenv.o$(IRIT_OBJ_PF) \
+	mvsplmon.o$(IRIT_OBJ_PF) \
+	mvtrmbis.o$(IRIT_OBJ_PF) \
+	mvtrmpcr.o$(IRIT_OBJ_PF) \
+	mvvorcel.o$(IRIT_OBJ_PF) \
+	mvvorcrv.o$(IRIT_OBJ_PF)
+
+OBJS =  contacts.o$(IRIT_OBJ_PF) \
+	crv_krnl.o$(IRIT_OBJ_PF) \
+	hasdrf2d.o$(IRIT_OBJ_PF) \
+	hasdrf3d.o$(IRIT_OBJ_PF) \
+	lnsrfdst.o$(IRIT_OBJ_PF) \
+	ms_circ.o$(IRIT_OBJ_PF) \
+	ms_sphr.o$(IRIT_OBJ_PF) \
+	mvaccess.o$(IRIT_OBJ_PF) \
+	mvar_aux.o$(IRIT_OBJ_PF) \
+	mvar_dbg.o$(IRIT_OBJ_PF) \
+	mvar_der.o$(IRIT_OBJ_PF) \
+	mvar_det.o$(IRIT_OBJ_PF) \
+	mvar_err.o$(IRIT_OBJ_PF) \
+	mvar_ftl.o$(IRIT_OBJ_PF) \
+	mvar_gen.o$(IRIT_OBJ_PF) \
+	mvar_int.o$(IRIT_OBJ_PF) \
+	mvar_pll.o$(IRIT_OBJ_PF) \
+	mvar_ref.o$(IRIT_OBJ_PF) \
+	mvar_rev.o$(IRIT_OBJ_PF) \
+	mvar_ssi.o$(IRIT_OBJ_PF) \
+	mvar_sub.o$(IRIT_OBJ_PF) \
+	mvar_sym.o$(IRIT_OBJ_PF) \
+	mvar_vec.o$(IRIT_OBJ_PF) \
+	mv_crvtr.o$(IRIT_OBJ_PF) \
+	mvarcmpt.o$(IRIT_OBJ_PF) \
+	mvarcoer.o$(IRIT_OBJ_PF) \
+	mvardist.o$(IRIT_OBJ_PF) \
+	mvaredit.o$(IRIT_OBJ_PF) \
+	mvareval.o$(IRIT_OBJ_PF) \
+	mvarextr.o$(IRIT_OBJ_PF) \
+	mvarintr.o$(IRIT_OBJ_PF) \
+	mvarkant.o$(IRIT_OBJ_PF) \
+	mvarmrph.o$(IRIT_OBJ_PF) \
+	mvarpack.o$(IRIT_OBJ_PF) \
+	mvarpck2.o$(IRIT_OBJ_PF) \
+	mvarproj.o$(IRIT_OBJ_PF) \
+	mvarprim.o$(IRIT_OBJ_PF) \
+	mvarrais.o$(IRIT_OBJ_PF) \
+	mvarsils.o$(IRIT_OBJ_PF) \
+	mvartopo.o$(IRIT_OBJ_PF) \
+	mvarzero.o$(IRIT_OBJ_PF) \
+	mvarzral.o$(IRIT_OBJ_PF) \
+	mvarzreq.o$(IRIT_OBJ_PF) \
+	mvbisect.o$(IRIT_OBJ_PF) \
+	mvbspsym.o$(IRIT_OBJ_PF) \
+	mvbzrpwr.o$(IRIT_OBJ_PF) \
+	mvbzrsym.o$(IRIT_OBJ_PF) \
+	mvcones.o$(IRIT_OBJ_PF) \
+	mvtangnt.o$(IRIT_OBJ_PF) \
+	mvtrivar.o$(IRIT_OBJ_PF) \
+	offset2.o$(IRIT_OBJ_PF) \
+	offst2ni.o$(IRIT_OBJ_PF) \
+	ray-trap.o$(IRIT_OBJ_PF) \
+	raytrp3d.o$(IRIT_OBJ_PF) \
+	selfintr.o$(IRIT_OBJ_PF) \
+	skel2d.o$(IRIT_OBJ_PF)
+
+all:	libIritMvar$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+
+libIritMvar$(IRIT_LIB_PF).$(IRIT_LIB_SFX): $(OBJS) $(MAT_OBJS)
+	rm -f libIritMvar$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+	$(IRIT_LIB_MAKE) libIritMvar$(IRIT_LIB_PF).$(IRIT_LIB_SFX) *.o$(IRIT_OBJ_PF)
+	-$(IRIT_LIB_RAN) libIritMvar$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+
+install: libIritMvar$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+	mv -f libIritMvar$(IRIT_LIB_PF).$(IRIT_LIB_SFX) $(IRIT_LIB_DIR)
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

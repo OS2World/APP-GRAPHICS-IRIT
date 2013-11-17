@@ -1,0 +1,51 @@
+#
+# Display of all primitives of the system:
+# BOX, GBOX, CONE, CYLIN, SPHERE, TORUS
+#
+#				Created by Gershon Elber,	Dec. 88
+#
+
+save_mat = view_mat;
+view_mat = view_mat * scale(vector( 0.5, 0.5, 0.5 ));
+axes15 = axes * scale(vector(1.5, 1.5, 1.5));
+
+interact(list(view_mat, axes15,
+	      box(vector(-0.5, -0.5, -0.5), 1.0, 1.0, 1.0),
+	      gbox(vector(-0.25, -0.25, -0.25), vector( 1.1, 0.1, 0.2),
+			vector( 0.4, 0.9, 0.2), vector( 0.3, 0.05, 1.4))));
+
+interact(list(view_mat, axes15,
+	      cone(vector(-0.5, 0.0, 0.0), vector(-0.5, 0.0, 0.0), 0.5, 0),
+	      cone(vector( 0.5, 0.0, 0.0), vector( 0.5, 0.0, 0.0), 0.5, 0),
+	      cone(vector( 0.0,-0.5, 0.0), vector( 0.0,-0.5, 0.0), 0.5, 0),
+	      cone(vector( 0.0, 0.5, 0.0), vector( 0.0, 0.5, 0.0), 0.5, 0),
+	      cone(vector( 0.0, 0.0,-0.5), vector( 0.0, 0.0,-0.5), 0.5, 0),
+	      cone(vector( 0.0, 0.0, 0.5), vector( 0.0, 0.0, 0.5), 0.5, 0)));
+
+interact(list(view_mat, axes15,
+	      cone(vector(-0.5, 0.0, 0.0), vector(-0.5, 0.0, 0.0), 0.5, 1),
+	      cone(vector( 0.5, 0.0, 0.0), vector( 0.5, 0.0, 0.0), 0.5, 1),
+	      cone(vector( 0.0,-0.5, 0.0), vector( 0.0,-0.5, 0.0), 0.5, 1),
+	      cone(vector( 0.0, 0.5, 0.0), vector( 0.0, 0.5, 0.0), 0.5, 1),
+	      cone(vector( 0.0, 0.0,-0.5), vector( 0.0, 0.0,-0.5), 0.5, 1),
+	      cone(vector( 0.0, 0.0, 0.5), vector( 0.0, 0.0, 0.5), 0.5, 1)));
+
+interact(list(view_mat, axes15,
+	      cylin(vector(-0.8, 0.0, 0.0), vector(-0.5, 0.3, 0.3), 0.3, 0),
+	      cylin(vector( 0.8, 0.0, 0.0), vector( 0.8, 0.0, 0.0), 0.3, 1),
+	      cylin(vector( 0.0, 0.8, 0.0), vector( 0.0, 0.8, 0.0), 0.3, 2),
+	      cylin(vector( 0.0,-0.8, 0.0), vector( 0.1,-0.5, 0.2), 0.3, 3),
+	      cylin(vector( 0.0, 0.0,-0.8), vector( 0.4, 0.2,-0.5), 0.3, 3),
+	      cylin(vector( 0.0, 0.0, 0.8), vector( 0.0, 0.0, 0.8), 0.3, 1)));
+
+
+interact(list(view_mat, axes15, sphere(vector( 0.0, 0.0, 0.0), 0.5)));
+
+
+interact(list(view_mat, axes15, torus(vector( 0.0, 0.0, 0.0),
+				      vector( 0.1, 0.2, 1.0), 0.5, 0.2)));
+
+
+free(axes15);
+
+view_mat = save_mat;

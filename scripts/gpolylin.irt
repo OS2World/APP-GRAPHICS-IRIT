@@ -1,0 +1,161 @@
+#
+# Some examples of proper piecewise linear sampling in gpolyline.
+#
+save_res = resolution;
+
+save_mat = view_mat;
+
+view_mat = rotx( 0 );
+viewobj( view_mat );
+
+view_mat = save_mat;
+
+viewstate( "DblBuffer", 1 );
+viewstate( "DepthCue", 1 );
+
+DLevel = iritState( "DumpLevel", 255 );
+
+# Faster product using Bezier decomposition.
+IProd = iritstate( "BspProdMethod", 0 );
+
+#############################################################################
+
+pl2 = nil();
+for ( x = 0, 1, 5,
+	snoc(point(cos(x * Pi / 10), sin(x * Pi / 10), 0.0), pl2)
+    );
+free( x );
+crv1 = cinterp( pl2, 4, 4, PARAM_UNIFORM, false );
+viewobj( list( pl2, crv1 ) );
+
+crv2 = cbspline( 5,
+		 list( ctlpt( E1, 0.0 ),
+		       ctlpt( E1, 0.0 ),
+		       ctlpt( E1, 0.0 ),
+		       ctlpt( E1, 0.0 ),
+		       ctlpt( E1, 1.0 ) ),
+		 list( KV_OPEN ) );
+cbsp = compose( crv1, crv2 );
+free( crv1 );
+free( crv2 );
+
+steps = 8;
+pt_lst = nil();
+for ( i = 0, 1, steps - 1,
+	pt = ceval( cbsp, nth( pdomain(cbsp), 2 ) * i / (steps - 1) ):
+	snoc( pt, pt_lst )
+    );
+cpl = poly( pt_lst, true );
+color( cpl, green );
+
+resolution = 0.02;
+cbsp2 = cbsp;
+cpl2 = gpolyline( cbsp2, 2 );
+color( cpl2, yellow );
+resolution = 20;
+
+interact( list( cbsp, cpl2, cpl ) );
+save( "gpolyln1", list( cbsp, cpl2, cpl ) );
+
+#############################################################################
+
+cbsp = cbspline( 3,
+		 list( ctlpt( E2, 0.0, -1.0 ),
+		       ctlpt( E2, 0.3,  1.0 ),
+		       ctlpt( E2, 0.7, -1.0 ),
+		       ctlpt( E2, 1.0,  1.0 ) ),
+		 list( KV_OPEN ) );
+color(cbsp, red);
+
+steps = 8;
+pt_lst = nil();
+for ( i = 0, 1, steps - 1,
+	pt = ceval( cbsp, nth( pdomain(cbsp), 2 ) * i / (steps - 1) ):
+	snoc( pt, pt_lst )
+    );
+free( i );
+cpl = poly( pt_lst, true );
+color( cpl, green );
+
+resolution = 0.03;
+cbsp2 = cbsp;
+cpl2 = gpolyline( cbsp2, 2 );
+color( cpl2, yellow );
+resolution = 20;
+
+interact( list( cbsp, cpl2, cpl ) );
+save( "gpolyln2", list( cbsp, cpl2, cpl ) );
+
+#############################################################################
+
+pl2 = nil();
+for ( x = 0, 1, 15,
+	snoc(point(x / 10 - 1, sin(x * Pi / 5), 0.0), pl2)
+    );
+free( x );
+cbsp = cinterp( pl2, 3, 5, PARAM_UNIFORM, false );
+free( pl2 );
+color( cbsp, red );
+viewobj(cbsp);
+
+steps = 8;
+pt_lst = nil();
+for ( i = 0, 1, steps - 1,
+	pt = ceval( cbsp, nth( pdomain(cbsp), 2 ) * i / (steps - 1) ):
+	snoc( pt, pt_lst )
+    );
+cpl = poly( pt_lst, true );
+color(cpl, green);
+
+resolution = 0.03;
+cbsp2 = cbsp;
+cpl2 = gpolyline( cbsp2, 2 );
+color(cpl2, yellow);
+resolution = 20;
+
+interact( list( cbsp, cpl2, cpl ) );
+save( "gpolyln3", list( cbsp, cpl2, cpl ) );
+
+#############################################################################
+
+cbsp = cbspline( 3,
+		 list( ctlpt( E2, 0.0,   0.0 ),
+		       ctlpt( E2, 0.45,  1.0 ),
+		       ctlpt( E2, 0.55,  1.0 ),
+		       ctlpt( E2, 1.0,   0.0 ) ),
+		 list( KV_OPEN ) );
+color( cbsp, red );
+
+steps = 4;
+pt_lst = nil();
+for ( i = 0, 1, steps - 1,
+	pt = ceval( cbsp, nth( pdomain( cbsp ), 2 ) * i / ( steps - 1 ) ):
+	snoc( pt, pt_lst )
+    );
+free( i );
+cpl = poly( pt_lst, true );
+free( pt_lst );
+free( pt );
+free( steps );
+color( cpl, green );
+
+resolution = 0.005;
+cbsp2 = cbsp;
+cpl2 = gpolyline( cbsp2, 2 );
+free( cbsp2 );
+color( cpl2, yellow );
+resolution = 20;
+
+interact( list( cbsp, cpl2, cpl ) );
+save( "gpolyln4", list( cbsp, cpl2, cpl ) );
+
+free( cbsp );
+free( cpl2 );
+free( cpl );
+
+dummy = iritState( "DumpLevel", DLevel );
+free( DLevel );
+dummy = iritstate( "BspProdMethod", IProd );
+free( IProd );
+
+resolution = save_res;

@@ -1,0 +1,16 @@
+#!/bin/csh -f
+
+echo Ready to remove old tree in 3 second...
+
+sleep 3
+
+echo Removing symbolic links.
+find . -type l -exec rm {} \;
+
+echo Removing object files.
+find . -name \*.a -exec rm {} \;
+
+echo Removing libraries.
+find . -name \*.o -exec rm {} \;
+
+echo Done.

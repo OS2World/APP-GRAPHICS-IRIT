@@ -1,0 +1,187 @@
+#
+# Convex Hull and related computation for freeform curves.
+#
+#				Gershon Elber, February 1996
+#
+
+save_mat = view_mat;
+view_mat = sc( 0.5 );
+viewobj( view_mat );
+ri = iritstate( "RandomInit", 1964 );  # Seed-initiate the randomizer,
+free( ri );
+
+#############################################################################
+
+Pts = nil();
+Len = 1.0;
+NumPts = 5;
+for ( i = 0, 1, NumPts,
+      R = random( 0, 2 ):
+      Pt = ctlpt( E2, Len * R * cos( i * 2 * pi / NumPts ),
+		      Len * R * sin( i * 2 * pi / NumPts ) ):
+      snoc( Pt, Pts ) );
+c0 = coerce( cbspline( 4, Pts, list( KV_PERIODIC ) ), KV_OPEN );
+color( c0, red );
+adwidth( c0, 4 );
+
+Pts = nil();
+Len = 1.0;
+NumPts = 7;
+for ( i = 0, 1, NumPts,
+      R = random( 0, 2 ):
+      Pt = ctlpt( E2, Len * R * cos( i * 2 * pi / NumPts ),
+		      Len * R * sin( i * 2 * pi / NumPts ) ):
+      snoc( Pt, Pts ) );
+c1 = coerce( cbspline( 4, Pts, list( KV_PERIODIC ) ), KV_OPEN );
+color( c1, red );
+adwidth( c1, 4 );
+
+Pts = nil();
+Len = 1.0;
+NumPts = 9;
+for ( i = 0, 1, NumPts,
+      Pt = ctlpt( E2, random( -1, 1 ), random( -1, 1 ) ):
+      snoc( Pt, Pts ) );
+c2 = coerce( cbspline( 4, Pts, list( KV_PERIODIC ) ), KV_OPEN );
+color( c2, red );
+adwidth( c2, 4 );
+
+#
+# Convex Hull.
+#
+
+chc0 = cnvxhull( c0, 10 );
+color( chc0, green );
+adwidth( chc0, 2 );
+interact( list( c0, chc0 ) );
+
+chc1 = cnvxhull( c1, 10 );
+color( chc1, green );
+adwidth( chc1, 2 );
+interact( list( c1, chc1 ) );
+
+chc2 = cnvxhull( c2, 10 );
+color( chc2, green );
+adwidth( chc2, 2 );
+interact( list( c2, chc2 ) );
+
+save( "ffcnvhl1", list( list( c0, chc0 ),
+		        list( c1, chc1 ) * tx( 3 ),
+		        list( c2, chc2 ) * tx( 6 ) ) );
+
+# Discrete case works on loops as well:
+
+l = nil();
+NumPts = 30;
+for ( i = 0, 1, NumPts,
+      snoc( vector( random( -1, 1 ), random( -1, 1 ), 0 ), l ) );
+p = poly( l, false );
+color( p, red );
+adwidth( p, 5 );
+
+ch = cnvxhull( p, 0 );
+color( ch, green );
+adwidth( ch, 2 );
+
+interact( list( ch, p ) );
+save( "ffcnvhl2", list( p, ch ) );
+
+#
+# Tangents to curve through a point.
+#
+
+viewclear();
+p = point( 0, 1, 0 );
+t1c0 = crvpttan( c0, p, 0.01 );
+for ( i = 1, 1, sizeof( t1c0 ),
+	viewobj( ceval( c0, nth( t1c0, i ) ) + coerce( p, e3 ) )
+    );
+viewobj( list( p, c0 ) );
+pause();
+
+viewclear();
+p = point( 1, 1, 0 );
+t1c1 = crvpttan( c1, p, 0.01 );
+for ( i = 1, 1, sizeof( t1c1 ),
+	viewobj( ceval( c1, nth( t1c1, i ) ) + coerce( p, e3 ) )
+    );
+viewobj( list( p, c1 ) );
+pause();
+
+viewclear();
+p = point( 0, 1, 0 );
+t1c2 = crvpttan( c2, p, 0.01 );
+viewstate( "PolyAprx", 1 );
+for ( i = 1, 1, sizeof( t1c2 ),
+	viewobj( ceval( c2, nth( t1c2, i ) ) + coerce( p, e3 ) )
+    );
+viewobj( list( p, c2 ) );
+pause();
+
+viewstate( "PolyAprx", 0 );
+
+#
+# Tangents to a curve at two different locations.
+#
+
+t2c0 = crv2tans( c0, 10 );
+viewclear();
+for ( i = 1, 1, sizeof( t2c0 ),
+	pt = nth( t2c0, i ):
+	viewobj( ceval( c0, coord( pt, 0 ) ) +
+		 ceval( c0, coord( pt, 1 ) ) ) );
+viewobj( c0 );
+pause();
+
+t2c1 = crv2tans( c1, 10 );
+viewclear();
+for ( i = 1, 1, sizeof( t2c1 ),
+	pt = nth( t2c1, i ):
+	viewobj( ceval( c1, coord( pt, 0 ) ) +
+		 ceval( c1, coord( pt, 1 ) ) )
+    );
+viewobj( c1 );
+pause();
+
+t2c2 = crv2tans( c2, 10 );
+viewclear();
+
+viewstate( "PolyAprx", 1 );
+
+for ( i = 1, 1, sizeof( t2c2 ),
+	pt = nth( t2c2, i ):
+	viewobj( ceval( c2, coord( pt, 0 ) ) +
+		 ceval( c2, coord( pt, 1 ) ) )
+    );
+viewobj( c2 );
+pause();
+
+viewstate( "PolyAprx", 0 );
+
+save( "ffcnvhl3", list( t1c0, t1c1, t1c2, t2c0, t2c1, t2c2 ) );
+
+#############################################################################
+
+view_mat = save_mat;
+free( save_mat );
+free( l );
+free( r );
+free( i );
+free( p );
+free( pt );
+free( Len );
+free( Pts );
+free( NumPts );
+free( c0 );
+free( c1 );
+free( c2 );
+free( ch );
+free( chc0 );
+free( chc1 );
+free( chc2 );
+free( t1c0 );
+free( t1c1 );
+free( t1c2 );
+free( t2c0 );
+free( t2c1 );
+free( t2c2 );

@@ -1,0 +1,627 @@
+#
+# The symbolic computation below is faster this way.
+#
+
+# Faster product using Bezier decomposition.
+IProd = iritstate( "BspProdMethod", 0 );
+
+save_res = resolution;
+
+#############################################################################
+# curvature evaluation of curves.
+#############################################################################
+
+CompareCurvatureCrvEvals = procedure( c ):
+    CrvtrCrv: TMin: TMax: t: dt: kN: k1: k2:
+
+    c = coerce( c, kv_open ):
+    TMin = nth( pdomain( c ), 1 ):
+    TMax = nth( pdomain( c ), 2 ):
+    t = TMin:
+    dt = (TMax - TMin) / 100:
+    CrvtrCrv = CNrmlCrv( c ):
+
+    while (t <= TMax,
+        kN = ceval( CrvtrCrv, t ):
+        k1 = sqrt( coerce( kN, vector_type ) * coerce( kN, vector_type ) ):
+        k2 = ccrvtreval( c, t ):
+        if ( abs( k1 - k2 ) > 1e-10,
+	    printf( "Mismatch in curve curvature evaluation (%.13f vs. %.13f)\\n",
+		    list( k1, k2 ) ) ):
+        t = t + dt );
+
+c = circle( vector( 0, 0, 0 ), 2 );
+CompareCurvatureCrvEvals( c );
+CompareCurvatureCrvEvals( creparam( c, 0, 1000 ) );
+CompareCurvatureCrvEvals( creparam( c, 0, 0.001 ) );
+
+c = pcircle( vector( 0, 0, 0 ), 0.5 );
+CompareCurvatureCrvEvals( c );
+CompareCurvatureCrvEvals( creparam( c, 0, 1000 ) );
+CompareCurvatureCrvEvals( creparam( c, 0, 0.001 ) );
+
+c = cbspline( 4,
+    list( ctlpt( E3, -0.168, 0.794, 0. ),
+          ctlpt( E2, -0.118, 0.637 ),
+          ctlpt( E2, 0.071, 0.771 ),
+          ctlpt( E2, 0.237, 0.691 ),
+          ctlpt( E2, -0.091, 0.452 ),
+          ctlpt( E2, 0.134, 0.039 ),
+          ctlpt( E2, 0.489, 0.223 ),
+          ctlpt( E2, 0.39, 0.439 ),
+          ctlpt( E2, 0.165, 0.187 ),
+          ctlpt( E2, 0.111, 0.439 ),
+          ctlpt( E2, 0.313, 0.529 ),
+          ctlpt( E2, 0.313, 0.673 ),
+          ctlpt( E2, 0.282, 0.803 ),
+          ctlpt( E2, -0.01, 0.911 ) ),
+    list( kv_periodic ) );
+CompareCurvatureCrvEvals( c );
+CompareCurvatureCrvEvals( creparam( c, 0, 1000 ) );
+CompareCurvatureCrvEvals( creparam( c, 0, 0.001 ) );
+
+#############################################################################
+# Principle curvatures/directions of surfaces.
+#############################################################################
+
+PositionAsymptotes = function( Srf, u, v ): p: k: i:
+    return = nil():
+    p = seval( Srf, u, v ):
+    k = SAsympEval( Srf, u, v, true ):
+    for ( i = 1, 1, sizeof( k ),
+	snoc( p + coerce( coerce( p, point_type ) + nth( k, i ), e3 ),
+	      return ) ):
+    adwidth( return, 2 ):
+    color( return, green );
+
+PositionCurvature = function( Srf, u, v ):
+    k: v1: v2: p: n: c: r1: r2: c1: c2: d1: d2: Eps:
+    Eps = 1e-12: # Do not divide by zero.
+    c = circle( vector( 0, 0, 0 ), 1 ):
+    k = SCrvtrEval( Srf, u, v, true ):
+    r1 = max( min( 1 / ( nth( k, 1 ) + Eps ), 1000 ), -1000 ):
+    r2 = max( min( 1 / ( nth( k, 3 ) + Eps ), 1000 ), -1000 ):
+    v1 = nth( k, 2 ):
+    v2 = nth( k, 4 ):
+    p = seval( Srf, u, v ):
+    n = snormal( Srf, u, v ):
+    d1 = v1 ^ n:
+    d2 = v2 ^ n:
+    c1 = c * sc( r1 ) * rotz2v( d1 )
+	   * trans( coerce( p, vector_type ) + n * r1 ):
+    c2 = c * sc( r2 ) * rotz2v( d2 )
+	   * trans( coerce( p, vector_type ) + n * r2 ):
+    return = list( p, c1, c2,
+		   p + coerce( coerce( p, point_type ) + v1, e3 ),
+		   p + coerce( coerce( p, point_type ) + v2, e3 ),
+		   PositionAsymptotes( Srf, u, v ) ):
+    adwidth( return, 2 ):
+    color( return, yellow );
+
+Spr = sphereSrf( 0.5 ) * sx( 0.5 ) * tx( 2 );
+Cyl = cylinSrf( 1, 1 ) * sc( 0.5 );
+Trs = torusSrf( 1, 0.3 ) * sc( 0.5 ) * tx( -2 );
+
+All = list( Spr, Cyl, Trs,
+	    PositionCurvature( Trs, 0.5, 0.5 ),
+	    PositionCurvature( Trs, 2.2, 2.8 ),
+	    PositionCurvature( Trs, 2.8, 1.8 ),
+	    PositionCurvature( Spr, 0.5, 0.5 ),
+	    PositionCurvature( Spr, 1, 1 ),
+	    PositionCurvature( Cyl, 1.5, 1.25 ),
+	    PositionCurvature( Cyl, 2, 1.5 ) );
+
+interact( All );
+
+save( "scrvtrev", All );
+
+free( All );
+free( Trs );
+free( Spr );
+free( Cyl );
+
+#############################################################################
+# Umbilicals on surfaces
+#############################################################################
+
+EvalToEuclidean = function( Srf, ParamUmb ): i: Umb: Crvtr:
+    return = nil():
+    for ( i = 1, 1, sizeof( ParamUmb ),
+        Umb = nth( ParamUmb, i ):
+        Crvtr = SCrvtrEval( Srf, coord( Umb, 0 ), coord( Umb, 1 ), true ):
+        printf( "Principal curvatures at (u, v) = (%f, %f) equal %.9f and %.9f\\n",
+	        list( coord( Umb, 0 ), coord( Umb, 1 ), nth( Crvtr, 1 ), nth( Crvtr, 3 ) ) ):
+        snoc( seval( Srf, coord( Umb, 0 ), coord( Umb, 1 ) ), return ) ):
+    color( return, yellow );
+
+#################################
+
+s = surfPrev( cregion( pcircle( vector( 0, 0, 0 ), 1 ), 0.001, 1.999 ) * rx( 90 ) )
+	* sx( 0.8 ) * sy( 1.2 );
+color( s, red );
+
+ParamUmb = sumbilic( s, 0.2, 1e-6 );
+interact( list( EvalToEuclidean( s, ParamUmb ), s ) );
+
+#################################
+
+c = cbspline( 4,
+    list( ctlpt( E2, 0.215, 0.427 ),
+          ctlpt( E2, 1.34, 0.317 ),
+          ctlpt( E2, 1.25, -0.791 ),
+          ctlpt( E2, -0.573, -1.05 ),
+          ctlpt( E2, 1.12, -1.31 ),
+          ctlpt( E2, 1.19, -1.51 ) ),
+    list( kv_open ) );
+s = sregion( surfPRev( c * rx( 90 ) ), col, 0, 1 );
+color( s, red );
+
+ParamUmb = sumbilic( s, 0.05, 1e-9 );
+interact( list( EvalToEuclidean( s, ParamUmb ), s ) );
+
+#################################
+
+Wig = sbspline( 4, 4,
+    list( list( ctlpt( E3, 0.0135, 0.463, -1.01 ),
+                ctlpt( E3, 0.411, -0.462, -0.94 ),
+                ctlpt( E3, 0.699, 0.072, -0.382 ),
+                ctlpt( E3, 0.999, 0.072, -0.382 ) ),
+          list( ctlpt( E3, -0.202, 1.16, -0.345 ),
+                ctlpt( E3, 0.211, 0.0227, -0.343 ),
+                ctlpt( E3, 0.5, 0.557, 0.215 ),
+                ctlpt( E3, 0.7, 0.557, 0.215 ) ),
+          list( ctlpt( E3, -0.294, 0.182, -0.234 ),
+                ctlpt( E3, 0.104, -0.744, -0.163 ),
+                ctlpt( E3, 0.392, -0.209, 0.395 ),
+                ctlpt( E3, 0.592, -0.209, 0.395 ) ),
+          list( ctlpt( E3, -0.509, 0.876, 0.432 ),
+                ctlpt( E3, -0.0963, -0.259, 0.434 ),
+                ctlpt( E3, 0.193, 0.276, 0.992 ),
+                ctlpt( E3, 0.293, 0.276, 0.992 ) ),
+          list( ctlpt( E3, -0.601, -0.0993, 0.543 ),
+                ctlpt( E3, -0.203, -1.03, 0.614 ),
+                ctlpt( E3, 0.0854, -0.491, 1.17 ),
+                ctlpt( E3, 0.4854, -0.491, 1.17 ) ) ),
+    list( list( kv_open ),
+          list( kv_open ) ) );
+color( Wig, red );
+
+ParamUmb = sumbilic( Wig, 0.05, 1e-4 );
+interact( list( EvalToEuclidean( Wig, ParamUmb ), Wig ) );
+
+free( Wig );
+free( c );
+free( s );
+free( ParamUmb );
+
+#############################################################################
+# Mean curvature evolute of surfaces.
+#############################################################################
+c1 = pcircle(vector(0, 0, 0), 1);
+
+scone = ruledsrf( c1, c1 * sc( 0.1 ) * tz( 1 ) );
+color( scone, yellow );
+sconeev = evolute( scone );
+color( sconeev, green );
+interact( list( axes, scone, sconeev ) );
+
+scylin = ruledsrf( c1, c1 * tz( 1 ) );
+color( scylin, yellow );
+scylinev = evolute( scylin );
+color( scylinev, green );
+interact( list( axes, scylin, scylinev ) );
+
+save( "sevolute", list( axes, scylin, scylinev, scone, sconeev ) );
+
+free( scone );
+free( sconeev );
+free( scylin );
+free( scylinev );
+
+scone2 = ruledsrf( c1, c1 * sc( 0.1 ) * tz( 1 ) ) * scale( vector( 2, 1, 1 ) );
+free( c1 );
+color( scone2, yellow );
+scone2ev = evolute( scone2 );
+color( scone2ev, green );
+interact( list( axes, scone2, scone2ev ) );
+free( scone2 );
+free( scone2ev );
+
+#############################################################################
+# Gaussian curvature of a parametric surface.
+#############################################################################
+srf1 = hermite( cbezier( list( ctlpt( E3, 0.0, 0.0, 0.0 ),
+			       ctlpt( E3, 0.5, 0.2, 0.0 ),
+			       ctlpt( E3, 1.0, 0.0, 0.0 ) ) ),
+		cbezier( list( ctlpt( E3, 0.0, 1.0, 0.0 ),
+			       ctlpt( E3, 0.5, 0.8, 0.0 ),
+			       ctlpt( E3, 1.0, 1.0, 0.5 ) ) ),
+		cbezier( list( ctlpt( E3, 0.0, 2.0, 0.0 ),
+			       ctlpt( E3, 0.0, 2.0, 0.0 ),
+			       ctlpt( E3, 0.0, 2.0, 0.0 ) ) ),
+		cbezier( list( ctlpt( E3, 0.0, 2.0, 0.0 ),
+			       ctlpt( E3, 0.0, 2.0, 0.0 ),
+			       ctlpt( E3, 0.0, 2.0, 0.0 ) ) ) );
+color( srf1, yellow );
+
+srf1MS = coerce( smean( srf1, false ), e3 )
+	* rotx( -90 ) * roty( -90 ) * sz( 0.01 );
+color( srf1MS, green );
+interact( list( srf1, srf1MS ) );
+free( srf1MS );
+
+srf1GS = coerce( sgauss( srf1, false ), e3 )
+				* rotx( -90 ) * roty( -90 ) * sz( 0.01 );
+color( srf1GS, green );
+interact( list( srf1, srf1GS ) );
+
+save( "sgauss", list( srf1, srf1GS ) );
+
+free( srf1GS );
+
+#############################################################################
+# Derive the coefficients of the three surface fundamental forms.
+#############################################################################
+
+save( "srffform", list( SrfFForm( srf1, 1 ),
+		        SrfFForm( srf1, 2 ),
+		        SrfFForm( srf1, 3 ) ) );
+free( srf1 );
+
+#############################################################################
+# Focal surfaces using isoparmatric direction's normal curvature.
+#############################################################################
+
+gcross = cbspline( 3,
+		   list( ctlpt( E3, 0.3, 0.0, 0.0 ),
+		         ctlpt( E3, 0.1, 0.0, 0.1 ),
+		         ctlpt( E3, 0.1, 0.0, 0.4 ),
+		         ctlpt( E3, 0.5, 0.0, 0.5 ),
+		         ctlpt( E3, 0.6, 0.0, 0.8 ) ),
+		   list( KV_OPEN ) );
+glass = surfprev( gcross );
+free( gcross );
+color( glass, red );
+
+gfocal = sfocal(glass, col);
+
+gfocalsrf = symbsum( glass, gfocal );
+
+interact( list( glass, gfocal, gfocalsrf ) );
+
+save( "sfocal", list( glass, gfocal, gfocalsrf ) );
+
+free( gfocal );
+free( gfocalsrf );
+free( glass );
+
+#############################################################################
+# Bound on normal curvature in isoparametric directions.
+#############################################################################
+
+cross = ctlpt( E3, 1.0, 0.0, 0.0 ) +
+        ctlpt( E3, 1.0, 0.0, 1.0 );
+s = sregion( surfprev( cross ), COL, 0, 1.0 );
+
+view( list( s, axes ), on );
+
+UCrvtrZXY = scrvtr( s, P3, row );
+VCrvtrZXY = scrvtr( s, P3, col );
+UCrvtrXYZ = UCrvtrZXY * rotx( -90 ) * roty( -90 ) * scale( vector( 1, 1, 1 ) );
+VCrvtrXYZ = VCrvtrZXY * rotx( -90 ) * roty( -90 ) * scale( vector( 1, 1, 1 ) );
+color( UCrvtrXYZ, red );
+color( VCrvtrXYZ, magenta );
+
+view( list( UCrvtrXYZ, VCrvtrXYZ ), off );
+
+save( "scrvtr1", list( UCrvtrXYZ, VCrvtrXYZ ) );
+
+pause();
+
+#############################################################################
+
+cross = ctlpt( E3, 0.5, 0.0, 0.0 ) +
+        ctlpt( E3, 0.5, 0.0, 1.0 );
+s = sregion( surfprev( cross ), COL, 0, 1.0 );
+
+view( list( s, axes ), on );
+
+UCrvtrZXY = scrvtr( s, E3, row );
+VCrvtrZXY = scrvtr( s, E3, col );
+UCrvtrXYZ = UCrvtrZXY * rotx( -90 ) * roty( -90 ) * scale( vector( 1, 1, 1 ) );
+VCrvtrXYZ = VCrvtrZXY * rotx( -90 ) * roty( -90 ) * scale( vector( 1, 1, 1 ) );
+color( UCrvtrXYZ, red );
+color( VCrvtrXYZ, magenta );
+
+view( list( UCrvtrXYZ, VCrvtrXYZ ), off );
+
+save( "scrvtr2", list( UCrvtrXYZ, VCrvtrXYZ ) );
+
+pause();
+
+#############################################################################
+
+cross = ctlpt( E3, 0.2, 0.0, 1.0 ) +
+        ctlpt( E3, 1.0, 0.0, 1.0 ) +
+        ctlpt( E3, 0.2, 0.0, 0.0 );
+Con = surfprev( cross );
+
+view( list( Con, axes ), on );
+
+viewstate( "PolyAprx", 0 );
+viewstate( "PolyAprx", 0 );
+viewstate( "NumIsos" , 0 );
+viewstate( "NumIsos" , 0 );
+
+UCrvtrZXY = scrvtr( Con, P3, row );
+VCrvtrZXY = scrvtr( Con, P3, col );
+UCrvtrXYZ = UCrvtrZXY * rotx( -90 ) * roty( -90 ) * scale( vector( 1, 1, 1 ) );
+VCrvtrXYZ = VCrvtrZXY * rotx( -90 ) * roty( -90 ) * scale( vector( 1, 1, 0.1 ) );
+color( UCrvtrXYZ, red );
+color( VCrvtrXYZ, magenta );
+
+view( list( UCrvtrXYZ, VCrvtrXYZ ), off );
+
+save( "scrvtr3", list( UCrvtrXYZ, VCrvtrXYZ ) );
+
+pause();
+
+#############################################################################
+
+cross = cbspline( 3,
+	          list( ctlpt( E2,  0.0,  0.0 ),
+		     	ctlpt( E2,  0.8,  0.0 ),
+		        ctlpt( E2,  0.8,  0.2 ),
+		        ctlpt( E2,  0.07, 1.4 ),
+		        ctlpt( E2, -0.07, 1.4 ),
+		        ctlpt( E2, -0.8,  0.2 ),
+		        ctlpt( E2, -0.8,  0.0 ),
+		        ctlpt( E2,  0.0,  0.0 ) ),
+	          list( KV_OPEN ) );
+cross = coerce( cross, e3 );
+s = sFromCrvs( list( cross,
+		     cross * trans( vector( 0.5, 0, 1 ) ),
+		     cross * trans( vector( 0, 0, 2 ) ) ), 3, KV_OPEN );
+view( list( s, axes ), on );
+
+UCrvtrZXY = scrvtr( s, E3, row );
+VCrvtrZXY = scrvtr( s, E3, col );
+UCrvtrXYZ = UCrvtrZXY * rotx( -90 ) * roty( -90 ) * scale( vector( 1, 1, 10 ) );
+VCrvtrXYZ = VCrvtrZXY * rotx( -90 ) * roty( -90 ) * scale( vector( 1, 1, 0.001 ) );
+free( UCrvtrZXY );
+free( VCrvtrZXY );
+color( UCrvtrXYZ, red );
+color( VCrvtrXYZ, magenta );
+
+view( list( UCrvtrXYZ, VCrvtrXYZ ), off );
+
+save( "scrvtr4", list( UCrvtrXYZ, VCrvtrXYZ ) );
+
+free( UCrvtrXYZ );
+free( VCrvtrXYZ );
+
+pause();
+
+#############################################################################
+# Total bound on normal curvature as k1^2 + k2^2
+#############################################################################
+
+cross = ctlpt( E3, 1.0, 0.0, 0.0 ) +
+        ctlpt( E3, 1.0, 0.0, 1.0 );
+s = sregion( surfprev( cross ), COL, 0, 1.0 );
+
+view( list( s, axes ), on );
+
+CrvtrZXY = scrvtr( s, E3, off );
+CrvtrXYZ = CrvtrZXY * rotx( -90 ) * roty( -90 ) * scale( vector( 1, 1, 1 ) );
+color( CrvtrXYZ, green );
+
+view( CrvtrXYZ, off );
+
+save( "sk1k2a", list( CrvtrXYZ ) );
+
+pause();
+
+#############################################################################
+
+cross = ctlpt( E3, 0.5, 0.0, 0.0 ) +
+        ctlpt( E3, 0.5, 0.0, 1.0 );
+s = sregion( surfprev( cross ), COL, 0, 1.0 );
+
+view( list( s, axes ), on );
+
+CrvtrZXY = scrvtr( s, E3, off );
+CrvtrXYZ = CrvtrZXY * rotx( -90 ) * roty( -90 ) * scale( vector( 1, 1, 1 ) );
+color( CrvtrXYZ, green );
+
+view( CrvtrXYZ, off );
+
+save( "sk1k2b", list( CrvtrXYZ ) );
+
+pause();
+
+#############################################################################
+
+cross = ctlpt( E3, 0.2, 0.0, 1.0 ) +
+        ctlpt( E3, 1.0, 0.0, 1.0 ) +
+        ctlpt( E3, 0.2, 0.0, 0.0 );
+Con = surfprev( cross );
+
+view( list( Con, axes ), on );
+
+CrvtrZXY = scrvtr( Con, E3, off );
+free( Con );
+CrvtrXYZ = CrvtrZXY * rotx( -90 ) * roty( -90 ) * scale( vector( 1, 1, 0.1 ) );
+color( CrvtrXYZ, green );
+
+view( CrvtrXYZ, off );
+
+save( "sk1k2c", list( CrvtrXYZ ) );
+
+pause();
+
+#############################################################################
+
+cross = cbspline( 3,
+	          list( ctlpt( E2,  0.0,  0.0 ),
+		     	ctlpt( E2,  0.8,  0.0 ),
+		        ctlpt( E2,  0.8,  0.2 ),
+		        ctlpt( E2,  0.07, 1.4 ),
+		        ctlpt( E2, -0.07, 1.4 ),
+		        ctlpt( E2, -0.8,  0.2 ),
+		        ctlpt( E2, -0.8,  0.0 ),
+		        ctlpt( E2,  0.0,  0.0 ) ),
+	          list( KV_OPEN ) );
+cross = coerce( cross, e3 );
+s = sFromCrvs( list( cross,
+		     cross * trans( vector( 0.5, 0, 1 ) ),
+		     cross * trans( vector( 0, 0, 2 ) ) ), 3, KV_OPEN );
+free( cross );
+
+view( list( s, axes ), on );
+
+CrvtrZXY = scrvtr( s, E3, off );
+CrvtrXYZ = CrvtrZXY * rotx( -90 ) * roty( -90 ) * scale( vector( 1, 1, 0.001 ) );
+free( CrvtrZXY );
+color( CrvtrXYZ, green );
+
+view( CrvtrXYZ, off );
+
+save( "sk1k2d", list( CrvtrXYZ ) );
+
+pause();
+
+#############################################################################
+# Parabolic edges of freeforms
+#############################################################################
+
+EvalGaussianCrvs = function( Srf, NumerOnly, KMin, KMax, KStep ):
+    K: GaussCntrs: x: Parabolic:
+    K = sgauss( Srf, NumerOnly ):
+    printf( "K Spans from %f to %f\\n", bbox( K ) ):
+    GaussCntrs = nil():
+    for ( x = KMin, KStep, KMax,
+        snoc( contour( K, plane( 1, 0, 0, -x ), Srf ),
+	      GaussCntrs ) ):
+    color( GaussCntrs, magenta ):
+    Parabolic = sparabolc( Srf, 1 ):
+    if ( thisobj("Parabolic") == poly_type,
+        color( Parabolic, red ):
+        adwidth( Parabolic, 2 ):
+        return = list( Parabolic, GaussCntrs ),
+	return = GaussCntrs );
+
+EvalMeanCrvs = function( Srf, NumerOnly, HMin, HMax, HStep ):
+    H: MeanCntrs: x: Minimal:
+    H = smean( Srf, NumerOnly ):
+    printf( "H Spans from %f to %f\\n", bbox( H ) ):
+    MeanCntrs = nil():
+    for ( x = HMin, HStep, HMax,
+        snoc( contour( H, plane( 1, 0, 0, -x ), Srf ),
+	      MeanCntrs ) ):
+    color( MeanCntrs, yellow ):
+    Minimal = contour( H, plane( 1, 0, 0, 1e-4 ), Srf ):
+    if ( thisobj("Minimal") == poly_type,
+        color( Minimal, green ):
+        adwidth( Minimal, 2 ):
+        return = list( MeanCntrs, Minimal ),
+        return = MeanCntrs );
+
+Bump = sbezier(
+        list( list( ctlpt( E3, 0, 0, 0 ),
+                    ctlpt( E3, 1, 0, 0 ),
+                    ctlpt( E3, 2, 0, 0 ) ),
+              list( ctlpt( E3, 0, 1, 0 ),
+                    ctlpt( E3, 1, 1, 3 ),
+                    ctlpt( E3, 2, 1, 0 ) ),
+              list( ctlpt( E3, 0, 2, 0 ),
+                    ctlpt( E3, 1, 2, 0 ),
+                    ctlpt( E3, 2, 2, 0 ) ) ) );
+color( Bump, white );
+
+resolution = 20;
+Param = sparabolc( Bump, 1 );
+color( Param, magenta );
+
+interact( list( Bump, Param ) );
+save( "sparab1", list( Bump, Param ) );
+
+interact( list( EvalGaussianCrvs( Bump, false, -8.5, 6.5, 2 ),
+	        EvalMeanCrvs( Bump, false, 0.2, 4.6, 0.6 ),
+	        Bump ) );
+
+interact( list( EvalGaussianCrvs( Bump, true, -1, 0.3, 0.2 ),
+	        EvalMeanCrvs( Bump, true, 0, 1, 0.1 ),
+	        Bump ) );
+
+free( Bump );
+
+pl = nil();
+pll = nil();
+for ( x = -3, 1, 3,
+      pl = nil():
+      for ( y = -3, 1, 3,
+	    snoc( point( x, y, sin( x * Pi / 2 ) * cos( y * Pi / 2 ) ),
+		  pl )
+	  ):
+      snoc( pl, pll ) );
+free( x );
+free( y );
+
+EggBase = sinterp( pll, 4, 4, 0, 0, PARAM_UNIFORM );
+color( EggBase, white );
+free( pl );
+free( pll );
+
+resolution = 20;
+Param = sparabolc( EggBase, 1 );
+color( Param, red );
+
+interact( list( EggBase, Param ) );
+
+save( "sparab2", list( EggBase, Param ) );
+free( Param );
+
+resolution = 10;
+
+Comment $
+#
+# Somewhat slow!
+#
+interact( list( EvalGaussianCrvs( EggBase, false, -5.5, 5.5, 1 ),
+	        EvalMeanCrvs( EggBase, false, -19, 5, 2 ),
+	        EggBase ) );
+$
+
+interact( list( EvalGaussianCrvs( EggBase, true, -1, 0.7, 0.1 ),
+	        EvalMeanCrvs( EggBase, true, -1, 1, 0.1 ),
+	        EggBase ) );
+
+save( "sparab3",
+      list( EvalGaussianCrvs( EggBase, true, -1, 0.7, 0.1 ),
+	    EvalMeanCrvs( EggBase, true, -1, 1, 0.1 ),
+	    EggBase ) );
+
+free( EggBase );
+
+#############################################################################
+# Split and Merge of freeforms.
+#############################################################################
+ff = ffsplit( circle(vector(0, 0, 0), 1) );
+ff = ffmerge( ff, P3 );
+printf( "Split/Merge test = %d\\n", list( ffpttype( ff ) == p3 ) );
+free( ff );
+
+viewclear();
+
+viewstate( "PolyAprx", 1 );
+viewstate( "PolyAprx", 1 );
+viewstate( "NumIsos" , 1 );
+viewstate( "NumIsos" , 1 );
+
+resolution = save_res;
+IProd = iritstate( "BspProdMethod", IProd );
+free( IProd );
+
+free( s );
+free( CrvtrXYZ );

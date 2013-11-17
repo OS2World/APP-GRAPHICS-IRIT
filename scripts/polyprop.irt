@@ -1,0 +1,126 @@
+#
+# Extraction of curves of prescribed properties out of polygonal models.
+#
+#						Gershon Elber, Mar 2003
+#
+
+save_res = resolution;
+
+include("teapot2");
+resolution = 10;
+Teapot2 = gpolygon( load( "teapot2" ), on );
+Spout2 = gpolygon( Spout2, on );
+Handle2 = gpolygon( Handle2, on );
+Cap2 = gpolygon( Cap2, on );
+Body2 = gpolygon( Body2, on );
+color( Teapot2, red );
+color( Spout2, red );
+color( Handle2, red );
+color( Cap2, red );
+color( Body2, red );
+
+#
+# Extract silhouettes.
+#
+
+Pl1 = PPropFtch( Spout2, 1, list( normalize( vector( 1,  1, 1 ) ), 90 ) );
+Pl2 = PPropFtch( Spout2, 1, list( normalize( vector( 1, -1, 1 ) ), 90 ) );
+Pl3 = PPropFtch( Spout2, 1, list( normalize( vector( 1,  0, 1 ) ), 90 ) );
+color( Pl1, white );
+color( Pl2, cyan );
+color( Pl3, green );
+adwidth( Pl1, 3 );
+adwidth( Pl2, 3 );
+adwidth( Pl3, 3 );
+
+view_mat2 = view_mat * sc( 0.5 ) * ty( 0.5 );
+All = list( Spout2, Pl1, Pl2, Pl3 );
+save( "poly1prp", All );
+interact( list( view_mat2, axes, All ) );
+
+#
+# Extract isophotes.
+#
+
+Pl4 = PPropFtch( Spout2, 1, list( normalize( vector( 1, 1, 1 ) ),  80 ) );
+Pl5 = PPropFtch( Spout2, 1, list( normalize( vector( 1, 1, 1 ) ),  60 ) );
+Pl6 = PPropFtch( Spout2, 1, list( normalize( vector( 1, 1, 1 ) ), 100 ) );
+Pl7 = PPropFtch( Spout2, 1, list( normalize( vector( 1, 1, 1 ) ), 120 ) );
+color( Pl4, magenta);
+color( Pl5, cyan );
+color( Pl6, green );
+color( Pl7, yellow );
+adwidth( Pl4, 3 );
+adwidth( Pl5, 3 );
+adwidth( Pl6, 3 );
+adwidth( Pl7, 3 );
+
+view_mat2 = view_mat * sc( 0.5 ) * ty( 0.5 );
+All = list( Spout2, Pl1, Pl4, Pl5, Pl6, Pl7 );
+save( "poly2prp", All );
+interact( list( view_mat2, axes, Spout2, All ) );
+
+
+#
+# Extract constant Gaussian curvature line.
+#
+
+Pl1 = PPropFtch( Spout2, 2, list( 1, 0 ) );
+Pl2 = PPropFtch( Spout2, 2, list( 1, 0.5 ) );
+Pl3 = PPropFtch( Spout2, 2, list( 1, 1.5 ) );
+Pl4 = PPropFtch( Spout2, 2, list( 1, -0.5 ) );
+Pl5 = PPropFtch( Spout2, 2, list( 1, -1.5 ) );
+color( Pl1, white );
+color( Pl2, magenta);
+color( Pl3, cyan );
+color( Pl4, green );
+color( Pl5, yellow );
+adwidth( Pl1, 3 );
+adwidth( Pl2, 3 );
+adwidth( Pl3, 3 );
+adwidth( Pl4, 3 );
+adwidth( Pl5, 3 );
+
+view_mat2 = view_mat * sc( 0.5 ) * ty( 0.5 );
+All = list( Spout2, Pl1, Pl2, Pl3, Pl4, Pl5 );
+save( "poly3prp", All );
+interact( list( view_mat2, axes, Spout2, All ) );
+
+#
+# Extract constant Mean curvature line.
+#
+
+Pl1 = PPropFtch( Spout2, 3, list( 1, 0 ) );
+Pl2 = PPropFtch( Spout2, 3, list( 1, 0.5 ) );
+Pl3 = PPropFtch( Spout2, 3, list( 1, 1.5 ) );
+Pl4 = PPropFtch( Spout2, 3, list( 1, -0.5 ) );
+Pl5 = PPropFtch( Spout2, 3, list( 1, -1.5 ) );
+color( Pl1, white );
+color( Pl2, magenta);
+color( Pl3, cyan );
+color( Pl4, green );
+color( Pl5, yellow );
+adwidth( Pl1, 3 );
+adwidth( Pl2, 3 );
+adwidth( Pl3, 3 );
+adwidth( Pl4, 3 );
+adwidth( Pl5, 3 );
+
+view_mat2 = view_mat * sc( 0.5 ) * ty( 0.5 );
+All = list( Spout2, Pl1, Pl2, Pl3, Pl4, Pl5 );
+save( "poly4prp", All );
+interact( list( view_mat2, axes, Spout2, All ) );
+
+#############################################################################
+
+resolution = save_res;
+
+free( Pl1 );
+free( Pl2 );
+free( Pl3 );
+free( Pl4 );
+free( Pl5 );
+free( Pl6 );
+free( Pl7 );
+free( All );
+free( view_mat2 );

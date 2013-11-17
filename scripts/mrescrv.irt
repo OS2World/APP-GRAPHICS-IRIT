@@ -1,0 +1,222 @@
+#
+# A simple example of multi resolution decomposition of curves.
+#
+#					Gershon Elber, July 1994.
+#
+
+save_mat = view_mat;
+view_mat = rotx( 0 );
+viewobj( view_mat );
+view_mat = save_mat;
+
+crv1 = cbspline( 3,
+		 list( ctlpt( E2,  0.0,  0.0 ),
+		       Ctlpt( E2,  0.0,  0.1 ),
+		       Ctlpt( E2,  0.1,  0.1 ),
+		       Ctlpt( E2,  0.1, -0.1 ),
+		       Ctlpt( E2, -0.1, -0.1 ),
+		       Ctlpt( E2, -0.1,  0.2 ),
+		       Ctlpt( E2,  0.2,  0.2 ),
+		       Ctlpt( E2,  0.2, -0.2 ),
+		       Ctlpt( E2, -0.2, -0.2 ),
+		       Ctlpt( E2, -0.2,  0.3 ),
+		       Ctlpt( E2,  0.0,  0.3 ) ),
+		 list( KV_OPEN ) );
+color( crv1, green );
+view( crv1, on );
+
+mcrv1 = cmultires( crv1, false, true );
+# sizeof( mcrv1 );
+
+mcrv1a = nth( mcrv1, 1 );
+color( mcrv1a, yellow );
+viewobj( mcrv1a );
+
+mcrv1b = symbsum( mcrv1a, nth( mcrv1, 2 ) );
+color( mcrv1b, red );
+viewobj( mcrv1b );
+free( mcrv1a );
+
+mcrv1c = symbsum( mcrv1b, nth( mcrv1, 3 ) );
+color( mcrv1c, cyan );
+viewobj( mcrv1c );
+free( mcrv1b );
+
+mcrv1d = symbsum( mcrv1c, nth( mcrv1, 4 ) );
+color( mcrv1d, magenta );
+viewobj( mcrv1d );
+free( mcrv1c );
+free( mcrv1d );
+
+free( mcrv1 );
+
+pause();
+
+viewobj( crv1 * tx( 0.5 ) );
+
+mcrv2 = cmultires( crv1, false, false );
+# sizeof( mcrv2 );
+
+mcrv2a = nth( mcrv2, 2 ) * tx( 0.5 );
+color( mcrv2a, cyan );
+viewobj( mcrv2a );
+free( mcrv2a );
+
+mcrv2b = nth( mcrv2, 3 ) * tx( 0.5 );
+color( mcrv2b, red );
+viewobj( mcrv2b );
+free( mcrv2b );
+
+mcrv2c = nth( mcrv2, 4 ) * tx( 0.5 );
+color( mcrv2c, yellow );
+viewobj( mcrv2c );
+free( mcrv2c );
+
+free( mcrv2 );
+
+pause();
+
+# Compute the BWavelets:
+
+mcrv2 = coerce( cmultires( crv1, -1, 7 ), e2 ) * rz( 90 ) * sx( -1 );
+
+view( list( mcrv2, axes ), 1 );
+
+free( mcrv2 );
+
+free( crv1 );
+
+#############################################################################
+
+gershon = cbspline( 3,
+	list( ctlpt( E2, -0.495882, 0.175176 ),
+	      ctlpt( E2, -0.494198, 0.178418 ),
+	      ctlpt( E2, -0.507315, 0.181982 ),
+	      ctlpt( E2, -0.533747, 0.151601 ),
+	      ctlpt( E2, -0.532154, 0.128179 ),
+	      ctlpt( E2, -0.523627, 0.11541 ),
+	      ctlpt( E2, -0.49332, 0.128514 ),
+	      ctlpt( E2, -0.463934, 0.155937 ),
+	      ctlpt( E2, -0.463985, 0.171946 ),
+	      ctlpt( E2, -0.463727, 0.186192 ),
+	      ctlpt( E2, -0.464768, 0.176119 ),
+	      ctlpt( E2, -0.461996, 0.0828042 ),
+	      ctlpt( E2, -0.471334, 0.00675235 ),
+	      ctlpt( E2, -0.491053, -0.00855959 ),
+	      ctlpt( E2, -0.512134, -0.0191573 ),
+	      ctlpt( E2, -0.534663, -0.013973 ),
+	      ctlpt( E2, -0.538055, -0.000381381 ),
+	      ctlpt( E2, -0.531522, 0.0276204 ),
+	      ctlpt( E2, -0.500371, 0.0743775 ),
+	      ctlpt( E2, -0.429119, 0.101908 ),
+	      ctlpt( E2, -0.404737, 0.131444 ),
+	      ctlpt( E2, -0.385875, 0.155667 ),
+	      ctlpt( E2, -0.37776, 0.175293 ),
+	      ctlpt( E2, -0.381366, 0.183432 ),
+	      ctlpt( E2, -0.389463, 0.188682 ),
+	      ctlpt( E2, -0.395056, 0.182786 ),
+	      ctlpt( E2, -0.410311, 0.178374 ),
+	      ctlpt( E2, -0.406228, 0.159723 ),
+	      ctlpt( E2, -0.399938, 0.136992 ),
+	      ctlpt( E2, -0.380064, 0.12446 ),
+	      ctlpt( E2, -0.358254, 0.127874 ),
+	      ctlpt( E2, -0.322967, 0.125713 ),
+	      ctlpt( E2, -0.288792, 0.130334 ),
+	      ctlpt( E2, -0.275501, 0.143486 ),
+	      ctlpt( E2, -0.262752, 0.149797 ),
+	      ctlpt( E2, -0.263721, 0.161347 ),
+	      ctlpt( E2, -0.253356, 0.172777 ),
+	      ctlpt( E2, -0.258404, 0.179048 ),
+	      ctlpt( E2, -0.25174, 0.186841 ),
+	      ctlpt( E2, -0.252926, 0.192946 ),
+	      ctlpt( E2, -0.2477, 0.174706 ),
+	      ctlpt( E2, -0.22821, 0.165459 ),
+	      ctlpt( E2, -0.196723, 0.167753 ),
+	      ctlpt( E2, -0.197479, 0.166499 ),
+	      ctlpt( E2, -0.202219, 0.153169 ),
+	      ctlpt( E2, -0.195551, 0.123795 ),
+	      ctlpt( E2, -0.188757, 0.118717 ),
+	      ctlpt( E2, -0.160505, 0.119553 ),
+	      ctlpt( E2, -0.112296, 0.129158 ),
+	      ctlpt( E2, -0.0982501, 0.1342 ),
+	      ctlpt( E2, -0.0812879, 0.151317 ),
+	      ctlpt( E2, -0.0798757, 0.157951 ),
+	      ctlpt( E2, -0.0796505, 0.162984 ),
+	      ctlpt( E2, -0.0919544, 0.167237 ),
+	      ctlpt( E2, -0.110448, 0.166554 ),
+	      ctlpt( E2, -0.105583, 0.142036 ),
+	      ctlpt( E2, -0.0828997, 0.122124 ),
+	      ctlpt( E2, -0.070035, 0.0994906 ),
+	      ctlpt( E2, -0.0812319, 0.0954212 ),
+	      ctlpt( E2, -0.125516, 0.0928348 ),
+	      ctlpt( E2, -0.0994779, 0.100141 ),
+	      ctlpt( E2, 0.00205618, 0.141568 ),
+	      ctlpt( E2, 0.0451499, 0.206911 ),
+	      ctlpt( E2, 0.0548198, 0.237755 ),
+	      ctlpt( E2, 0.0666219, 0.279151 ),
+	      ctlpt( E2, 0.0619715, 0.271567 ),
+	      ctlpt( E2, 0.0680639, 0.190765 ),
+	      ctlpt( E2, 0.0639604, 0.0984255 ),
+	      ctlpt( E2, 0.058185, 0.0802537 ),
+	      ctlpt( E2, 0.0529009, 0.0968594 ),
+	      ctlpt( E2, 0.0783991, 0.141836 ),
+	      ctlpt( E2, 0.0871166, 0.137463 ),
+	      ctlpt( E2, 0.0950116, 0.122049 ),
+	      ctlpt( E2, 0.0962663, 0.0866705 ),
+	      ctlpt( E2, 0.104113, 0.086546 ),
+	      ctlpt( E2, 0.15172, 0.11629 ),
+	      ctlpt( E2, 0.193462, 0.137109 ),
+	      ctlpt( E2, 0.191656, 0.14569 ),
+	      ctlpt( E2, 0.184776, 0.128474 ),
+	      ctlpt( E2, 0.193434, 0.100673 ),
+	      ctlpt( E2, 0.207262, 0.0883577 ),
+	      ctlpt( E2, 0.22832, 0.099593 ),
+	      ctlpt( E2, 0.24491, 0.126895 ),
+	      ctlpt( E2, 0.228029, 0.146936 ),
+	      ctlpt( E2, 0.217768, 0.149925 ),
+	      ctlpt( E2, 0.211197, 0.146064 ),
+	      ctlpt( E2, 0.283841, 0.163155 ),
+	      ctlpt( E2, 0.332533, 0.155838 ),
+	      ctlpt( E2, 0.331768, 0.143628 ),
+	      ctlpt( E2, 0.342725, 0.109079 ),
+	      ctlpt( E2, 0.339358, 0.115948 ),
+	      ctlpt( E2, 0.394303, 0.145888 ),
+	      ctlpt( E2, 0.42127, 0.141768 ),
+	      ctlpt( E2, 0.436947, 0.115641 ),
+	      ctlpt( E2, 0.441027, 0.104614 ),
+	      ctlpt( E2, 0.443836, 0.102725 ) ),
+	 list( KV_OPEN ) );
+color( gershon, white );
+view( gershon, true );
+
+mger1 = cmultires( gershon, false, true );
+
+none = nth( mger1, 1 );
+color( none, 1 );
+viewobj( none );
+for ( ( i = 2 ), 1, sizeof( mger1 ),
+	( none = symbsum( none, nth( mger1, i ) ) ):
+	color( none, i ):
+	viewobj( none )
+    );
+save( "mrescrv1", mger1 );
+
+mger2 = cmultires( gershon, false, false );
+
+none = nth( mger2, 1 );
+color( none, 1 );
+viewobj( gershon * ty( 0.3 ) );
+for ( i = 2, 1, sizeof( mger2 ),
+	none = nth( mger2, i ):
+	color( none, sizeof( mger2 ) - i + 1 ):
+	viewobj( none * ty( 0.3 ) )
+    );
+save( "mrescrv2", mger2 );
+
+free( i );
+free( mger1 );
+free( mger2 );
+free( none );
+free( gershon );
+
+pause();

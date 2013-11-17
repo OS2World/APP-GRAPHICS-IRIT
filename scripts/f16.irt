@@ -1,0 +1,595 @@
+# 
+# An F16 model. All dimensions are in cm for a 1:50 scale model.
+# 
+# 					Gershon Elber, 2003
+#
+
+
+#
+# Construct a full cross section from a half of it in the YZ plane.
+#
+makeCrossSection = function( Crv ):
+    return  = Crv + - Crv * sy( -1.0 );
+
+
+#
+# The fuselage's front.
+#
+
+Circ = circle( vector( 0, 0, 0 ), 1 );
+
+CrossSection0 = Circ * sc( 0.001 ) * ry( 90 ) * tx( -1.0 );
+CrossSection1 = Circ * sc( 0.02 ) * ry( 90 );
+CrossSection2 = Circ * sc( 0.02 ) * ry( 90 ) * tx( 0.5 );
+
+C3 = cbspline( 3, 
+	       list( ctlpt( E3, 1.7, 0.0,  -0.15 ),
+		     ctlpt( E3, 1.7, 0.15, -0.15 ),
+		     ctlpt( E3, 1.7, 0.35,  0.0 ),
+		     ctlpt( E3, 1.7, 0.18,  0.4 ),
+		     ctlpt( E3, 1.7, 0.0,   0.4 ) ),
+	       list( kv_open ) );
+CrossSection3 = makeCrossSection( C3 );
+
+C4 = cbspline( 3,
+	       list( ctlpt( E3, 2.7, 0.0,  -0.15 ),
+		     ctlpt( E3, 2.7, 0.15, -0.15 ),
+		     ctlpt( E3, 2.7, 0.45,  0.05 ),
+		     ctlpt( E3, 2.7, 0.18,  0.6 ),
+		     ctlpt( E3, 2.7, 0.0,   0.6 ) ),
+	       list( kv_open ) );
+CrossSection4 = makeCrossSection( C4 );
+
+C5 = cbspline( 3,
+	       list( ctlpt( E3, 4.2, 0.0,  -0.1 ),
+		     ctlpt( E3, 4.2, 0.30, -0.1 ),
+		     ctlpt( E3, 4.2, 0.34, -0.08 ),
+		     ctlpt( E3, 4.2, 0.55,  0.1 ),
+		     ctlpt( E3, 4.2, 0.55,  0.12 ),
+		     ctlpt( E3, 4.2, 0.55,  0.14 ),
+		     ctlpt( E3, 4.2, 0.40,  0.20 ),
+		     ctlpt( E3, 4.2, 0.34,  0.65 ),
+		     ctlpt( E3, 4.2, 0.30,  0.65 ),
+		     ctlpt( E3, 4.2, 0.0,   0.65 ) ),
+	       list( kv_open ) );
+CrossSection5 = makeCrossSection( C5 );
+
+C6 = cbspline( 3,
+	       list( ctlpt( E3, 5.5, 0.0,  0.0 ),
+		     ctlpt( E3, 5.5, 0.30, 0.0 ),
+		     ctlpt( E3, 5.5, 0.80, 0.05 ),
+		     ctlpt( E3, 5.5, 0.80, 0.07 ),
+		     ctlpt( E3, 5.5, 0.3,  0.3 ),
+		     ctlpt( E3, 5.5, 0.10, 0.65 ),
+		     ctlpt( E3, 5.5, 0.0,  0.65 ) ),
+	       list( kv_open ) );
+CrossSection6 = makeCrossSection( C6 );
+
+FuseFront = sFromCrvs( list( CrossSection0,
+			     CrossSection1,
+			     CrossSection2,
+			     CrossSection3,
+			     CrossSection4,
+			     CrossSection5,
+			     CrossSection6 ),
+		       3, kv_open );
+attrib( FuseFront, "rgb", "128, 128, 255" );
+attrib( FuseFront, "texture", "camouf" );
+
+free( C3 );
+free( C4 );
+free( C5 );
+free( C6 );
+free( CrossSection0 );
+free( CrossSection1 );
+free( CrossSection2 );
+free( CrossSection3 );
+free( CrossSection4 );
+free( CrossSection5 );
+free( CrossSection6 );
+
+#
+# The fuselage's back.
+#
+
+C10 = cbspline( 3,
+		list( ctlpt( E3, 5.5, 0.0,  -0.5 ),
+		      ctlpt( E3, 5.5, 0.3,  -0.5 ),
+		      ctlpt( E3, 5.5, 0.41,  0.0 ),
+		      ctlpt( E3, 5.5, 0.45,  0.02 ),
+		      ctlpt( E3, 5.5, 0.80,  0.05 ),
+		      ctlpt( E3, 5.5, 0.80,  0.07 ),
+		      ctlpt( E3, 5.5, 0.3,   0.3 ),
+		      ctlpt( E3, 5.5, 0.10,  0.65 ),
+		      ctlpt( E3, 5.5, 0.0,   0.65 ) ),
+	       list( kv_open ) );
+    CrossSection10 = makeCrossSection( C10 );
+
+C11 = cbspline( 3,
+		list( ctlpt( E3, 6.4, 0.0,  -0.55 ),
+		      ctlpt( E3, 6.4, 0.33, -0.55 ),
+		      ctlpt( E3, 6.4, 0.47, -0.15 ),
+		      ctlpt( E3, 6.4, 0.50, -0.12 ),
+		      ctlpt( E3, 6.4, 0.90, -0.02 ),
+		      ctlpt( E3, 6.4, 0.90,  0.01 ),
+		      ctlpt( E3, 6.4, 0.90,  0.14 ),
+		      ctlpt( E3, 6.4, 0.90,  0.17 ),
+		      ctlpt( E3, 6.4, 0.45,  0.3 ),
+		      ctlpt( E3, 6.4, 0.1,   0.55 ),
+		      ctlpt( E3, 6.4, 0.0,   0.55 ) ),
+	       list( kv_open ) );
+CrossSection11 = makeCrossSection( C11 );
+
+C12 = cbspline( 3,
+		list( ctlpt( E3, 7.4, 0.0,  -0.55 ),
+		      ctlpt( E3, 7.4, 0.4,  -0.55 ),
+		      ctlpt( E3, 7.4, 0.47, -0.2 ),
+		      ctlpt( E3, 7.4, 0.52, -0.1 ),
+		      ctlpt( E3, 7.4, 0.80, -0.08 ),
+		      ctlpt( E3, 7.4, 0.80, -0.05 ),
+		      ctlpt( E3, 7.4, 0.80,  0.2 ),
+		      ctlpt( E3, 7.4, 0.80,  0.23 ),
+		      ctlpt( E3, 7.4, 0.45,  0.3 ),
+		      ctlpt( E3, 7.4, 0.1,   0.55 ),
+		      ctlpt( E3, 7.4, 0.0,   0.55 ) ),
+	       list( kv_open ) );
+CrossSection12 = makeCrossSection( C12 );
+
+C13 = cbspline( 3,
+		list( ctlpt( E3, 8.4, 0.0,  -0.55 ),
+		      ctlpt( E3, 8.4, 0.3,  -0.55),
+		      ctlpt( E3, 8.4, 0.47, -0.15 ),
+		      ctlpt( E3, 8.4, 0.49, -0.12 ),
+		      ctlpt( E3, 8.4, 0.80, -0.08 ),
+		      ctlpt( E3, 8.4, 0.80, -0.05 ),
+		      ctlpt( E3, 8.4, 0.80,  0.2 ),
+		      ctlpt( E3, 8.4, 0.80,  0.23 ),
+		      ctlpt( E3, 8.4, 0.45,  0.3 ),
+		      ctlpt( E3, 8.4, 0.1,   0.55 ),
+		      ctlpt( E3, 8.4, 0.0,   0.55 ) ),
+	       list( kv_open ) );
+CrossSection13 = makeCrossSection( C13 );
+
+C14 = ( cregion( Circ, 0.0, 0.88 ) +
+        ctlpt( E2, 0.1, 1.4 ) +
+        ctlpt( E2, -0.1, 1.4 ) +
+        cregion( Circ, 1.12, 2.0 ) ) * sc( 0.57 ) * ry( 90 ) * tx( 11.4 );
+CrossSection14 = makeCrossSection( C14 );
+
+FuseBack = sFromCrvs( list( CrossSection10,
+			    CrossSection11,
+			    CrossSection12,
+			    CrossSection13,
+			    CrossSection14 ),
+		      3, kv_open );
+attrib( FuseBack, "rgb", "128, 128, 255" );
+attrib( FuseBack, "texture", "camouf" );
+free( C10 );
+free( C11 );
+free( C12 );
+free( C13 );
+free( C14 );
+free( CrossSection10 );
+free( CrossSection11 );
+free( CrossSection12 );
+free( CrossSection13 );
+free( CrossSection14 );
+
+#
+# Fuselage burner.
+#
+
+CrossSection20 = Circ * sc( 0.57 ) * ry( 90 ) * tx( 11.4 );
+CrossSection21 = Circ * sc( 0.57 ) * ry( 90 ) * tx( 11.7 );
+CrossSection22 = Circ * sc( 0.47 ) * ry( 90 ) * tx( 12.3 );
+CrossSection23 = Circ * sc( 0.3 ) * ry( 90 ) * tx( 12.6 );
+
+FuseBurner = sFromCrvs( list( CrossSection20,
+			      CrossSection21,
+			      CrossSection22,
+			      CrossSection23 ),
+		3, kv_open );
+attrib( FuseBurner, "rgb", "48, 48, 48" );
+
+free( CrossSection20 );
+free( CrossSection21 );
+free( CrossSection22 );
+free( CrossSection23 );
+
+#
+# Fusealge intake
+#
+C30 = cbspline( 3,
+		list( ctlpt( E3, 5.5, 0.0,  -0.5 ),
+		      ctlpt( E3, 5.5, 0.19, -0.5 ),
+		      ctlpt( E3, 5.5, 0.33, -0.35 ),
+		      ctlpt( E3, 5.5, 0.36, -0.2 ),
+		      ctlpt( E3, 5.5, 0.4,  -0.1 ),
+		      ctlpt( E3, 5.5, 0.27, -0.05 ),
+		      ctlpt( E3, 5.5, 0.0,  -0.05 ) ),
+	       list( kv_open ) );
+CrossSection30 = makeCrossSection( C30 );
+
+C31 = cbspline( 3,
+		list( ctlpt( E3, 4.5, 0.0,  -0.5 ),
+		      ctlpt( E3, 4.5, 0.19, -0.5 ),
+		      ctlpt( E3, 4.5, 0.33, -0.35 ),
+		      ctlpt( E3, 4.5, 0.36, -0.2 ),
+		      ctlpt( E3, 4.5, 0.27, -0.1 ),
+		      ctlpt( E3, 4.5, 0.0,  -0.1 ) ),
+	       list( kv_open ) );
+CrossSection31 = makeCrossSection( C31 );
+
+C32 = cbspline( 3,
+		list( ctlpt( E3, 4.1,  0.0,  -0.45 ),
+		      ctlpt( E3, 4.1,  0.15, -0.45 ),
+		      ctlpt( E3, 4.1,  0.28, -0.35 ),
+		      ctlpt( E3, 4.07,  0.28, -0.25 ),
+		      ctlpt( E3, 4.0,  0.15,  -0.12 ),
+		      ctlpt( E3, 3.9,  0.0,  -0.12 ) ),
+	       list( kv_open ) );
+CrossSection32 = makeCrossSection( C32 );
+
+FuseIntakeOut = sFromCrvs( list( CrossSection32,
+				 CrossSection31,
+				 CrossSection30 ),
+			   3, kv_open );
+attrib( FuseIntakeOut, "rgb", "128, 128, 255" );
+attrib( FuseIntakeOut, "texture", "camouf" );
+
+C33 = cbspline( 3,
+		list( ctlpt( E3, 4.6,  0.0,  -0.45 ),
+		      ctlpt( E3, 4.6,  0.15, -0.45 ),
+		      ctlpt( E3, 4.6,  0.28, -0.35 ),
+		      ctlpt( E3, 4.6,  0.28, -0.25 ),
+		      ctlpt( E3, 4.6,  0.15,  -0.12 ),
+		      ctlpt( E3, 4.6,  0.0,  -0.12 ) ),
+	       list( kv_open ) );
+CrossSection33 = makeCrossSection( C33 );
+
+FuseIntakeIn = list( ruledSrf( CrossSection32, CrossSection33 ),
+		     ruledSrf( C33 * sy( -1.0 ), C33 ) );
+attrib( FuseIntakeIn, "rgb", "64, 64, 64" );
+
+free( C30 );
+free( C31 );
+free( C32 );
+free( C33 );
+free( CrossSection30 );
+free( CrossSection31 );
+free( CrossSection32 );
+free( CrossSection33 );
+
+#
+# Cockpit
+#
+
+CrossSection41 = cbspline( 3,
+			   list( ctlpt( E3, 2.4, 0.05, 0.5 ),
+				 ctlpt( E3, 3.0, 0.2,  0.5 ),
+				 ctlpt( E3, 4.5, 0.35, 0.5 ),
+				 ctlpt( E3, 5.5, 0.15, 0.53 ) ) ,
+		           list( kv_open ) );
+
+CrossSection42 = cbspline( 3,
+			   list( ctlpt( E3, 2.4, 0.0, 0.5 ),
+				 ctlpt( E3, 3.0, 0.0, 1.2 ),
+				 ctlpt( E3, 4.0, 0.0, 1.4 ),
+				 ctlpt( E3, 5.5, 0.0, 0.75 ) ),
+		           list( kv_open ) );
+
+CrossSection43 = cbspline( 3,
+			   list( ctlpt( E3, 2.4, -0.05, 0.5 ),
+				 ctlpt( E3, 3.0, -0.2,  0.5 ),
+				 ctlpt( E3, 4.5, -0.35, 0.5 ),
+				 ctlpt( E3, 5.5, -0.15, 0.53 ) ),
+			   list( kv_open ) );
+
+Cockpit = sFromCrvs( list( CrossSection43,
+			   CrossSection42,
+			   CrossSection41 ),
+		     3, kv_open );
+attrib( Cockpit, "rgb", "255, 255, 255" );
+
+free( CrossSection41 );
+free( CrossSection42 );
+free( CrossSection43 );
+
+#
+# The main wings
+#
+
+WingSection1 = cbspline( 3,
+			 list( ctlpt( E3, 9.5, 0.7,  0.0 ),
+			       ctlpt( E3, 8.5, 0.7,  0.2 ),
+			       ctlpt( E3, 7.0, 0.7,  0.15 ),
+			       ctlpt( E3, 5.8, 0.7,  0.1 ),
+			       ctlpt( E3, 5.8, 0.7,  0.05 ),
+			       ctlpt( E3, 7.0, 0.7, -0.03 ),
+			       ctlpt( E3, 8.5, 0.7, -0.05 ),
+			       ctlpt( E3, 9.5, 0.7,  0.0 ) ),
+			 list( kv_open ) );
+WingSection2 = cbspline( 3,
+			 list( ctlpt( E3, 9.5, 3.9,  0.0 ),
+			       ctlpt( E3, 9.2, 3.9,  0.02 ),
+			       ctlpt( E3, 8.8, 3.9,  0.02 ),
+			       ctlpt( E3, 8.5, 3.9,  0.01 ),
+			       ctlpt( E3, 8.5, 3.9,  0.0 ),
+			       ctlpt( E3, 8.8, 3.9, -0.02 ),
+			       ctlpt( E3, 9.2, 3.9, -0.02 ),
+			       ctlpt( E3, 9.5, 3.9,  0.0 ) ),
+			 list( kv_open ) );
+RightWing = ruledSrf( WingSection2, WingSection1 );
+LeftWing = ruledSrf( WingSection1 * ty( -0.7 * 2 ),
+		     WingSection2 * ty( -3.9 * 2 ) );
+attrib( RightWing, "rgb", "128, 128, 255" );
+attrib( RightWing, "texture", "camouf" );
+attrib( LeftWing, "rgb", "128, 128, 255" );
+attrib( LeftWing, "texture", "camouf" );
+
+free( WingSection1 );
+free( WingSection2 );
+
+#
+# Tail wings
+#
+
+ElevSection1 = cbspline( 3,
+			 list( ctlpt( E3, 12.5, 0.6,  0.01 ),
+			       ctlpt( E3, 11.5, 0.6,  0.11 ),
+			       ctlpt( E3, 10.5, 0.6,  0.03 ),
+			       ctlpt( E3, 10.5, 0.6,  0.01 ),
+			       ctlpt( E3, 11.5, 0.6, -0.09),
+			       ctlpt( E3, 12.5, 0.6,  0.01 ) ),
+			 list( kv_open ) );
+ElevSection2 = cbspline( 3,
+			 list( ctlpt( E3, 12.5,  2.3, -0.2 ),
+			       ctlpt( E3, 12.25, 2.3, -0.16 ),
+			       ctlpt( E3, 12.0,  2.3, -0.19 ),
+			       ctlpt( E3, 12.0,  2.3, -0.21 ),
+			       ctlpt( E3, 12.25, 2.3, -0.24 ),
+			       ctlpt( E3, 12.5,  2.3, -0.2 ) ),
+			 list( kv_open ) );
+RightElev = list( ruledSrf( ElevSection2, ElevSection1 ),
+		  ruledSrf( -cRegion( ElevSection2, 0, 0.5 ),
+			    cRegion( ElevSection2, 0.5, 1 ) ) );
+LeftElev = list( ruledSrf( ElevSection1 * ty( -0.6 * 2 ),
+		           ElevSection2 * ty( -2.3 * 2 ) ),
+		 ruledSrf( cRegion( ElevSection2 * ty( -2.3 * 2 ), 0, 0.5 ),
+			   -cRegion( ElevSection2 * ty( -2.3 * 2 ), 0.5, 1 ) ) );
+attrib( RightElev, "rgb", "128, 128, 255" );
+attrib( RightElev, "texture", "camouf" );
+attrib( LeftElev, "rgb", "128, 128, 255" );
+attrib( LeftElev, "texture", "camouf" );
+
+free( ElevSection1 );
+free( ElevSection2 );
+
+SteerSection1 = cbspline( 3,
+			  list( ctlpt( E3, 12.5,  0.0,  2.75 ),
+				ctlpt( E3, 12.0,  0.02, 2.75 ),
+				ctlpt( E3, 11.5,  0.01, 2.75 ),
+				ctlpt( E3, 11.5, -0.01, 2.75 ),
+				ctlpt( E3, 12.0, -0.02, 2.75 ),
+				ctlpt( E3, 12.5,  0.0,  2.75 ) ),
+			  list( kv_open ) );
+SteerSection2 = cbspline( 3,
+			  list( ctlpt( E3, 11.8,  0.0,  1.0 ),
+				ctlpt( E3, 10.8,  0.1,  1.0 ),
+				ctlpt( E3,  9.8,  0.01, 1.0 ),
+				ctlpt( E3,  9.8, -0.01, 1.0 ),
+				ctlpt( E3, 10.8, -0.1,  1.0 ),
+				ctlpt( E3, 11.8,  0.0,  1.0 ) ),
+			  list( kv_open ) );
+SteerWingHigh = ruledSrf( SteerSection2, SteerSection1 );
+attrib( SteerWingHigh, "rgb", "128, 128, 255" );
+attrib( SteerWingHigh, "texture", "camouf" );
+
+SteerSection3 = cbspline( 3,
+			  list( ctlpt( E3, 11.8,  0.0,  0.65 ),
+				ctlpt( E3, 11.3,  0.04, 0.65 ),
+				ctlpt( E3, 11.3,  0.04, 0.6 ),
+				ctlpt( E3, 11.3,  0.04, 0.2 ),
+				ctlpt( E3,  9.5,  0.12, 0.2 ),
+				ctlpt( E3,  8.0,  0.01, 0.2 ),
+				ctlpt( E3,  8.0, -0.01, 0.2 ),
+				ctlpt( E3,  9.5, -0.12, 0.2 ),
+				ctlpt( E3, 11.3, -0.04, 0.2 ),
+				ctlpt( E3, 11.3, -0.04, 0.6 ),
+				ctlpt( E3, 11.3, -0.04, 0.65 ),
+				ctlpt( E3, 11.8, -0.0,  0.65 ) ),
+			  list( kv_open ) );
+SteerWingLow = ruledSrf( SteerSection3, SteerSection2 );
+attrib( SteerWingLow, "rgb", "128, 128, 255" );
+attrib( SteerWingLow, "texture", "camouf" );
+
+free( SteerSection1 );
+free( SteerSection2 );
+free( SteerSection3 );
+
+#
+# Missiles.
+#
+
+MisSection1 = cbspline( 3,
+			list( ctlpt( E3, 9.8, 3.9,  0.0 ),
+			      ctlpt( E3, 9.2, 3.9,  0.03 ),
+			      ctlpt( E3, 8.2, 3.9,  0.03 ),
+			      ctlpt( E3, 7.5, 3.9,  0.02 ),
+			      ctlpt( E3, 7.5, 3.9,  0.0 ),
+			      ctlpt( E3, 8.2, 3.9, -0.03 ),
+			      ctlpt( E3, 9.2, 3.9, -0.03 ),
+			      ctlpt( E3, 9.8, 3.9,  0.0 ) ),
+			list( kv_open ) );
+MisSection2 = cbspline( 3,
+			list( ctlpt( E3, 9.8, 4.1,  0.0 ),
+			      ctlpt( E3, 9.2, 4.1,  0.03 ),
+			      ctlpt( E3, 8.1, 4.1,  0.03 ),
+			      ctlpt( E3, 7.5, 4.1,  0.02 ),
+			      ctlpt( E3, 7.5, 4.1,  0.0 ),
+			      ctlpt( E3, 8.1, 4.1, -0.03 ),
+			      ctlpt( E3, 9.2, 4.1, -0.03 ),
+			      ctlpt( E3, 9.8, 4.1,  0.0 ) ),
+			list( kv_open ) );
+MisHolderRight = ruledSrf( MisSection2, MisSection1 );
+attrib( MisHolderRight, "rgb", "128, 128, 255" );
+attrib( MisHolderRight, "texture", "camouf" );
+
+MisHolderLeft = ruledSrf( MisSection1 * ty( -3.9 * 2 ),
+			  MisSection2 * ty( -4.1 * 2 ) ); 
+attrib( MisHolderLeft, "rgb", "128, 128, 255" );
+attrib( MisHolderLeft, "texture", "camouf" );
+
+free( MisSection1 );
+free( MisSection2 );
+
+MissileBody = -surfRevAxs( ctlpt( E3, 5.0, 0.0, 0.0 ) +
+			   ctlpt( E3, 5.0, 0.0, 0.1 ) +
+			   cbspline( 3,
+				     list( ctlpt( E3, 0.1, 0.0, 0.1 ),
+				           ctlpt( E3, 0.0, 0.0, 0.1 ),
+				           ctlpt( E3, 0.0, 0.0, 0.0 ) ),
+				     list( kv_open ) ),
+			   vector( 1, 0, 0 ) );
+attrib( MissileBody, "rgb", "200, 200, 200" );
+
+MissileRearWingSection1 = cbspline( 3,
+				    list( ctlpt( E3, 4.98, 0.06,  0.0 ),
+					  ctlpt( E3, 4.6,  0.06,  0.03 ),
+					  ctlpt( E3, 4.2,  0.06,  0.01 ),
+					  ctlpt( E3, 4.2,  0.06, -0.01 ),
+					  ctlpt( E3, 4.6,  0.06, -0.03 ),
+					  ctlpt( E3, 4.98, 0.06,  0.0 ) ),
+				    list( kv_open ) );
+MissileRearWingSection2 = cbspline( 3,
+				    list( ctlpt( E3, 4.98, 0.3,  0.0 ),
+					  ctlpt( E3, 4.75, 0.3,  0.02 ),
+					  ctlpt( E3, 4.5,  0.3,  0.01 ),
+					  ctlpt( E3, 4.5,  0.3, -0.01 ),
+					  ctlpt( E3, 4.75, 0.3, -0.02 ),
+					  ctlpt( E3, 4.98, 0.3,  0.0 ) ),
+				    list( kv_open ) );
+MissileRearWing = ruledSrf( MissileRearWingSection2,
+			    MissileRearWingSection1 );
+attrib( MissileRearWing, "rgb", "255, 0, 0" );
+
+free( MissileRearWingSection1 );
+free( MissileRearWingSection2 );
+
+MissileFrontWingSection1 = cbspline( 3,
+				     list( ctlpt( E3, 1.1, 0.06,  0.0 ),
+					   ctlpt( E3, 0.9, 0.06,  0.03 ),
+					   ctlpt( E3, 0.7, 0.06,  0.01 ),
+					   ctlpt( E3, 0.7, 0.06, -0.01 ),
+					   ctlpt( E3, 0.9, 0.06, -0.03 ),
+					   ctlpt( E3, 1.1, 0.06,  0.0 ) ),
+				     list( kv_open ) );
+
+MissileFrontWingSection2 = cbspline( 3,
+				     list( ctlpt( E3, 1.1,  0.25,  0.0 ),
+					   ctlpt( E3, 1.05, 0.25,  0.02 ),
+					   ctlpt( E3, 1.0,  0.25,  0.01 ),
+					   ctlpt( E3, 1.0,  0.25, -0.01 ),
+					   ctlpt( E3, 1.05, 0.25, -0.02 ),
+					   ctlpt( E3, 1.1,  0.25,  0.0 ) ),
+				     list( kv_open ) );
+MissileFrontWing = ruledSrf( MissileFrontWingSection2,
+			     MissileFrontWingSection1 );
+attrib( MissileFrontWing, "rgb", "255, 0, 0" );
+
+free( MissileFrontWingSection1 );
+free( MissileFrontWingSection2 );
+
+Missile = list( MissileBody,
+		MissileRearWing * rx( 45 ),
+		MissileRearWing * rx( 135 ),
+		MissileRearWing * rx( 225 ),
+		MissileRearWing * rx( 315 ),
+		MissileFrontWing * rx( 45 ),
+		MissileFrontWing * rx( 135 ),
+		MissileFrontWing * rx( 225 ),
+		MissileFrontWing * rx( 315 ) );
+
+LeftMissile = Missile * sc( 0.5 ) * trans( vector( 7.4, 4.1, 0.0 ) );
+RightMissile = Missile * sc( 0.5 ) * trans( vector( 7.4, -4.1, 0.0 ) );
+
+free( MissileBody );
+free( MissileRearWing );
+free( MissileFrontWing );
+free( Missile );
+
+#
+# Bottom steer wings.
+#
+
+BotWing = ruledSrf(
+	makeCrossSection( cbspline( 3,
+			            list( ctlpt( E3, 0.0, 0.0, 0.0 ),
+				          ctlpt( E3, 1.5, 0.05, 0.0 ),
+				          ctlpt( E3, 3.0, 0.0, 0.0 ) ),
+				    list( kv_open ) ) ),
+	makeCrossSection( cbspline( 3,
+			            list( ctlpt( E3, 0.8, 0.0, -1.3 ),
+				          ctlpt( E3, 1.6, 0.001, -1.15 ),
+				          ctlpt( E3, 2.5, 0.0, -1.0 ) ),
+			            list( kv_open ) ) ) );
+BotWingRight = BotWing * sc( 0.5 ) * rx( 25 )
+				   * trans( vector( 9, 0.24, -0.49 ) );
+BotWingLeft = BotWing * sc( 0.5 ) * rx( -25 )
+				 * trans( vector( 9, -0.24, -0.49 ) );
+attrib( BotWingRight, "rgb", "128, 128, 255" );
+attrib( BotWingRight, "texture", "camouf" );
+attrib( BotWingLeft, "rgb", "128, 128, 255" );
+attrib( BotWingLeft, "texture", "camouf" );
+
+free( BotWing );
+
+#
+# Merge it all.
+#
+
+Fuselage = list( FuseFront, FuseBack, FuseBurner,
+		 FuseIntakeIn, FuseIntakeOut, Cockpit );
+
+free( FuseFront );
+free( FuseBack );
+free( FuseBurner );
+free( FuseIntakeIn );
+free( FuseIntakeOut );
+free( Cockpit );
+
+Wings = list( RightWing, LeftWing,
+	      BotWingLeft, BotWingRight,
+	      MisHolderRight, RightMissile,
+	      MisHolderLeft, LeftMissile );
+
+free( RightWing );
+free( LeftWing );
+free( BotWingLeft );
+free( BotWingRight );
+free( MisHolderRight );
+free( RightMissile );
+free( MisHolderLeft );
+free( LeftMissile );
+
+Tail = list( RightElev, LeftElev, SteerWingHigh, SteerWingLow );
+
+free( RightElev );
+free( LeftElev );
+free( SteerWingHigh );
+free( SteerWingLow );
+
+f16 = list( Fuselage, Wings, Tail );
+
+free( Fuselage );
+free( Wings );
+free( Tail );
+
+save( "f16", f16 );
+
+interact( f16 );
+
+#############################################################################
+
+free( Circ );
+free( f16 );

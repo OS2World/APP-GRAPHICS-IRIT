@@ -1,0 +1,194 @@
+#
+# Some tests to the COORD and COERCE commands.
+#
+Results = nil();
+
+a = point( 1, 2, 3 );
+snoc( point( coord( a, 0 ), coord( a, 1 ), coord( a, 2 ) ), Results );
+
+a = vector( 4, 5, 6);
+snoc( vector( coord( a, 0 ), coord( a, 1 ), coord( a, 2 ) ), Results );
+
+a = plane( 10, 11, 12, 13 );
+snoc( plane( coord( a, 0 ), coord( a, 1 ), coord( a, 2 ), coord( a, 3 ) ),
+      Results );
+
+#
+# On lists, it does what NTH is doing.
+#
+a = list( 11, 12.5, PI );
+snoc( coord( a, 3 ), Results );
+
+#
+# On a matrix, it extract a single number (out of 4 by 4 = 16)
+#
+m = rotx( 30 ) * tx( 10 ) * sc( 0.7 );
+snoc( m, Results );
+snoc( coord( m, 0 ), Results );
+snoc( coord( m, 2 ), Results );
+snoc( coord( m, 15 ), Results );
+free( m );
+
+#
+# Note that the zero location is reserved for the weights in CTLPT;
+#
+a = ctlpt( E2, 1, 2 );
+snoc( ctlpt( E2, coord( a, 1 ), coord( a, 2 ) ), Results );
+
+a = ctlpt( E3, 3, 4, 5 );
+snoc( ctlpt( E3, coord( a, 1 ), coord( a, 2 ), coord( a, 3 ) ), Results );
+
+a = ctlpt( P2, 6, 7, 8 );
+snoc( ctlpt( P2, coord( a, 0 ), coord( a, 1 ), coord( a, 2 ) ), Results );
+
+a = ctlpt( P3, 9, 10, 11, 12 );
+snoc( ctlpt( P3, coord( a, 0 ), coord( a, 1 ), coord( a, 2 ), coord( a, 3 ) ),
+      Results );
+
+#
+# From polygons/lines it extracts a poly if more than one poly
+# is in the list or a vertex from the poly if only one poly is found.
+#
+snoc( coord( axes, 2 ), Results );
+snoc( coord( coord( axes, 2 ), 1 ), Results );
+
+#
+# From a curve and surface, it extracts a control point.
+#
+s45 = sin( pi / 4 );
+cbzr = list( ctlpt( P2, 1.0, 1.0, 0.0 ),
+	     ctlpt( P2, s45, s45, s45 ),
+	     ctlpt( P2, 1.0, 0.0, 1.0 ) );
+sbsp = list ( list( ctlpt( E3, 0.1, 0.0, 1.0 ),
+	            ctlpt( E3, 0.3, 1.0, 0.0 ),
+	            ctlpt( E3, 0.0, 2.0, 1.0 ) ),
+              list( ctlpt( E3, 3.1, 0.0, 0.0 ),
+	            ctlpt( E3, 3.3, 1.0, 2.0 ),
+	            ctlpt( E3, 3.0, 2.0, 0.0 ) ),
+              list( ctlpt( E3, 4.1, 0.0, 1.0 ),
+	            ctlpt( E3, 4.3, 1.0, 0.0 ),
+	            ctlpt( E3, 4.0, 2.0, 1.0 ) ) );
+
+cb = cbezier( cbzr );
+sb = sbspline( 3, 3, sbsp, list( list( 1, 1, 1, 2, 2, 2 ),
+				 list( KV_OPEN ) ) );
+free( cbzr );
+free( sbsp );
+
+tb = tfromsrfs( list( srefine( sb, row, false, list( 0.3, 0.6 ) ),
+		      sraise( sb, row, 4 ) * tz( 1 ) ),
+		2, kv_open );
+mb = coerce( tb, multivar_type );
+
+snoc( coord( cb, 1 ), Results );
+snoc( coord( sb, 0 ), Results );
+snoc( coord( sb, 1 ), Results );
+snoc( coord( sb, 8 ), Results );
+snoc( coord( tb, 0 ), Results );
+snoc( coord( tb, 3 ), Results );
+snoc( coord( tb, 47 ), Results );
+snoc( coord( mb, 1 ), Results );
+snoc( coord( mb, 15 ), Results );
+snoc( coord( mb, 37 ), Results );
+
+free( cb );
+free( sb );
+free( tb );
+free( mb );
+
+save( "coords", Results );
+Results = nil();
+
+#
+# And now the COERCE command.
+#
+a = vector(1, 2, 3 );
+snoc( coerce( a, point_type ), Results );
+snoc( coerce( a, plane_type ), Results );
+snoc( coerce( a, e2 ), Results );
+snoc( coerce( a, e5 ), Results );
+snoc( coerce( a, p2 ), Results );
+snoc( coerce( a, p3 ), Results );
+
+a = plane(10, 11, 12, 13 );
+snoc( coerce( a, point_type ), Results );
+snoc( coerce( a, vector_type ), Results );
+snoc( coerce( a, e1 ), Results );
+snoc( coerce( a, e4 ), Results );
+snoc( coerce( a, p1 ), Results );
+snoc( coerce( a, p5 ), Results );
+
+a = ctlpt(e1, 1 );
+snoc( coerce( a, vector_type ), Results );
+snoc( coerce( a, point_type ), Results );
+snoc( coerce( a, plane_type ), Results );
+snoc( coerce( a, e3 ), Results );
+snoc( coerce( a, e5 ), Results );
+snoc( coerce( a, p2 ), Results );
+snoc( coerce( a, p3 ), Results );
+
+a = ctlpt( p5, 0.7, 1, 2, 3, 4, 5 );
+snoc( coerce( a, vector_type ), Results );
+snoc( coerce( a, point_type ), Results );
+snoc( coerce( a, plane_type ), Results );
+snoc( coerce( a, e1 ), Results );
+snoc( coerce( a, e3 ), Results );
+snoc( coerce( a, p3 ), Results );
+snoc( coerce( a, p5 ), Results );
+free( a );
+
+circ = circle( vector( 0.25, 0.5, 0.5 ), 1.5 );
+snoc( coerce( circ, e3 ), Results );
+snoc( coerce( circ, p4 ), Results );
+snoc( coerce( coerce( circ, bezier_type ), power_type ), Results );
+free( circ );
+
+srf = ruledSrf( cbezier( list( ctlpt( E3, -0.5, -0.5, 0.0 ),
+			       ctlpt( E3,  0.5, -0.5, 0.0 ) ) ),
+	        cbezier( list( ctlpt( E3, -0.5,  0.5, 0.0 ),
+			       ctlpt( E3,  0.5,  0.5, 0.0 ) ) ) );
+snoc( coerce( srf, e5 ), Results );
+snoc( coerce( srf, p2 ), Results );
+
+snoc( coerce( srf, bspline_type ), Results );
+snoc( coerce( srf, power_type ), Results );
+
+crv = cbspline( 3,
+		list( ctlpt( P2, 1.0, 1.0, 0.0 ),
+		      ctlpt( P2, s45, s45, s45 ),
+		      ctlpt( P2, 1.0, 0.0, 1.0 ) ),
+		list( KV_FLOAT ) );
+srf = sbspline( 3, 3,
+		list( list( ctlpt( E3, 0.1, 0.0, 1.0 ),
+		            ctlpt( E3, 0.3, 1.0, 0.0 ),
+		            ctlpt( E3, 0.0, 2.0, 1.0 ) ),
+	              list( ctlpt( E3, 3.1, 0.0, 0.0 ),
+		            ctlpt( E3, 3.3, 1.0, 2.0 ),
+		            ctlpt( E3, 3.0, 2.0, 0.0 ) ),
+	              list( ctlpt( E3, 4.1, 0.0, 1.0 ),
+		            ctlpt( E3, 4.3, 1.0, 0.0 ),
+		            ctlpt( E3, 4.0, 2.0, 1.0 ) ) ),
+		list( list( KV_FLOAT ),
+		      list( KV_FLOAT ) ) );
+
+snoc( coerce( crv, KV_OPEN ), Results );
+snoc( coerce( crv, bezier_type ), Results );
+snoc( coerce( coerce( crv, power_type ), bezier_type ), Results );
+snoc( coerce( crefine( crv, false, list( 0.3, 0.6 ) ), bezier_type ),
+      Results );
+
+snoc( coerce( srf, KV_OPEN ), Results );
+snoc( coerce( srf, bezier_type ), Results );
+snoc( coerce( srf, power_type ), Results );
+snoc( coerce( coerce( srf, power_type ), bezier_type ), Results );
+snoc( coerce( srefine( srefine( srf, row, false, list( 0.3, 0.6 ) ),
+		       col, false, list( 0.3, 0.6 ) ),
+              bezier_type ),
+      Results );
+
+save( "coerce", Results );
+
+free( Results );
+free( s45 );
+free( crv );
+free( srf );

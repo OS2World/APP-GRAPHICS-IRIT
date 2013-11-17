@@ -1,0 +1,112 @@
+#
+# Point inclusion tests.
+#
+#			Gershon Elber, Nov 2007
+#
+
+view_mat0 = tx( 0 );
+
+ri = iritstate( "RandomInit", 1964 );  # Seed-initiate the randomizer,
+free( ri );
+
+##############################################################################
+#
+# Point inclusion in a polygon:
+#
+Pl1 = poly( list( point( 0.0, 0.0, 0.0 ),
+		  point( 0.3, 0.0, 0.0 ),
+		  point( 0.3, 0.1, 0.0 ),
+		  point( 0.2, 0.1, 0.0 ),
+		  point( 0.2, 0.5, 0.0 ),
+		  point( 0.3, 0.5, 0.0 ),
+		  point( 0.3, 0.6, 0.0 ),
+		  point( 0.0, 0.6, 0.0 ),
+		  point( 0.0, 0.5, 0.0 ),
+		  point( 0.1, 0.5, 0.0 ),
+		  point( 0.1, 0.1, 0.0 ),
+		  point( 0.0, 0.1, 0.0 ) ), false ) * tx( -0.15 ) * ty( -0.3 );
+
+view( list( axes, Pl1 ), 1 );
+
+Pts = nil();
+
+for (i = 0, 1, 1000,
+    p = point( random( -0.5, 0.5 ), random( -0.5, 0.5 ), 0.0 ):
+    if ( ppinclude( Pl1, p ),
+	color( p, green ),
+	color( p, red ) ):
+    snoc( p * tx( 0 ), Pts ) );
+
+interact( list( view_mat0, Pl1, Pts ) );
+
+save( "pt_inpl1", list( view_mat, Pl1, Pts ) );
+
+free( Pl1 );
+
+##############################################################################
+#
+# Point inclusion in a curve:
+#
+
+Crv1 = cbspline( 4,
+		 list( point( 0.0, 0.0, 0.0 ),
+		       point( 0.3, 0.0, 0.0 ),
+		       point( 0.3, 0.1, 0.0 ),
+		       point( 0.2, 0.1, 0.0 ),
+		       point( 0.2, 0.5, 0.0 ),
+		       point( 0.3, 0.5, 0.0 ),
+		       point( 0.3, 0.6, 0.0 ),
+		       point( 0.0, 0.6, 0.0 ),
+		       point( 0.0, 0.5, 0.0 ),
+		       point( 0.1, 0.5, 0.0 ),
+		       point( 0.1, 0.1, 0.0 ),
+		       point( 0.0, 0.1, 0.0 ) ),
+	         list( kv_periodic ) ) * tx( -0.15 )* ty( -0.3 );
+view( list( axes, Crv1 ), 1 );
+
+Pts = nil();
+
+for (i = 0, 1, 1000,
+    p = point( random( -0.5, 0.5 ), random( -0.5, 0.5 ), 0.0 ):
+    if ( cpinclude( Crv1, p, 1e-6 ) == 1,
+	color( p, green ),
+	color( p, red ) ):
+    snoc( p * tx( 0 ), Pts ) );
+
+interact( list( view_mat0, Crv1, Pts ) );
+
+save( "pt_incrv", list( view_mat, Crv1, Pts ) );
+
+free( Crv1 );
+
+
+##############################################################################
+#
+# Point inclusion in a polyhedra:
+#
+
+Pl1 = sphere( vector( 0, 0, 0 ), 1 ) -
+      cone( vector( -1.3, -2, -1 ), vector( 5, 5, 5 ), 1, 0 );
+view( list( axes, Pl1 ), 1 );
+
+Pts = nil();
+
+for (i = 0, 1, 1000,
+    p = point( random( -1, 1 ), random( -1, 1 ), random( -1, 1 ) ):
+    if ( ppinclude( Pl1, p ),
+	color( p, green ),
+	color( p, red ) ):
+    snoc( p * tx( 0 ), Pts ) );
+
+interact( list( view_mat, Pl1, Pts ) );
+
+save( "pt_inpls", list( view_mat, Pl1, Pts ) );
+
+free( Pl1 );
+
+#############################################################################
+
+free( view_mat0 );
+free( Pts );
+free( p );
+free( i );

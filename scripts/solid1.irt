@@ -1,0 +1,31 @@
+#
+# This simple solid was taken from: Geometric Modeling,
+# by Michael E. Mortenson page 440.
+#
+#				Created by Gershon Elber,	Jan 89
+#
+
+save_mat = view_mat;
+view_mat = view_mat * scale(vector( 0.2, 0.2, 0.2 ));
+
+A = BOX(vector(  -1, -1,   -2), 2, 2, 4);
+B = BOX(vector(-0.5, -2,   -1), 2, 4, 2);
+C = BOX(vector(   0, -3, -0.5), 2, 6, 1);
+
+D = A + B;
+free(A);
+free(B);
+interact(list(view_mat, D));
+
+E = D - C;
+free(C);
+free(D);
+
+final = convex(E);
+free(E);
+interact(final);
+
+save("solid1", list(cpoly(final), final));
+free(final);
+
+view_mat = save_mat;

@@ -1,0 +1,22 @@
+#
+# This is the make file for the xtra lib subdirectory.
+#
+#				Gershon Elber, June 1993
+#
+
+# Get the destination directories:
+include ..\makeflag.wce
+
+OBJS = bzrintrp.$(IRIT_OBJ_PF) diag_mat.$(IRIT_OBJ_PF) filt.$(IRIT_OBJ_PF) \
+	mt19937i.$(IRIT_OBJ_PF) nure_svd.$(IRIT_OBJ_PF)
+
+$(XTRA_LIB): $(OBJS)
+	-del $(XTRA_LIB)
+	$(IRITLIB) -out:$(XTRA_LIB) *.$(IRIT_OBJ_PF)
+
+$(IRIT_LIB_DIR)\$(XTRA_LIB): $(XTRA_LIB)
+	copy $(XTRA_LIB) $(IRIT_LIB_DIR)
+
+install: $(IRIT_LIB_DIR)\$(XTRA_LIB)
+
+# Dependencies starts here - do not touch, generated automatically.

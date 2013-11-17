@@ -1,0 +1,487 @@
+                                            
+struct VertexIn
+{
+    float4 position : POSITION;
+    float3 normal: NORMAL; 
+    float4 color : DIFFUSE; 
+    float3 UBases : TEXCOORD0;
+    float3 VBases : TEXCOORD1;
+    float3 WBases: TEXCOORD2;
+};
+
+struct VertexOut
+{
+    float4 HPOS : POSITION;
+    float4 COL0 : COLOR0;
+};
+//evaluate a triquadratic bezier volume over each vertex.
+VertexOut FFDSinglePhase(VertexIn vIn, 
+            uniform float4x4 ModelViewProj,
+            uniform float4x4 ModelView,
+            uniform sampler2D texture : TEXUNIT0,
+            uniform float2 TextureDim, //stores 1/imSzX - computed in SW
+            uniform float3 TrivDim,//trivar dims[n,m,l]-num ctlpt in each direction
+            uniform float AmbientFactor,
+            uniform float DiffuseFactor,
+            uniform float SpecularFactor,
+            uniform float Shininess,
+            uniform float4 LightPos0,
+            uniform float4 LightPos1
+            )
+{
+   VertexOut OUT;
+   float3x3 xMat;
+   float3x3 yMat;
+   float3x3 zMat;
+   
+   float3x3 xMatT;
+   float3x3 yMatT;
+   float3x3 zMatT;
+   
+   // sample texture
+   for(int k=0;k<3;k++){
+       for(int j=0;j<3;j++){
+           for(int i=0;i<3;i++){
+                float2 tCoord = float2((vIn.position.y-j)*TextureDim.x,
+                                       ((vIn.position.z-k)*TrivDim.x + (vIn.position.x-i))*TextureDim.y);
+                
+                float3 p = tex2D(texture,tCoord).xyz; 
+                xMat[2-i][2-j] = p.x;
+                yMat[2-i][2-j] = p.y;
+                zMat[2-i][2-j] = p.z;
+           } 
+       }
+       float3 r;
+       r = mul(vIn.UBases,xMat);
+       xMatT[2-k][0] = r.x;
+       xMatT[2-k][1] = r.y;
+       xMatT[2-k][2] = r.z;
+       r = mul(vIn.UBases,yMat);
+       yMatT[2-k][0] = r.x;
+       yMatT[2-k][1] = r.y;
+       yMatT[2-k][2] = r.z;
+       r = mul(vIn.UBases,zMat);
+       zMatT[2-k][0] = r.x;
+       zMatT[2-k][1] = r.y;
+       zMatT[2-k][2] = r.z;
+           
+   }
+    
+  
+   float3 res;
+   res.x = dot(mul(vIn.WBases,xMatT),vIn.VBases);
+   res.y = dot(mul(vIn.WBases,yMatT),vIn.VBases);
+   res.z = dot(mul(vIn.WBases,zMatT),vIn.VBases);
+   
+   OUT.HPOS = mul(ModelViewProj, float4(res,1.0));
+   
+   //Compute the shading parameters
+   
+	float3 normalInView = normalize(mul(ModelView, float4(vIn.normal.xyz,0.0)).xyz);
+	float3 ambient = vIn.color.xyz;
+	float3 diffuseMaterial = vIn.color.xyz;
+	float3 specularMaterial = float3(1,1,1);
+	float3 lightVec0 = -(LightPos0);
+//	float3 lightVec1 = -(LightPos1);	
+	float3 eyeVec = -float3(0,0,1);
+
+	float3 halfVec0 = normalize(lightVec0 + eyeVec);
+//	float3 halfVec1 = normalize(lightVec1 + eyeVec);
+
+	float3 diffuse = max(dot(normalInView, lightVec0) * diffuseMaterial,0);// +
+//		max(dot(normalInView, lightVec1) * diffuseMaterial,0);
+	float3 specular0 = max(dot(normalInView, halfVec0),0);
+//	float3 specular1 = max(dot(normalInView, halfVec1),0);
+
+	float3 specular = (pow(specular0.x,Shininess)) // + pow(specular1.x,Shininess))
+	 * specularMaterial;
+
+	OUT.COL0.rgb = AmbientFactor * ambient +  DiffuseFactor * diffuse + SpecularFactor * specular;
+	OUT.COL0.w = vIn.color.w;
+   //OUT.TCoord = float4(vIn.TCoord,0);
+	return OUT;
+} 
+
+
+/*************************************************
+
+Double phase algorithm
+pixel and two vertex shader
+
+*/
+
+struct FragIn
+{   
+    float3 indices : TEXCOORD0;//the vertex index position 
+    float3 UBases : TEXCOORD1;//evaluation of the quadratic bases for the u,v,w computed in the vertex shader
+    float3 VBases : TEXCOORD2; 
+    float3 WBases : TEXCOORD3;
+};
+
+//evaluate a triquadratic uniform B-spline
+//volume. The vertex index postion is stored in the TEXCOORD0
+//The evaluation of the quadratic basis function is done in the 
+//compatible vertex shader. it is moved to fragment shader via TEXCOORD1:TEXCOORD3 
+//Do a 3D texture lookup in GL_LINEAR interpolation mode
+//this enable us to compute tri-cubic FFD using the 
+float4 FFDDoublePhasePixel(FragIn fIn,
+            uniform float2 TextureDim,
+            uniform float3 TrivDim,//trivar dims[n,m,l]-num ctlpt in each direction
+            uniform sampler2D texture:TEXUNIT0):COLOR
+{
+     
+   //return float4(0,0,0,1);
+   float3x3 xMat;
+   float3x3 yMat;
+   float3x3 zMat;
+   
+   float3x3 xMatT;
+   float3x3 yMatT;
+   float3x3 zMatT;
+   
+   // sample texture
+   for(int k=0;k<3;k++){
+       for(int j=0;j<3;j++){
+           for(int i=0;i<3;i++){
+                float2 tCoord = float2((fIn.indices.y-j)*TextureDim.x,
+                                       ((fIn.indices.z-k)*TrivDim.x + (fIn.indices.x-i))*TextureDim.y);
+                
+                float3 p = tex2D(texture,tCoord).xyz; 
+                xMat[2-i][2-j] = p.x;
+                yMat[2-i][2-j] = p.y;
+                zMat[2-i][2-j] = p.z;
+           } 
+       }
+       float3 r;
+       r = mul(fIn.UBases,xMat);
+       xMatT[2-k][0] = r.x;
+       xMatT[2-k][1] = r.y;
+       xMatT[2-k][2] = r.z;
+       r = mul(fIn.UBases,yMat);
+       yMatT[2-k][0] = r.x;
+       yMatT[2-k][1] = r.y;
+       yMatT[2-k][2] = r.z;
+       r = mul(fIn.UBases,zMat);
+       zMatT[2-k][0] = r.x;
+       zMatT[2-k][1] = r.y;
+       zMatT[2-k][2] = r.z;
+           
+   }
+    
+  
+   float4 res;
+   res.x = dot(mul(fIn.WBases,xMatT),fIn.VBases);
+   res.y = dot(mul(fIn.WBases,yMatT),fIn.VBases);
+   res.z = dot(mul(fIn.WBases,zMatT),fIn.VBases);
+   res.w=1;
+   
+   res = float4(res.xyz,1);
+   return res;
+} 
+
+
+///////////////////////////////////////////////////////////////////////////////
+// PHASE 1 SHADER
+///////////////////////////////////////////////////////////////////////////////
+
+/*
+compute the basis function of the first phase 
+
+*/
+static const float3x3 coeff = float3x3(  0.5, -1.0, 0.5,
+                                        -1,    1.0, 0,  
+                                         0.5,  0.5, 0);
+                                            
+struct VertexInPhase1
+{
+    float4 position : POSITION;
+    float3 texCoord : TEXCOORD0;//the vertex position 
+};
+
+struct VertexOutPhase1
+{   
+    float4 HPOS : POSITION; 
+    float3 indices : TEXCOORD0;//the vertex index position 
+    float3 UBases : TEXCOORD1;//evaluation of the quadratic bases for the u,v,w computed in the vertex shader
+    float3 VBases : TEXCOORD2; 
+    float3 WBases : TEXCOORD3;
+};
+
+/*
+This vertex shader should work in concert with the cubic FFD pixel shader
+
+Evaluate the three B-spline Bases functions and store the evauation as texture coordinate
+for the pixel shader. 
+*/
+VertexOutPhase1 FFDDoublePhaseVertex1(VertexInPhase1 vIn,
+               uniform float4x4 ModelViewProj,
+               uniform float3 TvSpan,
+               uniform float3 Range,
+               uniform float3 MinLimit,
+               uniform float3 AnimVal,
+               uniform sampler2D Texture:TEXUNIT1)
+{
+    
+    VertexOutPhase1  OUT;
+    OUT.HPOS = mul(ModelViewProj, vIn.position);
+//	OUT.HPOS = vIn.position;
+    
+    float3 pValue = (vIn.texCoord+AnimVal)*TvSpan;
+    pValue = pValue - floor(pValue);
+    float3 param = (pValue)*Range+MinLimit;
+    
+    float3 fracPart; 
+    fracPart = param.xyz- floor(param).xyz;
+    
+    
+//    float3 up = tex2D (Texture, float2(fracPart.x, 0));
+    float3 up;
+    up.z = 1;
+    up.y = fracPart.x;
+    up.x = fracPart.x * fracPart.x;
+    up = mul(up,coeff);
+    
+//    float3 vp = tex2D (Texture, float2(fracPart.y, 0));
+	float3 vp;
+    vp.z = 1;
+    vp.y = fracPart.y ;
+    vp.x = fracPart.y * fracPart.y;
+    vp = mul(vp,coeff);
+   
+//    float3 wp = tex2D (Texture, float2(fracPart.z, 0));
+	float3 wp;
+    wp.z = 1;
+    wp.y = fracPart.z ;
+	wp.x = fracPart.z * fracPart.z;
+    wp = mul(wp,coeff);
+      
+    OUT.indices = floor(param);
+    OUT.UBases = up.xyz;
+    OUT.VBases = vp.xyz;
+    OUT.WBases = wp.xyz;   
+    
+    return OUT;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+// PHASE 2 SHADER
+///////////////////////////////////////////////////////////////////////////////
+
+struct VertexInPhase2
+{
+    float4 position : POSITION;//the index postion of the vertex in the texture
+    float3 normal: NORMAL;
+    float4 color : DIFFUSE; 
+    float2 texCoord: TEXCOORD0;
+};
+
+struct VertexOutPhase2
+{
+    float4 HPOS : POSITION;
+    float4 COL0 : COLOR0;
+    float2 TCOORD: TEXCOORD0;
+    float3 NORMAL: TEXCOORD1;
+};
+
+/*
+This vertex shader should work in concert with the cubic FFD pixel shader.
+It works as the second part of the rendering.
+
+Sample the texture to get the deformed position of the vertex
+*/
+VertexOutPhase2 FFDDoublePhaseVertex2(VertexInPhase2 vIn,
+                uniform sampler2D texture,
+                uniform float4x4 ModelViewProj,
+                uniform float4x4 ModelView,
+                uniform float AmbientFactor,
+				uniform float DiffuseFactor,
+				uniform float SpecularFactor,
+				uniform float Shininess,
+				uniform float4 LightPos0,
+				uniform float4 LightPos1,
+				uniform float FlippedNormals,
+				uniform float NormalMethod)
+{
+    
+    float epsilon = (0.001);
+    
+    VertexOutPhase2 OUT;
+    float2 tCoord = float2(vIn.position.x, vIn.position.y);
+    float4 p = tex2D(texture,tCoord);
+    p.w = 1;
+        
+    OUT.HPOS = mul(ModelViewProj, p);
+
+	float3 normalInView;
+	if (NormalMethod == 1){
+		float Offset = 0.5;
+		float2 oCoord = float2(vIn.position.x, vIn.position.y + Offset);
+		float4 op = tex2D(texture,oCoord);
+		normalInView = normalize(op.xyz - p.xyz);
+	}
+	
+	else if (NormalMethod == 2) {
+	    float Offset = 0.333;
+		float2 t1Coord = float2(vIn.position.x, vIn.position.y + Offset);
+		float2 t2Coord = float2(vIn.position.x, vIn.position.y + 2 * Offset);
+		float3 T1 = tex2D(texture,t1Coord);
+		float3 T2 = tex2D(texture,t2Coord);
+		normalInView = normalize(cross ((p.xyz - T2), (p.xyz - T1)));
+	}
+	else
+		normalInView = vIn.normal;
+	
+	normalInView *= FlippedNormals;
+	
+	normalInView = normalize(mul(ModelView, float4(normalInView.xyz,0.0)).xyz);
+	
+	
+	OUT.COL0 = vIn.color;
+	OUT.TCOORD = vIn.texCoord;
+	OUT.NORMAL = normalInView;
+    return OUT;
+} // main
+
+//////////////////////////////////////////
+// Pixel shader for direct manipulation of ffd
+// The 1:1 ratio texel per pixel setting is used
+// two rgba textures are used 
+// the first hold the (i,j,k) values the second will  
+float4 DmFfdPixelShader(float4 TCoord,
+                        uniform float4 S,//source point
+                        uniform float4 T,//target point
+                        uniform float4 SPD,//source point in the parametric domain of the triv
+                        uniform sampler2D PositionTexture,
+                        uniform sampler2D IndexTexture):COLOR
+{
+    float4 Idx,Pos,NewPos = float4(0,0,0,0);
+    
+    Pos = tex2D(PositionTexture,TCoord.xy);
+    if(Pos.w == 1.0){
+        float4 Location = floor(SPD);
+        Idx = tex2D(IndexTexture,TCoord.xy);
+    
+        //use the local support property of B-splines to terminate
+        //this is a valid pixel but the point is not in the effected region
+        //w value of 1 will signify that.
+        if(Idx.x > Location.x || Idx.x < Location.x-2 || 
+        Idx.y > Location.y || Idx.y < Location.y-2 ||
+        Idx.z > Location.z || Idx.z < Location.z-2){ 
+            NewPos = Pos;
+        }
+        else{
+            
+            //compute the basis functions using
+            //here we assusme that we have uniform basis functions
+            float3 fracPart; 
+            fracPart = SPD.xyz- Location.xyz;
+            
+            float3 up;
+            up.z = 1;
+            up.y = fracPart.x;
+            up.x = fracPart.x * fracPart.x;
+            up = mul(up,coeff);
+            
+            float3 vp;
+            vp.z = 1;
+            vp.y = fracPart.y ;
+            vp.x = fracPart.y * fracPart.y;
+            vp = mul(vp,coeff);
+           
+            float3 wp;
+            wp.z = 1;
+            wp.y = fracPart.z ;
+            wp.x = fracPart.z * fracPart.z;
+            wp = mul(wp,coeff);
+            
+            //compute the current location
+            Location -= Idx;
+            
+            float u,v,w;
+            if(Location.x == 0)
+                u = up.x;
+            else if (Location.x == 1)
+                u = up.y;
+            else 
+                u = up.z;
+            if(Location.y == 0)
+                v = vp.x;
+            else if (Location.y == 1)
+                v = vp.y;
+            else 
+                v = vp.z;    
+            if(Location.z == 0)
+                w = wp.x;
+            else if (Location.z == 1)
+                w = wp.y;
+            else 
+                w = wp.z;            
+            
+            
+            //use the equation of shimin et al
+            //to compute the contribution of this point
+            float R = u*v*w;
+            float RR =0.0;
+            for(int k=0;k<3;k++)
+                for(int j=0;j<3;j++)
+                    for(int i=0;i<3;i++)
+                        RR += pow(up[i]*vp[j]*wp[k],2);
+            //the updated value that will result in moving the S to T.
+            NewPos = Pos+R*(T-S)/RR;
+            //NewPos = R*(T-S)/RR;
+            //NewPos = Idx;
+        }
+	NewPos.w=1.0;
+    }
+    //fast culling of this pixel - it is not a control point
+    //the fallback is output pixel to the pbuffer = input texel from 
+    
+    return NewPos;
+    //return float4(1,0,0,1);
+}
+
+//////////// phase 2 pixel shader
+struct FragmentInPhase2
+{
+	float4 color:COLOR0;
+	float4 texCoord:TEXCOORD0;
+	float3 normal: TEXCOORD1;
+};
+
+float4 FFDDoublePhaseFragment2(FragmentInPhase2 fIn,
+								uniform sampler2D PositionTexture,
+								uniform float4x4 ModelView,
+								uniform float AmbientFactor,
+								uniform float DiffuseFactor,
+								uniform float SpecularFactor,
+								uniform float Shininess,
+								uniform float4 LightPos0,
+								uniform float4 LightPos1,
+								uniform float FlippedNormals,
+								uniform float NormalMethod): COLOR
+{
+	float3 normal = normalize(fIn.normal);
+	float4 outColor = fIn.color;
+		
+	float3 ambient = fIn.color.xyz;
+	float3 diffuseMaterial = fIn.color.xyz;
+	float3 specularMaterial = float3(1,1,1);
+	float3 lightVec0 = -(LightPos0);
+	float3 lightVec1 = -(LightPos1);	
+	float3 eyeVec = -float3(0,0,1);
+
+	float3 halfVec0 = normalize(lightVec0 + eyeVec);
+	float3 halfVec1 = normalize(lightVec1 + eyeVec);
+    
+	float3 diffuse = max(dot(normal, lightVec0) * diffuseMaterial, 0) +
+		max(dot(normal, lightVec1) * diffuseMaterial, 0);
+	float3 specular0 = max(dot(normal, halfVec0),0);
+	float3 specular1 = max(dot(normal, halfVec1),0);
+    
+	float3 specular = (pow(specular0.x,Shininess) + pow(specular1.x,Shininess)) * specularMaterial;
+
+	outColor.xyz = AmbientFactor * ambient +  DiffuseFactor * diffuse + SpecularFactor * specular;	
+			
+	return outColor;
+}	

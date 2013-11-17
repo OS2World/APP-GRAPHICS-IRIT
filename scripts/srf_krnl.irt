@@ -1,0 +1,85 @@
+#
+# Examples of kernel approximation of freeform closed surface objects.
+#
+#					Gershon Elber, Oct 2002
+#
+
+OldCnvxPl2Vrtices = iritstate("CnvxPl2Vrtcs", 0);
+
+#############################################################################
+
+c = cbspline( 4,
+	      list( ctlpt( E2, 0,    0.15 ),
+		    ctlpt( E2, 0.25, 0.15 ),
+		    ctlpt( E2, 0.52, 0.4 ),
+		    ctlpt( E2, 0.85, 0.3 ),
+		    ctlpt( E2, 0.85, 0.0 ) ),
+	      list( kv_open ) );
+c = -c + c * sx( -1 );
+
+srf8a = surfprev( c * ry( 90 ) ) * sx( 0.9 ) *
+	             homomat( list( list( 1, 0, 0.2, 0 ),
+				    list( 0, 1, 0, 0 ),
+				    list( 0, 0, 1, 0 ),
+				    list( 0, 0, 0, 1 ) ) ) *
+	             homomat( list( list( 1, 0, 0, 0 ),
+				    list( 0, 1, 0.2, 0 ),
+				    list( 0, 0, 1, 0 ),
+				    list( 0, 0, 0, 1 ) ) );
+
+color( srf8a, yellow );
+awidth( srf8a, 0.001 );
+
+k = srfkernel( srf8a, 5, 3 );
+
+interact( list( srf8a, k ) );
+save( "srf1krnl", list( k, srf8a ) );
+
+#############################################################################
+
+c = pcircle( vector( 0, 0, 0 ), 1 );
+srf8b = sFromCrvs( list( c * sc( 0.001 ),
+		         c * sc( 1 ),
+		         c * sc( 1 ) * tz( 1 ),
+		         c * sc( 0.4 ) * sx( 0.6 ) * tz( 1 ),
+		         c * sc( 0.4 ) * sx( 0.6 ) * tz( 2 ),
+		         c * sc( 0.001 ) * tz( 2 ) ),
+		   4, kv_open ) * sc( 0.3 );
+color( srf8b, yellow );
+awidth( srf8b, 0.001 );
+
+k = srfkernel( srf8b, 40, 10 );
+
+interact( list( srf8b, k ) );
+save( "srf2krnl", list( k, srf8b ) );
+
+#############################################################################
+
+c = pcircle( vector( 0, 0, 0 ), 1 );
+srf8c = sFromCrvs( list( c * sc( 0.001 ) * tz( -1 ),
+		         c * sc( 0.4 ) * sy( 0.2 ) * tz( -1 ),
+		         c * sc( 0.4 ) * sy( 0.2 ),
+		         c * sc( 1 ),
+		         c * sc( 1 ) * tz( 1 ),
+		         c * sc( 0.4 ) * sx( 0.2 ) * tz( 1 ),
+		         c * sc( 0.4 ) * sx( 0.2 ) * tz( 2 ),
+		         c * sc( 0.001 ) * tz( 2 ) ),
+		   4, kv_open ) * sc( 0.3 );
+color( srf8c, yellow );
+awidth( srf8c, 0.001 );
+
+k = srfkernel( srf8c, 20, 5 );
+
+interact( list( srf8c, k ) );
+save( "srf3krnl", list( k, srf8c ) );
+
+#############################################################################
+
+OldCnvxPl2Vrtices = iritstate("CnvxPl2Vrtcs", OldCnvxPl2Vrtices);
+free( OldCnvxPl2Vrtices );
+
+free( srf8a );
+free( srf8b );
+free( srf8c );
+free( k );
+free( c );

@@ -1,0 +1,431 @@
+#
+# The infamous Teapot data as four B-spline surfaces.  Herein, we compute
+# the Gaussian, Mean, and Curvature bounds as scalar fields attached to the
+# geometry.  Saved data can be rendered and visualized using 'irender'.
+#
+
+EchoSrc = iritState("EchoSource", false);
+
+Body = sbspline( 4, 4, 
+	list( list( ctlpt( E3, 1.4, 2.25, 0 ),
+	            ctlpt( E3, 1.3375, 2.38125, 0 ),
+	            ctlpt( E3, 1.4375, 2.38125, 0 ),
+	            ctlpt( E3, 1.5, 2.25, 0 ),
+	            ctlpt( E3, 1.75, 1.725, 0 ),
+	            ctlpt( E3, 2, 1.2, 0 ),
+	            ctlpt( E3, 2, 0.75, 0 ),
+	            ctlpt( E3, 2, 0.3, 0 ),
+	            ctlpt( E3, 1.5, 0.075, 0 ),
+	            ctlpt( E3, 1.5, 0, 0 ) ),
+	      list( ctlpt( E3, 1.4, 2.25, 0.784 ),
+	            ctlpt( E3, 1.3375, 2.38125, 0.749 ),
+	            ctlpt( E3, 1.4375, 2.38125, 0.805 ),
+	            ctlpt( E3, 1.5, 2.25, 0.84 ),
+	            ctlpt( E3, 1.75, 1.725, 0.98 ),
+	            ctlpt( E3, 2, 1.2, 1.12 ),
+	            ctlpt( E3, 2, 0.75, 1.12 ),
+	            ctlpt( E3, 2, 0.3, 1.12 ),
+	            ctlpt( E3, 1.5, 0.075, 0.84 ),
+	            ctlpt( E3, 1.5, 0, 0.84 ) ),
+	      list( ctlpt( E3, 0.784, 2.25, 1.4 ),
+	            ctlpt( E3, 0.749, 2.38125, 1.3375 ),
+	            ctlpt( E3, 0.805, 2.38125, 1.4375 ),
+	            ctlpt( E3, 0.84, 2.25, 1.5 ),
+	            ctlpt( E3, 0.98, 1.725, 1.75 ),
+	            ctlpt( E3, 1.12, 1.2, 2 ),
+	            ctlpt( E3, 1.12, 0.75, 2 ),
+	            ctlpt( E3, 1.12, 0.3, 2 ),
+	            ctlpt( E3, 0.84, 0.075, 1.5 ),
+	            ctlpt( E3, 0.84, 0, 1.5 ) ),
+	      list( ctlpt( E3, 0, 2.25, 1.4 ),
+	            ctlpt( E3, 0, 2.38125, 1.3375 ),
+	            ctlpt( E3, 0, 2.38125, 1.4375 ),
+	            ctlpt( E3, 0, 2.25, 1.5 ),
+	            ctlpt( E3, 0, 1.725, 1.75 ),
+	            ctlpt( E3, 0, 1.2, 2 ),
+	            ctlpt( E3, 0, 0.75, 2 ),
+	            ctlpt( E3, 0, 0.3, 2 ),
+	            ctlpt( E3, 0, 0.075, 1.5 ),
+	            ctlpt( E3, 0, 0, 1.5 ) ),
+	      list( ctlpt( E3, -0.784, 2.25, 1.4 ),
+	            ctlpt( E3, -0.749, 2.38125, 1.3375 ),
+	            ctlpt( E3, -0.805, 2.38125, 1.4375 ),
+	            ctlpt( E3, -0.84, 2.25, 1.5 ),
+	            ctlpt( E3, -0.98, 1.725, 1.75 ),
+	            ctlpt( E3, -1.12, 1.2, 2 ),
+	            ctlpt( E3, -1.12, 0.75, 2 ),
+	            ctlpt( E3, -1.12, 0.3, 2 ),
+	            ctlpt( E3, -0.84, 0.075, 1.5 ),
+	            ctlpt( E3, -0.84, 0, 1.5 ) ),
+	      list( ctlpt( E3, -1.4, 2.25, 0.784 ),
+	            ctlpt( E3, -1.3375, 2.38125, 0.749 ),
+	            ctlpt( E3, -1.4375, 2.38125, 0.805 ),
+	            ctlpt( E3, -1.5, 2.25, 0.84 ),
+	            ctlpt( E3, -1.75, 1.725, 0.98 ),
+	            ctlpt( E3, -2, 1.2, 1.12 ),
+	            ctlpt( E3, -2, 0.75, 1.12 ),
+	            ctlpt( E3, -2, 0.3, 1.12 ),
+	            ctlpt( E3, -1.5, 0.075, 0.84 ),
+	            ctlpt( E3, -1.5, 0, 0.84 ) ),
+	      list( ctlpt( E3, -1.4, 2.25, 0 ),
+	            ctlpt( E3, -1.3375, 2.38125, 0 ),
+	            ctlpt( E3, -1.4375, 2.38125, 0 ),
+	            ctlpt( E3, -1.5, 2.25, 0 ),
+	            ctlpt( E3, -1.75, 1.725, 0 ),
+	            ctlpt( E3, -2, 1.2, 0 ),
+	            ctlpt( E3, -2, 0.75, 0 ),
+	            ctlpt( E3, -2, 0.3, 0 ),
+	            ctlpt( E3, -1.5, 0.075, 0 ),
+	            ctlpt( E3, -1.5, 0, 0 ) ),
+	      list( ctlpt( E3, -1.4, 2.25, -0.784 ),
+	            ctlpt( E3, -1.3375, 2.38125, -0.749 ),
+	            ctlpt( E3, -1.4375, 2.38125, -0.805 ),
+	            ctlpt( E3, -1.5, 2.25, -0.84 ),
+	            ctlpt( E3, -1.75, 1.725, -0.98 ),
+	            ctlpt( E3, -2, 1.2, -1.12 ),
+	            ctlpt( E3, -2, 0.75, -1.12 ),
+	            ctlpt( E3, -2, 0.3, -1.12 ),
+	            ctlpt( E3, -1.5, 0.075, -0.84 ),
+	            ctlpt( E3, -1.5, 0, -0.84 ) ),
+	      list( ctlpt( E3, -0.784, 2.25, -1.4 ),
+	            ctlpt( E3, -0.749, 2.38125, -1.3375 ),
+	            ctlpt( E3, -0.805, 2.38125, -1.4375 ),
+	            ctlpt( E3, -0.84, 2.25, -1.5 ),
+	            ctlpt( E3, -0.98, 1.725, -1.75 ),
+	            ctlpt( E3, -1.12, 1.2, -2 ),
+	            ctlpt( E3, -1.12, 0.75, -2 ),
+	            ctlpt( E3, -1.12, 0.3, -2 ),
+	            ctlpt( E3, -0.84, 0.075, -1.5 ),
+	            ctlpt( E3, -0.84, 0, -1.5 ) ),
+	      list( ctlpt( E3, 0, 2.25, -1.4 ),
+	            ctlpt( E3, 0, 2.38125, -1.3375 ),
+	            ctlpt( E3, 0, 2.38125, -1.4375 ),
+	            ctlpt( E3, 0, 2.25, -1.5 ),
+	            ctlpt( E3, 0, 1.725, -1.75 ),
+	            ctlpt( E3, 0, 1.2, -2 ),
+	            ctlpt( E3, 0, 0.75, -2 ),
+	            ctlpt( E3, 0, 0.3, -2 ),
+	            ctlpt( E3, 0, 0.075, -1.5 ),
+	            ctlpt( E3, 0, 0, -1.5 ) ),
+	      list( ctlpt( E3, 0.784, 2.25, -1.4 ),
+	            ctlpt( E3, 0.749, 2.38125, -1.3375 ),
+	            ctlpt( E3, 0.805, 2.38125, -1.4375 ),
+	            ctlpt( E3, 0.84, 2.25, -1.5 ),
+	            ctlpt( E3, 0.98, 1.725, -1.75 ),
+	            ctlpt( E3, 1.12, 1.2, -2 ),
+	            ctlpt( E3, 1.12, 0.75, -2 ),
+	            ctlpt( E3, 1.12, 0.3, -2 ),
+	            ctlpt( E3, 0.84, 0.075, -1.5 ),
+	            ctlpt( E3, 0.84, 0, -1.5 ) ),
+	      list( ctlpt( E3, 1.4, 2.25, -0.784 ),
+	            ctlpt( E3, 1.3375, 2.38125, -0.749 ),
+	            ctlpt( E3, 1.4375, 2.38125, -0.805 ),
+	            ctlpt( E3, 1.5, 2.25, -0.84 ),
+	            ctlpt( E3, 1.75, 1.725, -0.98 ),
+	            ctlpt( E3, 2, 1.2, -1.12 ),
+	            ctlpt( E3, 2, 0.75, -1.12 ),
+	            ctlpt( E3, 2, 0.3, -1.12 ),
+	            ctlpt( E3, 1.5, 0.075, -0.84 ),
+	            ctlpt( E3, 1.5, 0, -0.84 ) ),
+	      list( ctlpt( E3, 1.4, 2.25, 0 ),
+	            ctlpt( E3, 1.3375, 2.38125, 0 ),
+	            ctlpt( E3, 1.4375, 2.38125, 0 ),
+	            ctlpt( E3, 1.5, 2.25, 0 ),
+	            ctlpt( E3, 1.75, 1.725, 0 ),
+	            ctlpt( E3, 2, 1.2, 0 ),
+	            ctlpt( E3, 2, 0.75, 0 ),
+	            ctlpt( E3, 2, 0.3, 0 ),
+	            ctlpt( E3, 1.5, 0.075, 0 ),
+	            ctlpt( E3, 1.5, 0, 0 ) ) ),
+	list( list( 0, 0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3 ),
+	      list( 0, 0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 4 ) ) );
+Spout = sbspline( 4, 4, 
+	list( list( ctlpt( E3, 1.7, 1.275, 0 ),
+	            ctlpt( E3, 2.6, 1.275, 0 ),
+	            ctlpt( E3, 2.3, 1.95, 0 ),
+	            ctlpt( E3, 2.7, 2.25, 0 ),
+	            ctlpt( E3, 2.8, 2.325, 0 ),
+	            ctlpt( E3, 2.9, 2.325, 0 ),
+	            ctlpt( E3, 2.8, 2.25, 0 ) ),
+	      list( ctlpt( E3, 1.7, 1.275, 0.66 ),
+	            ctlpt( E3, 2.6, 1.275, 0.66 ),
+	            ctlpt( E3, 2.3, 1.95, 0.25 ),
+	            ctlpt( E3, 2.7, 2.25, 0.25 ),
+	            ctlpt( E3, 2.8, 2.325, 0.25 ),
+	            ctlpt( E3, 2.9, 2.325, 0.15 ),
+	            ctlpt( E3, 2.8, 2.25, 0.15 ) ),
+	      list( ctlpt( E3, 1.7, 0.45, 0.66 ),
+	            ctlpt( E3, 3.1, 0.675, 0.66 ),
+	            ctlpt( E3, 2.4, 1.875, 0.25 ),
+	            ctlpt( E3, 3.3, 2.25, 0.25 ),
+	            ctlpt( E3, 3.525, 2.34375, 0.25 ),
+	            ctlpt( E3, 3.45, 2.3625, 0.15 ),
+	            ctlpt( E3, 3.2, 2.25, 0.15 ) ),
+	      list( ctlpt( E3, 1.7, 0.45, 0 ),
+	            ctlpt( E3, 3.1, 0.675, 0 ),
+	            ctlpt( E3, 2.4, 1.875, 0 ),
+	            ctlpt( E3, 3.3, 2.25, 0 ),
+	            ctlpt( E3, 3.525, 2.34375, 0 ),
+	            ctlpt( E3, 3.45, 2.3625, 0 ),
+	            ctlpt( E3, 3.2, 2.25, 0 ) ),
+	      list( ctlpt( E3, 1.7, 0.45, -0.66 ),
+	            ctlpt( E3, 3.1, 0.675, -0.66 ),
+	            ctlpt( E3, 2.4, 1.875, -0.25 ),
+	            ctlpt( E3, 3.3, 2.25, -0.25 ),
+	            ctlpt( E3, 3.525, 2.34375, -0.25 ),
+	            ctlpt( E3, 3.45, 2.3625, -0.15 ),
+	            ctlpt( E3, 3.2, 2.25, -0.15 ) ),
+	      list( ctlpt( E3, 1.7, 1.275, -0.66 ),
+	            ctlpt( E3, 2.6, 1.275, -0.66 ),
+	            ctlpt( E3, 2.3, 1.95, -0.25 ),
+	            ctlpt( E3, 2.7, 2.25, -0.25 ),
+	            ctlpt( E3, 2.8, 2.325, -0.25 ),
+	            ctlpt( E3, 2.9, 2.325, -0.15 ),
+	            ctlpt( E3, 2.8, 2.25, -0.15 ) ),
+	      list( ctlpt( E3, 1.7, 1.275, 0 ),
+	            ctlpt( E3, 2.6, 1.275, 0 ),
+	            ctlpt( E3, 2.3, 1.95, 0 ),
+	            ctlpt( E3, 2.7, 2.25, 0 ),
+	            ctlpt( E3, 2.8, 2.325, 0 ),
+	            ctlpt( E3, 2.9, 2.325, 0 ),
+	            ctlpt( E3, 2.8, 2.25, 0 ) ) ),
+	list( list( 0, 0, 0, 0, 1, 1, 1, 2, 2, 2, 2 ),
+	      list( 0, 0, 0, 0, 1, 1, 1, 2, 2, 2, 2 ) ) );
+Handle = sbspline( 4, 4, 
+	list( list( ctlpt( E3, -1.595, 1.875, 0 ),
+	            ctlpt( E3, -2.295, 1.875, 0 ),
+	            ctlpt( E3, -2.695, 1.875, 0 ),
+	            ctlpt( E3, -2.695, 1.65, 0 ),
+	            ctlpt( E3, -2.695, 1.425, 0 ),
+	            ctlpt( E3, -2.495, 0.975, 0 ),
+	            ctlpt( E3, -1.995, 0.75, 0 ) ),
+	      list( ctlpt( E3, -1.595, 1.875, 0.3 ),
+	            ctlpt( E3, -2.295, 1.875, 0.3 ),
+	            ctlpt( E3, -2.695, 1.875, 0.3 ),
+	            ctlpt( E3, -2.695, 1.65, 0.3 ),
+	            ctlpt( E3, -2.695, 1.425, 0.3 ),
+	            ctlpt( E3, -2.495, 0.975, 0.3 ),
+	            ctlpt( E3, -1.995, 0.75, 0.3 ) ),
+	      list( ctlpt( E3, -1.495, 2.1, 0.3 ),
+	            ctlpt( E3, -2.495, 2.1, 0.3 ),
+	            ctlpt( E3, -2.995, 2.1, 0.3 ),
+	            ctlpt( E3, -2.995, 1.65, 0.3 ),
+	            ctlpt( E3, -2.995, 1.2, 0.3 ),
+	            ctlpt( E3, -2.645, 0.7875, 0.3 ),
+	            ctlpt( E3, -1.895, 0.45, 0.3 ) ),
+	      list( ctlpt( E3, -1.495, 2.1, 0 ),
+	            ctlpt( E3, -2.495, 2.1, 0 ),
+	            ctlpt( E3, -2.995, 2.1, 0 ),
+	            ctlpt( E3, -2.995, 1.65, 0 ),
+	            ctlpt( E3, -2.995, 1.2, 0 ),
+	            ctlpt( E3, -2.645, 0.7875, 0 ),
+	            ctlpt( E3, -1.895, 0.45, 0 ) ),
+	      list( ctlpt( E3, -1.495, 2.1, -0.3 ),
+	            ctlpt( E3, -2.495, 2.1, -0.3 ),
+	            ctlpt( E3, -2.995, 2.1, -0.3 ),
+	            ctlpt( E3, -2.995, 1.65, -0.3 ),
+	            ctlpt( E3, -2.995, 1.2, -0.3 ),
+	            ctlpt( E3, -2.645, 0.7875, -0.3 ),
+	            ctlpt( E3, -1.895, 0.45, -0.3 ) ),
+	      list( ctlpt( E3, -1.595, 1.875, -0.3 ),
+	            ctlpt( E3, -2.295, 1.875, -0.3 ),
+	            ctlpt( E3, -2.695, 1.875, -0.3 ),
+	            ctlpt( E3, -2.695, 1.65, -0.3 ),
+	            ctlpt( E3, -2.695, 1.425, -0.3 ),
+	            ctlpt( E3, -2.495, 0.975, -0.3 ),
+	            ctlpt( E3, -1.995, 0.75, -0.3 ) ),
+	      list( ctlpt( E3, -1.595, 1.875, 0 ),
+	            ctlpt( E3, -2.295, 1.875, 0 ),
+	            ctlpt( E3, -2.695, 1.875, 0 ),
+	            ctlpt( E3, -2.695, 1.65, 0 ),
+	            ctlpt( E3, -2.695, 1.425, 0 ),
+	            ctlpt( E3, -2.495, 0.975, 0 ),
+	            ctlpt( E3, -1.995, 0.75, 0 ) ) ),
+	list( list( 0, 0, 0, 0, 1, 1, 1, 2, 2, 2, 2 ),
+	      list( 0, 0, 0, 0, 1, 1, 1, 2, 2, 2, 2 ) ) );
+Cap = sbspline( 4, 4, 
+	list( list( ctlpt( E3, 0, 3, 0 ),
+	            ctlpt( E3, 0.8, 3, 0 ),
+	            ctlpt( E3, 0, 2.7, 0 ),
+	            ctlpt( E3, 0.2, 2.55, 0 ),
+	            ctlpt( E3, 0.4, 2.4, 0 ),
+	            ctlpt( E3, 1.3, 2.4, 0 ),
+	            ctlpt( E3, 1.3, 2.25, 0 ) ),
+	      list( ctlpt( E3, 0, 3, 0 ),
+	            ctlpt( E3, 0.8, 3, 0.45 ),
+	            ctlpt( E3, 0, 2.7, 0 ),
+	            ctlpt( E3, 0.2, 2.55, 0.112 ),
+	            ctlpt( E3, 0.4, 2.4, 0.224 ),
+	            ctlpt( E3, 1.3, 2.4, 0.728 ),
+	            ctlpt( E3, 1.3, 2.25, 0.728 ) ),
+	      list( ctlpt( E3, 0, 3, 0 ),
+	            ctlpt( E3, 0.45, 3, 0.8 ),
+	            ctlpt( E3, 0, 2.7, 0 ),
+	            ctlpt( E3, 0.112, 2.55, 0.2 ),
+	            ctlpt( E3, 0.224, 2.4, 0.4 ),
+	            ctlpt( E3, 0.728, 2.4, 1.3 ),
+	            ctlpt( E3, 0.728, 2.25, 1.3 ) ),
+	      list( ctlpt( E3, 0, 3, 0 ),
+	            ctlpt( E3, 0, 3, 0.8 ),
+	            ctlpt( E3, 0, 2.7, 0 ),
+	            ctlpt( E3, 0, 2.55, 0.2 ),
+	            ctlpt( E3, 0, 2.4, 0.4 ),
+	            ctlpt( E3, 0, 2.4, 1.3 ),
+	            ctlpt( E3, 0, 2.25, 1.3 ) ),
+	      list( ctlpt( E3, 0, 3, 0 ),
+	            ctlpt( E3, -0.45, 3, 0.8 ),
+	            ctlpt( E3, 0, 2.7, 0 ),
+	            ctlpt( E3, -0.112, 2.55, 0.2 ),
+	            ctlpt( E3, -0.224, 2.4, 0.4 ),
+	            ctlpt( E3, -0.728, 2.4, 1.3 ),
+	            ctlpt( E3, -0.728, 2.25, 1.3 ) ),
+	      list( ctlpt( E3, 0, 3, 0 ),
+	            ctlpt( E3, -0.8, 3, 0.45 ),
+	            ctlpt( E3, 0, 2.7, 0 ),
+	            ctlpt( E3, -0.2, 2.55, 0.112 ),
+	            ctlpt( E3, -0.4, 2.4, 0.224 ),
+	            ctlpt( E3, -1.3, 2.4, 0.728 ),
+	            ctlpt( E3, -1.3, 2.25, 0.728 ) ),
+	      list( ctlpt( E3, 0, 3, 0 ),
+	            ctlpt( E3, -0.8, 3, 0 ),
+	            ctlpt( E3, 0, 2.7, 0 ),
+	            ctlpt( E3, -0.2, 2.55, 0 ),
+	            ctlpt( E3, -0.4, 2.4, 0 ),
+	            ctlpt( E3, -1.3, 2.4, 0 ),
+	            ctlpt( E3, -1.3, 2.25, 0 ) ),
+	      list( ctlpt( E3, 0, 3, 0 ),
+	            ctlpt( E3, -0.8, 3, -0.45 ),
+	            ctlpt( E3, 0, 2.7, 0 ),
+	            ctlpt( E3, -0.2, 2.55, -0.112 ),
+	            ctlpt( E3, -0.4, 2.4, -0.224 ),
+	            ctlpt( E3, -1.3, 2.4, -0.728 ),
+	            ctlpt( E3, -1.3, 2.25, -0.728 ) ),
+	      list( ctlpt( E3, 0, 3, 0 ),
+	            ctlpt( E3, -0.45, 3, -0.8 ),
+	            ctlpt( E3, 0, 2.7, 0 ),
+	            ctlpt( E3, -0.112, 2.55, -0.2 ),
+	            ctlpt( E3, -0.224, 2.4, -0.4 ),
+	            ctlpt( E3, -0.728, 2.4, -1.3 ),
+	            ctlpt( E3, -0.728, 2.25, -1.3 ) ),
+	      list( ctlpt( E3, 0, 3, 0 ),
+	            ctlpt( E3, 0, 3, -0.8 ),
+	            ctlpt( E3, 0, 2.7, 0 ),
+	            ctlpt( E3, 0, 2.55, -0.2 ),
+	            ctlpt( E3, 0, 2.4, -0.4 ),
+	            ctlpt( E3, 0, 2.4, -1.3 ),
+	            ctlpt( E3, 0, 2.25, -1.3 ) ),
+	      list( ctlpt( E3, 0, 3, 0 ),
+	            ctlpt( E3, 0.45, 3, -0.8 ),
+	            ctlpt( E3, 0, 2.7, 0 ),
+	            ctlpt( E3, 0.112, 2.55, -0.2 ),
+	            ctlpt( E3, 0.224, 2.4, -0.4 ),
+	            ctlpt( E3, 0.728, 2.4, -1.3 ),
+	            ctlpt( E3, 0.728, 2.25, -1.3 ) ),
+	      list( ctlpt( E3, 0, 3, 0 ),
+	            ctlpt( E3, 0.8, 3, -0.45 ),
+	            ctlpt( E3, 0, 2.7, 0 ),
+	            ctlpt( E3, 0.2, 2.55, -0.112 ),
+	            ctlpt( E3, 0.4, 2.4, -0.224 ),
+	            ctlpt( E3, 1.3, 2.4, -0.728 ),
+	            ctlpt( E3, 1.3, 2.25, -0.728 ) ),
+	      list( ctlpt( E3, 0, 3, 0 ),
+	            ctlpt( E3, 0.8, 3, 0 ),
+	            ctlpt( E3, 0, 2.7, 0 ),
+	            ctlpt( E3, 0.2, 2.55, 0 ),
+	            ctlpt( E3, 0.4, 2.4, 0 ),
+	            ctlpt( E3, 1.3, 2.4, 0 ),
+	            ctlpt( E3, 1.3, 2.25, 0 ) ) ),
+	list( list( 0, 0, 0, 0, 1, 1, 1, 2, 2, 2, 2 ),
+	      list( 0, 0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 4 ) ) );
+
+EchoSrc = iritState("EchoSource", EchoSrc);
+free( EchoSrc );
+
+# Faster product using Bezier decomposition.
+IProd = iritState( "BspProdMethod", 0 );
+
+#
+# Render the following using irender to get the curvature bound as color map
+# on top of the teapot.
+#
+color( Body, red );
+attrib( Body, "stexture", smean( Body, false ) );
+attrib( Body, "stexture_func", "sqrt" );
+attrib( Body, "stexture_bound", "-5.0 20.0" );
+
+color( Cap, green );
+attrib( Cap, "stexture", smean( Cap, false ) );
+attrib( Cap, "stexture_func", "sqrt" );
+attrib( Cap, "stexture_bound", "-5.0 20.0" );
+
+color( Spout, blue );
+attrib( Spout, "stexture", smean( Spout, false ) );
+attrib( Spout, "stexture_func", "sqrt" );
+attrib( Spout, "stexture_bound", "-5.0 20.0" );
+
+color( Handle, magenta );
+attrib( Handle, "stexture", smean( Handle, false ) );
+attrib( Handle, "stexture_func", "sqrt" );
+attrib( Handle, "stexture_bound", "-5.0 20.0" );
+
+Teapot = list( Body, Spout, Handle, Cap );
+
+interact( list( view_mat, Teapot ) );
+save( "meanstea", Teapot );
+
+#
+# Render the following using irender to get the curvature bound as color map
+# on top of the teapot.
+#
+color( Body, red );
+attrib( Body, "stexture", sgauss( Body, false ) );
+attrib( Body, "stexture_bound", "-5.0 10.0" );
+
+color( Cap, green );
+attrib( Cap, "stexture", sgauss( Cap, false ) );
+attrib( Cap, "stexture_bound", "-5.0 10.0" );
+
+color( Spout, blue );
+attrib( Spout, "stexture", sgauss( Spout, false ) );
+attrib( Spout, "stexture_bound", "-5.0 10.0" );
+
+color( Handle, magenta );
+attrib( Handle, "stexture", sgauss( Handle, false ) );
+attrib( Handle, "stexture_bound", "-5.0 10.0" );
+
+Teapot = list( Body, Spout, Handle, Cap );
+
+interact( list( view_mat, Teapot ) );
+save( "gausstea", Teapot );
+
+#
+# Render the following using irender to get the curvature bound as color map
+# on top of the teapot.
+#
+color( Body, red );
+attrib( Body, "stexture", scrvtr( Body, P1, off ) );
+attrib( Body, "stexture_func", "sqrt" );
+attrib( Body, "stexture_bound", "0.0 30.0" );
+
+color( Cap, green );
+attrib( Cap, "stexture", scrvtr( Cap, P1, off ) );
+attrib( Cap, "stexture_func", "sqrt" );
+attrib( Cap, "stexture_bound", "0.0 30.0" );
+
+color( Spout, blue );
+attrib( Spout, "stexture", scrvtr( Spout, P1, off ) );
+attrib( Spout, "stexture_func", "sqrt" );
+attrib( Spout, "stexture_bound", "0.0 30.0" );
+
+color( Handle, magenta );
+attrib( Handle, "stexture", scrvtr( Handle, P1, off ) );
+attrib( Handle, "stexture_func", "sqrt" );
+attrib( Handle, "stexture_bound", "0.0 30.0" );
+
+Teapot = list( Body, Spout, Handle, Cap );
+
+interact( list( view_mat, Teapot ) );
+save( "crvtrtea", Teapot );
+
+IProd = iritState( "BspProdMethod", IProd );
+free( IProd );

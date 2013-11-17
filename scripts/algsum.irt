@@ -1,0 +1,162 @@
+#
+# Some examples of Algebraic sum, including of swung surfaces.
+#
+#					Gershon ELber, May 1998
+#
+
+save_mat = view_mat;
+view_mat = view_mat * sc( 0.35 );
+viewobj( view_mat );
+
+#
+# A circle and a line
+#
+circ = circle( vector( 0.0, 0.0, 0.0 ), 0.7 );
+c2 = ctlpt( E3, -0.2, -0.5, -1.5 ) + ctlpt( E3, 0.2, 0.5, 1.5 );
+color( circ, magenta );
+adwidth( circ, 3 );
+color( c2, green );
+adwidth( c2, 3 );
+
+as1 = algsum( circ, c2 );
+color( as1, yellow );
+interact( list( as1, circ, c2 ) );
+
+as1 = algsum( c2, circ );
+color( as1, yellow );
+interact( list( as1, circ, c2 ) );
+
+as2 = SwungAsum( c2 * ry( 90 ), circ );
+color( as2, yellow );
+interact( list( as2, circ, c2 ) );
+
+free( circ );
+free( c2 );
+
+#
+# A circle and an arc.
+#
+circ = circle( vector( 0.0, 0.0, 0.0 ), 1.5 ) * ry( 90 );
+arc1 = arc( vector( 0.0, 1.0, 0.0 ),
+	    vector( 0.0, 0.0, 0.0 ),
+	    vector( 1.0, 0.0, 0.0 ) );
+color( circ, magenta );
+color( arc1, green );
+
+as1 = algsum( circ, arc1 );
+color( as1, yellow );
+interact( list( as1, circ, arc1 ) );
+
+as2 = SwungAsum( circ * ry( -90 ), arc1 );
+color( as2, yellow );
+interact( list( as2, circ, arc1 ) );
+
+as1 = algsum( arc1, circ );
+color( as1, yellow );
+interact( list( as1, circ, arc1 ) );
+
+as2 = SwungAsum( arc1, circ * ry( -90 ) );
+color( as2, yellow );
+interact( list( as2, circ, arc1 ) );
+
+save( "algsum1", list( as1, as2, circ, arc1 ) );
+
+free( circ );
+free( arc1 );
+
+#
+# A circle and a bump curve.
+#
+circ = circle( vector( 0.0, 0.0, 0.0 ), 1.5 );
+c2 = cbspline( 3,
+	       list( ctlpt( E3, 0.0, 0.0, 0.0 ),
+		     ctlpt( E3, 0.0, 0.0, 0.7 ),
+		     ctlpt( E3, 0.0, 1.5, 1.0 ),
+		     ctlpt( E3, 0.0, 0.0, 1.3 ),
+		     ctlpt( E3, 0.0, 0.0, 2.0 ) ),
+	       list( KV_OPEN ) );
+color( circ, magenta );
+color( c2, green );
+
+as1 = algsum( circ, c2 );
+color( as1, yellow );
+interact( list( as1, circ, c2 ) );
+
+as1 = algsum( c2, c2 * ry( 90 ) );
+color( as1, yellow );
+interact( list( as1, c2, c2 * ry( 90 ) ) );
+
+as2 = SwungAsum( circ, c2 * ry( 90 ) );
+color( as2, yellow );
+interact( list( as2, circ, c2 ) );
+
+as1 = algsum( c2, circ );
+color( as1, yellow );
+interact( list( as1, circ, c2 ) );
+free( circ );
+
+#
+# A circle and a periodic curve.
+#
+arc1 = cregion( circle( vector( 0.0, 0.0, 0.0 ), 1.5 ), 0, 2 ) * rz( 90 );
+c2 = coerce( cbspline( 3,
+		       list( ctlpt( E2,  1.0,  0.0 ),
+			     ctlpt( E2,  0.2,  0.2 ),
+			     ctlpt( E2,  0.0,  1.0 ),
+			     ctlpt( E2, -0.2,  0.2 ),
+			     ctlpt( E2, -1.0,  0.0 ),
+			     ctlpt( E2, -0.2, -0.2 ),
+			     ctlpt( E2,  0.0, -1.0 ),
+			     ctlpt( E2,  0.2, -0.2 ) ),
+		       list( KV_PERIODIC ) ),
+	     KV_OPEN );
+color( arc1, magenta );
+color( c2, green );
+
+as2 = SwungAsum( arc1, c2 );
+color( as2, yellow );
+interact( list( as2, arc1, c2 ) );
+
+save( "algsum2", list( as2, c2, arc1 ) );
+
+free( arc1 );
+free( c2 );
+
+#
+# Two circles.
+#
+circ1 = circle( vector( 0.0, 0.0, 0.0 ), 0.5 ) * rx( 90 );
+circ2 = circle( vector( 0.0, 0.0, 0.0 ), 1.0 );
+color( circ1, magenta );
+color( circ2, green );
+
+as1 = algsum( circ1, circ2 );
+color( as1, yellow );
+interact( list( as1, circ1, circ2 ) );
+
+as2 = SwungAsum( circ1 * rx( -45 ), circ2 );
+color( as2, yellow );
+interact( list( as2, circ1 * rx( -45 ), circ2 ) );
+
+circ1 = circle( vector( 0.0, 0.0, 0.0 ), 1.0 ) * rx( 90 );
+circ2 = circle( vector( 0.0, 0.0, 0.0 ), 1.0 );
+color( circ1, magenta );
+color( circ2, green );
+
+as1 = algsum( circ1, circ2 );
+color( as1, yellow );
+interact( list( as1, circ1, circ2 ) );
+
+as2 = SwungAsum( circ1 * rx( -10 ), circ2 * sx( 2 ) );
+color( as2, yellow );
+interact( list( as2, circ1 * rx( -10 ), circ2 * sx( 2 ) ) );
+
+save( "algsum3",  list( as1, as2, circ1, circ2 ) );
+
+view_mat = save_mat;
+
+free( as1 );
+free( as2 );
+free( circ1 );
+free( circ2 );
+free( save_mat );

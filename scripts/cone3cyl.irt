@@ -1,0 +1,47 @@
+#
+# Intersection of cone and a cylinder:
+# Try this one with resolution equal 20 - slower, but much nicer!
+#
+#			Created by Gershon Elber,	Jan. 89
+#
+
+save_mat = view_mat;
+view_mat = view_mat * scale( vector( 0.2, 0.2, 0.2 ) );
+save_res = resolution;
+resolution = 32;
+
+cone1 = con2( vector( 0, 0, -1 ),vector( 0, 0, 4 ), 2, 1, 3 );
+cylin1= cylin( vector( 0, 3, 1 ),vector( 0, -6, 0 ), 0.7, 3 );
+
+a1 = convex( cone1 + cylin1 );
+interact( list( view_mat, a1 ) );
+
+a2 = convex( cone1 * cylin1 );
+interact( a2 );
+
+a3 = convex( cone1 - cylin1 );
+interact( a3 );
+
+a4 = convex( cylin1 - cone1 );
+interact( a4 );
+
+IntrCrv = iritstate( "intercrv", true );
+a5 = cone1 * cylin1;
+interact( list( a5, cylin1, cone1 ) );
+dummy = iritstate( "intercrv", IntrCrv );
+free( IntrCrv );
+
+save( "cone3cyl",
+      list( a1, a2 * tx( 5 ), a3 * tx( 10 ), a4 * tx( 15 ), a5 * tx( 20 ) ) );
+
+free( a1 );
+free( a2 );
+free( a3 );
+free( a4 );
+free( a5 );
+
+free( cylin1 );
+free( cone1 );
+
+resolution = save_res;
+view_mat = save_mat;

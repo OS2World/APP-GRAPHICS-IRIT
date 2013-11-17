@@ -1,0 +1,27 @@
+#
+# This is the make file for the bool_lib library.
+#
+#				Gershon Elber, Aug 1990
+#
+
+include ../makeflag.unx
+
+OBJS =  adjacncy.o$(IRIT_OBJ_PF) \
+	bool-hi.o$(IRIT_OBJ_PF) \
+	bool1low.o$(IRIT_OBJ_PF) \
+	bool2low.o$(IRIT_OBJ_PF) \
+	bool-2d.o$(IRIT_OBJ_PF) \
+	bool_err.o$(IRIT_OBJ_PF)
+
+all:	libIritBool$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+
+libIritBool$(IRIT_LIB_PF).$(IRIT_LIB_SFX): $(OBJS)
+	rm -f libIritBool$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+	$(IRIT_LIB_MAKE) libIritBool$(IRIT_LIB_PF).$(IRIT_LIB_SFX) *.o$(IRIT_OBJ_PF)
+	-$(IRIT_LIB_RAN) libIritBool$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+
+install: libIritBool$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+	mv -f libIritBool$(IRIT_LIB_PF).$(IRIT_LIB_SFX) $(IRIT_LIB_DIR)
+
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

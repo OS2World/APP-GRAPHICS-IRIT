@@ -1,0 +1,420 @@
+#
+# Few examples of computing the visibility regions of planar curves.
+#
+#				gershon Elber, August 2004
+#
+
+view_mat1 = rx( 0 );
+viewobj( view_mat1 );
+free( view_mat1 );
+
+UnitSquare = ctlpt( e2, 0, 0 ) +
+	     ctlpt( e2, 0, 1 ) +
+	     ctlpt( e2, 1, 1 ) +
+	     ctlpt( e2, 1, 0 ) +
+	     ctlpt( e2, 0, 0 );
+color( UnitSquare, magenta );
+adwidth( UnitSquare, 2 );
+attrib( UnitSquare, "rgb", "255,128,255" );
+
+CnvrtCrvs2Domains = function( Crvs, Theta ): i: Dm:
+    return = nil():
+    for ( i = 1, 1, sizeof( Crvs ),
+        Dm = pdomain( nth( Crvs, i ) ):
+	snoc( ctlpt( E2, Theta, nth( Dm, 1 ) ) +
+	      ctlpt( E2, Theta, nth( Dm, 2 ) ),
+	      return ) );
+
+BuildVisibilityMap = function( c, Step ): i: Dir: Crvs:
+    return = nil():
+    for ( i = 0, Step, 360,
+        Dir = point( cos( i * pi / 180 ), sin( i * pi / 180 ), 0 ):
+	Crvs = cvisible( c, Dir, 1e-5 ):
+        snoc( CnvrtCrvs2Domains( Crvs, i ) * sx( 1 / 360 ),
+	    return ) );
+
+ri = iritstate( "RandomInit", 1964 );  # Seed-initiate the randomizer,
+free( ri );
+
+#############################################################################
+
+apxEq = function( x, y ):
+    return = ( abs( x - y ) < 1e-6 );
+
+MergeVerticalTwoCrvs = function( c1, c2 ): x:
+    x = coord( coord( c1, 1 ), 1 ):
+    if ( apxEq( coord( coord( c1, 1 ), 2 ), 1.0 ) *
+	 apxEq( coord( coord( c2, 0 ), 2 ), 0.0 ),
+	return = ctlpt( E2, x, coord( coord( c1, 0 ), 2 ) - 1.0 ) +
+		 ctlpt( E2, x, coord( coord( c2, 1 ), 2 ) ),
+	if ( apxEq( coord( coord( c2, 1 ), 2 ), 1.0 ) *
+	     apxEq( coord( coord( c1, 0 ), 2 ), 0.0 ),
+	    return = ctlpt( E2, x, coord( coord( c2, 0 ), 2 ) - 1.0 ) +
+		     ctlpt( E2, x, coord( coord( c1, 1 ), 2 ) ),
+	    return = c1 * tx( 0 ) ) );
+
+MergeVerticalBndryCrvs = function( Crvs ): i: j: c1: c1a: c2: Used:
+    Crvs = Crvs * tx( 0 ):
+    return = nil():
+    for ( i = 1, 1, sizeof( Crvs ),
+	c1 = nth( Crvs, i ):
+	Used = GetAttr( c1, "used" ):
+	if ( thisobj("Used") != numeric_type,
+	    for ( j = i + 1, 1, sizeof( Crvs ),
+	        c2 = nth( Crvs, j ):
+		Used = GetAttr( c2, "used" ):
+	        if ( thisobj("Used") != numeric_type,
+		    c1a = MergeVerticalTwoCrvs( c1, c2 ):
+		    if ( c1a != c1,
+			attrib( nref( Crvs, j ), "used", true ) ):
+		    c1 = c1a ) ):
+	    snoc( c1 * tx( 0 ), return ) ) );
+
+CnvrtCrvs2Ranges = function( Crvs, Idx, Merge ): i: Rng: Dm: Pt1: Pt2:
+    return = nil():
+    if ( Merge,
+	Crvs = MergeVerticalBndryCrvs( Crvs ) ):
+    for ( i = 1, 1, sizeof( Crvs ),
+        Dm = nth( Crvs, i ):
+	Pt1 = ceval( Dm, 0 ):
+	Pt2 = ceval( Dm, 1 ):
+	Rng = list( coord( Pt1, 2 ) ) + list( coord( Pt2, 2 ) ):
+        attrib( Rng, "Index", Idx ):
+	snoc( Rng,
+	      return ) );
+
+CnvrtCrvs2Domains = function( Crvs, Theta ): i: Dm:
+    return = nil():
+    for ( i = 1, 1, sizeof( Crvs ),
+        Dm = pdomain( nth( Crvs, i ) ):
+	snoc( ctlpt( E2, Theta, nth( Dm, 1 ) ) +
+	      ctlpt( E2, Theta, nth( Dm, 2 ) ),
+	      return ) );
+
+BuildVisibilityMap = function( c, Step ): i: Dir: Crvs:
+    return = nil():
+    for ( i = 0, Step, 360,
+        Dir = point( cos( i * pi / 180 ), sin( i * pi / 180 ), 0 ):
+	Crvs = cvisible( c, Dir, 1e-5 ):
+        snoc( CnvrtCrvs2Domains( Crvs, i ) * sx( 1 / 360 ),
+	    return ) );
+
+ExtractCrvRegion = function( Crv, t1, t2, Idx ): tn:
+    if ( t1 < 0,
+        return = cregion( crv, 1.0 + t1, 1.0 ) + cregion( crv, 0.0, t2 ),
+	return = cregion( crv, t1, t2 ) ):
+    return = creparam( return, 0, 1 ):
+    tn = vector( 1, 0, 0 ) * rz( Idx ):
+    return = list( return * trans( tn * sc( 0.15 ) ),
+		   arrow3d( coerce( ceval( return, 0.5 ), point_type ),
+			    tn, 0.35, 0.01, 0.1, 0.02 ) ):
+    attrib( return, "width", random( 0.007, 0.01 ) ):
+    attrib( return, "gray", random( 0.2, 0.8 ) ):
+    attrib( return, "rgb", random( 100, 255 ) + "," +
+			   random( 100, 255 ) + "," +
+			   random( 100, 255 ) );
+
+ComputeViews = function( c, Step, FName ): Dms: Ranges: Cvrs: Cvr: CvrCrvs: i: 
+    Dms = BuildVisibilityMap( c, Step ):
+    Ranges = nil():
+    for ( i = 1, 1, sizeof( Dms ),
+        Ranges = CnvrtCrvs2Ranges( nth( Dms, i ), i, true ) + Ranges ):
+    printf( "%d Views are considered\\n", list(  sizeof( Dms ) ) ):
+    Cvrs = setcover( Ranges, 0.001 ):
+    CvrCrvs = nil():
+    for ( i = 1, 1, sizeof( Cvrs ),
+        Cvr = nth( Ranges, nth( Cvrs, i ) + 1 ):
+	printf( "Curve %d [Idx = %d] covers from t = %f to t = %f\\n",
+		list( i, GetAttr( Cvr, "index" ),
+		      nth( Cvr, 1 ), nth( Cvr, 2 ) ) ):
+	snoc( ExtractCrvRegion( c, nth( Cvr, 1 ), nth( Cvr, 2 ),
+				360 * GetAttr( Cvr, "index" ) / sizeof( Dms ) ),
+	      CvrCrvs ) ):
+    attrib( c, "width", 0.005 ):
+    attrib( c, "rgb", "255, 255, 255" ):
+    return = list( c, CvrCrvs ):
+    if ( sizeof( FName ) > 0,
+	save( FName, return ) );
+
+#############################################################################
+
+c1 = cbspline( 3,
+    list( ctlpt( E3, 0.123, 0.699, 0. ),
+          ctlpt( E2, -0.171, 0.737 ),
+          ctlpt( E2, -0.675, 0.369 ),
+          ctlpt( E2, -0.384, -0.475 ),
+          ctlpt( E2, 0.095, -0.638 ),
+          ctlpt( E2, 0.575, -0.431 ),
+          ctlpt( E2, 0.699, 0.196 ) ),
+    list( kv_periodic ) );
+color( c1, green );
+
+c2 = cbspline( 3,
+    list( ctlpt( E3, 0.123, 0.699, 0. ),
+          ctlpt( E2, -0.171, 0.737 ),
+          ctlpt( E2, -0.675, 0.369 ),
+          ctlpt( E2, -0.384, -0.475 ),
+          ctlpt( E2, 0.027, 0.306 ),
+          ctlpt( E2, 0.575, -0.431 ),
+          ctlpt( E2, 0.699, 0.196 ) ),
+    list( kv_periodic ) );
+color( c2, green );
+
+c3 = cbspline( 3,
+    list( ctlpt( P3, 1,   0.334, 0.751, 0 ),
+          ctlpt( P2, 1,  -0.097, 0.486 ),
+          ctlpt( P2, 3,  -2.13,  1.96 ),
+          ctlpt( P2, 4,  -1.55, -1.91 ),
+          ctlpt( P2, 6,   0.153, 1.73 ),
+          ctlpt( P2, 4,   2.5,  -1.88 ),
+          ctlpt( P2, 0.4, 0.239, 0.0669 ) ),
+    list( kv_periodic ) );
+color( c3, green );
+
+c4 = cbspline( 3,
+    list( ctlpt( E3, 0.123, 0.699, 0. ),
+          ctlpt( E2, -0.065, 0.787 ),
+          ctlpt( E2, -0.171, 0.737 ),
+          ctlpt( E2, -0.152, 0.545 ),
+          ctlpt( E2, -0.212, 0.348 ),
+          ctlpt( E2, -0.484, 0.586 ),
+          ctlpt( E2, -0.675, 0.369 ),
+          ctlpt( E2, -0.24, -0.06 ),
+          ctlpt( E2, -0.624, -0.156 ),
+          ctlpt( E2, -0.696, -0.329 ),
+          ctlpt( E2, -0.384, -0.475 ),
+          ctlpt( E2, -0.104, -0.267 ),
+          ctlpt( E2, -0.006, -0.34 ),
+          ctlpt( E2, 0.015, -0.673 ),
+          ctlpt( E2, 0.211, -0.717 ),
+          ctlpt( E2, 0.449, -0.525 ),
+          ctlpt( E2, 0.297, -0.197 ),
+          ctlpt( E2, 0.672, 0.068 ),
+          ctlpt( E2, 0.699, 0.196 ),
+          ctlpt( E2, 0.636, 0.321 ),
+          ctlpt( E2, 0.223, 0.241 ) ),
+    list( kv_periodic ) );
+color( c4, green );
+
+c5 = cbspline( 3,
+    list( ctlpt( E3, 0.57, 0.529, 0. ),
+          ctlpt( E2, -0.158, 0.914 ),
+          ctlpt( E2, -0.568, -0.145 ),
+          ctlpt( E2, 0.24, -0.355 ),
+          ctlpt( E2, 0.166, -0.033 ),
+          ctlpt( E2, -0.321, -0.033 ),
+          ctlpt( E2, 0.038, 0.739 ),
+          ctlpt( E2, 0.525, 0.237 ),
+          ctlpt( E2, 0.226, -0.04 ),
+          ctlpt( E2, 0.48, -0.167 ),
+          ctlpt( E2, 0.675, 0.057 ) ),
+    list( kv_periodic ) );
+color( c5, green );
+
+c6 = cbspline( 3,
+    list( ctlpt( E3, 0.631, 0.798, 0 ),
+          ctlpt( E2, 0.24, 0.604 ),
+          ctlpt( E2, 0.11, 0.942 ),
+          ctlpt( E2, -0.187, 0.654 ),
+          ctlpt( E2, -0.461, 0.721 ),
+          ctlpt( E2, -0.267, 0.524 ),
+          ctlpt( E2, -0.47, 0.492 ),
+          ctlpt( E2, -0.272, 0.407 ),
+          ctlpt( E2, -0.506, 0.303 ),
+          ctlpt( E2, -0.254, 0.285 ),
+          ctlpt( E2, -0.384, -0.0247 ),
+          ctlpt( E2, 0.0562, -0.272 ),
+          ctlpt( E2, -0.218, 0.142 ),
+          ctlpt( E2, -0.0157, 0.64 ),
+          ctlpt( E2, 0.501, 0.407 ),
+          ctlpt( E2, 0.362, 0.0247 ),
+          ctlpt( E2, 0.11, 0.407 ),
+          ctlpt( E2, 0.0112, 0.191 ),
+          ctlpt( E2, 0.231, -0.173 ),
+          ctlpt( E2, 0.675, 0.057 ) ),
+    list( kv_periodic ) );
+color( c6, green );
+
+crvs = list( c1, c2, c3, c4, c5, c6 );
+
+#############################################################################
+
+Res = nil():
+
+for ( i = 1, 1, sizeof( crvs ),
+    c = nth( crvs, i ):
+    for ( a = 0, 20, 360,
+        Dir = vector( cos( a * pi / 180 ), sin( a * pi / 180 ), 0 ):
+        vc = cvisible( c, Dir, 1e-5 ):
+        adwidth( vc, 3 ):
+        color( vc, yellow ):
+	if ( a == 80 || a == 160 || a == 240 || a == 20,
+	    snoc( list( coerce( Dir, E2 ) + ctlpt( E2, 0, 0 ), vc, c )
+				 * ty( i * 1.6 ) * tx( ( a - 200 ) / 40 ),
+		  Res ) ):
+        view( list( Dir, vc, c ), 1 ) ) );
+
+Res = Res * sc( 0.2 ) * ty( -1.15 ) * rz( 90 ) * ty( 0.4 );
+save( "cvisib1", Res );
+
+interact( Res );
+
+#############################################################################
+
+Res = nil():
+i = 1:
+
+for ( x = -1, 0.1, 1,
+    Pt = point( x, x / 2, 1 ):
+    vc = cvisible( c6, Pt, 1e-5 ):
+    adwidth( vc, 3 ):
+    color( vc, yellow ):
+    if ( x == -0.8 || x == -0.2 || x == 0.2 || x == 0.8,
+	snoc( list( Pt, vc, c6 )
+	           * tx( 2.5 * abs( x ) ) * ty( 1.2 * ( x > 0 ) ),
+	      Res ) ):
+    view( list( Pt, vc, c6 ), 1 ) );
+
+Res = Res * sc( 0.65 ) * tx( -0.9 ) * ty( -0.5 );
+save( "cvisib2", Res );
+
+interact( Res );
+
+#############################################################################
+
+Res = nil():
+
+for ( i = 1, 1, sizeof( crvs ),
+    c = nth( crvs, i ):
+    for ( a = 0, 20, 360,
+        Pt = point( cos( a * pi / 180 ), sin( a * pi / 180 ), 1 ) * 0.65:
+        vc = cvisible( c, Pt, 1e-5 ):
+        adwidth( vc, 3 ):
+        color( vc, yellow ):
+	if ( a == 80 || a == 160 || a == 240 || a == 20,
+	    snoc( list( Pt, vc, c ) * ty( i * 1.6 ) * tx( ( a - 200 ) / 40 ),
+		  Res ) ):
+        view( list( Pt, vc, c ), 1 ) ) );
+
+Res = Res * sc( 0.2 ) * ty( -1.15 ) * rz( 90 ) * ty( 0.4 );
+save( "cvisib3", Res );
+
+interact( Res );
+
+#############################################################################
+
+Step = 10;
+SaveImages = false;
+
+attrib( c4, "rgb", "0,255,128" );
+
+Dms = BuildVisibilityMap( c4, Step );
+attrib( Dms, "rgb", "128,128, 255" );
+
+m = sc( 0.8 ) * tx( -0.7 ) * ty( 0.5 );
+view_mat1 = sc( 0.8 ) * tx( 0.1 ) * ty( -0.35 ):
+viewobj( view_mat1 );
+free( view_mat1 );
+
+view( list( UnitSquare, Dms, Dms * ty( 1 ), Dms * ty( -1 ), c4 * m ), 1 );
+
+for ( i = 1, 1, 360 / Step,
+    CrvsDm = nth( Dms, i ):
+    adwidth( CrvsDm, 2 ):
+    color( CrvsDm, yellow ):
+    Theta = 360 * coord( coord( nth( CrvsDm, 1 ), 0 ), 1 ):
+    VDir = ( ctlpt( E2, 0, 0 ) +
+	     ctlpt( E2, cos( Theta * Pi / 180 ), sin( Theta * Pi / 180 ) ) )
+	* sc( 0.8 ) * m:
+    CrvsE3 = nil():
+    for ( d = 1, 1, sizeof( CrvsDm ),
+	c = nth( CrvsDm, d ):
+	snoc( cregion( c4, coord( coord( c, 0 ), 2 ),
+			   coord( coord( c, 1 ), 2 ) ), CrvsE3 ) ):
+    CrvsE3 = CrvsE3 * m:
+    adwidth( CrvsE3, 2 ):
+    color( CrvsE3, yellow ):
+    view( list( UnitSquare, Dms, Dms * ty( 1 ),
+		Dms * ty( -1 ), c4 * m, VDir, CrvsDm, CrvsE3 ), 1 ):
+    if ( SaveImages,
+         viewImgSave( "/movie/img" + i + ".ppm" ) ) );
+
+All = list( UnitSquare, Dms, Dms * ty( 1 ),
+	    Dms * ty( -1 ), c4 * m, VDir, CrvsDm, CrvsE3 );
+view( All, 1 );
+save( "cvisib4", All );
+
+free( m );
+free( d );
+free( All );
+free( Dms );
+free( CrvsDm );
+free( Step );
+free( SaveImages );
+free( Theta );
+free( VDir );
+free( CrvsE3 );
+
+#############################################################################
+#
+# View point almost on the boundary from inside (art gallery guards)
+#
+Res = nil():
+
+for ( i = 1, 1, sizeof( crvs ),
+    c = nth( crvs, i ):
+    if ( FFPtType( c ) == P3,
+	 co = offset( coerce( c, p2 ), -1e-4, 1e-6, off ),
+	 co = offset( coerce( c, e2 ), -1e-4, 1e-6, off ) ):
+    TMin = nth( pdomain( co ), 1 ):
+    TMax = nth( pdomain( co ), 2 ):
+    dt = 0.06:
+
+    for ( t = TMin, dt, TMax,
+	Pt = coerce( ceval( co, t ), point_type ):
+        adwidth( Pt, 3 ):
+        color( Pt, cyan ):
+	vc = cvisible( c, Pt * tz( 1 ), 1e-5 ):
+	adwidth( vc, 3 ):
+	color( vc, yellow ):
+	if ( t == 0.12 ||  t == 0.36 ||  t == 0.6 ||  t == 0.84,
+	    snoc( list( Pt, vc, c ) * ty( i * 1.6 ) * tx( t * 7 ),
+		  Res ) ):
+	view( list( Pt, vc, c ), 1 ) ) );
+
+Res = Res * sc( 0.2 ) * tx( -0.7 ) * ty( -1.15 ) * rz( 90 ) * ty( 0.4 );
+save( "cvisib5", Res );
+
+interact( Res );
+
+#############################################################################
+#
+# Mold/inspection visibility decomposition:
+#
+interact( list( ComputeViews( c3, 5, "cvisib6" ) ) );
+
+interact( list( ComputeViews( c4, 2, "cvisib7" ) ) );
+
+#############################################################################
+
+free( i );
+free( t );
+free( TMin );
+free( TMax );
+free( dt );
+free( a );
+free( x );
+free( c );
+free( co );
+free( vc );
+free( Pt );
+free( Dir );
+free( c1 );
+free( c2 );
+free( c3 );
+free( c4 );
+free( c5 );
+free( c6 );
+free( Crvs );
+free( Res );
+free( UnitSquare );

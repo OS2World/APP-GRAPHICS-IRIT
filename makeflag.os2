@@ -1,0 +1,128 @@
+#
+# OS2 using EMX gcc 2.7.2, and gnumake.
+#
+
+EMX_DIR = d:/g/emx
+IRIT_DIR = d:/irit/irit
+
+#
+# Location of object file to resolve circularities in libraries.
+#
+IRIT_CIRCLINK = $(IRIT_DIR)/circlink/circlink.o
+
+#
+# The scan converter (irender) needs the Utah Raster Toolkit (IRIT_URT) library
+# to read/write image data. You can ftp it in cs.utah.edu.
+#
+IRIT_URT = c:/c/urt
+IRIT_URT_INC = -I$(IRIT_URT)/include
+IRIT_URT_LIB = $(IRIT_URT)/lib/librle.a
+IRIT_URT_FLAGS = -DIRIT_HAVE_URT_RLE
+
+#
+# Support for IRIT_GIF image read/write using the giflib toolkit library.
+# You can ftp it from 
+#
+IRIT_GIF = e:\c\giflib
+IRIT_GIF_INC = -I$(IRIT_GIF)\lib
+IRIT_GIF_LIB = $(IRIT_GIF)\lib\libgif.lib
+IRIT_GIF_FLAGS = -DIRIT_HAVE_GIF_LIB
+
+#
+# Quiet strings
+#
+# QUIET_STR = -DIRIT_QUIET_STRINGS
+
+#
+# Name of graphics drivers to generate.
+#
+GRAPDRVS = os2drvs.exe nuldrvs.exe
+
+#
+# Generic tools from the unix world
+#
+
+RM = rm
+CP = cp
+MV = mv
+STRIP = strip +strip-debug 
+
+#
+# All libraries created will be installed into the IRIT_LIB_DIR directory.
+#
+
+IRIT_LIB_DIR = $(IRIT_DIR)/lib
+PRSR_LIB = $(IRIT_LIB_DIR)/libprsr.a
+USER_LIB = $(IRIT_LIB_DIR)/libuser.a
+CAGD_LIB = $(IRIT_LIB_DIR)/libcagd.a
+TRIM_LIB = $(IRIT_LIB_DIR)/libtrim.a
+MDL_LIB  = $(IRIT_LIB_DIR)/libmdl.a
+TRIV_LIB = $(IRIT_LIB_DIR)/libtriv.a
+TRNG_LIB = $(IRIT_LIB_DIR)/libtrng.a
+SYMB_LIB = $(IRIT_LIB_DIR)/libsymb.a
+MVAR_LIB = $(IRIT_LIB_DIR)/libmvar.a
+GEOM_LIB = $(IRIT_LIB_DIR)/libgeom.a
+GRAP_LIB = $(IRIT_LIB_DIR)/libgrap.a
+MISC_LIB = $(IRIT_LIB_DIR)/libmisc.a
+RNDR_LIB = $(IRIT_LIB_DIR)/librndr.a
+XTRA_LIB = $(IRIT_LIB_DIR)/libxtra.a
+BOOL_LIB = $(IRIT_LIB_DIR)/libbool.a
+EXT_LIB = $(IRIT_LIB_DIR)/libext.a
+
+#
+# Where gcc libraries are to searched for.
+#
+GCC_IRIT_LIB_DIR = $(EMX_DIR)/lib
+GCC_IRIT_INC_DIR = $(EMX_DIR)/include
+
+#
+# All includes files associated with the libraries compiled here will be
+# installed into the INC directory.
+#
+IRIT_INC_DIR = $(IRIT_DIR)/include
+
+#
+# All binaries created will be installed into the BIN directory.
+#
+IRIT_BIN_DIR = $(IRIT_DIR)/os2bin
+
+# Your C compiler and linker.
+#
+CC = gcc
+DFLAGS = -DOS2GCC -DRANDOM_IRIT $(QUIET_STR)
+#CFLAGS = -O2 -W -Wall -I. -I$(IRIT_INC_DIR)
+CFLAGS = -g -W -Wall -I. -I$(IRIT_INC_DIR) $(IRIT_URT_INC) -I$(IRIT_GIF_INC)
+
+#
+# Default rule for compilation.
+#
+%.o: %.c
+	$(CC) -c $(IRIT_MORE_FLAGS) $(IRIT_URT_FLAGS) $(IRIT_GIF_FLAGS) \
+	$(CFLAGS) $(DFLAGS) -o $@ $<
+
+#
+# All libraries.
+#
+IRIT_LIBS = $(IRIT_CIRCLINK) $(EXT_LIB) \
+	$(GRAP_LIB) $(USER_LIB) $(RNDR_LIB) $(BOOL_LIB) \
+	$(PRSR_LIB) $(MDL_LIB) $(MVAR_LIB) $(TRIM_LIB) \
+	$(TRIV_LIB) $(TRNG_LIB) $(SYMB_LIB) \
+	$(CAGD_LIB) $(GEOM_LIB) $(MISC_LIB) $(XTRA_LIB) \
+	$(IRIT_URT_LIB) $(IRIT_GIF_LIB) -los2
+
+
+#
+# Binding command and options (see EMX gcc develop.doc file for more).
+#
+EMXBIND = emxbind
+BIND = $(EMXBIND) $(EMX_DIR)/bin/emxl
+BINDOPT =
+
+#
+# Default rule to make an executable file.
+#
+%.exe:
+	$(CC) $(CFLAGS) -o $(*F) $^ $(IRIT_LIBS)
+	$(STRIP) $(*F)
+	$(BIND) $(*F) $(BINDOPT)
+	rm $(*F)

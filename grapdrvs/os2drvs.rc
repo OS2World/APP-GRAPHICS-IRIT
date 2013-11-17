@@ -1,0 +1,157 @@
+#include <os2.h>
+#include "os2drvs.h"
+
+MENU ID_OS2DRVS
+{
+    SUBMENU "~File", IDM_FILE
+    {
+	MENUITEM "~Save\t^s",	IDM_FILE_SAVE
+	MENUITEM "Save ~As",	IDM_FILE_SAVE_AS,
+	MENUITEM SEPARATOR
+	MENUITEM "~Clear View",	IDM_FILE_CLEAR_VIEW,
+	MENUITEM SEPARATOR
+	MENUITEM "~Quit\t^x",	IDM_FILE_QUIT
+    }
+    SUBMENU "~Mouse", IDM_MOUSE
+    {
+	MENUITEM "~More Sensitive",	IDM_MOUSE_MORE
+	MENUITEM "~Less Sensitive",	IDM_MOUSE_LESS
+    }
+    SUBMENU "~State", IDM_STATE
+    {
+	MENUITEM "~More Isolines",	IDM_STATE_MORE_ISO
+	MENUITEM "~Less Isolines",	IDM_STATE_LESS_ISO
+	MENUITEM SEPARATOR
+	MENUITEM "~Finer Approximation",IDM_STATE_FINER_APPROX
+	MENUITEM "~Coarser Approximation",IDM_STATE_COARSER_APPROX
+	MENUITEM SEPARATOR
+	MENUITEM "~Shorter Vectors",	IDM_STATE_SHORTER_VEC
+	MENUITEM "Longer ~Vectors",	IDM_STATE_LONGER_VEC
+	MENUITEM SEPARATOR
+	MENUITEM "~Wider Lines",	IDM_STATE_WIDE_LINES
+	MENUITEM "~Thinner Lines",	IDM_STATE_THIN_LINES
+
+    }
+    SUBMENU "~Toggles", IDM_TOGGLE
+    {
+	MENUITEM "~Screen Transformation",IDM_TGLS_SCREEN
+	MENUITEM "~Perspecive\t^p",	IDM_TGLS_PERSP
+	MENUITEM "~Depth Cue\t^c",	IDM_TGLS_DEPTH_CUE
+	MENUITEM "Double ~Buffer",	IDM_TGLS_DOUBLE_BUFFER
+	MENUITEM "D~Raw Solid",		IDM_TGLS_DRAW_SOLID
+	MENUITEM "~Back Face Cull\t^b",	IDM_TGLS_BFACE_CULL
+	MENUITEM "Shading ~Modes",	IDM_TGLS_SHADING_MODES
+	MENUITEM "~Internal Edges\t^n",	IDM_TGLS_INTERNAL
+	MENUITEM "Normals of ~Vertices\t^v",IDM_TGLS_VRTX_NRML
+	MENUITEM "Normals of Poly~Gons\t^g",IDM_TGLS_POLY_NRML
+	MENUITEM "Draw ~Ctl Mesh/Poly\t^m", IDM_TGLS_CTL_MESH
+        MENUITEM "Surface Po~Lygons",   IDM_TGLS_SRF_POLYS
+        MENUITEM "Surface Isoli~Nes",   IDM_TGLS_SRF_ISOS
+        MENUITEM "Surface S~Ketch",     IDM_TGLS_SRF_SKETCH
+        MENUITEM "~4 Per Flat",		IDM_TGLS_4_PER_FLAT
+    }
+    SUBMENU "~Views", IDM_VIEWS
+    {
+	MENUITEM "~Front\t^f",		IDM_VIEW_FRONT
+	MENUITEM "~Side\t^d",		IDM_VIEW_SIDE
+	MENUITEM "~Top\t^t",		IDM_VIEW_TOP
+	MENUITEM "~Isometry\t^i",	IDM_VIEW_ISOMETRY
+    }
+    SUBMENU "~Extens", IDM_EXTENSIONS
+    {
+	MENUITEM "~Animation",		IDM_EXTN_ANIMATION
+	MENUITEM "~Shade Param",	IDM_EXTN_SHADE_PARAM
+    }
+}
+
+ACCELTABLE ID_OS2DRVS
+{
+    "^x",	IDM_FILE_QUIT
+    "^s",	IDM_FILE_SAVE
+    "^f",	IDM_VIEW_FRONT
+    "^d",	IDM_VIEW_SIDE
+    "^t",	IDM_VIEW_TOP
+    "^i",	IDM_VIEW_ISOMETRY
+    "^p",	IDM_TGLS_PERSP
+    "^n",	IDM_TGLS_INTERNAL
+    "^v",	IDM_TGLS_VRTX_NRML
+    "^g",	IDM_TGLS_POLY_NRML
+    "^b",	IDM_TGLS_BFACE_CULL
+    "^c",	IDM_TGLS_DEPTH_CUE
+    "^m",	IDM_TGLS_CTL_MESH
+}
+
+DLGTEMPLATE ID_ANIM_FORM LOADONCALL MOVEABLE DISCARDABLE
+BEGIN
+  DIALOG  "Animation", ID_ANIM_FORM, 0, 0, 200, 60, WS_VISIBLE,
+	FCF_SYSMENU | FCF_TITLEBAR
+  BEGIN
+    CONTROL         "", ID_ANIM_SLIDER, 2, 20, 196, 20, 
+                    WC_SLIDER,
+                    SLS_HORIZONTAL | SLS_BOTTOM | 
+                    SLS_SNAPTOINCREMENT | SLS_BUTTONSRIGHT | 
+                    SLS_HOMELEFT | SLS_PRIMARYSCALE1 | 
+                    WS_GROUP | WS_TABSTOP | WS_VISIBLE
+                    CTLDATA 12, 0, 101, 0, 0, 0
+    RADIOBUTTON     "Save",    ID_ANIM_SAVE_FILE,    2,  42,  46,  16
+    PUSHBUTTON      "MinT",    ID_ANIM_MIN_TIME,    52,  42,  46,  16
+    PUSHBUTTON      "MaxT",    ID_ANIM_MAX_TIME,   102,  42,  46,  16
+    PUSHBUTTON      "TStep",   ID_ANIM_TIME_STEP,  152,  42,  46,  16
+
+    PUSHBUTTON      "Begin",   ID_ANIM_BEGIN,        2,   2,  46,  16
+    PUSHBUTTON      "Stop",    ID_ANIM_STOP,        77,   2,  46,  16
+    PUSHBUTTON      "Dismiss", ID_ANIM_DISMISS,    152,   2,  46,  16
+  END
+END
+
+DLGTEMPLATE ID_ANIM_GET_TIME_FORM LOADONCALL MOVEABLE DISCARDABLE
+BEGIN
+  DIALOG  "Time Value:", ID_ANIM_GET_TIME_FORM, 50, 10, 100, 40, WS_VISIBLE,
+	FCF_SYSMENU | FCF_TITLEBAR
+  BEGIN
+    CONTROL	    "Enter New Time", -1, 5, 30, 90, 8, WC_STATIC,
+			SS_TEXT | DT_CENTER | DT_TOP | WS_GROUP | WS_VISIBLE
+    ENTRYFIELD      "", ID_ANIM_GOT_TIME,  5, 18, 90, 10, ES_MARGIN
+
+    PUSHBUTTON      "Enter",  ID_ANIM_GET_TIME_ENT,  5,   2,  40,  14, WS_GROUP
+    PUSHBUTTON      "Cancel", ID_ANIM_GET_TIME_CAN, 55,   2,  40,  14, WS_GROUP
+  END
+END
+
+
+DLGTEMPLATE ID_SHADE_PARAM_FORM LOADONCALL MOVEABLE DISCARDABLE
+BEGIN
+  DIALOG "Shade Param" ID_SHADE_PARAM_FORM, 0, 0, 165, 107, WS_VISIBLE,
+	FCF_SYSMENU | FCF_TITLEBAR
+  BEGIN
+    PUSHBUTTON      "Reset",      ID_SHADE_RESET,     5,  3, 50, 12
+    PUSHBUTTON      "Dismiss",    ID_SHADE_DISMISS, 110,  3, 50, 12
+
+    GROUPBOX	    "Sketch Style", -1,  5, 20, 155, 20
+    AUTORADIOBUTTON "Silhtes",  ID_SHADE_SKETCH_SILS,     10, 22, 40, 8, WS_GROUP
+    AUTORADIOBUTTON "Curvtur",    ID_SHADE_SKETCH_CRVTR,  55, 22, 40, 8
+    AUTORADIOBUTTON "Isocrvs",  ID_SHADE_SKETCH_ISOCRVS, 100, 22, 40, 8
+
+    GROUPBOX	    "Shading Style", -1, 5, 43, 155, 20
+    AUTORADIOBUTTON "Non",   ID_SHADE_STYLE_NONE,       10, 45, 27, 8, WS_GROUP
+    AUTORADIOBUTTON "Bgd",   ID_SHADE_STYLE_BACKGROUND, 40, 45, 27, 8
+    AUTORADIOBUTTON "Flt",   ID_SHADE_STYLE_FLAT,       70, 45, 27, 8
+    AUTORADIOBUTTON "Grd",   ID_SHADE_STYLE_GOURAUD,   100, 45, 27, 8
+    AUTORADIOBUTTON "Png",   ID_SHADE_STYLE_PHONG,     130, 45, 27, 8
+
+    CONTROL         "Sil Power", ID_SKETCH_SIL_POWER_SLIDER, 2,  66, 160, 18, 
+                    WC_SLIDER,
+                    SLS_HORIZONTAL | SLS_BOTTOM | 
+                    SLS_SNAPTOINCREMENT | SLS_BUTTONSRIGHT | 
+                    SLS_HOMELEFT | SLS_PRIMARYSCALE1 | 
+                    WS_GROUP | WS_TABSTOP | WS_VISIBLE
+                    CTLDATA 12, 0, 101, 0, 0, 0
+    CONTROL         "Shd Power", ID_SKETCH_SHD_POWER_SLIDER, 2,  86, 160, 18, 
+                    WC_SLIDER,
+                    SLS_HORIZONTAL | SLS_BOTTOM | 
+                    SLS_SNAPTOINCREMENT | SLS_BUTTONSRIGHT | 
+                    SLS_HOMELEFT | SLS_PRIMARYSCALE1 | 
+                    WS_GROUP | WS_TABSTOP | WS_VISIBLE
+                    CTLDATA 12, 0, 101, 0, 0, 0
+  END
+END

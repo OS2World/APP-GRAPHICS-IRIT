@@ -1,0 +1,136 @@
+#
+# Computing crv(s) tangencies.
+#
+
+DisplayPtsCrcTan2Crvs = function( Pts, R, c1, c2 ):
+    i: Pt: Prms: PtC1: PtC2: Circ:
+    return  = nil():
+    Circ = circle( vector( 0, 0, 0 ), R ):
+    for ( i = 1, 1, sizeof( Pts ),
+        Pt = coord( Pts, i ):
+        Prms = getAttr( Pt, "Params" ):
+        PtC1 = ceval( c1, coord( Prms, 0 ) ):
+        PtC2 = ceval( c2, coord( Prms, 1 ) ):
+        snoc( list( coerce( Pt, E2 ) + PtC1,
+		    coerce( Pt, E2 ) + PtC2,
+	            Circ * trans( coerce( Pt, vector_type ) ) ),
+	      return ) );
+
+view_mat1 = tx( 0 );
+viewobj( view_mat1 );
+
+#############################################################################
+
+c1 = ctlpt( e2, 0, 2 ) + ctlpt( e2, 0, -2 );
+color( c1, green );
+
+c2 = cbspline( 3,
+    list( ctlpt( E3, -0.0448, 0.808, 0 ),
+          ctlpt( E2, -0.193, 0.201 ),
+          ctlpt( E2, -0.867, 0.179 ),
+          ctlpt( E2, -0.151, -0.309 ),
+          ctlpt( E2, -0.517, -0.666 ),
+          ctlpt( E2, 0.00856, -0.84 ),
+          ctlpt( E2, 0.327, -0.704 ),
+          ctlpt( E2, 0.147, -0.109 ),
+          ctlpt( E2, 0.33, -0.0551 ),
+          ctlpt( E2, 0.486, 0.142 ),
+          ctlpt( E2, 0.393, 0.623 ) ),
+    list( kv_periodic ) );
+c2 = coerce( c2, kv_open );
+color( c2, yellow );
+
+R = 0.1;
+Pts = Crc2CrvTan( c1, c2, R, 1e-6 );
+PtsDsp = DisplayPtsCrcTan2Crvs( Pts, R, c1, c2 );
+
+interact( list( c1, c2, PtsDsp ) );
+
+save( "crv1tan", list( c1, c2, PtsDsp ) );
+
+R = 0.2;
+Pts = Crc2CrvTan( c1, c2, R, 1e-6 );
+PtsDsp = DisplayPtsCrcTan2Crvs( Pts, R, c1, c2 );
+
+interact( list( c1, c2, PtsDsp ) );
+
+R = 0.4;
+Pts = Crc2CrvTan( c1, c2, R, 1e-6 );
+PtsDsp = DisplayPtsCrcTan2Crvs( Pts, R, c1, c2 );
+
+interact( list( c1, c2, PtsDsp ) );
+
+R = 1.0;
+Pts = Crc2CrvTan( c1, c2, R, 1e-6 );
+PtsDsp = DisplayPtsCrcTan2Crvs( Pts, R, c1, c2 );
+
+interact( list( c1, c2, PtsDsp ) );
+
+#############################################################################
+
+c1 = cbspline( 4,
+    list( ctlpt( E3, -0.132, 0.302, 0 ),
+          ctlpt( E2, -0.704, 0.843 ),
+          ctlpt( E2, -0.433, 1.03 ),
+          ctlpt( E2, -0.101, 1.07 ),
+          ctlpt( E2, -0.758, 1.2 ),
+          ctlpt( E2, -0.794, -1.01 ),
+          ctlpt( E2, -1.18, 1.06 ),
+          ctlpt( E2, -1.11, -0.00834 ),
+          ctlpt( E2, -1.05, -0.405 ),
+          ctlpt( E2, -0.681, -0.619 ),
+          ctlpt( E2, -0.12, -0.163 ),
+          ctlpt( E2, 0.476, -0.374 ),
+          ctlpt( E2, 0.738, -0.282 ),
+          ctlpt( E2, 0.961, 0.0287 ),
+          ctlpt( E2, 0.965, 0.407 ),
+          ctlpt( E2, 0.202, 0.298 ) ),
+    list( kv_periodic ) );
+c1 = coerce( c1, kv_open );
+color( c1, green );
+
+c2 = cbspline( 3,
+    list( ctlpt( E3, -0.0448, 0.808, 0 ),
+          ctlpt( E2, -0.193, 0.201 ),
+          ctlpt( E2, -0.867, 0.179 ),
+          ctlpt( E2, -0.151, -0.309 ),
+          ctlpt( E2, -0.517, -0.666 ),
+          ctlpt( E2, 0.00856, -0.84 ),
+          ctlpt( E2, 0.327, -0.704 ),
+          ctlpt( E2, 0.147, -0.109 ),
+          ctlpt( E2, 0.33, -0.0551 ),
+          ctlpt( E2, 0.486, 0.142 ),
+          ctlpt( E2, 0.393, 0.623 ) ),
+    list( kv_periodic ) );
+c2 = coerce( c2, kv_open );
+color( c2, yellow );
+
+R = 0.1;
+Pts = Crc2CrvTan( c1, c2, R, 1e-6 );
+PtsDsp = DisplayPtsCrcTan2Crvs( Pts, R, c1, c2 );
+
+interact( list( c1, c2, PtsDsp ) );
+
+save( "crv2tan", list( c1, c2, PtsDsp ) );
+
+R = 0.2;
+Pts = Crc2CrvTan( c1, c2, R, 1e-6 );
+PtsDsp = DisplayPtsCrcTan2Crvs( Pts, R, c1, c2 );
+
+interact( list( c1, c2, PtsDsp ) );
+
+R = 0.4;
+Pts = Crc2CrvTan( c1, c2, R, 1e-6 );
+PtsDsp = DisplayPtsCrcTan2Crvs( Pts, R, c1, c2 );
+
+interact( list( c1, c2, PtsDsp ) );
+
+#############################################################################
+
+free( R );
+free( c1 );
+free( c2 );
+free( Pts );
+free( PtsDsp );
+free( view_mat1 );
+

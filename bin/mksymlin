@@ -1,0 +1,61 @@
+#!/bin/csh -f
+#
+# Create a whole tree symlinked on a given tree.
+#
+# Usage: "make-symlink-tree full-path-src full-path-dest",
+#   creates a destination tree that is a duplicate of src, using symbolic
+# links.
+#
+#			 			Gershon Elber, Jan 1993.
+#
+
+onintr quit
+if ( $#argv != 2 ) then
+	echo "Usage: make-symlink-tree full-path-src full-path-dest"
+	exit 1
+endif
+
+set src = $1
+set dest = $2
+
+if ( ! -e $src ) then
+	echo "Source directory does not exists"
+	exit 1
+endif
+
+echo mkdir $dest
+mkdir $dest
+
+cat > /tmp/mksymlinrec.$$ << EOF
+#!/bin/csh -f
+#
+
+foreach f ( \$argv )
+	if ( \$f == "." ) then
+		# ignore
+	else
+		if ( -d $src/\$f ) then
+			echo Processing Directory $dest/\$f
+			mkdir $dest/\$f
+			set all_files = \`echo \$f/\*\`
+			/tmp/mksymlinrec.$$ \$all_files
+		else
+			echo \$f
+			ln -s $src/\$f $dest/\$f
+		endif
+	endif
+end
+EOF
+
+chmod 755 /tmp/mksymlinrec.$$
+
+# Go do it:
+pushd . > /dev/null
+cd $src
+/tmp/mksymlinrec.$$ *
+popd > /dev/null
+
+quit:
+
+onintr -
+rm /tmp/mksymlinrec.$$

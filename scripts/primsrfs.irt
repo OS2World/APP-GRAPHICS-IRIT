@@ -1,0 +1,113 @@
+#
+# Display of all primitives of the system:
+# BOX, GBOX, CONE, CYLIN, SPHERE, TORUS
+#
+#				Created by Gershon Elber,	Dec. 88
+#
+
+save_mat = view_mat;
+view_mat = view_mat * scale(vector( 0.5, 0.5, 0.5 ));
+axes15 = axes * scale(vector(1.5, 1.5, 1.5));
+
+PrimGetAllprims = function(): bx: Cyls: Cones: Cone2s: Spr: Trs:
+    Bx = box( vector( -3, -0.2, -0.3 ), 0.5, 0.9, 1.7 ):
+    color( Bx, green ):
+
+    Cyls = list( cylin( vector(-0.8, 0.0, 0.0), vector(-0.5, 0.3, 0.3),
+			0.3, 0 ),
+	         cylin( vector( 0.8, 0.0, 0.0), vector( 0.8, 0.0, 0.0),
+			0.3, 1 ),
+	         cylin( vector( 0.0,-0.8, 0.0), vector( 0.1,-0.5, 0.2),
+			0.3, 3 ),
+	         cylin( vector( 0.0, 0.8, 0.0), vector( 0.0, 0.8, 0.0),
+		        0.3, 2 ),
+	         cylin( vector( 0.0, 0.0,-0.8), vector( 0.4, 0.2,-0.5),
+			0.3, 3 ),
+	         cylin( vector( 0.0, 0.0, 0.8), vector( 0.0, 0.0, 0.8),
+			0.3, 1 ) ):
+    color( Cyls, red ):
+
+    Cones = list( cone( vector(-0.65, 0.0, 0.0), vector(-0.45, 0.0, 0.0),
+	   		0.5, 0 ),
+	          cone( vector( 0.75, 0.0, 0.0), vector( 0.65, 0.0, 0.0),
+			0.5, 1 ),
+	          cone( vector( 0.0,-0.55, 0.0), vector( 0.0,-0.6, 0.0),
+	   	        0.5, 1 ),
+	          cone( vector( 0.0, 0.85, 0.0), vector( 0.0, 0.4, 0.0),
+		        0.5, 0 ),
+	          cone( vector( 0.0, 0.0,-0.85), vector( 0.0, 0.0,-0.4),
+			0.5, 1 ),
+	          cone( vector( 0.0, 0.0, 0.65), vector( 0.0, 0.0, 0.7),
+			0.5, 1 ) ) * tx( 3 ):
+    color( Cones, magenta ):
+
+    Cone2s = list( con2( vector(-0.75, 0.0, 0.0), vector(-0.65, 0.0, 0.0),
+		         0.5, 0.25, 0 ),
+	           con2( vector( 0.65, 0.0, 0.0), vector( 0.35, 0.0, 0.0),
+			 0.5, 0.1, 1 ),
+	           con2( vector( 0.0,-0.7, 0.0), vector( 0.0,-0.55, 0.0),
+			 0.5, 0.2, 1 ),
+	           con2( vector( 0.0, 0.65, 0.0), vector( 0.0, 0.55, 0.0),
+			 0.4, 0.1, 0 ),
+	           con2( vector( 0.0, 0.0,-0.75), vector( 0.0, 0.0,-0.45),
+			 0.35, 0.3, 1 ),
+	           con2( vector( 0.0, 0.0, 0.8), vector( 0.0, 0.0, 0.35),
+			 0.25, 0.2, 1 ) ) * tx( 6 ):
+    color( Cone2s, blue ):
+
+    Spr = sphere(vector( 8.0, 0.0, 0.0), 0.5):
+    color( Spr, cyan ):
+
+    Trs = torus(vector( 10.0, 0.0, 0.0), vector( 0.1, 0.2, 1.0), 0.5, 0.2):
+    color( Trs, yellow ):
+
+    return = list( Bx, Cyls, Cones, Cone2s, Spr, Trs );
+
+#
+# Create primitive as approximated integral polynomial surfaces.
+#
+save_prim_srfs = iritstate( "PrimType", 1 );
+save_prim_rat_srfs = iritstate( "PrimRatSrfs", off );
+
+All = PrimGetAllprims();
+
+interact( list( view_mat, axes15, All ) );
+
+save( "primsrf1", All );
+
+#
+# Create primitive as exact rational surfaces.
+#
+dummy = iritstate( "PrimType", 1 );
+dummy = iritstate( "PrimRatSrfs", on );
+
+All = PrimGetAllprims();
+
+interact( list( view_mat, axes15, All ) );
+
+save( "primsrf2", All );
+
+#
+# Create primitive as surface models.
+#
+dummy = iritstate( "PrimType", 2 );
+dummy = iritstate( "PrimRatSrfs", off );
+
+All = PrimGetAllprims();
+
+interact( list( view_mat, axes15, All ) );
+
+save( "primsrf3", All );
+
+#############################################################################
+
+dummy = iritstate( "PrimType", save_prim_srfs );
+dummy = iritstate( "PrimRatSrfs", save_prim_rat_srfs );
+
+free( save_prim_rat_srfs );
+free( save_prim_srfs );
+
+free( axes15 );
+free( All );
+
+view_mat = save_mat;

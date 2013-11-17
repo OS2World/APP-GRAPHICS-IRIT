@@ -1,0 +1,38 @@
+#
+# This is the make file for the symb_lib library.
+#
+#				Gershon Elber, June 1993
+#
+
+# Get the destination directories:
+include ..\makeflag.wnt
+
+OBJS =  adap_iso.$(IRIT_OBJ_PF) arc_len.$(IRIT_OBJ_PF) \
+	biarc.$(IRIT_OBJ_PF) blending.$(IRIT_OBJ_PF) bspkntrm.$(IRIT_OBJ_PF) \
+	bsp3injc.$(IRIT_OBJ_PF) bsp_sym.$(IRIT_OBJ_PF) bspiprod.$(IRIT_OBJ_PF) \
+	bzr_sym.$(IRIT_OBJ_PF) ccnvhul.$(IRIT_OBJ_PF) cmp_crvs.$(IRIT_OBJ_PF) \
+	composit.$(IRIT_OBJ_PF) constrct.$(IRIT_OBJ_PF) crv_lenv.$(IRIT_OBJ_PF) \
+	crv_skel.$(IRIT_OBJ_PF) crv_tans.$(IRIT_OBJ_PF) curvatur.$(IRIT_OBJ_PF) \
+	crvtrrec.$(IRIT_OBJ_PF) decompos.$(IRIT_OBJ_PF) \
+	distance.$(IRIT_OBJ_PF) duality.$(IRIT_OBJ_PF) evalcurv.$(IRIT_OBJ_PF) \
+	ffptdist.$(IRIT_OBJ_PF) moffset.$(IRIT_OBJ_PF) \
+	moments.$(IRIT_OBJ_PF) morphing.$(IRIT_OBJ_PF) \
+	multires.$(IRIT_OBJ_PF) nrmlcone.$(IRIT_OBJ_PF) \
+	offset.$(IRIT_OBJ_PF) orthotom.$(IRIT_OBJ_PF) rflct_ln.$(IRIT_OBJ_PF) \
+	rrinter.$(IRIT_OBJ_PF) prisa.$(IRIT_OBJ_PF) rvrs_eng.$(IRIT_OBJ_PF) \
+	smp_skel.$(IRIT_OBJ_PF) \
+	symb_crv.$(IRIT_OBJ_PF) symb_err.$(IRIT_OBJ_PF) \
+	symb_ftl.$(IRIT_OBJ_PF) symb_gen.$(IRIT_OBJ_PF) \
+	symb_srf.$(IRIT_OBJ_PF) symbpoly.$(IRIT_OBJ_PF) \
+	symbsply.$(IRIT_OBJ_PF) symbzero.$(IRIT_OBJ_PF)
+
+$(SYMB_LIB): $(OBJS)
+	-del $(SYMB_LIB)
+	$(IRITLIB) -out:$(SYMB_LIB) $(OBJS)
+
+$(IRIT_LIB_DIR)\$(SYMB_LIB): $(SYMB_LIB)
+	copy $(SYMB_LIB) $(IRIT_LIB_DIR)
+
+install: $(IRIT_LIB_DIR)\$(SYMB_LIB)
+
+# Dependencies starts here - do not touch, generated automatically.

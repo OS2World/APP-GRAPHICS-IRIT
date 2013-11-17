@@ -1,0 +1,150 @@
+#
+# Examples for the Mobeious reparametrization.
+#
+
+TagCurve = function( Crv, n, Len ): TMin: TMax: t: dt: i: Pt: Nrml:
+    TMin = coord( pdomain( Crv ), 1 ):
+    TMax = coord( pdomain( Crv ), 2 ):
+    dt = (TMax - TMin) / (n - 1):
+    return = nil():
+    t = TMin:
+    for (i = 1, 1, n,
+	Pt = coerce( ceval( Crv, t ), point_type ):
+	Nrml = coerce( cnormal( Crv, t ), vector_type ):
+	snoc( coerce( Pt - Nrml * Len, E2 ) + coerce( Pt + Nrml * Len, E2 ),
+	      return ):
+	t = t + dt);
+
+#############################################################################
+
+c1 = cbezier( list( ctlpt( P2, 1, 0, 0 ),
+		    ctlpt( P2, 1, 0, 1 ),
+		    ctlpt( P2, 1, 1, 1 ),
+		    ctlpt( P2, 1, 1, 0 ) ) );
+color( c1, red );
+c1Tags = TagCurve( c1, 10, 0.02 );
+color( c1Tags, red );
+
+c2 = cbezier( list( ctlpt( P2, 0.5, 0, 0 ),
+		    ctlpt( P2, 1, 0, 1 ),
+		    ctlpt( P2, 2, 2, 2 ),
+		    ctlpt( P2, 4, 4, 0 ) ) );
+color( c2, green );
+c2Tags = TagCurve( c2, 10, 0.02 );
+color( c2Tags, green );
+
+c3 = cbezier( list( ctlpt( P2, 0.25, 0, 0 ),
+		    ctlpt( P2, 1, 0, 1 ),
+		    ctlpt( P2, 4, 4, 4 ),
+		    ctlpt( P2, 16, 16, 0 ) ) );
+color( c3, yellow );
+c3Tags = TagCurve( c3, 10, 0.02 );
+color( c3Tags, yellow );
+
+c4 = cbezier( list( ctlpt( P2, 16, 0, 0 ),
+		    ctlpt( P2, 4, 0, 4 ),
+		    ctlpt( P2, 1, 1, 1 ),
+		    ctlpt( P2, 0.25, 0.25, 0 ) ) );
+color( c4, cyan );
+c4Tags = TagCurve( c4, 10, 0.02 );
+color( c4Tags, cyan );
+
+c5 = cbezier( list( ctlpt( P2, 4, 0, 0 ),
+		    ctlpt( P2, 2, 0, 2 ),
+		    ctlpt( P2, 1, 1, 1 ),
+		    ctlpt( P2, 0.5, 0.5, 0 ) ) );
+color( c5, magenta );
+c5Tags = TagCurve( c5, 10, 0.02 );
+color( c5Tags, magenta );
+
+view( list( c1, c1Tags, c2, c2Tags, c3, c3Tags, c4, c4Tags, c5, c5Tags ), 1 );
+
+#############################################################################
+
+a = 0.5;
+
+c1 = cbezier( list( ctlpt( P2, 1, 0, 0 ),
+		    ctlpt( P2, 1, 0, 1 ),
+		    ctlpt( P2, 1, 0.5, -1 ),
+		    ctlpt( P2, 1, a, a ),
+		    ctlpt( P2, 1, 1, 0 ) ) );
+color( c1, red );
+c1Tags = TagCurve( c1, 10, 0.02 );
+color( c1Tags, red );
+
+c2 = cbezier( list( ctlpt( P2, 0.5, 0, 0 ),
+		    ctlpt( P2, 1, 0, 1 ),
+		    ctlpt( P2, 2, 1, -2 ),
+		    ctlpt( P2, 4, 4 * a, 4 * a ),
+		    ctlpt( P2, 8, 8, 0 ) ) );
+color( c2, green );
+c2Tags = TagCurve( c2, 10, 0.02 );
+color( c2Tags, green );
+
+c3 = cbezier( list( ctlpt( P2, 0.25, 0, 0 ),
+		    ctlpt( P2, 1, 0, 1 ),
+		    ctlpt( P2, 4, 2, -4 ),
+		    ctlpt( P2, 16, 16 * a, 16 * a ),
+		    ctlpt( P2, 64, 64, 0 ) ) );
+color( c3, yellow );
+c3Tags = TagCurve( c3, 10, 0.02 );
+color( c3Tags, yellow );
+
+c4 = cbezier( list( ctlpt( P2, 64, 0, 0 ),
+		    ctlpt( P2, 16, 0, 16 ),
+		    ctlpt( P2, 4, 2, -4 ),
+		    ctlpt( P2, 1, a, a ),
+		    ctlpt( P2, 0.25, 0.25, 0 ) ) );
+color( c4, cyan );
+c4Tags = TagCurve( c4, 10, 0.02 );
+color( c4Tags, cyan );
+
+view( list( c1, c1Tags, c2, c2Tags, c3, c3Tags, c4, c4Tags ), 1 );
+
+save( "weights1", list( c1, c1Tags, c2, c2Tags, c3, c3Tags, c4, c4Tags ) );
+
+#############################################################################
+
+p = 2;
+wpow = function(i):
+    return = power(p, i);
+c0 = cbezier( list( ctlpt( P2, 1, 1 * -1.0, 1 * -0.7 ),
+		    ctlpt( P2, 1, 1 * -0.2, 1 *  1.3 ),
+		    ctlpt( P2, 1, 1 *  0.0, 1 * -1.0 ),
+		    ctlpt( P2, 1, 1 *  0.2, 1 * -1.1 ),
+		    ctlpt( P2, 1, 1 *  0.8, 1 *  0.9 ),
+		    ctlpt( P2, 1, 1 *  0.0, 1 *  0.9 ) ) );
+c0Tags = TagCurve( c0, 10, 0.05 );
+color( c0, green );
+color( c0Tags, green );
+
+for ( i = -4, 0.25, 4,
+    p = power(2, i):
+    c = cbezier( list( ctlpt( P2, wpow(1), wpow(1) * -1.0, wpow(1) * -0.7 ),
+		       ctlpt( P2, wpow(2), wpow(2) * -0.2, wpow(2) *  1.3 ),
+		       ctlpt( P2, wpow(3), wpow(3) *  0.0, wpow(3) * -1.0 ),
+		       ctlpt( P2, wpow(4), wpow(4) *  0.2, wpow(4) * -1.1 ),
+		       ctlpt( P2, wpow(5), wpow(5) *  0.8, wpow(5) *  0.9 ),
+		       ctlpt( P2, wpow(6), wpow(6) *  0.0, wpow(6) *  0.9 ) ) ):
+    view( list( c, TagCurve( c, 10, 0.03 ), c0, c0Tags ), 1 ) );
+
+save( "weights2", list( c, TagCurve( c, 10, 0.03 ), c0, c0Tags ) );
+
+free( a );
+free( p );
+free( i );
+free( c );
+
+free( c0 );
+free( c1 );
+free( c2 );
+free( c3 );
+free( c4 );
+free( c5 );
+
+free( c0Tags );
+free( c1Tags );
+free( c2Tags );
+free( c3Tags );
+free( c4Tags );
+free( c5Tags );

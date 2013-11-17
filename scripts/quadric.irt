@@ -1,0 +1,125 @@
+#
+# Some examples of quartic surfaces.
+#
+
+Sph = sphereSrf( 1 );
+
+#
+# Spherical shape: x^2 + y^2 + z^2 = 1
+#
+#                        A    B    C    D    E    F    G    H    I   J
+Sph1 = quadric( list(   1,   1,   1,   0,   0,   0,   0,   0,   0, -1 ) );
+color( Sph1, yellow );
+save( "quadric1", list( Sph1, Sph ) );
+
+interact( list( Sph1, Sph, axes ) );
+
+free( Sph1 );
+
+#
+# Spherical shapes
+#
+Sph = sphereSrf( 1 );
+
+Sph1 = quadric( list( 1, 1, 1, 0, 0, 0, 0, 0, 0, -1 ) );
+color( Sph1, green );
+adwidth( Sph1, 3 );
+
+Sph2 = quadric( list( 1, 1, 1, 0, 0, 0, -2, 0, 0, 0 ) ) * tx( -1 );
+color( Sph2, cyan );
+adwidth( Sph2, 3 );
+
+save( "quadric2", list( Sph1, Sph2, Sph ) );
+
+interact( list( Sph, Sph1, Sph2, axes ) );
+
+free( Sph2 );
+
+#
+# Ellipsoids shapes
+#
+
+Sph1 = quadric( list( 1, 0.5, 1, 0, 0, 0, 0, 0, 0, -1 ) );
+color( Sph1, green );
+adwidth( Sph1, 3 );
+
+save( "quadric3", list( Sph, Sph1 ) );
+
+interact( list( Sph, Sph1, axes ) );
+
+free( Sph );
+free( Sph1 );
+
+#
+# Ellipsic almost cylinderical shapes
+#
+e = 0.00001;
+Cyl1 = quadric( list( 1, 1, e, 0, 0, 0, 0, 0, 0, -1 ) );
+color( Cyl1, green );
+adwidth( Cyl1, 3 );
+
+Cyl2 =quadric( list( 1, e, 1, 0, 0, 0, 0, 0, 0, -1 ) );
+color( Cyl2, cyan );
+adwidth( Cyl2, 3 );
+
+Cyl3 = quadric( list( e, 1, 1, 0, 0, 0, 0, 0, 0, -1 ) );
+color( Cyl3, yellow );
+adwidth( Cyl3, 3 );
+
+save( "quadric4", list( Cyl1, Cyl2, Cyl3, axes ) );
+
+interact( list( Cyl1, Cyl2, Cyl3, axes ) );
+
+free( Cyl1 );
+free( Cyl2 );
+free( Cyl3 );
+free( e );
+
+#
+# Hyperboloid of two sheets: x^2 - y^2 - z^2 = 1
+#
+#                       A    B    C    D    E    F    G    H    I   J
+Hyp2t = quadric( list(  1,  -1,  -1,   0,   0,   0,   0,   0,   0, -1 ) );
+
+Hyp2a = sregion( sregion( Hyp2t, row, 0, 1 ), col, 0.0, 0.7 );
+Hyp2a = smoebius( smoebius( Hyp2a, 0, row ), 0, col );
+Hyp2b = sregion( sregion( Hyp2t, row, 0, 1 ), col, 1.01, 100 );
+Hyp2b = smoebius( smoebius( Hyp2b, 0, row ), 0, col );
+
+Hyp2 = list( list( Hyp2a, Hyp2b ),
+	     list( Hyp2a, Hyp2b ) * rx( 90 ),
+	     list( Hyp2a, Hyp2b ) * rx( 180 ),
+	     list( Hyp2a, Hyp2b ) * rx( 270 ) );
+color( Hyp2, yellow );
+
+save( "quadric5", list( Hyp2 ) );
+
+interact( list( Hyp2, axes ) );
+
+free( Hyp2t );
+free( Hyp2a );
+free( Hyp2b );
+free( Hyp2 );
+
+#
+# Hyperboloid of one sheets: x^2 + y^2 - z^2 = 1
+#
+#                       A    B    C    D    E    F    G    H    I   J
+Hyp1t = quadric( list(  1,   1,  -1,   0,   0,   0,   0,   0,   0, -1 ) );
+
+Hyp1a = sregion( sregion( Hyp1t, row, -100, 0.48 ), col, 0.0, 2.1 );
+Hyp1a = smoebius( smoebius( Hyp1a, 0, col ), 0, row );
+
+Hyp1 = list( list( Hyp1a ),
+	     list( Hyp1a ) * rz( 90 ),
+	     list( Hyp1a ) * rz( 180 ),
+	     list( Hyp1a ) * rz( 270 ) );
+color( Hyp1, yellow );
+
+save( "quadric6", list( Hyp1 ) );
+
+interact( list( Hyp1, axes ) );
+
+free( Hyp1t );
+free( Hyp1a );
+free( Hyp1 );

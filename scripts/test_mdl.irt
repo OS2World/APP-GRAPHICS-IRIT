@@ -1,0 +1,56 @@
+#
+# Test file to include ALL scripts without any pause.
+#
+
+pause = procedure():
+    printf("", nil());
+miliSleep = procedure( n ):
+    printf("", nil());
+TimedInclude = function( FileName ):
+    return = Time( true ):
+    include(FileName);
+TotalTime = 0.0;
+PrintTime = procedure( FileName, BTime ): t:
+    t = Time( false ):
+    TotalTime = TotalTime + t - BTime:
+    printf("************* Execution Time for %-13s is %-9.4f ******************\\n",
+	   list( FileName, t - BTime ) );
+
+LastFloatFrmt = iritstate( "FloatFrmt", "%-.12f" );
+# LastEchoSrc = iritState( "EchoSource", false );
+
+logfile( "test_mdl.log" );
+logfile( on );
+
+BTime = TimedInclude("cup.irt");
+	PrintTime("cup.irt", BTime );
+BTime = TimedInclude("cupmodel.irt");
+	PrintTime("cupmodel.irt", BTime );
+BTime = TimedInclude("models.irt");
+	PrintTime("models.irt", BTime );
+BTime = TimedInclude("mdl1bool.irt");
+	PrintTime("mdl1bool.irt", BTime );
+BTime = TimedInclude("mdl_sld2.irt");
+	PrintTime("mdl_sld2.irt", BTime );
+BTime = TimedInclude("mdl_sd2a.irt");
+	PrintTime("mdl_sd2a.irt", BTime );
+BTime = TimedInclude("mdl_sd2b.irt");
+	PrintTime("mdl_sd2b.irt", BTime );
+BTime = TimedInclude("primsrf3.irt");
+	PrintTime("primsrf3.irt", BTime );
+BTime = TimedInclude("mdl_sld6.irt");
+	PrintTime("mdl_sld6.irt", BTime );
+BTime = TimedInclude("tea1bool.irt");
+	PrintTime("tea1bool.irt", BTime );
+BTime = TimedInclude("tea2bool.irt");
+	PrintTime("tea2bool.irt", BTime );
+
+# LastEchoSrc = iritState( "EchoSource", LastEchoSrc );
+printf("############# Total Execution Time is %9.4f ##################\\n",
+	   list( TotalTime ) ):
+
+logfile( off );
+
+free( BTime );
+free( LastFloatFrmt );
+# free( LastEchoSrc );

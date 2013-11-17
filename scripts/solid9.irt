@@ -1,0 +1,55 @@
+#
+# Yet another simple 3D mechanical object.
+#
+#				Created by Gershon Elber,	Sep 89
+#
+
+t = time( true );
+free( t );
+
+save_mat = view_mat;
+save_res = resolution;
+
+resolution = 48;
+
+b1 = box(vector(-0.3, -0.3, 0.0), 0.6, 0.6, 0.15);
+c1 = cylin(vector(0.0, 0.0, 0.1), vector(0.0, 0.0, 0.65), 0.14, 3);
+s1 = sphere(vector(0.0, 0.0, 0.65), 0.3);
+obj = b1 + c1 + s1;
+free(b1);
+free(c1);
+free(s1);
+interact(list(view_mat, obj));
+
+b2 = box(vector(-0.1, -0.4, 0.55), 0.2, 0.8, 0.5);
+b3 = gbox(vector(0.0, -0.35, 0.63), vector(0.5, 0.0, 0.5),
+				    vector(-0.5, 0.0, 0.5),
+				    vector(0.0, 0.7, 0.0));
+boxes = b2 + b3;
+free(b2);
+free(b3);
+view(boxes, false);
+obj = obj - boxes;
+free(boxes);
+view(obj, true);
+
+c2 = cylin(vector(0.0, 0.0, -0.1), vector(0.0, 0.0, 1.2), 0.08, 3);
+c3 = cylin(vector(0.0, -0.3, 0.25), vector(0.0, 0.6, 0.0), 0.05, 3);
+view(list(c2, c3), false);
+obj = obj - c2 - c3;
+free(c2);
+free(c3);
+view(obj, true);
+
+final = convex(obj);
+free(obj);
+
+printf( "Total Time = %f\\n", list( time( false ) ) ); # In Seconds
+
+interact(final);
+
+save("solid9", final);
+free(final);
+
+resolution = save_res;
+view_mat = save_mat;

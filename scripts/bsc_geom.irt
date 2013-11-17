@@ -1,0 +1,67 @@
+#
+# Some basic tests for basic geometry.
+#
+
+Pl1 = Pln3Pts( point( 0, 0, 0 ),
+	       point( 1, 0, 0 ),
+	       point( 0, 1, 0 ) );
+
+Results = list(
+    DstPtLn( point( 0, 0, 0 ), point( 1, 0, 0 ), vector( 1, 1, 0 ) ),
+    DstPtLn( point( 0, 0, 0 ), point( 1, 0, 0 ), vector( 1, 1, 1 ) ),
+
+    DstPtPln( point( 0, 0, 0 ), Pl1 ),
+    DstPtPln( point( 1, 2, 3 ), Pl1 ),
+
+    DstLnLn( point( 1, 0, 0 ), vector( 1, 1, 0 ),
+	     point( 0, 1, 0 ), vector( 1, 1, 0 ) ),
+    DstLnLn( point( 1, 0, 0 ), vector( 0, 1, 0 ),
+	     point( 0, 1, 0 ), vector( 1, 0, 0 ) ),
+    DstLnLn( point( 1, 0, 0 ), vector( 0, 1, 1 ),
+	     point( 0, 1, 0 ), vector( 1, 0, 0 ) ),
+
+    Pln3Pts( point( 0, 0, 1 ), point( 1, 0, 2 ), point( 0, 1, 3 ) ),
+
+    PtPtLn( point( 0, 0, 0 ), point( 1, 0, 0 ), vector( 1, 1, 0 ) ),
+    PtPtLn( point( 0, 0, 0 ), point( 1, 1, 0 ), vector( 1, 1, 1 ) ),
+
+    PtLnPln( point( 1, 0, 1 ), vector( 1, 1, 1 ), Pl1 ),
+    PtLnPln( point( 4, 5, 6 ), vector( 8, 9, 10 ), Pl1 ),
+
+    PtsLnLn( point( 1, 0, 0 ), vector( 0, 1, 0 ),
+	     point( 0, 1, 0 ), vector( 1, 0, 0 ) ),
+    PtsLnLn( point( 1, 0, 0 ), vector( 0, 1, 1 ),
+	     point( 0, 1, 0 ), vector( 1, 0, 0 ) ),
+
+    TnsCrCr( point( 0.2, -1, 0 ), 0.5, point( 0, 1, 0 ), 0.2, 0 ),
+    TnsCrCr( point( 0.2, -1, 0 ), 0.5, point( 0, 1, 0 ), 0.2, 1 ),
+    TnsCrCr( point( -2, 0.3, 0 ), 0.7, point( 1, 0, 0 ), 1, 0 ),
+    TnsCrCr( point( -2, 0.3, 0 ), 0.7, point( 1, 0, 0 ), 1, 1 ),
+
+    PtsCrCr( point(0,1,0), vector(0,0,1), 2, point(0,0,1), vector(0,1,0), 2 ),
+    PtsCrCr( point(0,1,0), vector(0,0,1), 1, point(0,0,1), vector(0,1,0), 1 ),
+
+    PtsCrCr( point(0,0,0), vector(0,0,1), 2, point(2,0,0), vector(0,0,1), 2 ),
+    PtsCrCr( point(9,1,0), vector(0,0,1), 9, point(1,9,0), vector(0,0,1), 8 ),
+    PtsCrCr( point(0,0,0), vector(0,0,1), 2, point(4,0,0), vector(0,0,1), 2 ),
+    PtsCrCr( point(0,0,0), vector(0,0,1), 3, point(9,0,0), vector(0,0,1), 4 ),
+
+    Pt3Bary( point( 0, 0, 0 ),
+	     point( 1, 0, 0 ),
+	     point( 0, 1, 0 ),
+	     point( 0.25, 0.25, 0.0 ) ),
+    Pt3Bary( point( 0, 0, 0 ),
+	     point( 1, 0, 0 ),
+	     point( 0, 1, 0 ),
+	     point( 0.5, 0.5, 0.0 ) ) );
+save( "bsc_geom", Results );
+
+# Invalid (out of triangle) barycentric coordinates:
+Pt3Bary( point( 0, 0, 0 ),
+	 point( 1, 0, 0 ),
+	 point( 0, 1, 0 ),
+	 point( 0.75, 0.75, 0.0 ) );
+
+
+free( Pl1 );
+free( Results );

@@ -1,0 +1,152 @@
+#
+# This make file is for the ifilters utilities for Windows NT
+#
+#				Gershon Elber, June 1993
+#
+
+# Includes generic definitions.
+include ..\makeflag.wnt
+
+IRIT2DXF_OBJS = irit2dxf.$(IRIT_OBJ_PF) 
+IRIT2HGL_OBJS = irit2hgl.$(IRIT_OBJ_PF) 
+IRIT2IGS_OBJS = irit2igs.$(IRIT_OBJ_PF) 
+IRIT2IV_OBJS  = irit2iv.$(IRIT_OBJ_PF) 
+IRIT2NFF_OBJS = irit2nff.$(IRIT_OBJ_PF) 
+IRIT2OBJ_OBJS = irit2obj.$(IRIT_OBJ_PF) 
+IRIT2OFF_OBJS = irit2off.$(IRIT_OBJ_PF) 
+IRIT2PLG_OBJS = irit2plg.$(IRIT_OBJ_PF) 
+IRIT2POV_OBJS = irit2pov.$(IRIT_OBJ_PF) 
+IRIT2PS_OBJS  = irit2ps.$(IRIT_OBJ_PF) 
+IRIT2RAY_OBJS = irit2ray.$(IRIT_OBJ_PF) 
+IRIT2SCN_OBJS = irit2scn.$(IRIT_OBJ_PF) 
+IRIT2STL_OBJS = irit2stl.$(IRIT_OBJ_PF) 
+IRIT2WRL_OBJS = irit2wrl.$(IRIT_OBJ_PF) 
+IRIT2XFG_OBJS = irit2xfg.$(IRIT_OBJ_PF) 
+
+3DS2IRIT_OBJS = 3ds2irit.$(IRIT_OBJ_PF)
+DAT2IRIT_OBJS = dat2irit.$(IRIT_OBJ_PF)
+DXF2IRIT_OBJS = dxf2irit.$(IRIT_OBJ_PF)
+IGS2IRIT_OBJS = igs2irit.$(IRIT_OBJ_PF)
+OBJ2IRIT_OBJS = obj2irit.$(IRIT_OBJ_PF)
+OFF2IRIT_OBJS = off2irit.$(IRIT_OBJ_PF)
+STL2IRIT_OBJS = stl2irit.$(IRIT_OBJ_PF)
+DAT2BIN_OBJS  = dat2bin.$(IRIT_OBJ_PF)
+SKELETN1_OBJS = skeletn1.$(IRIT_OBJ_PF)
+
+
+all:	irit2dxf$(IRIT_EXE_PF).exe irit2hgl$(IRIT_EXE_PF).exe \
+	irit2igs$(IRIT_EXE_PF).exe irit2iv$(IRIT_EXE_PF).exe \
+	irit2nff$(IRIT_EXE_PF).exe \
+	irit2obj$(IRIT_EXE_PF).exe irit2off$(IRIT_EXE_PF).exe \
+	irit2plg$(IRIT_EXE_PF).exe irit2pov$(IRIT_EXE_PF).exe \
+	irit2ps$(IRIT_EXE_PF).exe irit2ray$(IRIT_EXE_PF).exe \
+	irit2scn$(IRIT_EXE_PF).exe irit2stl$(IRIT_EXE_PF).exe \
+	irit2wrl$(IRIT_EXE_PF).exe irit2xfg$(IRIT_EXE_PF).exe \
+	3ds2irit$(IRIT_EXE_PF).exe dat2bin$(IRIT_EXE_PF).exe \
+	dat2irit$(IRIT_EXE_PF).exe dxf2irit$(IRIT_EXE_PF).exe \
+	igs2irit$(IRIT_EXE_PF).exe obj2irit$(IRIT_EXE_PF).exe \
+	off2irit$(IRIT_EXE_PF).exe skeletn1$(IRIT_EXE_PF).exe \
+	stl2irit$(IRIT_EXE_PF).exe
+
+
+irit2dxf$(IRIT_EXE_PF).exe: $(IRIT2DXF_OBJS)
+	$(IRITCONLINK) -out:$@ $(IRIT2DXF_OBJS) $(IRIT_LIBS) $(W32CONLIBS)
+	$(IRITMANIFEST) -manifest $@.manifest -outputresource:$@;1
+
+irit2hgl$(IRIT_EXE_PF).exe: $(IRIT2HGL_OBJS)
+	$(IRITCONLINK) -out:$@ $(IRIT2HGL_OBJS) $(IRIT_LIBS) $(W32CONLIBS)
+	$(IRITMANIFEST) -manifest $@.manifest -outputresource:$@;1
+
+irit2igs$(IRIT_EXE_PF).exe: $(IRIT2IGS_OBJS)
+	$(IRITCONLINK) -out:$@ $(IRIT2IGS_OBJS) $(IRIT_LIBS) $(W32CONLIBS)
+	$(IRITMANIFEST) -manifest $@.manifest -outputresource:$@;1
+
+irit2iv$(IRIT_EXE_PF).exe: $(IRIT2IV_OBJS)
+	$(IRITCONLINK) -out:$@ $(IRIT2IV_OBJS) $(IRIT_LIBS) $(W32CONLIBS)
+	$(IRITMANIFEST) -manifest $@.manifest -outputresource:$@;1
+
+irit2nff$(IRIT_EXE_PF).exe: $(IRIT2NFF_OBJS)
+	$(IRITCONLINK) -out:$@ $(IRIT2NFF_OBJS) $(IRIT_LIBS) $(W32CONLIBS)
+	$(IRITMANIFEST) -manifest $@.manifest -outputresource:$@;1
+
+irit2off$(IRIT_EXE_PF).exe: $(IRIT2OFF_OBJS)
+	$(IRITCONLINK) -out:$@ $(IRIT2OFF_OBJS) $(IRIT_LIBS) $(W32CONLIBS)
+	$(IRITMANIFEST) -manifest $@.manifest -outputresource:$@;1
+
+irit2obj$(IRIT_EXE_PF).exe: $(IRIT2OBJ_OBJS)
+	$(IRITCONLINK) -out:$@ $(IRIT2OBJ_OBJS) $(IRIT_LIBS) $(W32CONLIBS)
+	$(IRITMANIFEST) -manifest $@.manifest -outputresource:$@;1
+
+irit2plg$(IRIT_EXE_PF).exe: $(IRIT2PLG_OBJS)
+	$(IRITCONLINK) -out:$@ $(IRIT2PLG_OBJS) $(IRIT_LIBS) $(W32CONLIBS)
+	$(IRITMANIFEST) -manifest $@.manifest -outputresource:$@;1
+
+irit2pov$(IRIT_EXE_PF).exe: $(IRIT2POV_OBJS)
+	$(IRITCONLINK) -out:$@ $(IRIT2POV_OBJS) $(IRIT_LIBS) $(W32CONLIBS)
+	$(IRITMANIFEST) -manifest $@.manifest -outputresource:$@;1
+
+irit2ps$(IRIT_EXE_PF).exe: $(IRIT2PS_OBJS)
+	$(IRITCONLINK) -out:$@ $(IRIT2PS_OBJS) $(IRIT_LIBS) $(W32CONLIBS)
+	$(IRITMANIFEST) -manifest $@.manifest -outputresource:$@;1
+
+irit2ray$(IRIT_EXE_PF).exe: $(IRIT2RAY_OBJS)
+	$(IRITCONLINK) -out:$@ $(IRIT2RAY_OBJS) $(IRIT_LIBS) $(W32CONLIBS)
+	$(IRITMANIFEST) -manifest $@.manifest -outputresource:$@;1
+
+irit2scn$(IRIT_EXE_PF).exe: $(IRIT2SCN_OBJS)
+	$(IRITCONLINK) -out:$@ $(IRIT2SCN_OBJS) $(IRIT_LIBS) $(W32CONLIBS)
+	$(IRITMANIFEST) -manifest $@.manifest -outputresource:$@;1
+
+irit2stl$(IRIT_EXE_PF).exe: $(IRIT2STL_OBJS)
+	$(IRITCONLINK) -out:$@ $(IRIT2STL_OBJS) $(IRIT_LIBS) $(W32CONLIBS)
+	$(IRITMANIFEST) -manifest $@.manifest -outputresource:$@;1
+
+irit2wrl$(IRIT_EXE_PF).exe: $(IRIT2WRL_OBJS)
+	$(IRITCONLINK) -out:$@ $(IRIT2WRL_OBJS) $(IRIT_LIBS) $(W32CONLIBS)
+	$(IRITMANIFEST) -manifest $@.manifest -outputresource:$@;1
+
+irit2xfg$(IRIT_EXE_PF).exe: $(IRIT2XFG_OBJS)
+	$(IRITCONLINK) -out:$@ $(IRIT2XFG_OBJS) $(IRIT_LIBS) $(W32CONLIBS)
+	$(IRITMANIFEST) -manifest $@.manifest -outputresource:$@;1
+
+3ds2irit$(IRIT_EXE_PF).exe: $(3DS2IRIT_OBJS)
+	$(IRITCONLINK) -out:$@ $(3DS2IRIT_OBJS) $(IRIT_LIBS) $(W32CONLIBS)
+	$(IRITMANIFEST) -manifest $@.manifest -outputresource:$@;1
+
+dat2bin$(IRIT_EXE_PF).exe: $(DAT2BIN_OBJS)
+	$(IRITCONLINK) -out:$@ $(DAT2BIN_OBJS) $(IRIT_LIBS) $(W32CONLIBS)
+	$(IRITMANIFEST) -manifest $@.manifest -outputresource:$@;1
+
+dat2irit$(IRIT_EXE_PF).exe: $(DAT2IRIT_OBJS)
+	$(IRITCONLINK) -out:$@ $(DAT2IRIT_OBJS) $(IRIT_LIBS) $(W32CONLIBS)
+	$(IRITMANIFEST) -manifest $@.manifest -outputresource:$@;1
+
+dxf2irit$(IRIT_EXE_PF).exe: $(DXF2IRIT_OBJS)
+	$(IRITCONLINK) -out:$@ $(DXF2IRIT_OBJS) $(IRIT_LIBS) $(W32CONLIBS)
+	$(IRITMANIFEST) -manifest $@.manifest -outputresource:$@;1
+
+igs2irit$(IRIT_EXE_PF).exe: $(IGS2IRIT_OBJS)
+	$(IRITCONLINK) -out:$@ $(IGS2IRIT_OBJS) $(IRIT_LIBS) $(W32CONLIBS)
+	$(IRITMANIFEST) -manifest $@.manifest -outputresource:$@;1
+
+obj2irit$(IRIT_EXE_PF).exe: $(OBJ2IRIT_OBJS)
+	$(IRITCONLINK) -out:$@ $(OBJ2IRIT_OBJS) $(IRIT_LIBS) $(W32CONLIBS)
+	$(IRITMANIFEST) -manifest $@.manifest -outputresource:$@;1
+
+off2irit$(IRIT_EXE_PF).exe: $(OFF2IRIT_OBJS)
+	$(IRITCONLINK) -out:$@ $(OFF2IRIT_OBJS) $(IRIT_LIBS) $(W32CONLIBS)
+	$(IRITMANIFEST) -manifest $@.manifest -outputresource:$@;1
+
+skeletn1$(IRIT_EXE_PF).exe: $(SKELETN1_OBJS)
+	$(IRITCONLINK) -out:$@ $(SKELETN1_OBJS) $(IRIT_LIBS) $(W32CONLIBS)
+	$(IRITMANIFEST) -manifest $@.manifest -outputresource:$@;1
+
+stl2irit$(IRIT_EXE_PF).exe: $(STL2IRIT_OBJS)
+	$(IRITCONLINK) -out:$@ $(STL2IRIT_OBJS) $(IRIT_LIBS) $(W32CONLIBS)
+	$(IRITMANIFEST) -manifest $@.manifest -outputresource:$@;1
+
+install: all
+	copy *.exe $(IRIT_BIN_DIR)
+	del *.exe 
+
+# Dependencies starts here - do not touch, generated automatically.

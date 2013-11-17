@@ -1,0 +1,246 @@
+#
+# Test n triangles - linear map to equilateral triangle
+#
+
+BoundingEllipse = function( Pt1, Pt2, Pt3 ): m: mInv: Pt: R: El: j:
+    m = Map3Pt2Eql( Pt1, Pt2, Pt3 ):
+     mInv = m^-1:
+    Pt = m * Pt1:
+    R = sqrt( Pt * Pt ):
+
+    El = nil():
+    for ( j = 0, 10, 360,
+	snoc( point( R * cos( j * pi / 180 ),
+		     R * sin( j * pi / 180 ), 0 ) * mInv, El ) ):
+    return = poly( El, 1 ):
+    color( return, yellow );
+
+view_mat1 = rx( 0 );
+viewobj( view_mat1 );
+free( view_mat1 );
+viewstate( "WidthLines", 1 );
+
+ri = iritstate( "RandomInit", 1964 );  # Seed-initiate the randomizer,
+free( ri );
+
+#############################################################################
+#
+# Map circles using the inverse of Map3Pt2Eql, creating an bounding ellipse.
+#
+
+n = 40;
+
+for ( i = 1, 1, n,
+    Pt1 = point( random(-1, 1 ),  random(-1, 1 ),  0 ):
+    Pt2 = point( random(-1, 1 ),  random(-1, 1 ),  0 ):
+    Pt3 = point( random(-1, 1 ),  random(-1, 1 ),  0 ):
+    Pl = poly( list( Pt1, Pt2, Pt3 ), 0 ):
+    color( Pl, green ):
+
+    Ell = BoundingEllipse( Pt1, Pt2, Pt3 ):
+
+    All = list( Pl, Ell ):
+
+    view( All, 1 ):
+    miliSleep( 200 ) );
+
+save( "ellips1", list( All ) );
+
+#############################################################################
+#
+# Compute the bounding ellipse as:
+#
+# c = center of mass of Pi, i = 0,..,3
+#
+# N = 1/3 sum_i (Pi - c)(Pi - c)^T, M = N^{-1}
+#
+# Then, the ellipse E equal:
+#
+# C = (p - c)^T M (p - c) - z = 0,  z constant
+#
+# This is an IRIT scriPt implementation of the Ellipse3Pt C function.
+#
+# See:  "Exact Primitives for Smallest Enclosing Ellipses", by Bernd Gartner
+# and Sven Schonherr, Proceedings of the 13th annual symposium on
+# Computational geometry, 1997.
+#
+
+n = 10;
+
+for ( i = 1, 1, n,
+    Pt1 = point( random( -0.5, 0.5 ),  random( -0.5, 0.5 ),  0 ):
+    Pt2 = point( random( -0.5, 0.5 ),  random( -0.5, 0.5 ),  0 ):
+    Pt3 = point( random( -0.5, 0.5 ),  random( -0.5, 0.5 ),  0 ):
+
+    Pl = poly( list( Pt1, Pt2, Pt3 ), 0 ):
+    color( Pl, green ):
+
+    Cntr = ( Pt1 + Pt2 + Pt3 ) * sc ( 1 / 3 ):
+    DPt1 = Pt1 - Cntr:
+    DPt2 = Pt2 - Cntr:
+    DPt3 = Pt3 - Cntr:
+
+    n00 = ( sqr( coord( DPt1, 0 ) ) +
+	    sqr( coord( DPt2, 0 ) ) +
+	    sqr( coord( DPt3, 0 ) ) ) / 3:
+    n10 = n01 = ( coord( DPt1, 0 ) * coord( DPt1, 1 ) +
+	          coord( DPt2, 0 ) * coord( DPt2, 1 ) +
+	          coord( DPt3, 0 ) * coord( DPt3, 1 ) ) / 3:
+    n11 = ( sqr( coord( DPt1, 1 ) ) +
+	    sqr( coord( DPt2, 1 ) ) +
+	    sqr( coord( DPt3, 1 ) ) ) / 3:
+
+    d = n00 * n11 - n01 * n10:
+    m00 = n11 / d:
+    m11 = n00 / d:
+    m01 = m10 = -n01 / d:
+
+    A = m00:
+    B = m01 + m10:
+    C = m11:
+    Nrml = max( max( abs( A ), abs( B ) ), abs( C ) ):
+    A = A / Nrml:
+    B = B / Nrml:
+    C = C / Nrml:
+
+    D = ( -2 * m00 * coord( Cntr, 0 ) - coord( Cntr, 1 ) * ( m10 + m01 ) ) / Nrml:
+    E = ( -2 * m11 * coord( Cntr, 1 ) - coord( Cntr, 0 ) * ( m10 + m01 ) ) / Nrml:
+
+    F = -( A * sqr( coord( Pt1, 0 ) ) +
+	   B * coord( Pt1, 0 ) * coord( Pt1, 1 ) +
+	   C * sqr( coord( Pt1, 1 ) ) +
+	   D * coord( Pt1, 0 ) +
+	   E * coord( Pt1, 1 ) ):
+
+    Conic = ConicSec( list( A, B, C, D, E, F ), 0, off, off ):
+    color( Conic, magenta ):
+
+    Ell = BoundingEllipse( Pt1, Pt2, Pt3 ):
+    color( Ell, yellow ):
+    adwidth( Ell, 2 ):
+
+    Ell2 = ConicSec( Ellipse3Pt( Pt1, Pt2, Pt3, 0.02 ), 0, off, off ):
+    color( Ell2, cyan ):
+    adwidth( Ell2, 3 ):
+
+    All = list( axes, Ell2, Ell, Conic, Pt1, Pt2, Pt3, Pl ):
+    view( All, 1 ):
+    miliSleep( 200 ) );
+
+save( "ellips2", All );
+
+#############################################################################
+#
+# Do some tests with 2D transformations of ellipses and ellipsoids.
+#
+
+n = 360;
+
+Pt1 = point( random( -0.5, 0.5 ),  random( -0.5, 0.5 ),  0 );
+Pt2 = point( random( -0.5, 0.5 ),  random( -0.5, 0.5 ),  0 );
+Pt3 = point( random( -0.5, 0.5 ),  random( -0.5, 0.5 ),  0 );
+
+Pl = poly( list( Pt1, Pt2, Pt3 ), 0 );
+color( Pl, green );
+
+EllImp = Ellipse3Pt( Pt1, Pt2, Pt3, 0 );
+Ell = ConicSec( EllImp, 0, off, off );
+color( Ell, yellow );
+adwidth( Ell, 2 );
+
+for ( i = 10, 10, n,
+    m = rz( i ) * sc( i / 360 ) * tx( i / 360 - 1.0 ):
+
+    Ell2Imp = ImplcTrans( 1, EllImp, m ):
+
+    Ell3Imp = Cnc2Quad( EllImp, 0.1 ):
+    Ell3Imp = ImplcTrans( 2, Ell3Imp, m ):
+
+    Ell2 = ConicSec( Ell2Imp, 0, off, off ):
+    color( Ell2, cyan ):
+    adwidth( Ell2, 2 ):
+
+    Ell3 = quadric( Ell3Imp ):
+    color( Ell3, magenta ):
+
+    All  = list( axes, Ell, Ell2, Ell3 ):
+    view( All, 1 ):
+
+    miliSleep( 100 ) );
+
+save( "ellips3", All );
+
+#############################################################################
+#
+# Do some tests with 3D transformations of ellipsoids.
+#
+
+n = 360;
+
+Pt1 = point( random( -0.5, 0.5 ),  random( -0.5, 0.5 ),  0 );
+Pt2 = point( random( -0.5, 0.5 ),  random( -0.5, 0.5 ),  0 );
+Pt3 = point( random( -0.5, 0.5 ),  random( -0.5, 0.5 ),  0 );
+
+Pl = poly( list( Pt1, Pt2, Pt3 ), 0 );
+color( Pl, green );
+
+EllImp = Ellipse3Pt( Pt1, Pt2, Pt3, 0 );
+Ell = ConicSec( EllImp, 0, off, off );
+color( Ell, yellow );
+adwidth( Ell, 2 );
+
+for ( i = 10, 10, n,
+    m = rz( i ) * rx( i * 2 ) * ry( i * 3 ) *
+	sc( i / 360 ) * tx( i / 360 - 1.0 ) * tz( i / 720 - 0.5 ):
+
+    Ell3Imp = Cnc2Quad( EllImp, i / 1000 ):
+    Ell3Imp = ImplcTrans( 2, Ell3Imp, m ):
+
+    Ell3 = quadric( Ell3Imp ):
+    color( Ell3, magenta ):
+
+    All  = list( axes, Ell3, Ell ):
+    view( All, 1 ):
+
+    miliSleep( 100 ) );
+
+save( "ellips4", All );
+
+#############################################################################
+
+viewstate( "WidthLines", 0 );
+
+free( n );
+free( m );
+free( Pt1 );
+free( Pt2 );
+free( Pt3 );
+free( DPt1 );
+free( DPt2 );
+free( DPt3 );
+free( Pl );
+free( Ell );
+free( Ell2 );
+free( Ell3 );
+free( EllImp );
+free( Ell2Imp );
+free( Ell3Imp );
+free( Conic );
+free( A );
+free( B );
+free( C );
+free( D );
+free( E );
+free( F );
+free( n00 );
+free( n01 );
+free( n10 );
+free( n11 );
+free( m00 );
+free( m01 );
+free( m10 );
+free( m11 );
+free( Cntr );
+free( i );
+free( Nrml );
+free( All );

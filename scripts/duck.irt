@@ -1,0 +1,69 @@
+#
+# A simple model of a duck
+#
+
+c = nil();
+for( i = 0, 1, 11,
+    snoc( point( cos( i * 2 * Pi / 12 ), sin( i * 2 * Pi / 12 ), 0 ), c ) );
+c = -cbspline( 3, c, list( kv_periodic ) ) * ry( 90 );
+
+c2 = cbspline( 3,
+    list( ctlpt( E3, 0, -0.279, -1.54 ),
+          ctlpt( E3, 0, -0.483, -0.896 ),
+          ctlpt( E3, 0, -0.762, -0.631 ),
+          ctlpt( E3, 0, -1.07, -0.0984 ),
+          ctlpt( E3, 0, -0.747, 0.761 ),
+          ctlpt( E3, 0, 0, 1 ),
+          ctlpt( E3, 0, 0.747, 0.761 ),
+          ctlpt( E3, 0, 1.07, -0.0984 ),
+          ctlpt( E3, 0, 0.762, -0.631 ),
+          ctlpt( E3, 0, 0.483, -0.896 ),
+          ctlpt( E3, 0, 0.279, -1.54 ),
+          ctlpt( E3, 0, 0, -1.78 ) ),
+    list( kv_periodic ) );
+
+Crvs = list( c * sc( 0.001 ) * trans( vector( 1.02, 0.0, 0.18 ) ),
+	     c * sc( 0.07 ) * sz( 0.4 ) * trans( vector( 1.02, 0.0, 0.18 ) ),
+	     c * sc( 0.18 ) * sz( 0.3 ) * trans( vector( 0.8, 0.0, 0.16 ) ),
+	     c * sc( 0.27 ) * sz( 0.5 ) * trans( vector( 0.6, 0.0, 0.16 ) ),
+	     c * sc( 0.43 ) * sz( 0.64 ) * trans( vector( 0.3, 0.0, 0.2 ) ),
+	     c * sc( 0.54 ) * sz( 0.7 ) * trans( vector( 0.0, 0.0, 0.23 ) ),
+	     c * sc( 0.52 ) * ry( 25 ) * sz( 0.76 ) * trans( vector( -0.34, 0.0, 0.26 ) ),
+	     c * sc( 0.41 ) * sz( 1.13 ) * ry( 50 ) * trans( vector( -0.6, 0.0, 0.32 ) ),
+	     c * sc( 0.3 ) * sz( 1.3 ) * ry( 65 ) * trans( vector( -0.7, 0.0, 0.42 ) ),
+	     c * sc( 0.16 ) * sz( 1.4 ) * ry( 75 ) * trans( vector( -0.71, 0.0, 0.5 ) ),
+	     c * sc( 0.16 ) * sz( 1.4 ) * ry( 75 ) * trans( vector( -0.72, 0.0, 0.53 ) ),
+	     c2 * sc( 0.2 ) * sz( 1.5 ) * ry( 75 ) * trans( vector( -0.8, 0.0, 0.6 ) ),
+	     c2 * sc( 0.2 ) * sz( 1.5 ) * ry( 75 ) * trans( vector( -0.82, 0.0, 0.66 ) ),
+	     c * sc( 0.2 ) * sz( 1.2 ) * ry( 75 ) * trans( vector( -0.79, 0.0, 0.8 ) ),
+	     c * sc( 0.15 ) * sz( 1.2 ) * ry( 75 ) * trans( vector( -0.82, 0.0, 0.95 ) ),
+	     c * sc( 0.05 ) * sz( 1.2 ) * ry( 75 ) * trans( vector( -0.82, 0.0, 1.02 ) ),
+	     c * sc( 0.001 ) * sz( 1.2 ) * ry( 75 ) * trans( vector( -0.82, 0.0, 1.02 ) )
+);
+
+color( crvs, green );
+
+view( crvs, 1 );
+
+Duck1 = sIntpCrvs( Crvs, 3, kv_open, param_uniform );
+
+Duck2 = sIntpCrvs( Crvs, 3, kv_open, param_chord );
+
+Duck3 = sFromCrvs( Crvs, 4, kv_open );
+
+All = list( list( Duck1, Crvs ) * ty( 2 ),
+	    list( Duck2, Crvs ),
+	    list( Duck3, Crvs ) * ty( -2 ) ) * sc( 0.3 );
+
+interact( list( All ) );
+
+save( "duck", All );
+
+free( Duck1 );
+free( Duck2 );
+free( Duck3 );
+free( All );
+free( Crvs );
+free( c );
+free( c2 );
+free( i );

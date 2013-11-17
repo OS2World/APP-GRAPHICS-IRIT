@@ -1,0 +1,227 @@
+#
+# A "different" puzzle where on neads to lead an XYZ stick between corners.
+#
+#						Gershon Elber, March 1999
+#
+
+RedPly =  poly( list( point(  1,  1, 0 ),
+		      point(  1,  8, 0 ),
+		      point(  3,  8, 0 ),
+		      point(  3,  9, 0 ),
+		      point(  1,  9, 0 ),
+		      point(  1, 10, 0 ),
+		      point(  4, 10, 0 ),
+		      point(  4,  6, 0 ),
+		      point(  7,  6, 0 ),
+		      point(  7,  7, 0 ),
+		      point(  5,  7, 0 ),
+		      point(  5, 10, 0 ),
+		      point( 10, 10, 0 ),
+		      point( 10,  9, 0 ),
+		      point(  6,  9, 0 ),
+		      point(  6,  8, 0 ),
+		      point( 10,  8, 0 ),
+		      point( 10,  3, 0 ),
+		      point(  9,  3, 0 ),
+		      point(  9,  7, 0 ),
+		      point(  8,  7, 0 ),
+		      point(  8,  5, 0 ),
+		      point(  3,  5, 0 ),
+		      point(  3,  7, 0 ),
+		      point(  2,  7, 0 ),
+		      point(  2,  4, 0 ),
+		      point(  8,  4, 0 ),
+		      point(  8,  2, 0 ),
+		      point( 10,  2, 0 ),
+		      point( 10,  1, 0 ),
+		      point(  5,  1, 0 ),
+		      point(  5,  2, 0 ),
+		      point(  7,  2, 0 ),
+		      point(  7,  3, 0 ),
+		      point(  2,  3, 0 ),
+		      point(  2,  2, 0 ),
+		      point(  4,  2, 0 ),
+		      point(  4,  1, 0 ) ), false );
+
+GreenPly = poly( list( point(  1,  1, 0 ),
+		      point(  1,  4, 0 ),
+		      point(  2,  4, 0 ),
+		      point(  2,  2, 0 ),
+		      point(  7,  2, 0 ),
+		      point(  7,  3, 0 ),
+		      point(  3,  3, 0 ),
+		      point(  3,  4, 0 ),
+		      point(  7,  4, 0 ),
+		      point(  7,  6, 0 ),
+		      point(  9,  6, 0 ),
+		      point(  9,  7, 0 ),
+		      point(  7,  7, 0 ),
+		      point(  7,  9, 0 ),
+		      point(  6,  9, 0 ),
+		      point(  6,  5, 0 ),
+		      point(  3,  5, 0 ),
+		      point(  3,  6, 0 ),
+		      point(  5,  6, 0 ),
+		      point(  5,  9, 0 ),
+		      point(  4,  9, 0 ),
+		      point(  4,  7, 0 ),
+		      point(  3,  7, 0 ),
+		      point(  3,  9, 0 ),
+		      point(  2,  9, 0 ),
+		      point(  2,  5, 0 ),
+		      point(  1,  5, 0 ),
+		      point(  1, 10, 0 ),
+		      point( 10, 10, 0 ),
+		      point( 10,  9, 0 ),
+		      point(  8,  9, 0 ),
+		      point(  8,  8, 0 ),
+		      point( 10,  8, 0 ),
+		      point( 10,  3, 0 ),
+		      point(  9,  3, 0 ),
+		      point(  9,  5, 0 ),
+		      point(  8,  5, 0 ),
+		      point(  8,  2, 0 ),
+		      point( 10,  2, 0 ),
+		      point( 10,  1, 0 ) ), false );
+
+BluePly = poly( list( point(  1,  1, 0 ),
+		      point(  1,  6, 0 ),
+		      point(  4,  6, 0 ),
+		      point(  4,  5, 0 ),
+		      point(  2,  5, 0 ),
+		      point(  2,  2, 0 ),
+		      point(  3,  2, 0 ),
+		      point(  3,  4, 0 ),
+		      point(  5,  4, 0 ),
+		      point(  5,  7, 0 ),
+		      point(  3,  7, 0 ),
+		      point(  3,  9, 0 ),
+		      point(  2,  9, 0 ),
+		      point(  2,  7, 0 ),
+		      point(  1,  7, 0 ),
+		      point(  1, 10, 0 ),
+		      point(  4, 10, 0 ),
+		      point(  4,  8, 0 ),
+		      point(  8,  8, 0 ),
+		      point(  8,  5, 0 ),
+		      point(  7,  5, 0 ),
+		      point(  7,  7, 0 ),
+		      point(  6,  7, 0 ),
+		      point(  6,  3, 0 ),
+		      point(  4,  3, 0 ),
+		      point(  4,  2, 0 ),
+		      point(  7,  2, 0 ),
+		      point(  7,  4, 0 ),
+		      point(  9,  4, 0 ),
+		      point(  9,  9, 0 ),
+		      point(  5,  9, 0 ),
+		      point(  5, 10, 0 ),
+		      point( 10, 10, 0 ),
+		      point( 10,  1, 0 ),
+		      point(  9,  1, 0 ),
+		      point(  9,  3, 0 ),
+		      point(  8,  3, 0 ),
+		      point(  8,  1, 0 ) ), false );
+
+Face1Ply = poly( list( point(  0,  0, 0 ),
+		       point( 11,  0, 0 ),
+		       point( 11, 11, 0 ),
+		       point(  0, 11, 0 ) ), false );
+Face2Ply = Face1Ply * sc( 10/ 11 ) * trans( vector( 0.5, 0.5, 0.5 ) );
+FaceBase = RuledSrf( Face2Ply, Face1Ply ) ^ Face1Ply ^ -Face2Ply;
+
+free( Face1Ply );
+free( Face2Ply );
+
+#
+# Create the Red faces
+#
+Red1Face = FaceBase * -RuledSrf( RedPly * tz( -2 ), RedPly * tz( 2 ) );
+color( Red1Face, red ); 
+Red2Face = ( ( FaceBase * ry( 180 ) * tx( 11 ) )
+	     * -RuledSrf( RedPly * tz( -2 ), RedPly * tz( 2 ) ) ) * tz( 11 );
+color( Red2Face, red ); 
+
+#
+# Create the Green faces
+#
+Green1Face = ( FaceBase *
+			-RuledSrf( GreenPly * tz( -2 ), GreenPly * tz( 2 ) ) )
+							* ry( 90 ) * tz( 11 );
+color( Green1Face, green ); 
+Green2Face = ( ( FaceBase * ry( 180 ) * tx( 11 ) )
+		     * -RuledSrf( GreenPly * tz( -2 ), GreenPly * tz( 2 ) ) )
+					    * ry( 90 ) * tz( 11 )  * tx( 11 );
+color( Green2Face, green ); 
+
+#
+# Create the Blue faces
+#
+Blue1Face = FaceBase * -RuledSrf( BluePly * tz( -2 ), BluePly * tz( 2 ) )
+				   * rz( 90 ) * rx( 90 ) * tx( 11 ) * ty( 11 );
+color( Blue1Face, blue ); 
+Blue2Face = ( ( FaceBase * ry( 180 ) * tx( 11 ) )
+	     * -RuledSrf( BluePly * tz( -2 ), BluePly * tz( 2 ) ) )
+				  * rz( 90 ) * rx( 90 ) * tz( 0 )  * tx( 11 );
+color( Blue2Face, blue ); 
+
+PuzCube = list( Red1Face, Red2Face, Green1Face, Green2Face,
+		Blue1Face, Blue2Face );
+
+free( FaceBase );
+
+free( RedPly );
+free( GreenPly );
+free( BluePly );
+
+free( Red1Face );
+free( Red2Face );
+free( Green1Face );
+free( Green2Face );
+free( Blue1Face );
+free( Blue2Face );
+
+#
+# Create the cross
+#
+Cross = list( box( vector(   1,   1, -13 ),  1,  1, 26 ),
+	      box( vector(   1, -13,   1 ),  1, 26,  1 ),
+	      box( vector( -13,   1,   1 ), 26,  1,  1 ) );
+color( Cross, yellow );
+
+#
+# Create an animation from one corner to the next.
+#
+
+mov_xyz = cbspline( 2,
+		    list( ctlpt( E3,  0,   0,  0 ),
+			  ctlpt( E3,  0,   0,  2 ),
+			  ctlpt( E3,  0,   4,  2 ),
+			  ctlpt( E3,  0,   4,  0 ),
+			  ctlpt( E3,  0,   6,  0 ),
+			  ctlpt( E3,  0,   6,  2 ),
+			  ctlpt( E3,  2,   6,  2 ),
+			  ctlpt( E3,  2,   8,  2 ),
+			  ctlpt( E3,  2,   8,  4 ),
+			  ctlpt( E3,  2,   4,  4 ),
+			  ctlpt( E3,  6,   4,  4 ),
+			  ctlpt( E3,  6,   6,  4 ),
+			  ctlpt( E3,  4,   6,  4 ),
+			  ctlpt( E3,  4,   8,  4 ),
+			  ctlpt( E3,  6,   8,  4 ),
+			  ctlpt( E3,  6,   8,  2 ),
+			  ctlpt( E3,  8,   8,  2 ),
+			  ctlpt( E3,  8,   8,  6 ),
+			  ctlpt( E3,  6,   8,  6 ),
+			  ctlpt( E3,  6,   8,  8 ),
+			  ctlpt( E3,  8,   8,  8 ) ),
+		    list( KV_OPEN ) );
+attrib( Cross, "animation", mov_xyz );
+free( mov_xyz );
+
+view( list( PuzCube, Cross ), 1 );
+
+save( "puz_crnr", list( PuzCube, Cross ) );
+
+free( Cross );
+free( PuzCube );

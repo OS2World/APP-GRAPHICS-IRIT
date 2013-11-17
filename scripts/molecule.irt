@@ -1,0 +1,71 @@
+#
+# Simple molecule - 8 atoms connected as a cube.
+#
+
+t = time( true );
+free( t );
+
+save_res = resolution;
+save_view = view_mat;
+
+view_mat = view_mat * scale( vector( 0.6, 0.6, 0.6 ) ) *
+		      rotx( 20 ) * roty( 45 ) *
+		      trans( vector( -0.3, 0.2, 0.0 ) );
+
+resolution = 16;
+S1 = sphere( vector( 0.0, 0.0, 0.0 ), 0.2 );
+S2 = sphere( vector( 1.0, 0.0, 0.0 ), 0.2 );
+
+resolution = 8;
+C1 = cylin( vector( 0.0, 0.0, 0.0 ), vector( 1.0, 0.0, 0.0 ), 0.05, 3 );
+
+view( list( view_mat, S1, S2, C1 ), true );
+
+B1 = S1 ^ S2 + C1;
+free( S1 );
+free( S2 );
+free( C1 );
+B2 = B1 * trans( vector( 0.0, 1.0, 0.0 ) );
+
+view( list( B1, B2 ), true );
+
+C2 = cylin( vector( 0.0, 0.0, 0.0 ), vector( 0.0, 1.0, 0.0 ), 0.05, 3 );
+C3 = cylin( vector( 1.0, 0.0, 0.0 ), vector( 0.0, 1.0, 0.0 ), 0.05, 3 );
+
+B12 = B1 ^ B2 + ( C2 ^ C3 );
+free( B1 );
+free( B2 );
+free( C2 );
+free( C3 );
+B34 = B12 * trans( vector( 0.0, 0.0, 1.0 ) );
+
+view( list( B12, B34 ), true );
+
+C4 = cylin( vector( 0.0, 0.0, 0.0 ), vector( 0.0, 0.0, 1.0 ), 0.05, 3 );
+C5 = cylin( vector( 0.0, 1.0, 0.0 ), vector( 0.0, 0.0, 1.0 ), 0.05, 3 );
+C6 = cylin( vector( 1.0, 0.0, 0.0 ), vector( 0.0, 0.0, 1.0 ), 0.05, 3 );
+C7 = cylin( vector( 1.0, 1.0, 0.0 ), vector( 0.0, 0.0, 1.0 ), 0.05, 3 );
+
+B1234 = B12 ^ B34 + ( C4 ^ C5 ^ C6 ^ C7 );
+
+free( B12 );
+free( B34 );
+free( C4 );
+free( C5 );
+free( C6 );
+free( C7 );
+
+FINAL = convex( B1234 );
+free( B1234 );
+
+printf("Total Time = %f\\n", list( time( false ) ) );
+
+beep();
+interact( final );
+
+save( "molecule", final );
+
+free( final );
+
+resolution = save_res;
+view_mat = save_view;

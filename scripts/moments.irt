@@ -1,0 +1,54 @@
+#
+# Moments of freeform surfaces
+#
+
+sp = surfPRev( cregion( pcircle( vector( 0, 0, 0 ), 1 ), 0, 2 ) * ry( 90 ) );
+interact( list( axes, sp ) );
+
+# SVolume( Srf, Method, Eval )
+# Srf - surface to use
+# Method - 1 for projection onto XY plane, 2 through the origin.
+# Eval - false for returning integral surface, true for returning volume.
+
+Vol1 = list( svolume( sp, 1, 1 ) * 3 / 4,
+	     svolume( sp, 2, 1 ) * 3 / 4 );
+printf( "Volume1 = %f  %f\\n", Vol1 );
+
+# SMoments( Srf, Moment, Axis1, Axis2, Eval )
+# Srf - surface to use
+# Moment - 1 for first moment, 2 for second moment.
+# Axis1, Axis2 - the two axes of moment computation, 1 for X, 2 for Y, 3 for Z.
+# Eval - false for returning integral surface, true for returning volume.
+
+Mom1 = list( smoments( sp, 1, 1, 1, 1 ),
+	     smoments( sp, 2, 1, 1, 1 ),
+	     smoments( sp, 2, 2, 2, 1 ),
+	     smoments( sp, 2, 3, 3, 1 ) );
+printf( "Moments1 = %f  %f  %f  %f\\n", Mom1 );
+
+#############################################################################
+
+sp = sp * sx( 0.1 ) * sy( 0.1 );
+interact( list( axes, sp ) );
+
+Vol2 = list( svolume( sp, 1, 1 ) * 3 / 4,
+	     svolume( sp, 2, 1 ) * 3 / 4 );
+printf( "Volume2 = %f  %f\\n", Vol2 );
+
+Mom2 = list( smoments( sp, 2, 1, 1, 1 ),
+	     smoments( sp, 2, 2, 2, 1 ),
+	     smoments( sp, 2, 3, 3, 1 ) );
+
+printf( "Moments2 = %f  %f  %f\\n", Mom2 );
+
+#############################################################################
+
+save( "moments", list( Vol1, Mom1, Vol2, Mom2 ) );
+
+#############################################################################
+
+free( Vol1 );
+free( Vol2 );
+free( Mom1 );
+free( Mom2 );
+free( sp );

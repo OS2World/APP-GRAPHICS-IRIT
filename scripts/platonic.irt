@@ -1,0 +1,204 @@
+#
+# Constructs the five Platonic Solids.
+#
+#					Gershon Elber Dec. 1991.
+#
+
+g = (sqrt( 5 ) + 1) / 2; # The golden ratio
+q = g - 1;
+
+#
+# Tetrahedron
+#
+
+v1 = vector(  1,  1,  1 );
+v2 = vector(  1, -1, -1 );
+v3 = vector( -1,  1, -1 );
+v4 = vector( -1, -1,  1 );
+
+pl1 = poly( list( v1, v3, v2 ), false );
+pl2 = poly( list( v1, v4, v3 ), false );
+pl3 = poly( list( v1, v2, v4 ), false );
+pl4 = poly( list( v2, v3, v4 ), false );
+
+tetra = mergepoly( list( pl1, pl2, pl3, pl4 ) );
+
+interact( tetra );
+
+save( "tetrahdr", tetra );
+
+#
+# Cube
+#
+
+v1 = vector( -1, -1, -1 );
+v2 = vector( -1, -1,  1 );
+v3 = vector( -1,  1,  1 );
+v4 = vector( -1,  1, -1 );
+v5 = vector(  1, -1, -1 );
+v6 = vector(  1, -1,  1 );
+v7 = vector(  1,  1,  1 );
+v8 = vector(  1,  1, -1 );
+
+pl1 = poly( list( v4, v3, v2, v1 ), false );
+pl2 = poly( list( v5, v6, v7, v8 ), false );
+pl3 = poly( list( v1, v2, v6, v5 ), false );
+pl4 = poly( list( v2, v3, v7, v6 ), false );
+pl5 = poly( list( v3, v4, v8, v7 ), false );
+pl6 = poly( list( v4, v1, v5, v8 ), false );
+
+cube = mergepoly( list( pl1, pl2, pl3, pl4, pl5, pl6 ) );
+
+interact( cube );
+
+#
+# Octahedron
+#
+
+v1 = vector(  0,  0,  1 );
+v2 = vector(  1,  0,  0 );
+v3 = vector(  0,  1,  0 );
+v4 = vector( -1,  0,  0 );
+v5 = vector(  0, -1,  0 );
+v6 = vector(  0,  0, -1 );
+
+pl1 = poly( list( v1, v3, v2 ), false );
+pl2 = poly( list( v1, v4, v3 ), false );
+pl3 = poly( list( v1, v5, v4 ), false );
+pl4 = poly( list( v1, v2, v5 ), false );
+pl5 = poly( list( v6, v2, v3 ), false );
+pl6 = poly( list( v6, v3, v4 ), false );
+pl7 = poly( list( v6, v4, v5 ), false );
+pl8 = poly( list( v6, v5, v2 ), false );
+
+octa = mergepoly( list( pl1, pl2, pl3, pl4, pl5, pl6, pl7, pl8 ) );
+
+interact( octa );
+
+save( "octahdr", octa );
+
+#
+# Dodecahedron
+#
+
+v1  = vector(  0,  q,  g );
+v2  = vector(  0, -q,  g );
+v3  = vector(  1,  1,  1 );
+v4  = vector(  1, -1,  1 );
+v5  = vector( -1, -1,  1 );
+v6  = vector( -1,  1,  1 );
+v7  = vector( -g,  0,  q );
+v8  = vector(  g,  0,  q );
+v9  = vector(  q,  g,  0 );
+v10 = vector( -q,  g,  0 );
+v11 = vector( -q, -g,  0 );
+v12 = vector(  q, -g,  0 );
+v13 = vector( -g,  0, -q );
+v14 = vector(  g,  0, -q );
+v15 = vector(  1,  1, -1 );
+v16 = vector( -1,  1, -1 );
+v17 = vector( -1, -1, -1 );
+v18 = vector(  1, -1, -1 );
+v19 = vector(  0,  q, -g );
+v20 = vector(  0, -q, -g );
+
+pl1  = poly( list( v2, v1, v3, v8, v4 ), false );
+pl2  = poly( list( v1, v2, v5, v7, v6 ), false );
+#pl3  = poly( list( v1, v3, v9, v10, v6 ), false );
+pl3  = poly( list( v6, v10, v9, v3, v1 ), false );
+pl4  = poly( list( v2, v4, v12, v11, v5 ), false );
+pl5  = poly( list( v4, v8, v14, v18, v12 ), false );
+#pl6  = poly( list( v5, v7, v13, v17, v11 ), false );
+pl6  = poly( list( v11, v17, v13, v7, v5 ), false );
+pl7  = poly( list( v13, v16, v10, v6, v7 ), false );
+pl8  = poly( list( v16, v19, v15, v9, v10 ), false );
+pl9  = poly( list( v3, v9, v15, v14, v8 ), false );
+pl10 = poly( list( v14, v15, v19, v20, v18 ), false );
+pl11 = poly( list( v12, v18, v20, v17, v11 ), false );
+#pl12 = poly( list( v17, v13, v16, v19, v20 ), false );
+pl12 = poly( list( v20, v19, v16, v13, v17 ), false );
+
+dodeca = mergepoly( list( pl1, pl2, pl3, pl4, pl5, pl6,
+			  pl7, pl8, pl9, pl10, pl11, pl12 ) );
+
+interact( dodeca );
+
+save( "dodechdr", dodeca );
+
+#
+# Icosahedron (Note we construct only its upper half and reflect it).
+#
+
+v1  = vector(  1,  0,  g );
+v2  = vector( -1,  0,  g );
+v3  = vector(  0,  g,  1 );
+v4  = vector(  0, -g,  1 );
+v5  = vector(  g,  1,  0 );
+v6  = vector( -g,  1,  0 );
+v7  = vector( -g, -1,  0 );
+v8  = vector(  g, -1,  0 );
+v9  = vector(  0,  g, -1 );
+
+pl1  = poly( list( v2, v3, v1 ), false );
+pl2  = poly( list( v1, v4, v2 ), false );
+pl3  = poly( list( v2, v6, v3 ), false );
+pl4  = poly( list( v3, v5, v1 ), false );
+pl5  = poly( list( v3, v9, v5 ), false );
+pl6  = poly( list( v3, v6, v9 ), false );
+pl7  = poly( list( v2, v7, v6 ), false );
+pl8  = poly( list( v2, v4, v7 ), false );
+pl9  = poly( list( v1, v8, v4 ), false );
+pl10 = poly( list( v1, v5, v8 ), false );
+
+icosa1 = mergepoly( list( pl1, pl2, pl3, pl4, pl5, pl6, pl7, pl8, pl9, pl10 ) );
+icosa2 = icosa1 * rotx( 180 );
+icosa = mergepoly( list( icosa1, icosa2 ) );
+free( icosa1 );
+free( icosa2 );
+
+interact( icosa );
+
+save( "icosahdr", icosa );
+
+free( g );
+free( q );
+
+free( v1 );
+free( v2 );
+free( v3 );
+free( v4 );
+free( v5 );
+free( v6 );
+free( v7 );
+free( v8 );
+free( v9 );
+free( v10 );
+free( v11 );
+free( v12 );
+free( v13 );
+free( v14 );
+free( v15 );
+free( v16 );
+free( v17 );
+free( v18 );
+free( v19 );
+free( v20 );
+
+free( pl1 );
+free( pl2 );
+free( pl3 );
+free( pl4 );
+free( pl5 );
+free( pl6 );
+free( pl7 );
+free( pl8 );
+free( pl9 );
+free( pl10 );
+free( pl11 );
+free( pl12 );
+
+free( tetra );
+free( cube );
+free( octa );
+free( dodeca );
+free( icosa );

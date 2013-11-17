@@ -1,0 +1,266 @@
+#
+# Some examples of using reflection lines.
+#
+#			Gershon Elber, October 1999
+#
+
+save_res = resolution;
+save_mat = view_mat;
+
+view_mat = rx( 2 ) * ry( 2 ) * sc( 0.5 );
+viewobj( view_mat );
+
+view_mat = save_mat;
+
+#############################################################################
+
+S = ruledSrf( ctlpt( E3, -1, -1, 0 ) + ctlpt( E3,  1, -1, 0 ),
+	      ctlpt( E3, -1,  1, 0 ) + ctlpt( E3,  1,  1, 0 ) ) * rx( 90 );
+S = sraise( sraise( s, row, 3 ), col, 3 );
+S = -sEditPt( S, ctlpt( E3, 0, 1, 0 ), 1, 1 );
+color( S, magenta );
+
+ReflectLns = nil();
+for ( x = -1.6, 0.8, 1.6,
+    snoc( ctlpt( E3, x, 2, -10 ) + ctlpt( E3, x, 2, 10 ), ReflectLns ) );
+color( ReflectLns, cyan );
+adwidth( ReflectLns, 2 );
+
+resolution = 30;
+hl = RflctLn( S,
+	      vector( 0, 0, 0 ),  # highlight lines - view is zero vector.
+	      list( vector( 0, 0, 1 ),
+		    list( point( -1.6, 2, 0 ),
+			  point( -0.8, 2, 0 ),
+			  point(  0.0, 2, 0 ),
+			  point(  0.8, 2, 0 ),
+			  point(  1.6, 2, 0 ) ) ),
+	      true );
+color( hl, green );
+adwidth( hl, 3 );
+
+All = list( axes * sc( 1.1 ), ReflectLns, hl, S );
+interact( All );
+
+resolution = 30;
+rf = RflctLn( S,
+	      vector( 0, 1, 0 ),
+	      list( vector( 0, 0, 1 ),
+		    list( point( -1.6, 2, 0 ),
+			  point( -0.8, 2, 0 ),
+			  point(  0.0, 2, 0 ),
+			  point(  0.8, 2, 0 ),
+			  point(  1.6, 2, 0 ) ) ),
+	      true );
+color( rf, green );
+adwidth( rf, 3 );
+
+All = list( axes * sc( 1.1 ), ReflectLns, rf, S );
+interact( All );
+
+attrib( S, "RflctLines",
+	list( vector( 0, 0, 1 ),
+	      list( point( -1.6, 2, 0 ),
+		    point( -0.8, 2, 0 ),
+		    point(  0.0, 2, 0 ),
+		    point(  0.8, 2, 0 ),
+		    point(  1.6, 2, 0 ) ) ) );
+All = list( ReflectLns, S );
+interact( All );
+save( "rflct1ln", All );
+
+#############################################################################
+
+S = -sbspline( 3, 3, 
+        list( list( ctlpt( E3, 0.013501, 0.46333, -1.01136 ),
+                    ctlpt( E3, 0.410664, -0.462427, -0.939545 ),
+                    ctlpt( E3, 0.699477, 0.071974, -0.381915 ) ),
+              list( ctlpt( E3, -0.201925, 1.15706, -0.345263 ),
+                    ctlpt( E3, 0.210717, 0.022708, -0.34285 ),
+                    ctlpt( E3, 0.49953, 0.557109, 0.21478 ) ),
+              list( ctlpt( E3, -0.293521, 0.182036, -0.234382 ),
+                    ctlpt( E3, 0.103642, -0.743721, -0.162567 ),
+                    ctlpt( E3, 0.392455, -0.20932, 0.395063 ) ),
+              list( ctlpt( E3, -0.508947, 0.875765, 0.431715 ),
+                    ctlpt( E3, -0.096305, -0.258586, 0.434128 ),
+                    ctlpt( E3, 0.192508, 0.275815, 0.991758 ) ),
+              list( ctlpt( E3, -0.600543, -0.099258, 0.542596 ),
+                    ctlpt( E3, -0.20338, -1.02502, 0.614411 ),
+                    ctlpt( E3, 0.085433, -0.490614, 1.17204 ) ) ),
+        list( list( kv_open ),
+              list( kv_open ) ) );
+color( S, magenta );
+
+ReflectLns = nil();
+for ( x = -3.0, 1.5, 3.0,
+    snoc( ctlpt( E3, x, 2, -10 ) + ctlpt( E3, x, 2, 10 ), ReflectLns ) );
+color( ReflectLns, cyan );
+adwidth( ReflectLns, 2 );
+
+resolution = 50;
+rf = RflctLn( S,
+	      vector( 0, 0, 1 ),
+	      list( vector( 0, 0, 1 ),
+		    list( point( -3.0, 2, 0 ),
+			  point( -1.5, 2, 0 ),
+			  point(  0.0, 2, 0 ),
+			  point(  1.5, 2, 0 ),
+			  point(  3.0, 2, 0 ) ) ),
+	      true );
+color( rf, green );
+adwidth( rf, 3 );
+
+All = list( axes * sc( 1.1 ), ReflectLns, rf, S );
+interact( All );
+
+attrib( S, "RflctLines",
+	list( vector( 0, 0, 1 ),
+	      list( point( -3.0, 2, 0 ),
+		    point( -1.5, 2, 0 ),
+		    point(  0.0, 2, 0 ),
+		    point(  1.5, 2, 0 ),
+		    point(  3.0, 2, 0 ) ) ) );
+All = list( ReflectLns, S );
+interact( All );
+save( "rflct2ln", All );
+
+#############################################################################
+
+S = surfPRev( cregion( pcircle( vector( 0, 0, 0 ), 1 ), 1, 3 ) * ry( 90 ) );
+color( S, magenta );
+
+ReflectLns = nil();
+for ( x = -3.0, 1.5, 3.0,
+    snoc( ctlpt( E3, x, 2, -10 ) + ctlpt( E3, x, 2, 10 ), ReflectLns ) );
+color( ReflectLns, cyan );
+adwidth( ReflectLns, 2 );
+
+resolution = 2;
+rf = RflctLn( S,
+	      vector( 0, 0, 1 ),
+	      list( vector( 0, 0, 1 ),
+		    list( point( -3.0, 2, 0 ),
+			  point( -1.5, 2, 0 ),
+			  point(  0.0, 2, 0 ),
+			  point(  1.5, 2, 0 ),
+			  point(  3.0, 2, 0 ) ) ),
+	      true );
+color( rf, green );
+adwidth( rf, 3 );
+
+All = list( axes * sc( 1.1 ), ReflectLns, rf, S );
+interact( All );
+
+#############################################################################
+
+S = surfPRev( cregion( pcircle( vector( 0, 0, 0 ), 1 ), 1, 3 ) * ry( 90 ) );
+color( S, magenta );
+
+ReflectLns = nil();
+for ( x = -3.0, 1.5, 3.0,
+    snoc( ctlpt( E3, x, 2, -10 ) + ctlpt( E3, x, 2, 10 ), ReflectLns ) );
+ReflectLns = ReflectLns * ry( 45 );
+color( ReflectLns, cyan );
+adwidth( ReflectLns, 2 );
+
+resolution = 5;
+rf = RflctLn( S,
+	      vector( 0, 0, 1 ),
+	      list( vector( 1, 0, 1 ),
+		    list( point( -3.0, 2, 0 ),
+			  point( -1.5, 2, 0 ),
+			  point(  0.0, 2, 0 ),
+			  point(  1.5, 2, 0 ),
+			  point(  3.0, 2, 0 ) ) ),
+	      true );
+color( rf, green );
+adwidth( rf, 3 );
+
+All = list( axes * sc( 1.1 ), ReflectLns, rf, S );
+interact( All );
+save( "rflct3ln", All );
+
+#############################################################################
+#
+# Doing reflection circles!
+#
+#############################################################################
+
+S = ruledSrf( ctlpt( E3, -1, -1, 0 ) + ctlpt( E3,  1, -1, 0 ),
+	      ctlpt( E3, -1,  1, 0 ) + ctlpt( E3,  1,  1, 0 ) ) * rx( 90 );
+S = sraise( sraise( s, row, 3 ), col, 3 );
+S = -sEditPt( S, ctlpt( E3, 0, 1, 0 ), 1, 1 );
+color( S, magenta );
+
+RefSprs = list( sphereSrf( 1 ) * sc( 0.1 ),
+	        sphereSrf( 1 ) * sc( 0.3 ),
+	        sphereSrf( 1 ) * sc( 0.5 ),
+	        sphereSrf( 1 ) * sc( 0.7 ) ) * ty( 2 );
+color( RefSprs, green );
+
+resolution = 10;
+rf = RflctLn( S,
+	      vector( 1, 1, 0 ),
+	      list( point( 0, 2, 0 ),
+		    list( 5, 25, 45, 65, 85 ) ),
+	      true );
+color( rf, green );
+adwidth( rf, 3 );
+
+All = list( axes * sc( 1.1 ), rf, S, RefSprs );
+interact( All );
+save( "rflct4ln", All );
+
+#############################################################################
+
+S = -sbspline( 3, 3, 
+        list( list( ctlpt( E3, 0.013501, 0.46333, -1.01136 ),
+                    ctlpt( E3, 0.410664, -0.462427, -0.939545 ),
+                    ctlpt( E3, 0.699477, 0.071974, -0.381915 ) ),
+              list( ctlpt( E3, -0.201925, 1.15706, -0.345263 ),
+                    ctlpt( E3, 0.210717, 0.022708, -0.34285 ),
+                    ctlpt( E3, 0.49953, 0.557109, 0.21478 ) ),
+              list( ctlpt( E3, -0.293521, 0.182036, -0.234382 ),
+                    ctlpt( E3, 0.103642, -0.743721, -0.162567 ),
+                    ctlpt( E3, 0.392455, -0.20932, 0.395063 ) ),
+              list( ctlpt( E3, -0.508947, 0.875765, 0.431715 ),
+                    ctlpt( E3, -0.096305, -0.258586, 0.434128 ),
+                    ctlpt( E3, 0.192508, 0.275815, 0.991758 ) ),
+              list( ctlpt( E3, -0.600543, -0.099258, 0.542596 ),
+                    ctlpt( E3, -0.20338, -1.02502, 0.614411 ),
+                    ctlpt( E3, 0.085433, -0.490614, 1.17204 ) ) ),
+        list( list( kv_open ),
+              list( kv_open ) ) );
+color( S, magenta );
+
+RefSprs = list( sphereSrf( 1 ) * sc( 0.1 ),
+	        sphereSrf( 1 ) * sc( 0.3 ),
+	        sphereSrf( 1 ) * sc( 0.5 ),
+	        sphereSrf( 1 ) * sc( 0.7 ) ) * ty( 2 );
+color( RefSprs, green );
+
+resolution = 10;
+rf = RflctLn( S,
+	      vector( 1, 1, 0 ),
+	      list( point( 0, 2, 0 ),
+		    list( 5, 25, 45, 65, 85 ) ),
+	      true );
+color( rf, green );
+adwidth( rf, 3 );
+
+All = list( axes * sc( 1.1 ), rf, S, RefSprs );
+interact( All );
+save( "rflct5ln", All );
+
+#############################################################################
+
+resolution = save_res;
+
+free( RefSprs );
+free( ReflectLns );
+free( All );
+free( rf );
+free( hl );
+free( S );
+free( x );
+

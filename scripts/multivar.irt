@@ -1,0 +1,421 @@
+#
+# Some routines to test the multi variate library.
+#
+# We mainly compare against the similar tools for curves/surfaces/trivariates.
+#
+#			Gershon Elber, July 1997.
+#
+
+PrintTest = procedure( Title, Res1, Res2 ):
+    printf( "%9s test - %d\\n", list( Title, Res1 == Res2 ) ):
+    if ( Res1 != Res2, pause() );
+
+EchoSrc = iritState( "EchoSource", false );
+DLevel = iritState( "DumpLevel", 256 + 1 );
+CmpEps = iritState( "CmpObjEps", 1e-10 );
+
+c = cbezier( list( ctlpt( E3, -1,  0.5, 2 ),
+		   ctlpt( E3,  0,  0,   2 ),
+		   ctlpt( E3,  1, -1,   2 ),
+		   ctlpt( E3,  1,  1,   2 ) ) );
+attrib( c, "width", 0.02 );
+attrib( c, "color", 14 );
+
+mc = mbezier( list( 4 ),
+	      list( ctlpt( E3, -1,  0.5, 2 ),
+		    ctlpt( E3,  0,  0,   2 ),
+		    ctlpt( E3,  1, -1,   2 ),
+		    ctlpt( E3,  1,  1,   2 ) ) );
+
+mc2 = mpower( list( 4 ),
+	      list( ctlpt( E3, -1,  0.5, 2 ),
+		    ctlpt( E3,  3, -1.5, 0 ),
+		    ctlpt( E3,  0, -1.5, 0 ),
+		    ctlpt( E3, -1,  3.5, 0 ) ) );
+
+s = sbezier(
+	list( list( ctlpt( E3, 0, 0, 0 ),
+	            ctlpt( E3, 0.25, 1, 1 ),
+	            ctlpt( E3, 0.5, 0.25, 2 ) ),
+	      list( ctlpt( E3, 0.5, -1, 3 ),
+	            ctlpt( E3, 0.75, 0.25, 4 ),
+	            ctlpt( E3, 1, -0.5, 5 ) ),
+	      list( ctlpt( E3, 1, 0, 6 ),
+	            ctlpt( E3, 1.25, 1, 7 ),
+	            ctlpt( E3, 1.3, 0.25, 8 ) ) ) );
+attrib( s, "color", 7);
+attrib( s, "rgb", "244,164,96");
+
+s3 = sbspline( 3, 3,
+	list( list( ctlpt( E3, 0, 0, 0 ),
+	            ctlpt( E3, 0.25, 1, 1 ),
+	            ctlpt( E3, 0.5, 0.25, 2 ) ),
+	      list( ctlpt( E3, 0.5, -1, 3 ),
+	            ctlpt( E3, 0.75, 0.25, 4 ),
+	            ctlpt( E3, 1, -0.5, 5 ) ),
+	      list( ctlpt( E3, 1, 0, 6 ),
+	            ctlpt( E3, 1.25, 1, 7 ),
+	            ctlpt( E3, 1.3, 0.25, 8 ) ) ),
+	list( list( kv_periodic ),
+	      list( kv_periodic ) ) );
+
+ms = mbezier( list( 3, 3 ),
+	      list( ctlpt( E3, 0, 0, 0 ),
+	            ctlpt( E3, 0.25, 1, 1 ),
+	            ctlpt( E3, 0.5, 0.25, 2 ),
+	            ctlpt( E3, 0.5, -1, 3 ),
+	            ctlpt( E3, 0.75, 0.25, 4 ),
+	            ctlpt( E3, 1, -0.5, 5 ),
+	            ctlpt( E3, 1, 0, 6 ),
+	            ctlpt( E3, 1.25, 1, 7 ),
+	            ctlpt( E3, 1.3, 0.25, 8 ) ) );
+
+ms2 = mbspline( list( 3, 3 ),
+	        list( 3, 3 ),
+	        list( ctlpt( E3, 0, 0, 0 ),
+	              ctlpt( E3, 0.25, 1, 1 ),
+	              ctlpt( E3, 0.5, 0.25, 2 ),
+	              ctlpt( E3, 0.5, -1, 3 ),
+	              ctlpt( E3, 0.75, 0.25, 4 ),
+	              ctlpt( E3, 1, -0.5, 5 ),
+	              ctlpt( E3, 1, 0, 6 ),
+	              ctlpt( E3, 1.25, 1, 7 ),
+	              ctlpt( E3, 1.3, 0.25, 8 ) ),
+	        list( list( kv_open ),
+		      list( kv_open ) ) );
+
+ms3 = mbspline( list( 3, 3 ),
+	        list( 3, 3 ),
+	        list( ctlpt( E3, 0, 0, 0 ),
+	              ctlpt( E3, 0.25, 1, 1 ),
+	              ctlpt( E3, 0.5, 0.25, 2 ),
+	              ctlpt( E3, 0.5, -1, 3 ),
+	              ctlpt( E3, 0.75, 0.25, 4 ),
+	              ctlpt( E3, 1, -0.5, 5 ),
+	              ctlpt( E3, 1, 0, 6 ),
+	              ctlpt( E3, 1.25, 1, 7 ),
+	              ctlpt( E3, 1.3, 0.25, 8 ) ),
+	        list( list( kv_periodic ),
+		      list( kv_periodic ) ) );
+
+t = tbezier(
+	list( list( list( ctlpt( E3, -0.69, 0.31, -0.6 ),
+	                  ctlpt( E3, -0.68, 0.35, -0.39 ),
+	                  ctlpt( E3, -0.67, 0.31, -0.18 ) ),
+	            list( ctlpt( E3, -0.66, 0.63, -0.65 ),
+	                  ctlpt( E3, -0.75, 0.67, -0.23 ),
+	                  ctlpt( E3, -0.64, 0.63, -0.11 ) ),
+	            list( ctlpt( E3, -0.63, 0.84, -0.65 ),
+	                  ctlpt( E3, -0.62, 0.96, -0.36 ),
+	                  ctlpt( E3, -0.61, 0.88, -0.17 ) ) ),
+	      list( list( ctlpt( E3, -0.39, 0.31, -0.65 ),
+	                  ctlpt( E3, -0.37, 0.32, -0.43 ),
+	                  ctlpt( E3, -0.35, 0.33, -0.11 ) ),
+	            list( ctlpt( E3, -0.33, 0.62, -0.6 ),
+	                  ctlpt( E3, -0.31, 0.64, -0.28 ),
+	                  ctlpt( E3, -0.38, 0.66, -0.06 ) ),
+	            list( ctlpt( E3, -0.36, 0.93, -0.81 ),
+	                  ctlpt( E3, -0.34, 0.85, -0.43 ),
+	                  ctlpt( E3, -0.32, 0.97, -0.15 ) ) ),
+	      list( list( ctlpt( E3, -0.02, 0.21, -0.56 ),
+	                  ctlpt( E3, -0.04, 0.37, -0.27 ),
+	                  ctlpt( E3, -0.06, 0.22, -0.18 ) ),
+	            list( ctlpt( E3, -0.08, 0.61, -0.76 ),
+	                  ctlpt( E3, -0.01, 0.62, -0.25 ),
+	                  ctlpt( E3, -0.03, 0.63, -0.14 ) ),
+	            list( ctlpt( E3, -0.05, 0.99, -0.73 ),
+	                  ctlpt( E3, -0.07, 0.98, -0.43 ),
+	                  ctlpt( E3, -0.09, 0.97, -0.13 ) ) ) ) );
+attrib( t, "color", 4);
+
+# c = crefine( c, false, list( 0.1, 0.2, 0.3, 0.4, 0.4, 0.4, 0.4, 0.5, 0.7 ) );
+# s = sraise( srefine( s, row, false, list( 0.5, 0.6, 0.65, 0.65, 0.7 ) ),
+#    col, 4 );
+# t = trefine( t, depth, false, list( 0.15, 0.25, 0.5, 0.5, 0.75 ) );
+
+# c = crefine( c, false, list( 0.1, 0.2, 0.3, 0.4, 0.4, 0.4, 0.4, 0.5, 0.7 ) );
+# s = sraise( srefine( s, row, false, list( 0.5, 0.6, 0.65, 0.65, 0.7 ) ),
+#    col, 5 );
+# s = sraise( s, row, 6 );
+# t = trefine( t, depth, false, list( 0.15, 0.25, 0.5, 0.5, 0.75 ) );
+
+PrintTest( "COERCE", coerce( mc,  curve_type ), c );
+PrintTest( "COERCE", coerce( mc2, bezier_type ), mc );
+PrintTest( "COERCE", coerce( mc,  power_type ), mc2 );
+PrintTest( "COERCE", coerce( ms,  surface_type ), s );
+PrintTest( "COERCE", coerce( ms2, surface_type ), coerce( s, bspline_type ) );
+PrintTest( "COERCE", coerce( ms2, bezier_type ), ms );
+PrintTest( "COERCE", coerce( ms,  bspline_type ), ms2 );
+PrintTest( "COERCE", coerce( ms3, surface_type ), s3 );
+
+PrintTest( "COERCE",
+	   coerce( mc = coerce( c, multivar_type ), curve_type ), c );
+PrintTest( "COERCE",
+	   coerce( ms = coerce( s, multivar_type ), surface_type ), s );
+PrintTest( "COERCE",
+	   coerce( mt = coerce( t, multivar_type ), trivar_type ), t );
+
+mv = mvexplicit( 2, "A^2 + B^2" );
+Printtest( "COERCE", mv, coerce( coerce( mv, bezier_type ), power_type ) );
+
+mv = mvexplicit( 4, "A^2 * B^2 + 5 * A * B * C + C^3 - 5 * D * C^3" );
+Printtest( "COERCE", mv, coerce( coerce( mv, bezier_type ), power_type ) );
+
+mv = mvexplicit( 2, "A * 5 * B - B^3 * 3 * A^3" );
+Printtest( "COERCE", mv, coerce( coerce( mv, bezier_type ), power_type ) );
+
+mv = mvexplicit( 1, "A^3 + 3 * A^2 +  15 * A - 7.5" );
+Printtest( "COERCE", mv, coerce( coerce( mv, bezier_type ), power_type ) );
+
+s1 = s * sx( 1 ) * sy( 2 ) * sz( 0.3 ) * ry( 55 );
+mv1 = coerce( tfromsrfs( list( s1,
+			       s1 * tx( 0.25 ) * ty( 0.5 ) * tz( 0.8 ),
+			       s1 * tz( 2 ) ),
+			 3, kv_periodic ),
+	      multivar_type );
+Printtest( "COERCE", meval( COERCE( mv1, kv_float ), list( 0, 0, 0 ) ),
+		     meval( mv1, list( 0, 0, 0 ) ) );
+Printtest( "COERCE", meval( COERCE( mv1, kv_float ), list( 1, 1, 3 ) ),
+		     meval( mv1, list( 1, 1, 3 ) ) );
+
+mv1 = coerce( tfromsrfs( list( s1,
+			       s1 * tx( 0.25 ) * ty( 0.5 ) * tz( 0.8 ),
+			       s1 * tz( 2 ) ),
+			 3, kv_float ),
+	      multivar_type );
+Printtest( "COERCE", meval( COERCE( mv1, kv_open ), list( 0, 0, 0 ) ),
+		     meval( mv1, list( 0, 0, 0 ) ) );
+Printtest( "COERCE", meval( COERCE( mv1, kv_open ), list( 1, 1, 1 ) ),
+		     meval( mv1, list( 1, 1, 1 ) ) );
+
+PrintTest( "PDOMAIN", pdomain( mc ), pdomain( c ) );
+PrintTest( "PDOMAIN", pdomain( ms ), pdomain( s ) );
+PrintTest( "PDOMAIN", pdomain( mt ), pdomain( t ) );
+
+PrintTest( "MEVAL", meval( mc, list( 0.3 ) ), ceval( c, 0.3 ) );
+PrintTest( "MEVAL", meval( mc, list( 0.65 ) ), ceval( c, 0.65 ) );
+
+PrintTest( "MEVAL", meval( ms, list( 0.3, 0.7 ) ), seval( s, 0.3, 0.7 ) );
+PrintTest( "MEVAL", meval( ms, list( 0.65, 0.21 ) ), seval( s, 0.65, 0.21 ) );
+PrintTest( "MEVAL", meval( ms3, list( 0.65, 0.21 ) ), seval( s3, 0.65, 0.21 ) );
+PrintTest( "MEVAL", meval( mt, list( 0.123, 0.456, 0.789 ) ),
+                    teval( t, 0.123, 0.456, 0.789 ) );
+PrintTest( "MEVAL", meval( mt, list( 0.321, 0.987, 0.654 ) ),
+                    teval( t, 0.321, 0.987, 0.654 ) );
+
+PrintTest( "MFromMv", csurface( s, col, 0.22 ),
+                      coerce( mfrommv( ms, 0, 0.22 ), curve_type ) );
+PrintTest( "MFromMv", csurface( s, row, 0.672 ),
+		      coerce( mfrommv( ms, 1, 0.672 ), curve_type ) );
+PrintTest( "MFromMv", csurface( s3, row, 0.872 ),
+		      coerce( mfrommv( ms3, 1, 0.872 ), curve_type ) );
+
+PrintTest( "MFromMv", strivar( t, col, 0.16 ),
+		      coerce( mfrommv( mt, 0, 0.16 ), surface_type ) );
+PrintTest( "MFromMv", strivar( t, row, 0.96 ),
+		      coerce( mfrommv( mt, 1, 0.96 ), surface_type ) );
+PrintTest( "MFromMv", strivar( t, depth, 0.66 ),
+		      coerce( mfrommv( mt, 2, 0.66 ), surface_type ) );
+
+PrintTest( "MFromMesh", cmesh( s, row, 2 ),
+			coerce( mfrommesh( ms, 1, 2 ), curve_type ) );
+PrintTest( "MFromMesh", cmesh( s, col, 0 ),
+			coerce( mfrommesh( ms, 0, 0 ), curve_type ) );
+PrintTest( "MFromMesh", cmesh( s3, col, 0 ),
+			coerce( mfrommesh( ms3, 0, 0 ), curve_type ) );
+
+PrintTest( "MFromMesh", smesh( t, col, 1 ),
+			coerce( mfrommesh( mt, 0, 1 ), surface_type ) );
+PrintTest( "MFromMesh", smesh( t, row, 2 ),
+			coerce( mfrommesh( mt, 1, 2 ), surface_type ) );
+PrintTest( "MFromMesh", smesh( t, depth, 0 ),
+			coerce( mfrommesh( mt, 2, 0 ), surface_type ) );
+
+
+PrintTest( "MeshSize", meshsize( c, 0 ), meshsize( mc, 0 ) );
+PrintTest( "MeshSize", meshsize( s, col ), meshsize( ms, 0 ) );
+PrintTest( "MeshSize", meshsize( s, row ), meshsize( ms, 1 ) );
+PrintTest( "MeshSize", meshsize( s3, row ), meshsize( ms3, 1 ) );
+PrintTest( "MeshSize", meshsize( t, col ), meshsize( mt, 0 ) );
+PrintTest( "MeshSize", meshsize( t, row ), meshsize( mt, 1 ) );
+PrintTest( "MeshSize", meshsize( t, depth ), meshsize( mt, 2 ) );
+
+PrintTest( "MREFINE", crefine( c, false, list( 0.15, 0.25, 0.65, 0.85 ) ),
+    coerce( mrefine( mc, 0, false, list( 0.15, 0.25, 0.65, 0.85 ) ), curve_type ) );
+
+PrintTest( "MREFINE", srefine( s, col, false, list( 0.5, 0.6, 0.7 ) ),
+    coerce( mrefine( ms, 0, false, list( 0.5, 0.6, 0.7 ) ), surface_type ) );
+PrintTest( "MREFINE", srefine( s, row, false, list( 0.15, 0.25, 0.75 ) ),
+   coerce( mrefine( ms, 1, false, list( 0.15, 0.25, 0.75 ) ), surface_type ) );
+PrintTest( "MREFINE", srefine( coerce( s3, kv_float ), row, false, list( 0.15, 0.25, 0.75 ) ),
+   coerce( mrefine( ms3, 1, false, list( 0.15, 0.25, 0.75 ) ), surface_type ) );
+
+PrintTest( "MREFINE", trefine( t, col, false, list( 0.15, 0.25, 0.75 ) ),
+    coerce( mrefine( mt, 0, false, list( 0.15, 0.25, 0.75 ) ), trivar_type ) );
+PrintTest( "MREFINE", trefine( t, row, false, list( 0.15, 0.25, 0.75 ) ),
+    coerce( mrefine( mt, 1, false, list( 0.15, 0.25, 0.75 ) ), trivar_type ) );
+PrintTest( "MREFINE", trefine( t, depth, false, list( 0.15, 0.25, 0.75 ) ),
+    coerce( mrefine( mt, 2, false, list( 0.15, 0.25, 0.75 ) ), trivar_type ) );
+ 
+PrintTest( "MDERIVE", cderive( c ), coerce( mderive( mc, 0 ), curve_type ) );
+ 
+PrintTest( "MDERIVE", sderive( s, col ),
+		      coerce( mderive( ms, 0 ), surface_type ) );
+PrintTest( "MDERIVE", sderive( s, row ),
+		      coerce( mderive( ms, 1 ), surface_type ) );
+PrintTest( "MDERIVE", sderive( s3, row ),
+		      coerce( mderive( ms3, 1 ), surface_type ) );
+ 
+PrintTest( "MDERIVE", tderive( t, col ),
+		      coerce( mderive( mt, 0 ), trivar_type ) );
+PrintTest( "MDERIVE", tderive( t, row ),
+		      coerce( mderive( mt, 1 ), trivar_type ) );
+PrintTest( "MDERIVE", tderive( t, depth ),
+		      coerce( mderive( mt, 2 ), trivar_type ) );
+
+PrintTest( "MDIVIDE", nth( cdivide( c, 0.66 ), 1 ),
+		      coerce( nth( mdivide( mc, 0, 0.66 ), 1 ), curve_type ) );
+PrintTest( "MDIVIDE", nth( cdivide( c, 0.66 ), 2 ),
+		      coerce( nth( mdivide( mc, 0, 0.66 ), 2 ), curve_type ) );
+
+PrintTest( "MDIVIDE", nth( cdivide( c, 0.4 ), 1 ),
+		      coerce( nth( mdivide( mc, 0, 0.4 ), 1 ), curve_type ) );
+PrintTest( "MDIVIDE", nth( cdivide( c, 0.4 ), 2 ),
+		      coerce( nth( mdivide( mc, 0, 0.4 ), 2 ), curve_type ) );
+
+PrintTest( "MDIVIDE", nth( sdivide( s, col, 0.35 ), 1 ),
+		    coerce( nth( mdivide( ms, 0, 0.35 ), 1 ), surface_type ) );
+PrintTest( "MDIVIDE", nth( sdivide( s, col, 0.35 ), 2 ),
+		    coerce( nth( mdivide( ms, 0, 0.35 ), 2 ), surface_type ) );
+PrintTest( "MDIVIDE", nth( sdivide( s3, col, 0.35 ), 2 ),
+		    coerce( nth( mdivide( ms3, 0, 0.35 ), 2 ), surface_type ) );
+
+PrintTest( "MDIVIDE", nth( sdivide( s, row, 0.65 ), 1 ),
+		    coerce( nth( mdivide( ms, 1, 0.65 ), 1 ), surface_type ) );
+PrintTest( "MDIVIDE", nth( sdivide( s3, row, 0.65 ), 1 ),
+		    coerce( nth( mdivide( ms3, 1, 0.65 ), 1 ), surface_type ) );
+PrintTest( "MDIVIDE", nth( sdivide( s, row, 0.65 ), 2 ),
+		    coerce( nth( mdivide( ms, 1, 0.65 ), 2 ), surface_type ) );
+PrintTest( "MDIVIDE", nth( sdivide( s3, row, 0.65 ), 2 ),
+		    coerce( nth( mdivide( ms3, 1, 0.65 ), 2 ), surface_type ) );
+
+PrintTest( "MDIVIDE", nth( tdivide( t, col, 0.5 ), 1 ),
+		      coerce( nth( mdivide( mt, 0, 0.5 ), 1 ), trivar_type ) );
+PrintTest( "MDIVIDE", nth( tdivide( t, col, 0.5 ), 2 ),
+		      coerce( nth( mdivide( mt, 0, 0.5 ), 2 ), trivar_type ) );
+
+PrintTest( "MDIVIDE", nth( tdivide( t, row, 0.5 ), 1 ),
+		      coerce( nth( mdivide( mt, 1, 0.5 ), 1 ), trivar_type ) );
+PrintTest( "MDIVIDE", nth( tdivide( t, row, 0.5 ), 2 ),
+		      coerce( nth( mdivide( mt, 1, 0.5 ), 2 ), trivar_type ) );
+
+PrintTest( "MDIVIDE", nth( tdivide( t, depth, 0.5 ), 1 ),
+		      coerce( nth( mdivide( mt, 2, 0.5 ), 1 ), trivar_type ) );
+PrintTest( "MDIVIDE", nth( tdivide( t, depth, 0.5 ), 2 ),
+		      coerce( nth( mdivide( mt, 2, 0.5 ), 2 ), trivar_type ) );
+
+PrintTest( "MREGION", cregion( c, 0.3, 0.66 ),
+		      coerce( mregion( mc, 0, 0.3, 0.66 ), curve_type ) );
+
+PrintTest( "MREGION", sregion( s, col, 0.3, 0.66 ),
+		      coerce( mregion( ms, 0, 0.3, 0.66 ), surface_type ) );
+PrintTest( "MREGION", sregion( s, row, 0.44, 0.55 ),
+		      coerce( mregion( ms, 1, 0.44, 0.55 ), surface_type ) );
+PrintTest( "MREGION", sregion( coerce( ms2, surface_type ), col, 0.3, 0.66 ),
+		      coerce( mregion( ms2, 0, 0.3, 0.66 ), surface_type ) );
+PrintTest( "MREGION", sregion( coerce( ms2, surface_type ), row, 0.44, 0.55 ),
+		      coerce( mregion( ms2, 1, 0.44, 0.55 ), surface_type ) );
+PrintTest( "MREGION", sregion( coerce( ms3, surface_type ), row, 0.44, 0.55 ),
+		      coerce( mregion( ms3, 1, 0.44, 0.55 ), surface_type ) );
+PrintTest( "MREGION", tregion( t, col, 0.15, 0.27 ),
+		      coerce( mregion( mt, 0, 0.15, 0.27 ), trivar_type ) );
+PrintTest( "MREGION", tregion( t, row, 0.5, 0.7 ),
+		      coerce( mregion( mt, 1, 0.5, 0.7 ), trivar_type ) );
+PrintTest( "MREGION", tregion( t, depth, 0.65, 0.9 ),
+		      coerce( mregion( mt, 2, 0.65, 0.9 ), trivar_type ) );
+
+PrintTest( "MPROMOTE",
+       coerce( mfrommv( mpromote( mc, list( 1 ) ), 1, 0.5 ), curve_type ), c );
+PrintTest( "MPROMOTE",
+       coerce( mfrommesh( mpromote( mc, list( 0 ) ), 0, 0 ), curve_type ), c );
+PrintTest( "MPROMOTE",
+    coerce( mfrommv( mfrommesh( mpromote( mc, list( 3, 1 ) ), 0, 0 ), 1, 0.5 ),
+	    curve_type ), c );
+
+PrintTest( "MPROMOTE",
+    coerce( mfrommv( mpromote( ms, list( 0 ) ), 0, 0.5 ), surface_type ), s );
+PrintTest( "MPROMOTE",
+    coerce( mfrommesh( mpromote( ms, list( 2 ) ), 2, 0 ), surface_type ), s );
+PrintTest( "MPROMOTE",
+    coerce( mfrommv( mfrommv( mpromote( ms, list( 4, 1 ) ), 3, 0.5 ), 0, 0.5 ),
+	    surface_type ), s );
+
+PrintTest( "MPROMOTE",
+    coerce( mfrommv( mpromote( mt, list( 3 ) ), 3, 0.5 ), trivar_type ), t );
+PrintTest( "MPROMOTE",
+    coerce( mfrommesh( mfrommesh( mfrommesh( mpromote( mt, list( 6, 0 ) ),
+				             3, 0 ),
+			          3, 0 ),
+		       3, 0 ), trivar_type ), t );
+PrintTest( "MPROMOTE",
+    coerce( mfrommesh( mfrommesh( mfrommesh( mpromote( mt, list( 6, 2 ) ),
+				             5, 0 ),
+			          1, 0 ),
+		       0, 0 ), trivar_type ), t );
+PrintTest( "MPROMOTE",
+    coerce( mfrommesh( mpromote( mt, list( 2 ) ), 2, 0 ), trivar_type ), t );
+
+All = list( mc, ms, mt, mv );
+save( "m1", All );
+save( "m2.ibd", All );
+ 
+PrintTest( "LOAD", load( "m1" ), All );
+PrintTest( "LOAD", load( "m2.ibd" ), All );
+
+save( "multivar",
+      list( meval( mt, list( 0.321, 0.987, 0.654 ) ),
+	    coerce( mv, bezier_type ),
+	    pdomain( t ),
+	    mrefine( ms, 0, false, list( 0.5, 0.6, 0.7 ) ),
+	    mrefine( ms3, 1, false, list( 0.5, 0.6, 0.7 ) ),
+	    mrefine( mt, 2, false, list( 0.15, 0.25, 0.75 ) ),
+	    mdivide( ms, 0, 0.35 ),
+	    nth( mdivide( mt, 1, 0.5 ), 2 ),
+	    mregion( mt, 1, 0.5, 0.7 ),
+	    mregion( ms, 0, 0.3, 0.66 ),
+	    mregion( ms3, 0, 0.23, 0.76 ),
+	    mfrommesh( mpromote( mt, list( 2 ) ), 2, 0 ),
+	    mfrommesh( mfrommesh( mfrommesh( mpromote( mt, list( 6, 0 ) ),
+				         3, 0 ),
+			      3, 0 ),
+		   3, 0 ),
+	    mfrommv( mpromote( ms, list( 0 ) ), 0, 0.5 ),
+	    mfrommv( mfrommv( mpromote( ms, list( 4, 1 ) ), 3, 0.5 ), 0, 0.5 ),
+	    nth( mdivide( mt, 1, 0.5 ), 1 ),
+	    mderive( ms, 0 ),
+	    mderive( ms3, 1 ),
+	    mderive( mt, 1 ) ) );
+#
+# Restore state
+#
+free( mt );
+free( ms );
+free( ms2 );
+free( ms3 );
+free( mc );
+free( mc2 );
+free( mv );
+free( mv1 );
+free( All );
+free( t );
+free( s );
+free( s1 );
+free( s3 );
+free( c );
+
+dummy = iritState( "DumpLevel", DLevel );
+free( DLevel );
+dummy = iritState( "EchoSource", EchoSrc );
+free( EchoSrc );
+dummy = iritState( "CmpObjEps", CmpEps );
+free( CmpEps );

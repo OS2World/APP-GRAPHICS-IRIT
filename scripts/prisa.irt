@@ -1,0 +1,319 @@
+#
+# Some tests for the PRISA (planar layout) code.
+#
+
+save_res = resolution;
+save_mat = view_mat;
+SampPerCrv = 64;
+viewobj(view_mat);
+
+ViewState( "NumIsos", 0 );
+ViewState( "NumIsos", 0 );
+
+LayoutHandleOneTrimmed = function( TrmSrf, HighLightTrim ): Srf:
+    Srf = sTrimSrf( TrmSrf ):
+    if ( HighLightTrim,
+	 color( Srf, blue ):
+	 color( TrmSrf, yellow ):
+	 awidth( Srf, 0.0001 ):
+	 awidth( TrmSrf, 0.01 ),
+	 color( Srf, yellow ):
+	 color( TrmSrf, blue ):
+	 awidth( Srf, 0.01 ):
+	 awidth( TrmSrf, 0.0001 ) ):
+    return = list( TrmSrf, Srf );
+
+LayoutHandleTrimmedSrfs = function( TSrfs, HighLightTrim ): i:
+    return = nil():
+    for ( i = 1, 1, sizeof( TSrfs ),
+         snoc( LayoutHandleOneTrimmed( nth( TSrfs, i ), HighLightTrim ),
+	       return ) );
+
+#############################################################################
+#
+# Layout (prisa) of a sphere - several resolutions/directions.
+#
+view_mat3d = rotx(-90) * roty(135) * rotx(-30) * scale(vector(0.5, 0.5, 0.5));
+view_mat2d = scale( vector( 0.15,  0.15, 0.15 ) ) *
+	     trans( vector( 0.0, -0.8, 0.0 ) );
+
+s45 = sin(pi/4);
+
+halfcirc = cbspline( 3,
+		     list( ctlpt( P3, 1.0,  0.0, 0.0,  1.0 ),
+		           ctlpt( P3, s45, -s45, 0.0,  s45 ),
+		           ctlpt( P3, 1.0, -1.0, 0.0,  0.0 ),
+		           ctlpt( P3, s45, -s45, 0.0, -s45 ),
+			   ctlpt( P3, 1.0,  0.0, 0.0, -1.0 ) ),
+		     list( 0, 0, 0, 1, 1, 2, 2, 2 ) );
+sp = surfrev( halfcirc );
+color( sp, yellow );
+
+interact( list( view_mat3d, sp ) );
+
+sp_prisa = prisa( sp, SampPerCrv, -0.6, COL, vector( 0, 0.1, 0.0 ), false );
+color( sp_prisa, yellow );
+interact( list( view_mat3d, sp_prisa ) );
+
+sp_prisa = prisa( sp, SampPerCrv, 0.6, COL, vector( 0, 0.1, 0.0 ), false );
+interact( list( view_mat2d, sp_prisa ) );
+
+sp_prisa = prisa( sp, SampPerCrv, -0.3, COL, vector( 0, 0.1, 0.0 ), false );
+color( sp_prisa, yellow );
+interact( list( view_mat3d, sp_prisa ) );
+
+sp_prisa = prisa( sp, SampPerCrv, 0.3, COL, vector( 0, 0.1, 0.0 ), false );
+interact( list( view_mat2d, sp_prisa ) );
+
+sp_prisa = prisa( sp, SampPerCrv, -0.1, COL, vector( 0, 0.1, 0.0 ), false );
+color( sp_prisa, yellow );
+interact( list( view_mat3d, sp_prisa ) );
+
+sp_prisa = prisa( sp, SampPerCrv, 0.1, COL, vector( 0, 0.1, 0.0 ), false );
+color( sp_prisa, yellow );
+sp_prisa_cross = prisa( sp, SampPerCrv, 0.1, COL, vector( 0, 0.1, 0.0 ),
+		        true );
+color( sp_prisa_cross, red );
+interact( list( view_mat2d, sp_prisa * tx( -3 ), sp_prisa_cross * tx( 3 ) ) );
+
+sp_prisa = prisa( sp, SampPerCrv, -0.3, ROW, vector( 0, 0.1, 0.0 ), false );
+color( sp_prisa, yellow );
+interact( list( view_mat3d, sp_prisa ) );
+
+sp_prisa = prisa( sp, SampPerCrv, 0.3, ROW, vector( 0, 0.1, 0.0 ), false );
+interact( list( view_mat2d, sp_prisa ) );
+
+free( s45 );
+free( halfcirc );
+free( sp_prisa );
+free( sp );
+free( view_mat3d );
+free( view_mat2d );
+
+#############################################################################
+#
+# Layout (prisa) of a wine glass.
+#
+view_mat3d = rotx( -90 ) * roty( 130 ) * rotx( -35 ) *
+	scale( vector( 0.5, 0.5, 0.5 ) ) * trans( vector( 0.0, -0.5, 0.0 ) );
+view_mat2d = scale( vector( 0.1,  0.1, 0.1 ) ) *
+	     trans( vector( 0.0, -0.8, 0.0 ) );
+
+cross = cbspline( 3,
+		  list( ctlpt( E3, 0.7, 0.0, 0. ),
+			ctlpt( E3, 0.7, 0.0, 0.06 ),
+			ctlpt( E3, 0.1, 0.0, 0.1 ),
+			ctlpt( E3, 0.1, 0.0, 0.6 ),
+			ctlpt( E3, 0.6, 0.0, 0.6 ),
+			ctlpt( E3, 0.8, 0.0, 0.8 ),
+			ctlpt( E3, 0.8, 0.0, 1.4 ),
+			ctlpt( E3, 0.6, 0.0, 1.6 ) ),
+		  list( KV_OPEN ) );
+wglass = surfprev( cross * scale( vector( 1.6, 1.6, 1.6 ) ) );
+color( wglass, yellow );
+
+interact( list( view_mat3d, wglass ) );
+
+wgl_prisa = prisa( wglass, SampPerCrv, -0.1, COL,
+		   vector( 0, 0.25, 0.0 ), false );
+color( wgl_prisa, yellow );
+interact( list( view_mat3d, wgl_prisa ) );
+save( "prisa1", list( view_mat3d, wgl_prisa ) );
+
+wgl_prisa = prisa( wglass, SampPerCrv, 0.1, COL,
+		   vector( 0, 0.25, 0.0 ), false );
+interact( list( view_mat2d, wgl_prisa ) );
+save( "prisa2", list( view_mat2d, wgl_prisa ) );
+
+free( cross );
+free( wglass );
+free( wgl_prisa );
+free( view_mat2d );
+free( view_mat3d );
+
+#############################################################################
+#
+# Layout (prisa) Fuselage of b58 model.
+#
+c1 = circle( vector( 0.0, 0.0, 0.0 ), 0.01 ) *
+     roty( 90 ) *
+     trans( vector( -1.0, 0.0, 0.1 ) );
+c2 = circle( vector( 0.0, 0.0, 0.0 ), 0.025 ) *
+     roty( 90 ) *
+     trans( vector( 0.0, 0.0, 0.1 ) );
+c3 = circle( vector( 0.0, 0.0, 0.0 ), 0.03 ) *
+     roty( 90 ) *
+     trans( vector( 0.1, 0.0, 0.1 ) );
+c4 = cbspline( 3,
+	       list( ctlpt( P3, 1,     2.5,   0.0,   -0.1 ),
+		     ctlpt( P3, 0.707, 1.77,  0.283, -0.071 ),
+		     ctlpt( P3, 1,     2.5,   0.4,    0.0 ),
+		     ctlpt( P3, 0.707, 1.77,  0.283,  0.283 ),
+		     ctlpt( P3, 1,     2.5,   0.0,    0.4 ),
+		     ctlpt( P3, 0.707, 1.77, -0.283,  0.283 ),
+		     ctlpt( P3, 1,     2.5,  -0.4,    0.0 ),
+		     ctlpt( P3, 0.707, 1.77, -0.283, -0.071 ),
+		     ctlpt( P3, 1,     2.5,   0.0,   -0.1 ) ),
+	       list( 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 4 ) ) *
+     trans( vector( -1.5, 0.0, 0.0 ) );
+c5 = cbspline( 3,
+	       list( ctlpt( P3, 1,     2.5,   0.0,   -0.1 ),
+		     ctlpt( P3, 0.707, 1.77,  0.283, -0.071 ),
+		     ctlpt( P3, 1,     2.5,   0.4,    0.0 ),
+		     ctlpt( P3, 0.707, 1.77,  0.283,  0.6 ),
+		     ctlpt( P3, 1,     2.5,   0.0,    0.5 ),
+		     ctlpt( P3, 0.707, 1.77, -0.283,  0.6 ),
+		     ctlpt( P3, 1,     2.5,  -0.4,    0.0 ),
+		     ctlpt( P3, 0.707, 1.77, -0.283, -0.071 ),
+		     ctlpt( P3, 1,     2.5,   0.0,   -0.1 ) ),
+	       list( 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 4 ) ) *
+     trans( vector( 0.0, 0.0, 0.0 ) );
+
+fuseFront = sFromCrvs( list( c1, c2, c3, c4, c5 ), 3, KV_OPEN );
+color( fuseFront, yellow );
+
+c1 = cbspline( 3,
+	       list( ctlpt( P3, 1,     2.5,   0.0,   -0.1 ),
+		     ctlpt( P3, 0.707, 1.77,  0.283, -0.071 ),
+		     ctlpt( P3, 1,     2.5,   0.4,    0.0 ),
+		     ctlpt( P3, 0.707, 1.77,  0.283,  0.566 ),
+		     ctlpt( P3, 1,     2.5,   0.0,    0.8 ),
+		     ctlpt( P3, 0.707, 1.77, -0.283,  0.566 ),
+		     ctlpt( P3, 1,     2.5,  -0.4,    0.0 ),
+		     ctlpt( P3, 0.707, 1.77, -0.283, -0.071 ),
+		     ctlpt( P3, 1,     2.5,   0.0,   -0.1 ) ),
+	       list( 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 4 ) ) *
+     trans( vector( 0.0, 0.0, 0.0 ) );
+c2 = c1 * scale( vector( 1.05, 1.05, 1.05 ) ) *
+          trans( vector( 0.3, 0.0, 0.0 ) );
+c3 = c1 * scale( vector( 0.95, 0.95, 0.95 ) ) *
+	  trans( vector( 1.7, 0.0, -0.02 ) );
+c4 = circle( vector( 0.0, 0.0, 0.0 ), 0.35 ) *
+     roty( 90 ) *
+     trans( vector( 5.0, 0.0, 0.2 ) );
+c5 = c4 * trans( vector( 0.2, 0.0, 0.0 ) );
+c6 = circle( vector( 0.0, 0.0, 0.0 ), 0.3 ) *
+     roty( 90 ) *
+     trans( vector( 10.5, 0.0, 0.2 ) );
+c7 = circle( vector( 0.0, 0.0, 0.0 ), 0.01 ) *
+     roty( 90 ) *
+     trans( vector( 11.0, 0.0, 0.25 ) );
+
+fuseBack = sFromCrvs( list( c1, c2, c3, c4, c5, c6, c7 ), 3, KV_OPEN );
+color( fuseBack, yellow );
+free( c1 );
+free( c2 );
+free( c3 );
+free( c4 );
+free( c5 );
+free( c6 );
+free( c7 );
+
+view_mat3d = rotx(-90) * roty(130) * rotx(-35) *
+		scale(vector(0.2, 0.2, 0.2)) * trans(vector(0.7, 0.2, 0.0));
+view_mat2d = scale( vector( 0.1,  0.1, 0.1 ) ) *
+	     trans( vector( 0.0, -0.8, 0.0 ) );
+interact( list( view_mat3d, fuseBack, fuseFront ) );
+
+front_prisa = prisa( fuseFront, SampPerCrv, -0.05, COL,
+		     vector( -2.0, 0.2, 0.0 ), false );
+back_prisa = prisa( fuseBack, SampPerCrv, -0.05, COL,
+		    vector( 2.0, 0.2, 0.0 ), false );
+color(front_prisa, yellow);
+color(back_prisa, yellow);
+interact( list( view_mat3d, front_prisa, back_prisa ) );
+save( "prisa3", list( view_mat3d, front_prisa, back_prisa ) );
+
+front_prisa = prisa( fuseFront, SampPerCrv, 0.05, COL,
+		     vector( -2.0, 0.2, 0.0 ), false );
+back_prisa = prisa( fuseBack, SampPerCrv, 0.05, COL,
+		    vector( 2.0, 0.2, 0.0 ), false );
+
+view_mat2d = scale( vector( 0.15,  0.15, 0.15 ) ) *
+	     trans( vector( 0.0, -0.8, 0.0 ) );
+interact( list( view_mat2d, front_prisa, back_prisa ) );
+save( "prisa4", list( view_mat2d, front_prisa, back_prisa ) );
+
+free( fuseFront );
+free( fuseBack );
+free( view_mat2d );
+free( view_mat3d );
+free( front_prisa );
+free( back_prisa );
+
+#############################################################################
+#
+# Layout (prisa) of a trimmed wine glass.
+#
+view_mat3d = rotx(-90) * roty(130) * rotx(-35) *
+		scale(vector(0.5, 0.5, 0.5)) * trans(vector(0.0, -0.5, 0.0));
+view_mat2d = scale( vector( 0.1,  0.1, 0.1 ) ) *
+	     trans( vector( 0.0, -0.8, 0.0 ) );
+
+cross = creparam( cbspline( 3,
+			    list( ctlpt( E3, 0.7, 0.0, 0. ),
+				  ctlpt( E3, 0.7, 0.0, 0.06 ),
+				  ctlpt( E3, 0.1, 0.0, 0.1 ),
+				  ctlpt( E3, 0.1, 0.0, 0.6 ),
+				  ctlpt( E3, 0.6, 0.0, 0.6 ),
+				  ctlpt( E3, 0.8, 0.0, 0.8 ),
+				  ctlpt( E3, 0.8, 0.0, 1.4 ),
+				  ctlpt( E3, 0.6, 0.0, 1.6 ) ),
+			    list( KV_OPEN ) ),
+		  0.0, 6.0 );
+wglassSrf = surfprev( cross * scale( vector( 1.6, 1.6, 1.6 ) ) );
+
+circ1 = pcircle( vector( 0, 0, 0 ), 0.4 );
+circ2 = pcircle( vector( 0, 0, 0 ), 0.2 );
+
+wglass = trimsrf( wglassSrf,
+		  list( circ1 * trans( vector( 0.5, 5.0, 0.0 ) ),
+			circ1 * trans( vector( 1.5, 5.0, 0.0 ) ),
+			circ1 * trans( vector( 2.5, 5.0, 0.0 ) ),
+			circ1 * trans( vector( 3.5, 5.0, 0.0 ) ),
+			circ2 * trans( vector( 0.5, 1.0, 0.0 ) ),
+			circ2 * trans( vector( 1.5, 1.0, 0.0 ) ),
+			circ2 * trans( vector( 2.5, 1.0, 0.0 ) ),
+			circ2 * trans( vector( 3.5, 1.0, 0.0 ) ) ),
+		  false );
+
+color( wglass, yellow );
+
+interact( list( view_mat3d, wglass ) );
+
+wgl_prisa = prisa( wglass, SampPerCrv, -0.1, COL,
+		   vector( 0, 0.25, 0.0 ), false );
+color( wgl_prisa, yellow );
+interact( list( view_mat3d, wgl_prisa ) );
+save( "prisa5", list( view_mat3d, wgl_prisa ) );
+
+wgl_prisa = prisa( wglass, SampPerCrv, 0.1, COL,
+		   vector( 0, 0.25, 0.0 ), false );
+interact( list( view_mat2d, wgl_prisa ) );
+save( "prisa6", list( view_mat2d, wgl_prisa ) );
+
+wgl_prisa = LayoutHandleTrimmedSrfs( wgl_prisa, true );      
+interact( list( view_mat2d, wgl_prisa ) );
+save( "prisa7", list( view_mat2d, wgl_prisa ) );
+
+free( cross );
+free( wglass );
+free( wgl_prisa );
+free( view_mat2d );
+free( view_mat3d );
+
+#############################################################################
+
+free( SampPerCrv );
+free( sp_prisa_cross );
+free( WGlassSrf );
+free( Circ1 );
+free( Circ2 );
+
+ViewState( "NumIsos", 1 );
+ViewState( "NumIsos", 1 );
+
+view_mat = save_mat;
+resolution = save_res;
+free( save_res );
+free( save_mat );

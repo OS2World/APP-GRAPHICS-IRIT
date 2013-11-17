@@ -1,0 +1,83 @@
+#
+# This is the make file for the cagd_lib library.
+#
+#				Gershon Elber, June 1993
+#
+
+#
+# This library has a large table of I Choose K in cbzrtbl2.c.  If your
+# compiler fails to compile this file, try to replace it by cbzrtbl1.c
+# and change CAGD_MAX_BEZIER_CACHE_ORDER accordingly in cagd_lib.h
+#
+
+# Get the destination directories:
+include ..\makeflag.wnt
+
+OBJS =  afd_cube.$(IRIT_OBJ_PF) \
+	bez_clip.$(IRIT_OBJ_PF) \
+	blossom.$(IRIT_OBJ_PF) \
+	bsp2poly.$(IRIT_OBJ_PF) \
+	cbsp_fit.$(IRIT_OBJ_PF) \
+	bsp_gen.$(IRIT_OBJ_PF) \
+	bsp_knot.$(IRIT_OBJ_PF) \
+	bspboehm.$(IRIT_OBJ_PF) \
+	bspcoxdb.$(IRIT_OBJ_PF) \
+	bzr2poly.$(IRIT_OBJ_PF) \
+	bzr_gen.$(IRIT_OBJ_PF) \
+	bzr_intr.$(IRIT_OBJ_PF) \
+	bzr_pwr.$(IRIT_OBJ_PF) \
+	cagd2ply.$(IRIT_OBJ_PF) \
+	cagd2pl2.$(IRIT_OBJ_PF) \
+	cagd_arc.$(IRIT_OBJ_PF) \
+	cagd_aux.$(IRIT_OBJ_PF) \
+	cagd_cci.$(IRIT_OBJ_PF) \
+	cagd_cnc.$(IRIT_OBJ_PF) \
+	cagd_dbg.$(IRIT_OBJ_PF) \
+	cagd_err.$(IRIT_OBJ_PF) \
+	cagd_ftl.$(IRIT_OBJ_PF) \
+	cagd1gen.$(IRIT_OBJ_PF) \
+	cagd2gen.$(IRIT_OBJ_PF) \
+	cagdbbox.$(IRIT_OBJ_PF) \
+	cagdbsum.$(IRIT_OBJ_PF) \
+	cagdcmpt.$(IRIT_OBJ_PF) \
+	cagdcmrg.$(IRIT_OBJ_PF) \
+	cagdcoer.$(IRIT_OBJ_PF) \
+	cagdcsrf.$(IRIT_OBJ_PF) \
+	cagdedit.$(IRIT_OBJ_PF) \
+	cagdextr.$(IRIT_OBJ_PF) \
+	cagdmesh.$(IRIT_OBJ_PF) \
+	cagdoslo.$(IRIT_OBJ_PF) \
+	cagdruld.$(IRIT_OBJ_PF) \
+	cagdprim.$(IRIT_OBJ_PF) \
+	cagdsmrg.$(IRIT_OBJ_PF) \
+	cagdsrev.$(IRIT_OBJ_PF) \
+	cagdswep.$(IRIT_OBJ_PF) \
+	cbsp_aux.$(IRIT_OBJ_PF) \
+	cbsp_int.$(IRIT_OBJ_PF) \
+	cbspeval.$(IRIT_OBJ_PF) \
+	cbzr_aux.$(IRIT_OBJ_PF) \
+	cbzr_tbl.$(IRIT_OBJ_PF) \
+	cbzr2tbl.$(IRIT_OBJ_PF) \
+	cbzreval.$(IRIT_OBJ_PF) \
+	cpwr_aux.$(IRIT_OBJ_PF) \
+	crvmatch.$(IRIT_OBJ_PF) \
+	hermite.$(IRIT_OBJ_PF) \
+	mshplanr.$(IRIT_OBJ_PF) \
+	nrmleval.$(IRIT_OBJ_PF) \
+	poly_err.$(IRIT_OBJ_PF) \
+	sbsp_aux.$(IRIT_OBJ_PF) \
+	sbsp_int.$(IRIT_OBJ_PF) \
+	sbspeval.$(IRIT_OBJ_PF) \
+	sbzr_aux.$(IRIT_OBJ_PF) \
+	sbzreval.$(IRIT_OBJ_PF)
+
+$(CAGD_LIB): $(OBJS)
+	-del $(CAGD_LIB)
+	$(IRITLIB) -out:$(CAGD_LIB) $(OBJS)
+
+$(IRIT_LIB_DIR)\$(CAGD_LIB): $(CAGD_LIB)
+	copy $(CAGD_LIB) $(IRIT_LIB_DIR)
+
+install: $(IRIT_LIB_DIR)\$(CAGD_LIB)
+
+# Dependencies starts here - do not touch, generated automatically.

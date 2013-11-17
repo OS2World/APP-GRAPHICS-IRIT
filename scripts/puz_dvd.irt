@@ -1,0 +1,137 @@
+#
+# A variant of a puz in the shape of david-star.
+#
+#						Gershon Elber, March 1999
+#
+
+Elev = 2.5;
+DarkBrown = "144,64,60";
+LightBrown = "244,164,96";
+
+BaseBox = box( vector( -10, 0, 0 ), 20, 1.5, 2 ) * ty( Elev );
+BaseClip = box( vector( -10, 1.5, -1 ), 20, 5, 4 ) * ty( Elev );
+Base = (BaseBox - BaseClip * rz( 120 ) ) - BaseClip * rz( -120 );
+
+B1 = Base - BaseBox * rz(   60 ) * tz( -1 )
+	  - BaseBox * rz(  -60 ) * tz( -1.001 )
+	  - BaseBox * rz(  120 ) * tz( -0.999 )
+	  - BaseBox * rz( -120 ) * tz( -0.998 );
+attrib( B1, "rgb", DarkBrown );
+
+B2 = (Base - BaseBox * rz(   60 ) * tz( -1 )
+	   - BaseBox * rz(  -60 ) * tz( 0.999 )
+	   - BaseBox * rz(  120 ) * tz( 0.998 )
+	   - BaseBox * rz( -120 ) * tz( -0.999 )) * rz( 60 );
+attrib( B2, "rgb", LightBrown );
+
+B3 = (Base - BaseBox * rz(   60 ) * tz( 1 )
+	   - BaseBox * rz(  -60 ) * tz( -0.999 )
+	   - BaseBox * rz(  120 ) * tz( 0.999 )
+	   - BaseBox * rz( -120 ) * tz( 0.998 )) * rz( -60 );
+attrib( B3, "rgb", LightBrown );
+
+B4 = (Base - BaseBox * rz(   60 ) * tz( 1 )
+	   - BaseBox * rz(  -60 ) * tz( -0.999 )
+	   - BaseBox * rz(  120 ) * tz( 0.999 )
+	   - BaseBox * rz( -120 ) * tz( -0.998 )) * rz( -120 );
+attrib( B4, "rgb", DarkBrown );
+
+B5 = (Base - BaseBox * rz(   60 ) * tz( -1 )
+	   - BaseBox * rz(  -60 ) * tz( 0.999 )
+	   - BaseBox * rz(  120 ) * tz( 1.001 )
+	   - BaseBox * rz( -120 ) * tz( 0.998 )) * rz( 120 );
+attrib( B5, "rgb", DarkBrown );
+
+B6 = (Base - BaseBox * rz(   60 ) * tz( 1 )
+	   - BaseBox * rz(  -60 ) * tz( 0.999 )
+	   - BaseBox * rz(  120 ) * tz( -0.999 )
+	   - BaseBox * rz( -120 ) * tz( -0.998 )) * rz( 180 );
+attrib( B6, "rgb", LightBrown );
+
+free( BaseBox );
+free( BaseClip );
+free( Base );
+
+free( Elev );
+free( DarkBrown );
+free( LightBrown );
+
+#
+# Add animation
+#
+
+mov_xyz = creparam( cbspline( 3,
+			      list( ctlpt( E3, 0, 0, 0 ),
+				    ctlpt( E3, 0, 0, 3 ),
+				    ctlpt( E3, 0, 0, 5 ),
+				    ctlpt( E3, 0, 9, 5 ) ),
+			      list( KV_OPEN ) ),
+		    0, 1 );
+attrib( B1, "animation", mov_xyz );
+free( mov_xyz );
+
+RotPos = rz( -60 ) * tx( 3.3 ) * tz( -0.5 );
+rot_y = creparam( cbspline( 2,
+			    list( ctlpt( E1, 0 ),
+				  ctlpt( E1, 60 ) ),
+			    list( KV_OPEN ) ),
+		    1, 2 );
+mov_xyz = creparam( cbspline( 3,
+			      list( ctlpt( E3,  0, 0, 0 ),
+				    ctlpt( E3, -2, 1, 0 ),
+				    ctlpt( E3, -9, 1, 0 ) ),
+			      list( KV_OPEN ) ),
+		    2, 3 );
+attrib( B2, "animation", list( RotPos, rot_y, RotPos^-1, mov_xyz ) );
+free( mov_xyz );
+free( rot_y );
+free( RotPos );
+
+RotPos = rz( 60 ) * tx( -3.3 ) * tz( -0.5 );
+rot_y = creparam( cbspline( 2,
+			    list( ctlpt( E1, 0 ),
+				  ctlpt( E1, -60 ) ),
+			    list( KV_OPEN ) ),
+		    3, 4 );
+mov_xyz = creparam( cbspline( 3,
+			      list( ctlpt( E3,  0, 0, 0 ),
+				    ctlpt( E3,  2, 1, 0 ),
+				    ctlpt( E3,  9, 1, 0 ) ),
+			      list( KV_OPEN ) ),
+		    4, 5 );
+attrib( B3, "animation", list( RotPos, rot_y, RotPos^-1, mov_xyz ) );
+free( mov_xyz );
+free( rot_y );
+free( RotPos );
+
+mov_xyz = creparam( cbspline( 3,
+			      list( ctlpt( E3,  0,   0, 0 ),
+				    ctlpt( E3,  0,   0, 3 ),
+				    ctlpt( E3,  0,   0, 5 ),
+				    ctlpt( E3,  5, -12, 5 ) ),
+			      list( KV_OPEN ) ),
+		    5, 6 );
+attrib( B4, "animation", mov_xyz );
+free( mov_xyz );
+
+mov_xyz = creparam( cbspline( 3,
+			      list( ctlpt( E3,  0,   0, 0 ),
+				    ctlpt( E3,  0,   0, 3 ),
+				    ctlpt( E3,  0,   0, 5 ),
+				    ctlpt( E3, -5, -12, 5 ) ),
+			      list( KV_OPEN ) ),
+		    6, 7 );
+attrib( B5, "animation", mov_xyz );
+free( mov_xyz );
+
+view( list( B1, B2, B3, B4, B5, B6 ), 1 );
+
+save( "puz_dvd", list( B1, B2, B3, B4, B5, B6 ) );
+
+free( B1 );
+free( B2 );
+free( B3 );
+free( B4 );
+free( B5 );
+free( B6 );
+

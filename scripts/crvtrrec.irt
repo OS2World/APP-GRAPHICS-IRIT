@@ -1,0 +1,129 @@
+#
+# Signed curvature function approximation,  Gershon Elber, July 2004.
+#
+
+view_mat1 = rx( 0 );
+viewobj( view_mat1 );
+
+# Faster product using Bezier decomposition.
+IProd = iritstate("BspProdMethod", 0);
+
+#
+# Reposition cNew so as to match c's first point and tangent.
+#
+RigidMotionPos = function( cNew, c ): t: Pos: Tn:
+    t = nth( pdomain( c ), 1 ):
+    Pos = coerce( ceval( c, t ), vector_type ):
+    Tn = cTangent( c, t, true ):
+    return = cNew * rz( atan2( coord( Tn, 1 ), coord( Tn, 0 ) ) * 180 / pi )
+		  * trans( Pos );
+
+#############################################################################
+
+c = cbspline( 4,
+    list( ctlpt( E3, 2.074, 5.757, 0. ),
+          ctlpt( E2, 0.128, 4.94 ),
+          ctlpt( E2, 1.602, 1.068 ),
+          ctlpt( E2, 2.679, 1.495 ),
+          ctlpt( E2, 2.913, 0.734 ),
+          ctlpt( E2, 2.317, 0.175 ),
+          ctlpt( E2, 2.41, -0.289 ),
+          ctlpt( E2, 2.563, -0.255 ),
+          ctlpt( E2, 2.799, 0.219 ),
+          ctlpt( E2, 2.741, 0.421 ),
+          ctlpt( E2, 3.019, 0.482 ),
+          ctlpt( E2, 3.14, 0.414 ),
+          ctlpt( E2, 3.161, 0.12 ),
+          ctlpt( E2, 3.051, -0.078 ),
+          ctlpt( E2, 3.04, -0.238 ),
+          ctlpt( E2, 3.028, -0.416 ),
+          ctlpt( E2, 3.218, -0.452 ),
+          ctlpt( E2, 3.418, -0.31 ),
+          ctlpt( E2, 3.626, -0.126 ),
+          ctlpt( E2, 3.77, 0.027 ),
+          ctlpt( E2, 4.305, 0.086 ),
+          ctlpt( E2, 5.569, -0.845 ),
+          ctlpt( E2, 6.914, -2.508 ),
+          ctlpt( E2, 11.147, -1.629 ),
+          ctlpt( E2, 8.565, -0.453 ),
+          ctlpt( E2, 4.533, 1.283 ),
+          ctlpt( E2, 8.031, 2.972 ),
+          ctlpt( E2, 9.304, 4.314 ),
+          ctlpt( E2, 8.252, 6.532 ),
+          ctlpt( E2, 5.942, 5.176 ),
+          ctlpt( E2, 5.483, 1.597 ),
+          ctlpt( E2, 3.427, 2.095 ) ),
+    list( kv_periodic ) ) * sc( 0.1 ) * tx( -0.5 ) * ty( -0.2 );
+
+Crvtr = cFnCrvtr( c, 1000, 2, 1 );
+
+Crvtr2d = coerce( Crvtr, e2 ) * rz( 90 ) * sx( -1 ) * sy( 0.005 );
+color( Crvtr2d, yellow );
+
+interact( list( axes, c, Crvtr2d ) );
+
+c2 = RigidMotionPos( cFnCrvtr( Crvtr, 1e-3, 3, 0 ), c );
+color( c2, yellow );
+
+interact( list( c, c2 ) );
+
+save( "crvtrrc1", list( c, c2, Crvtr ) );
+
+#############################################################################
+
+Crvtr = cFnCrvtr( c, 100, 2, 1 );
+
+c2 = RigidMotionPos( cFnCrvtr( Crvtr, 1e-3, 3, 0 ), c );
+color( c2, yellow );
+
+interact( list( c, c2 ) );
+
+#############################################################################
+
+c = cbspline( 4,
+    list( ctlpt( E3, 0.084, 0.544, 0. ),
+          ctlpt( E2, 0.031, 0.374 ),
+          ctlpt( E2, 0.061, 0.326 ),
+          ctlpt( E2, 0.006, 0.309 ),
+          ctlpt( E2, -0.01, 0.225 ),
+          ctlpt( E2, -0.077, 0.197 ),
+          ctlpt( E2, -0.212, 0.061 ),
+          ctlpt( E2, -0.033, 0.09 ),
+          ctlpt( E2, -0.046, 0.057 ),
+          ctlpt( E2, 0.013, 0.01 ),
+          ctlpt( E2, 0.073, 0.076 ),
+          ctlpt( E2, 0.095, 0.032 ),
+          ctlpt( E2, 0.023, -0.004 ),
+          ctlpt( E1, -0.038 ),
+          ctlpt( E2, -0.033, -0.146 ),
+          ctlpt( E2, 0.176, -0.269 ),
+          ctlpt( E2, 0.408, -0.139 ),
+          ctlpt( E2, 0.467, 0.327 ),
+          ctlpt( E2, 0.39, 0.534 ),
+          ctlpt( E2, 0.221, 0.601 ) ),
+    list( kv_periodic ) );
+c = coerce( c, kv_open ) * sc( 2 ) * tx( -0.1 ) * ty( -0.3 );
+
+Crvtr = cFnCrvtr( c, 1000, 3, 1 );
+
+c2 = RigidMotionPos( cFnCrvtr( Crvtr, 1e-3, 3, 0 ), c );
+color( c2, yellow );
+
+interact( list( c, c2 ) );
+
+c2 = RigidMotionPos( cFnCrvtr( Crvtr, 1e-3, 3, 1 ), c );
+color( c2, yellow );
+
+interact( list( c, c2 ) );
+
+save( "crvtrrc2", list( c, c2, Crvtr ) );
+
+#############################################################################
+
+IProd = iritstate("BspProdMethod", IProd);
+free( IProd );
+
+free( c );
+free( c2 );
+free( Crvtr );
+free( Crvtr2d );

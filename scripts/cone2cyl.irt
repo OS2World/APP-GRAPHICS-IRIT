@@ -1,0 +1,37 @@
+#
+# Intersection of cone and a cylinders ( more complex this time ):
+#
+#			Created by Gershon Elber,	Sep. 89
+#
+
+save_mat = view_mat;
+view_mat = view_mat * scale( vector( 0.2, 0.2, 0.2 ) );
+save_res = resolution;
+
+resolution = 32;
+cone1 = cone( vector( 0, 0, -1 ), vector( 0, 0, 4 ), 2, 1 );
+cylin1 = cylin( vector( 0, 3, 0.3 ), vector( 0, -6, 0 ), 1, 3 );
+cube1 = box( vector( -2, -2, -2 ), 4, 4, 3.6 );
+
+s1 = ( cone1 - cylin1 ) * cube1;
+view( list( view_mat, s1 ), on );
+free( cylin1 );
+free( cone1 );
+free( cube1 );
+
+resolution = 16;
+cylin2 = cylin( vector( 0, 0, -2 ),vector( 0, 0, 6 ), 0.5, 3 );
+s2 = s1 - cylin2;
+
+interact( s2 );
+free( cylin2 );
+free( s1 );
+
+s2 = convex( s2 );
+
+save( "cone2cyl", s2 );
+
+free( s2 );
+
+resolution = save_res;
+view_mat = save_mat;

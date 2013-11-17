@@ -1,0 +1,122 @@
+#
+# This is the make file for the graphic driver's subdirectory.
+#
+#				Gershon Elber, June 1993
+#
+
+include ..\makeflag.wnt
+
+WNTDRVS_PRIM_DRAW = \
+	drawln3d.$(IRIT_OBJ_PF) \
+	drawpoly.$(IRIT_OBJ_PF) \
+	drawptvc.$(IRIT_OBJ_PF)
+
+WNTDRVS_DRVS = \
+	draw_obj.$(IRIT_OBJ_PF) \
+	wnt_env.$(IRIT_OBJ_PF) \
+	wnt_anim.$(IRIT_OBJ_PF) \
+	wnt_shad.$(IRIT_OBJ_PF) \
+	wnt_crvs.$(IRIT_OBJ_PF) \
+	wnt_srfs.$(IRIT_OBJ_PF) \
+	wnt_pick.$(IRIT_OBJ_PF) \
+	wnt_manp.$(IRIT_OBJ_PF) \
+	gen_grap.$(IRIT_OBJ_PF) \
+	editcrvs.$(IRIT_OBJ_PF) \
+	cnstcrvs.$(IRIT_OBJ_PF) \
+	editsrfs.$(IRIT_OBJ_PF) \
+	editmanp.$(IRIT_OBJ_PF) \
+	magellan.$(IRIT_OBJ_PF) \
+	wntdrvs.res
+
+nuldrvs$(IRIT_EXE_PF).exe: nuldrvs.$(IRIT_OBJ_PF) gen_grap.$(IRIT_OBJ_PF)
+	$(IRITCONLINK) -out:$@ nuldrvs.$(IRIT_OBJ_PF) \
+				gen_grap.$(IRIT_OBJ_PF) $(IRIT_LIBS) $(W32CONLIBS)
+	$(IRITMANIFEST) -manifest $@.manifest -outputresource:$@;1
+
+
+
+WNTDRVS_DRAW = $(WNTDRVS_DRVS) \
+	wnt_win.$(IRIT_OBJ_PF) 
+
+wntdrvs$(IRIT_EXE_PF).exe:  wntdrvs.$(IRIT_OBJ_PF) $(WNTDRVS_DRAW) $(WNTDRVS_PRIM_DRAW)
+	$(IRITGUILINK) -out:$@ wntdrvs.$(IRIT_OBJ_PF) \
+		$(WNTDRVS_DRAW) $(WNTDRVS_PRIM_DRAW) $(IRIT_LIBS) $(W32GUIMTLIBS)
+	$(IRITMANIFEST) -manifest $@.manifest -outputresource:$@;1
+
+
+wntcdrvs$(IRIT_EXE_PF).exe: wntcdrvs.$(IRIT_OBJ_PF) $(WNTDRVS_DRAW) $(WNTDRVS_PRIM_DRAW)
+	$(IRITCONLINK) -out:$@ wntcdrvs.$(IRIT_OBJ_PF) \
+		$(WNTDRVS_DRAW) $(WNTDRVS_PRIM_DRAW) $(IRIT_LIBS) $(W32GUIMTLIBS)
+	$(IRITMANIFEST) -manifest $@.manifest -outputresource:$@;1
+
+
+
+GLUTDRVS_DRAW =  \
+	gen_grap.$(IRIT_OBJ_PF) \
+	draw_obj.$(IRIT_OBJ_PF) \
+	open_gl.$(IRIT_OBJ_PF)
+
+glutdrvs$(IRIT_EXE_PF).exe: glutdrvs.$(IRIT_OBJ_PF) $(GLUTDRVS_DRAW)
+	$(IRITCONLINK) -out:$@ glutdrvs.$(IRIT_OBJ_PF) \
+		$(GLUTDRVS_DRAW) $(IRIT_LIBS) $(W32GUIOGLLIBS)
+	$(IRITMANIFEST) -manifest $@.manifest -outputresource:$@;1
+
+
+OIRIT_PNGL_CG = opngl_cg.$(IRIT_OBJ_PF) opngl2cg.$(IRIT_OBJ_PF) ogl_fbo.$(IRIT_OBJ_PF)
+
+
+WNTGDRVS_DRAW = $(WNTDRVS_DRVS) \
+	wnt_ogl.$(IRIT_OBJ_PF) open_gl.$(IRIT_OBJ_PF) $(OIRIT_PNGL_CG)
+
+wntgdrvs$(IRIT_EXE_PF).exe: wntdrvs.$(IRIT_OBJ_PF) $(WNTGDRVS_DRAW)
+	$(IRITGUILINK) -out:$@ wntdrvs.$(IRIT_OBJ_PF) \
+		$(WNTGDRVS_DRAW) $(IRIT_LIBS) $(W32GUIOGLLIBS)
+	$(IRITMANIFEST) -manifest $@.manifest -outputresource:$@;1
+
+
+
+WNTGAISO_DRAW = $(WNTDRVS_DRVS) \
+	wnt_ogl.$(IRIT_OBJ_PF) drawaiso.$(IRIT_OBJ_PF) open_gl.$(IRIT_OBJ_PF) $(OIRIT_PNGL_CG)
+
+wntgaiso$(IRIT_EXE_PF).exe: wntdrvs.$(IRIT_OBJ_PF) $(WNTGAISO_DRAW)
+	$(IRITGUILINK) -out:$@ wntdrvs.$(IRIT_OBJ_PF) \
+		$(WNTGAISO_DRAW) $(IRIT_LIBS) $(W32GUIOGLLIBS)
+	$(IRITMANIFEST) -manifest $@.manifest -outputresource:$@;1
+
+
+wntdrvs.res: wntdrvs.rc wntdrvs.h
+	rc /r wntdrvs.rc
+
+wntcdrvs.$(IRIT_OBJ_PF): wntdrvs.c
+	$(IRITCC) $(IRIT_URT_FLAGS) $(IRIT_MORE_FLAGS) $(CFLAGS) -DIG_MAKE_CON_APP \
+		-I. -I$(IRIT_INC_DIR) -c -Fowntcdrvs.$(IRIT_OBJ_PF) wntdrvs.c
+
+install: $(GRAPDRVS)
+	copy *$(IRIT_EXE_PF).exe $(IRIT_BIN_DIR)
+	copy *.cg $(IRIT_BIN_DIR)
+	del *$(IRIT_EXE_PF).exe
+	copy wntdrvs.cfg $(IRIT_BIN_DIR)
+
+# Dependencies starts here - do not touch, generated automatically.
+djgdrvs.$(IRIT_OBJ_PF):	djggraph.h
+djggraph.$(IRIT_OBJ_PF):	djggraph.h
+editcrvs.$(IRIT_OBJ_PF):	editcrvs.h
+gen_grap.$(IRIT_OBJ_PF):	editcrvs.h
+hpsbutil.$(IRIT_OBJ_PF):	xsbdrvs.h
+os2drvs.$(IRIT_OBJ_PF):	os2drvs.h
+wntdrvs.$(IRIT_OBJ_PF):	editcrvs.h wntdrvs.h
+wnt_anim.$(IRIT_OBJ_PF):	wntdrvs.h
+wnt_crvs.$(IRIT_OBJ_PF):	wntdrvs.h editcrvs.h
+wnt_ogl.$(IRIT_OBJ_PF):	editcrvs.h wntdrvs.h
+wnt_shad.$(IRIT_OBJ_PF):	wntdrvs.h
+wnt_win.$(IRIT_OBJ_PF):	editcrvs.h wntdrvs.h
+x11draw.$(IRIT_OBJ_PF):	x11drvs.h
+x11drvs.$(IRIT_OBJ_PF):	x11drvs.h
+xgldraw.$(IRIT_OBJ_PF):	xgldrvs.h
+xgldrvs.$(IRIT_OBJ_PF):	xgldrvs.h
+xmtdrvs.$(IRIT_OBJ_PF):	xmtdrvs.h xgldrvs.h
+xmt_anim.$(IRIT_OBJ_PF):	xmtdrvs.h
+xmt_crvs.$(IRIT_OBJ_PF):	xmtdrvs.h editcrvs.h
+xmt_shad.$(IRIT_OBJ_PF):	xmtdrvs.h
+xogldraw.$(IRIT_OBJ_PF):	xmtdrvs.h
+xsbdraw.$(IRIT_OBJ_PF):	x11drvs.h xsbdrvs.h

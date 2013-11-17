@@ -1,0 +1,53 @@
+
+#
+# This is the make file for the misc. lib subdirectory.
+#
+#				Gershon Elber, June 1993
+#
+
+# Get the destination directories:
+include ..\makeflag.wnt
+
+OBJS =  bipartte.$(IRIT_OBJ_PF) \
+	config.$(IRIT_OBJ_PF) \
+	dither.$(IRIT_OBJ_PF) \
+	editimag.$(IRIT_OBJ_PF) \
+	exprtree.$(IRIT_OBJ_PF) \
+	getarg.$(IRIT_OBJ_PF) \
+        gnrl_mat.$(IRIT_OBJ_PF) \
+	hash_tbl.$(IRIT_OBJ_PF) \
+	hash2tbl.$(IRIT_OBJ_PF) \
+	hmgn_mat.$(IRIT_OBJ_PF) \
+	imalloc.$(IRIT_OBJ_PF) \
+	imgstcvr.$(IRIT_OBJ_PF) \
+	irit_ftl.$(IRIT_OBJ_PF) \
+	irit2ftl.$(IRIT_OBJ_PF) \
+	irit_inf.$(IRIT_OBJ_PF) \
+	irit2inf.$(IRIT_OBJ_PF) \
+	irit_wrn.$(IRIT_OBJ_PF) \
+	irit2wrn.$(IRIT_OBJ_PF) \
+	levenmar.$(IRIT_OBJ_PF) \
+	list.$(IRIT_OBJ_PF) \
+	mincover.$(IRIT_OBJ_PF) \
+	misc_err.$(IRIT_OBJ_PF) \
+	misc_ftl.$(IRIT_OBJ_PF) \
+	miscattr.$(IRIT_OBJ_PF) \
+	miscatt2.$(IRIT_OBJ_PF) \
+	miscatt3.$(IRIT_OBJ_PF) \
+	priorque.$(IRIT_OBJ_PF) \
+	qrfactor.$(IRIT_OBJ_PF) \
+	readimag.$(IRIT_OBJ_PF) \
+	search.$(IRIT_OBJ_PF) \
+	writimag.$(IRIT_OBJ_PF) \
+	xgeneral.$(IRIT_OBJ_PF)
+
+$(MISC_LIB): $(OBJS)
+	-del $(MISC_LIB)
+	$(IRITLIB) -out:$(MISC_LIB) $(OBJS)
+
+$(IRIT_LIB_DIR)\$(MISC_LIB): $(MISC_LIB)
+	copy $(MISC_LIB) $(IRIT_LIB_DIR)
+
+install: $(IRIT_LIB_DIR)\$(MISC_LIB)
+
+# Dependencies starts here - do not touch, generated automatically.

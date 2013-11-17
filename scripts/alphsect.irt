@@ -1,0 +1,303 @@
+#
+# Some examples of 3d alpha-sector computations of 3-space freeform curves.
+#
+#			Gershon Elber, October 1998.
+#
+
+#
+# Set states.
+#
+save_mat = view_mat;
+view_mat = view_mat * sc( 0.35 );
+viewobj( view_mat );
+
+# Faster product using Bezier decomposition.
+IProd = iritstate( "BspProdMethod", 0 );
+
+#############################################################################
+#
+# A point and a line in the XY plane
+#
+c1 = cbezier( list( ctlpt( E2, -0.3, -1.0 ),
+		    ctlpt( E2, -0.3,  1.0 ) ) );
+pt2 = point( 0.4, 0.2, 0.0 );
+color( c1, red );
+adwidth( c1, 3 );
+color( pt2, red );
+adwidth( pt2, 3 );
+
+for ( t = 0.0, 0.03, 1.0,
+    BisectCrv = calphasector( list( c1, pt2 ), t ):
+    color( BisectCrv, green ):
+    view( list( c1, pt2, BisectCrv ), true ));
+
+save( "asect2d1", list( c1, pt2,
+		        calphasector( list( c1, pt2 ), 0.1 ),
+		        calphasector( list( c1, pt2 ), 0.5 ),
+		        calphasector( list( c1, pt2 ), 1.0 ) ) );
+
+pause();
+
+#############################################################################
+#
+# A point and a cubic curve in the XY plane
+#
+c1 = cbezier( list( ctlpt( E2, -0.9, -0.1 ),
+		    ctlpt( E2, -1.3, -1.3 ),
+		    ctlpt( E2,  1.3,  0.3 ),
+		    ctlpt( E2,  0.3,  1.0 ) ) );
+pt2 = point( -0.5, 0.5, 0.0 );
+color( c1, red );
+adwidth( c1, 3 );
+color( pt2, red );
+adwidth( pt2, 3 );
+
+for ( t = 0.0, 0.05, 1.0,
+    BisectCrv = calphasector( list( c1, pt2 ), t ):
+    color( BisectCrv, green ):
+    view( list( axes, c1, pt2, BisectCrv ), true ));
+
+save( "asect2d2", list( c1, pt2,
+		        calphasector( list( c1, pt2 ), 0.1 ),
+		        calphasector( list( c1, pt2 ), 0.5 ),
+		        calphasector( list( c1, pt2 ), 1.0 ) ) );
+
+pause();
+
+#############################################################################
+#
+# A point and a circle in the XY plane
+#
+c1 = pcircle( vector( 0.3, 0.2, 0.0 ), 1.1 );
+pt2 = point( -0.5, 0.5, 0.0 );
+
+c1 = coerce( c1, E2);
+color( c1, red );
+adwidth( c1, 3 );
+color( pt2, red );
+adwidth( pt2, 3 );
+
+for ( t = 0.0, 0.1, 1.05,
+    BisectCrv = calphasector( list( c1, pt2 ), t ):
+    color( BisectCrv, green ):
+    view( list( axes, c1, pt2, BisectCrv ), true ));
+
+save( "asect2d3", list( c1, pt2,
+		        calphasector( list( c1, pt2 ), 0.1 ),
+		        calphasector( list( c1, pt2 ), 0.5 ),
+		        calphasector( list( c1, pt2 ), 1.0 ) ) );
+
+pause();
+
+#############################################################################
+#
+# Two linear curves
+#
+c1 = cbezier( list( ctlpt( E3,  0.0,  0.3, -1.0 ),
+		    ctlpt( E3,  0.0,  0.3,  1.0 ) ) );
+c2 = cbezier( list( ctlpt( E3, -1.0, -0.3,  0.0 ),
+		    ctlpt( E3,  1.0, -0.3,  0.0 ) ) );
+color( c1, red );
+adwidth( c1, 3 );
+color( c2, red );
+adwidth( c2, 3 );
+
+for ( t = 0.0, 0.1, 1.0,
+    BisectSrf = calphasector( list( c1, c2 ), t ):
+    color( BisectSrf, green ):
+    view( list( c1, c2, BisectSrf ), true ));
+
+save( "asect3d1", list( c1, c2,
+		        calphasector( list( c2, c1 ), 0.1 ),
+		        calphasector( list( c2, c1 ), 0.3 ),
+		        calphasector( list( c2, c1 ), 1.0 ) ) );
+
+pause();
+
+#############################################################################
+#
+# Two quadratic curves
+#
+c1 = cbezier( list( ctlpt( E3,  0.0,  0.5, -1.0 ),
+		    ctlpt( E3,  0.0,  0.1,  0.0 ),
+		    ctlpt( E3,  0.0,  0.5,  1.0 ) ) );
+c2 = cbezier( list( ctlpt( E3, -1.0,  1.0,  0.0 ),
+		    ctlpt( E3,  0.0, -1.5,  0.0 ),
+		    ctlpt( E3,  1.0,  1.0,  0.0 ) ) );
+color( c1, red );
+adwidth( c1, 3 );
+color( c2, red );
+adwidth( c2, 3 );
+
+for ( t = 0.0, 0.2, 1.0,
+    BisectSrf = calphasector( list( c2, c1 ), t ):
+    color( BisectSrf, green ):
+    view( list( c1, c2, BisectSrf ), true ));
+
+save( "asect3d2", list( c1, c2,
+		        calphasector( list( c2, c1 ), 0.1 ),
+		        calphasector( list( c2, c1 ), 0.7 ),
+		        calphasector( list( c2, c1 ), 1.0 ) ) );
+
+pause();
+
+#############################################################################
+#
+# A line and a (approximation of a) circle.
+#
+c1 = cbezier( list( ctlpt( E3,  0.0,  0.0, -1.0 ),
+		    ctlpt( E3,  0.0,  0.0,  1.0 ) ) );
+c2 = pcircle( vector( 0.0, 0.0, 0.0 ), 1 );
+
+c2 = coerce( c2, E3);
+color( c1, red );
+adwidth( c1, 3 );
+color( c2, red );
+adwidth( c2, 3 );
+
+for ( t = 0.0, 0.2, 1.0,
+    BisectSrf = calphasector( list( c1, c2 ), t ):
+    color( BisectSrf, green ):
+    view( list( c1, c2, BisectSrf ), true ));
+
+save( "asect3d3", list( c1, c2,
+		        calphasector( list( c2, c1 ), 0.1 ),
+		        calphasector( list( c2, c1 ), 0.7 ),
+		        calphasector( list( c2, c1 ), 1.0 ) ) );
+
+pause();
+
+#############################################################################
+#
+# A line and a (approximation of a) circle.
+#
+c1 = pcircle( vector( 0.0, 0.0, 0.0 ), 1 );
+c2 = cbezier( list( ctlpt( E3, -1.0, 0.0,  1.0 ),
+		    ctlpt( E3,  1.0, 0.0, -1.0 ) ) );
+
+c1 = coerce( c1, E3);
+color( c1, red );
+adwidth( c1, 3 );
+color( c2, red );
+adwidth( c2, 3 );
+
+for ( t = 0.0, 0.2, 1.0,
+    BisectSrf = calphasector( list( c1, c2 ), t ):
+    color( BisectSrf, green ):
+    view( list( c1, c2, BisectSrf ), true ));
+
+save( "asect3d4", list( c1, c2,
+		        calphasector( list( c2, c1 ), 0.1 ),
+		        calphasector( list( c2, c1 ), 0.7 ),
+		        calphasector( list( c2, c1 ), 1.0 ) ) );
+
+pause();
+
+#############################################################################
+#
+# A line and a (approximation of a) circle.
+#
+c1 = creparam( pcircle( vector( 0.0, 0.0, 0.0 ), 1 ), 0, 1 );
+c2 = cbezier( list( ctlpt( E3, -2.0, 0.0,  1.0 ),
+		    ctlpt( E3, -2.0, 0.0, -1.0 ) ) );
+
+c1 = coerce(c1 , E3);
+color( c1, red );
+adwidth( c1, 3 );
+color( c2, red );
+adwidth( c2, 3 );
+
+for ( t = 0.0, 0.1, 1.05,
+    BisectSrf = calphasector( list( c1, c2 ),  t ):
+    BisectSrf1 = sregion( BisectSrf, col, 0.0, 0.3 ):
+    BisectSrf2 = sregion( BisectSrf, col, 0.7, 1.0 ):
+    BisectSrf3 = sregion( BisectSrf, col, 0.36, 0.64 ):
+    color( BisectSrf1, green ):
+    color( BisectSrf2, green ):
+    color( BisectSrf3, green ):
+
+    view( list( c1, c2, BisectSrf1, BisectSrf2, BisectSrf3 ), true ));
+
+save( "asect3d5", list( c1, c2,
+		        calphasector( list( c2, c1 ), 0.1 ),
+		        calphasector( list( c2, c1 ), 0.7 ),
+		        calphasector( list( c2, c1 ), 1.0 ) ) );
+
+pause();
+
+#############################################################################
+#
+# A quadratic Bezier and a (exact rational) ellipse.
+#
+
+c1 = cbezier( list( ctlpt( E3, -2.0,  0.0, -1.0 ),
+		    ctlpt( E3, -3.0,  0.0,  0.0 ),
+		    ctlpt( E3, -2.0,  0.0,  1.0 ) ) );
+c2 = circle( vector( 0.0, 0.0, 0.0 ), 1 ) * sy( 2 );
+
+c2 = coerce(c2, E3);
+color( c1, red );
+adwidth( c1, 3 );
+color( c2, red );
+adwidth( c2, 3 );
+
+for ( t = 0.0, 0.2, 1.0,
+    BisectSrf = calphasector( list( c1, c2 ), t ):
+    color( BisectSrf, green ):
+    view( list( c1, c2, BisectSrf ), true ));
+
+save( "asect3d6", list( c1, c2,
+		        calphasector( list( c2, c1 ), 0.1 ),
+		        calphasector( list( c2, c1 ), 0.7 ),
+		        calphasector( list( c2, c1 ), 1.0 ) ) );
+
+pause();
+
+#############################################################################
+#
+# A tilted line and a (exact rational) circle.
+#
+c1 = cbezier( list( ctlpt( E3, -2.0,  0.0, -1.0 ),
+		    ctlpt( E3, -2.5,  0.0,  1.0 ) ) );
+c2 = circle( vector( 0.0, 0.0, 0.0 ), 1 );
+
+c2 = coerce( c2, E3);
+color( c1, red );
+adwidth( c1, 3 );
+color( c2, red );
+adwidth( c2, 3 );
+
+for ( t = 0.0, 0.2, 1.0,
+    BisectSrf = calphasector( list( c1, c2 ), t ):
+    BisectSrf1 = sregion( BisectSrf, row,  0.0,  1.3 ):
+    BisectSrf2 = sregion( BisectSrf, row, 1.35, 2.65 ):
+    BisectSrf3 = sregion( BisectSrf, row,  2.7,  4.0 ):
+    color( BisectSrf1, green ):
+    color( BisectSrf2, green ):
+    color( BisectSrf3, green ):
+
+    view( list( c1, c2, BisectSrf1, BisectSrf2, BisectSrf3 ), true ));
+
+save( "asect3d7", list( c1, c2,
+		        calphasector( list( c2, c1 ), 0.1 ),
+		        calphasector( list( c2, c1 ), 0.7 ),
+		        calphasector( list( c2, c1 ), 1.0 ) ) );
+
+pause();
+
+#############################################################################
+
+IProd = iritstate( "BspProdMethod", IProd );
+free( IProd );
+
+view_mat = save_mat;
+
+free( c1 );
+free( c2 );
+free( pt2 );
+free( t );
+free( BisectCrv );
+free( BisectSrf );
+free( BisectSrf1 );
+free( BisectSrf2 );
+free( BisectSrf3 );

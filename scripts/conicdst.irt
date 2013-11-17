@@ -1,0 +1,199 @@
+#
+# Conic section's of univariates' constructor.
+#
+#					Gershon Elber, 1999
+#
+
+#
+# Set states.
+#
+# Faster product using Bezier decomposition.
+IProd = iritstate( "BspProdMethod", off );
+
+save_res = resolution;
+
+save_mat = view_mat;
+view_mat = sc( 0.1 );
+viewobj( view_mat );
+
+#############################################################################
+
+CNormalPlnr = function( Crv, t ): V:
+    V = ctangent( Crv, t, true ):
+    return = vector( coord( v, 1 ), -coord( v, 0 ), 0.0 );
+
+AnimBisectCrv2 = procedure( Crv1, Crv2, MoreData, Cntr, Skip ):
+	i: Pt: Pt1: Pt2: Nrml1: Nrml2: InterPt: BisectLns: Sk:
+    color( Crv1, yellow ):
+    color( Crv2, yellow ):
+    adwidth( Crv1, 4 ):
+    adwidth( Crv2, 4 ):
+    Sk = 0:
+    for ( i = 0, 1, sizeof( Cntr ) - 1,
+	Pt = coord( Cntr, i ):
+	Pt1 = ceval( Crv1, coord( Pt, 0 ) ):
+	Pt2 = ceval( Crv2, coord( Pt, 1 ) ):
+	Nrml1 = cNormalPlnr( Crv1, coord( Pt, 0 ) ):
+	Nrml2 = cNormalPlnr( Crv2, coord( Pt, 1 ) ):
+        InterPt = nth( PtsLnLn( coerce( Pt1, point_type ), Nrml1,
+		                coerce( Pt2, point_type ), Nrml2 ), 1 ):
+	if ( thisobj( "InterPt" ) == point_type,
+	    if ( ( InterPt - coerce( Pt1, point_type ) ) * Nrml1 > 0 &&
+	       ( InterPt - coerce( Pt2, point_type ) ) * Nrml2 > 0,
+		Sk = Sk + 1:
+		if ( Sk >= Skip,
+	            Sk = 0:
+		    color( Pt1, green ):
+		    color( Pt2, green ):
+		    color( InterPt, white ):
+		    adwidth( InterPt, 4 ):
+		    BisectLns = coerce( Pt1, E2 ) +
+			        coerce( InterPt, E2 ) +
+			        coerce( Pt2, E2 ):
+		    color( BisectLns, magenta ):
+		    adwidth( BisectLns, 2 ):
+		    view( list( Crv1, Crv2, MoreData,
+		          Pt1, Pt2, InterPt, BisectLns ), 1 ) ) ) ) );
+
+#############################################################################
+
+c1 = cbspline( 3,
+	       list( ctlpt( E2, -1, -1 ),
+		     ctlpt( E2,  1, -1 ),
+		     ctlpt( E2,  1,  1 ),
+		     ctlpt( E2, -1,  1 ) ),
+	       list( KV_OPEN ) );
+c2 = -c1 * sx( -1 ) * tx( 5 );
+view( list( c1, c2 ), 1 );
+
+resolution = 15;
+DistCrvE = list( ConicSec( list( c1, c2 ), 1.0, 10, 2 ),
+		 ConicSec( list( c1, c2 ), 1.0,  9, 2 ),
+		 ConicSec( list( c1, c2 ), 1.0,  8, 2 ),
+		 ConicSec( list( c1, c2 ), 1.0,  7, 2 ),
+		 ConicSec( list( c1, c2 ), 1.0,  6, 2 ) );
+color( DistCrvE, green );
+
+view( list( c1, c2, DistCrvE ), 1 );
+
+resolution = 15;
+DistCrv = ConicSec( list( c1, c2 ), 1.0, 10, 1 );
+for ( i = 0, 1, sizeof( DistCrv ) - 1,
+    AnimBisectCrv2( c1, c2, DistCrvE, coord( DistCrv, i ), 2 ) );
+
+pause();
+
+#############################################################################
+
+c0 = cbspline( 3,
+	       list( ctlpt( E2, -1, -1 ),
+		     ctlpt( E2,  1, -1 ),
+		     ctlpt( E2,  1,  1 ),
+		     ctlpt( E2, -1,  1 ) ),
+	       list( KV_OPEN ) );
+
+c1 = c0 * sy( 0.1 );
+c2 = -c0 * sx( -0.1 ) * tx( 5 );
+view( list( c1, c2 ), 1 );
+
+resolution = 50;
+DistCrvE = list( ConicSec( list( c1, c2 ), 1.0, 10, 2 ),
+		 ConicSec( list( c1, c2 ), 1.0,  9, 2 ),
+		 ConicSec( list( c1, c2 ), 1.0,  8, 2 ),
+		 ConicSec( list( c1, c2 ), 1.0,  7, 2 ),
+		 ConicSec( list( c1, c2 ), 1.0,  6, 2 ) );
+color( DistCrvE, green );
+
+view( list( c1, c2, DistCrvE ), 1 );
+
+resolution = 50;
+DistCrv = ConicSec( list( c1, c2 ), 1.0, 10, 1 );
+for ( i = 0, 1, sizeof( DistCrv ) - 1,
+    AnimBisectCrv2( c1, c2, DistCrvE, coord( DistCrv, i ), 4 ) );
+
+pause();
+
+#############################################################################
+
+c0 = cbspline( 3,
+	       list( ctlpt( E2, -2, -1 ),
+		     ctlpt( E2, -1, -4 ),
+		     ctlpt( E2,  1,  4 ),
+		     ctlpt( E2,  4,  2 ) ),
+	       list( KV_OPEN ) );
+c1 = c0 * sx( 0.25 );
+c2 = -c0 * sy( 0.25) * sx( -1 ) * tx( 5 );
+view( list( c1, c2 ), 1 );
+
+resolution = 50;
+DistCrvE = ConicSec( list( c1, c2 ), 1.0, 10, 2 );
+color( DistCrvE, green );
+
+view( list( c1, c2, DistCrvE ), 1 );
+
+resolution = 50;
+DistCrv = ConicSec( list( c1, c2 ), 1.0, 10, 1 );
+for ( i = 0, 1, sizeof( DistCrv ) - 1,
+    AnimBisectCrv2( c1, c2, DistCrvE, coord( DistCrv, i ), 4 ) );
+
+pause();
+
+#############################################################################
+
+c0 = cbezier( list( ctlpt( E2, -5, 0 ), ctlpt( E2, 5, 0 ) ) );
+c1 = c0 * ty( 5 );
+c2 = c0 * rz( 90 ) * ty( -1 );
+view( list( c1, c2 ), 1 );
+
+resolution = 100;
+DistCrvE = ConicSec( list( c1, c2 ), 1.0,  2, 2 );
+color( DistCrvE, green );
+
+view( list( c1, c2, DistCrvE ), 1 );
+
+resolution = 100;
+DistCrv = ConicSec( list( c1, c2 ), 1.0, 2, 1 );
+for ( i = 0, 1, sizeof( DistCrv ) - 1,
+    AnimBisectCrv2( c1, c2, DistCrvE, coord( DistCrv, i ), 1 ) );
+
+pause();
+
+#############################################################################
+
+c1 = coerce( cbspline( 3,
+		       list( ctlpt( E2, -1, -1 ),
+			     ctlpt( E2,  1, -1 ),
+			     ctlpt( E2,  1,  1 ),
+			     ctlpt( E2, -1,  1 ) ),
+		       list( KV_PERIODIC ) ),
+	     KV_OPEN ) * sy( 4 ) * sx( 0.2 );
+c2 = cbezier( list( ctlpt( E2, -5, 5 ), ctlpt( E2, 5, 5 ) ) );
+view( list( c1, c2 ), 1 );
+
+resolution = 100;
+DistCrvE = ConicSec( list( c1, c2 ), 1.0,  2, 2 );
+color( DistCrvE, green );
+
+view( list( c1, c2, DistCrvE ), 1 );
+
+resolution = 100;
+DistCrv = ConicSec( list( c1, c2 ), 1.0, 2, 1 );
+for ( i = 0, 1, sizeof( DistCrv ) - 1,
+    AnimBisectCrv2( c1, c2, DistCrvE, coord( DistCrv, i ), 4 ) );
+
+pause();
+
+#############################################################################
+
+dummy = iritstate( "BspProdMethod", IProd );
+free( IProd );
+
+view_mat = save_mat;
+resolution = save_res;
+
+free( DistCrv );
+free( DistCrvE );
+free( c0 );
+free( c1 );
+free( c2 );
+free( i );

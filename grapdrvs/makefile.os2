@@ -1,0 +1,38 @@
+#
+# This is the make file for the graphic driver's subdirectory.
+#
+#				Gershon Elber, June 1993
+#
+
+include ..\makeflag.os2
+
+nuldrvs.exe: nuldrvs.o gen_grap.o
+	$(CC) $(CFLAGS) -o nuldrvs nuldrvs.o gen_grap.o \
+		$(IRIT_LIBS) $(IRIT_MORE_LIBS) $(GRAPGLLIBS) -lm
+	$(STRIP) nuldrvs
+	$(BIND) nuldrvs $(BINDOPT)
+	$(RM) nuldrvs
+
+os2drvs.res:        os2drvs.rc os2drvs.h
+	rc -r -i $(EMX_DIR)/include os2drvs.rc
+
+OS2DRVS_DRAW = gen_grap.o cnstcrvs.o editcrvs.o \
+	editsrfs.o editmanp.o
+
+os2drvs.o: os2drvs.c
+	$(CC) -c $(CFLAGS) $(DFLAGS) -Zmts -o os2drvs.o os2drvs.c
+
+os2drvs.exe: os2drvs.o $(OS2DRVS_DRAW) os2drvs.res
+	$(CC) $(CFLAGS) -Zmts -o os2drvs os2drvs.o $(OS2DRVS_DRAW) \
+				$(IRIT_LIBS) $(IRIT_MORE_LIBS) $(GRAPOS2LIBS) -lm
+	$(STRIP) os2drvs
+	$(EMXBIND) -bpq -ros2drvs.res $(EMX_DIR)/bin/emxl os2drvs $(BINDOPT)
+	$(RM) os2drvs
+
+install: $(GRAPDRVS)
+	$(CP) -f ???drvs.exe $(IRIT_BIN_DIR)
+	$(RM) ???drvs.exe
+	$(CP) ???drvs.cfg $(IRIT_BIN_DIR)
+
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

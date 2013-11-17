@@ -1,0 +1,969 @@
+% 
+% prog_man.tex - The IRIT programmer's manual - main module.
+% 
+% Author:	Gershon Elber
+% 		Computer Science Dept.
+% 		Technion, IIT
+%
+
+%\documentstyle[10pt]{book}
+\documentstyle{book}
+
+\setlength{\oddsidemargin}{0.0in}
+\setlength{\evensidemargin}{0.0in}
+\setlength{\topmargin}{-0.2in}
+\setlength{\textwidth}{6.5in}
+\setlength{\textheight}{9.0in}
+
+\makeindex
+
+\begin{document}
+
+\small
+\setlength{\baselineskip}{0.85\baselineskip}
+
+\tableofcontents
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Introduction}
+
+This manual describes the different libraries of the IRIT solid
+modeling environment. Quite a few libraries can be found to manipulate
+geometry in general, freeform curves and surfaces, symbolic
+computation, trimmed surfaces, triangular patches, freeform trivariate
+functions, Boolean operations, input output data file parsing, and
+miscelleneous.
+
+All interface to the libraries should be made via the appropriate header
+files that can be found in the include subdirectory. Most libraries
+have a single header file that is named the same as the library.
+Functions and constants that are visible to the users of the libraries
+are prefixed with a unique prefix, usually derived from the library
+name itself. External definitions that start with an underscore should
+not be used, even if found in header files.
+
+The header file {\bf include/irit\_sm.h} must be sourced by every
+source file in the solid modeller. In most cases, this file is sourced
+indirectly via local header files.
+
+The following libraries are avaliable in IRIT:
+\begin{center}
+\begin{tabular}{|l|l|} \hline
+    Name of Library & Tasks \\ \hline
+    bool & Boolean operations on polygonal models. \\
+    cagd & Low level freeform curves and surfaces. \\
+    geom & General geometry functions. \\
+    grap & General graphics/display functions. \\
+    mdl  & Model's processing functions. \\
+    misc & Memory allocation, configuration files, attributes, etc. \\
+    mvar & Multi variate functions. \\
+    prsr & Input and output for file/sockets of objects of IRIT. \\
+    rndr & Scan conversion rendering functions. \\
+    symb & Symbolic manipulation of curves and surfaces. \\
+    trim & Trimmed surfaces support. \\
+    triv & Freeform trivariate functions. \\
+    trng & Triangular patches support. \\
+    user & General high level user inteface functions. \\
+    xtra & Public domain code that is not part of IRIT. \\ \hline
+\end{tabular}
+\end{center}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Tools and Programs}
+
+The IRIT package includes several complete programs such as poly3d-h
+(hidden line removal), irender (scan conversion tool), and irit2ps (a
+filter to Postscript).  Somewhat different than most other programs is
+the kernel interpreter, also called irit.  The irit program is nothing
+more than an interpreter (written in C) that invokes numerous
+functions in the several libraries provided.  In order to add a new
+function to the irit interpreter, the following sequence of operations
+must be followed:
+
+\begin{enumerate}
+\item Write a C function that accepts only one or more of the following
+     type of parameters.  All parameters, including the IrtRType, {\em must}
+     be transferred by address:
+    \begin{itemize}
+	\item IrtRType         (see irit\_sm.h).
+	\item IrtVecType       (see irit\_sm.h).
+	\item IrtPtType        (see irit\_sm.h).
+	\item CagdCtlPtStruct  (see cagd\_lib.h).
+	\item IrtPlnType       (see irit\_sm.h).
+	\item StringType       (char *).
+	\item IPObjectStruct   (see iritprsr.h).  This includes all object
+		types in IPObjectStruct other than the above.
+    \end{itemize}
+\item The written C function can return one of:
+    \begin{itemize}
+	\item IrtRType by value.
+	\item IPObjectStruct by address.
+	\item Nothing (a procedure).
+    \end{itemize}
+\item According to the returned type by the new C function, go to file
+	{\bf inptprsl.h}, and add a new enum NEW\_FUNC for the new function in
+	enum RealValueFuncType (for IrtRType returned value), in
+	enum ObjValueFuncType (for IPObjectStruct * returned value), or in
+	enum GenValueFuncType (for no returned value).
+\item In {\bf inptevl1.c}, add one new line in one of NumFuncTable,
+	ObjFuncTable, or GenFuncTable (depends upon the return value).
+	The line will have the form of:
+	\begin{verbatim}
+            { ``FuncName'', NEW_FUNC, CFunctionName,  N, { Param1Type,
+                                              Param2Type, ... ParamNType } }
+	\end{verbatim}
+	for procedures with no return values, and of the form of:
+	\begin{verbatim}
+            { ``FuncName'', NEW_FUNC, CFunctionName,  N, { Param1Type,
+                                    Param2Type, ... ParamNType }, RetValType }
+	\end{verbatim}
+	otherwise. \verb-N- is the number of parameters,
+	\verb-`FuncName''- is the (unique) name that will be used in
+	the interpreter, CFunctionName is the name of the C function you
+	have written. This C function must be declared in one of the header
+	files that inptevl1.c includes. ParamIType, for I between 1 and N,
+	and RetValType are of type IritExprType (see inptprsl.h).
+\item Thats it!
+\end{enumerate}
+
+For example, to add the C function declared as
+\begin{verbatim}
+    IPObjectStruct *PolyhedraMoments(IPObjectStruct *IPObjectStruct,
+                                     IrtRType *m);
+\end{verbatim}
+one has to add the following line to ObjFuncTable in iritevl1.c
+\begin{verbatim}
+    { ``PMOMENT'', PMOMENT, { POLY_EXPR, REAL_EXPR }, VECTOR_EXPR },
+\end{verbatim}
+where PMOMENT needs to be added to ObjValueFuncType in iritprsl.h.
+
+While all objects in the interpreted space are of type IPObjectStruct,
+the functions' interface unfolds many types to simplify matter.
+IrtRType, IrtVecType, Strings, etc. are all extracted from the given
+(IPObjectStruct) parameters and passed directly by address.  For
+returned values, only numeric real data is allowed where everything
+else must be returned wrapped in an IPObjectStruct.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The following chapters reference the different functions of the different
+libraries. Chapter~\ref{chap-examples} provides several examples of
+writing C code using the IRIT libraries.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Boolean Library, bool\_lib}
+
+\section{General Information}
+
+On of the crucial operation in any solid modeling environment is the
+ability to perform Boolean operations among different geometric
+objects.  The interface of the library is defined in {\em
+include/bool\_lib.h}. This library supports only Boolean operations of
+polygonal objects. The Boolean operations of OR, AND, SUBtract,
+NEGate, CUT, and MERGE are supported via the {\bf BoolOperType}
+typedef:
+\begin{center}
+\begin{tabular}{||c|c||} \hline 
+    BoolOperType & Meaning \\ \hline
+    BOOL\_OPER\_OR & Union of two geometrical objects \\
+    BOOL\_OPER\_AND & Intersection of two geometrical objects \\
+    BOOL\_OPER\_SUB & The difference of two geometrical objects \\
+    BOOL\_OPER\_NEG & Unary Inside-out of one geometrical object \\
+    BOOL\_OPER\_CUT & Boundary of one object outside the other \\
+    BOOL\_OPER\_MERGE & Simple merge without any computation \\ \hline
+\end{tabular}
+\end{center}
+
+The {\bf BoolOperType} typedef is used in two dimensional Boolean operations
+invoked via {\bf Boolean2D}. Three dimensional Boolean operations are
+invoked via {\bf BooleanXXX} where XXX is one of OR, AND, SUB, NEG, CUT
+or MERGE, denoting the same as in the table above.
+
+In addition several state functions are available to control the way
+the Boolean operations are conducted. Functions to enable the dump of
+(only) the intersection curves, to handle coplanar polygons, and to
+set the axis along which the sweep is performed are provided.
+
+All globals in this library have a profix of {\bf Bool}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Algorithmic Hints Behind the Boolean Operations}
+
+Let ${\cal M}_i,~i = 1,2$ be two polygonal models to compute a Boolean
+operation between and let $P_m$ denote the $m$'th polygon of ${\cal M}_i$.
+Denote by $InterList( P_m ),~P_m \in {\cal M}_i$, the list of line
+segments representing the intersections of polygon $P_m$ with polygons
+in ${\cal M}_j$.  A naive first, intersection, step in a Boolean
+operation between two polyhedra models, ${\cal M}_1$ and ${\cal M}_2$,
+will consist of the following stages:
+\begin{bf}
+\begin{tt}
+\begin{tabbing}
+\hspace{2em}\=\hspace{2em}\=\hspace{2em}\=\hspace{2em}\=\hspace{2em}\=\hspace{2em}\=\kill
+\> For each polygon $P_m$ in ${\cal M}_1$ \\
+\> begin \\
+\> \> $InterList( P_m )$ $\Leftarrow$ $\emptyset$ \\
+\> end \\
+\> For each polygon $P_n$ in ${\cal M}_2$ \\
+\> begin \\
+\> \> $InterList( P_n )$ $\Leftarrow$ $\emptyset$ \\
+\> end \\
+\\
+\> For each polygon $P_m$ in ${\cal M}_1$ \\
+\> begin \\
+\> \> For each polygon $P_n$ in ${\cal M}_2$ \\
+\> \> begin \\
+\> \> \> If ( $P_m \cap P_n$ ) \\
+\> \> \> begin \\
+\> \> \> \> ${\cal L}$ $\Leftarrow$ $P_m \cap P_n$; \\
+\> \> \> \> $InterList( P_m )$ $\Leftarrow$ $InterList( P_m )$ $\cup$ ${\cal L}$; \\
+\> \> \> \> $InterList( P_n )$ $\Leftarrow$ $InterList( P_n )$ $\cup$ ${\cal L}$; \\
+\> \> \> end \\
+\> \> end \\
+\> end
+\end{tabbing}
+\end{tt}
+\end{bf}
+
+At the end of the first, intersection stage, each polygon, $P_m$ in
+either ${\cal M}_1$ (or $P_n \in {\cal M}_2$) contains in its
+$InterList( P_m )$ the set of line segments of the intersection(s) of
+$P_m$ with all polygons in the other model.  In order to figure out
+orientation, each intersection line segment also contains an
+orientation hint as to the inside direction of the two polygons that
+intersect at that line segment.  This list of intersection line
+segments can now be processed:
+
+\begin{bf}
+\begin{tt}
+\begin{tabbing}
+\hspace{2em}\=\hspace{2em}\=\hspace{2em}\=\hspace{2em}\=\hspace{2em}\=\kill
+\> For each polygon $P_m$ in ${\cal M}_1$ \\
+\> begin \\
+\> \> $Polys$ $\Leftarrow$ $InterList( P_m )$ sorted into polylines; \\
+\> \> $OpenList( P_m )$ $\Leftarrow$ Open polylines of $Polys$; \\
+\> \> $ClosedList( P_m )$ $\Leftarrow$ Closed polylines of $Polys$; \\
+\> end \\
+\> For each polygon $P_n$ in ${\cal M}_2$ \\
+\> begin \\
+\> \> $Polys$ $\Leftarrow$ $InterList( P_n )$ sorted into polylines; \\
+\> \> $OpenList( P_n )$ $\Leftarrow$ Open polylines of $Polys$; \\
+\> \> $ClosedList( P_n )$ $\Leftarrow$ Closed polylines of $Polys$; \\
+\> end \\
+\end{tabbing}
+\end{tt}
+\end{bf}
+
+Open polylines, $OpenList( P_m )$, are intersection polylines that are
+open.  These polylines starts on the boundary of polygon $P_m$ and
+also ends on the boundary, at a different boundary location though.
+In contrast, the set of closed polylines, $ClosedList( P_n )$, contains
+closed loops that are completely contained in $P_n$.
+
+The polygons are now ready for {\em trimming}.  Depending upon the Boolean
+operation that is requested, the inside or the outside of ${\cal M}_1$ or
+${\cal M}_2$ is selected for the output result.  Denote by
+${\cal M}_i \ Out \ {\cal M}_j$ (${\cal M}_i \ In \ {\cal M}_j$) the region of
+${\cal M}_i$ that is outside (inside) ${\cal M}_j$. Then,
+
+\bigskip 
+\begin{center}
+\begin{tabular}{||c|c||} \hline
+Boolean Operation & implementation as \\ \hline \hline
+${\cal M}_1 \cup {\cal M}_1$ & $\{ {\cal M}_1\ Out\ {\cal M}_2 \} \cup
+			     \{ {\cal M}_2\ Out\ {\cal M}_1 \}$ \\
+${\cal M}_1 \cap {\cal M}_1$ & $\{ {\cal M}_1\ In\ {\cal M}_2 \} \cup
+			     \{ {\cal M}_2\ In\ {\cal M}_1 \}$ \\
+${\cal M}_1 - {\cal M}_1$ & $\{ {\cal M}_1\ Out\ {\cal M}_2 \} \cup
+			     Inverse\{ {\cal M}_2\ In\ {\cal M}_1 \}$ \\ \hline
+\end{tabular}
+\end{center}
+\bigskip 
+
+Note the $Inverse$ operation that reverses the orientation inside
+out.
+
+At this point, all Boolean operations are translated into two complementary
+type of operations, $In$ and $Out$. The computation of
+${\cal M}_i \ Out \ {\cal M}_j$ is conducted by tracing the outside regions
+of the polygons of ${\cal M}_i$ that {\em intersect} ${\cal M}_j$ and
+{\em propagating} this inside--outside information to the non intersecting
+polygons:
+\begin{bf}
+\begin{tt}
+\begin{tabbing}
+\hspace{2em}\=\hspace{2em}\=\hspace{2em}\=\hspace{2em}\=\hspace{2em}\=\kill
+\> For each polygon $P_m$ in ${\cal M}_1$ with non empty $OpenList( P_m )$ \\
+\> \mbox{\hspace{2.425in}} or non empty $ClosedList( P_m )$ \\
+\> begin \\
+\> \> $P_m^{in}$ $\Leftarrow$ Inside region of $P_m$; \\
+\> \> $P_m^{out}$ $\Leftarrow$ Outside region of $P_m$; \\
+\\
+\> \> For each {\em original} edge, $e \in P_m^{in}$ \\
+\> \> begin \\
+\> \> \> Push $e$ onto $InsideStack$; \\
+\> \> end \\
+\> \> For each {\em original} edge, $e \in P_m^{out}$ \\
+\> \> begin \\
+\> \> \> Push $e$ onto $OutSideStack$; \\
+\> \> end \\
+\> end \\
+\\
+\> While $InsideStack$ not empty\\
+\> begin \\
+\> \> $e$ $\Leftarrow$ edge poped from top of $InsideStack$; \\
+\> \> $P_m$, $P_l$ $\Leftarrow$ two polygons sharing $e$ in ${\cal M}_1$; \\
+\\
+\> \> If ( $P_m$ has empty $OpenList( P_m )$ and empty $ClosedList( P_m )$, \\
+\> \> \mbox{\hspace{3in}} and $P_m$ is not classified yet ) \\
+\> \> begin \\
+\> \> \> Classify $P_m$ as inside; \\
+\> \> \> push all edges of $P_m$, but $e$, onto $InsideStack$; \\
+\> \> end \\
+\> \> If ( $P_l$ has empty $OpenList( P_l )$ and empty $ClosedList( P_l )$, \\
+\> \> \mbox{\hspace{3in}} and $P_l$ is not classified yet ) \\
+\> \> begin \\
+\> \> \> Classify $P_l$ as inside; \\
+\> \> \> push all edges of $P_l$, but $e$, onto $InsideStack$; \\
+\> \> end \\
+\> end \\
+\\
+\> While $OutsideStack$ not empty\\
+\> begin \\
+\> \> $e$ $\Leftarrow$ edge poped from top of $outsideStack$; \\
+\> \> $P_m$, $P_l$ $\Leftarrow$ two polygons sharing $e$ in ${\cal M}_1$; \\
+\\
+\> \> If ( $P_m$ has empty $OpenList( P_m )$ and empty $ClosedList( P_m )$, \\
+\> \> \mbox{\hspace{3in}} and $P_m$ is not classified yet ) \\
+\> \> begin \\
+\> \> \> Classify $P_m$ as outside; \\
+\> \> \> push all edges of $P_m$, but $e$, onto $OutsideStack$; \\
+\> \> end \\
+\> \> If ( $P_l$ has empty $OpenList( P_l )$ and empty $ClosedList( P_l )$, \\
+\> \> \mbox{\hspace{3in}} and $P_l$ is not classified yet ) \\
+\> \> begin \\
+\> \> \> Classify $P_l$ as outside; \\
+\> \> \> push all edges of $P_l$, but $e$, onto $OutsideStack$; \\
+\> \> end \\
+\> end \\
+\end{tabbing}
+\end{tt}
+\end{bf}
+
+At the end of this process, $M_1$ is completely split into two sets of
+polygons, classified as either inside $M_2$ or outside $M_2$.  An
+identical spliting process can be applied to ${\cal M}_2$.  The proper
+inside/outside lists of ${\cal M}_1$ can now be combined with the
+proper list of classified polygons of ${\cal M}_2$ to yield the proper
+result of the requested Boolean operation.
+
+While this completes the Boolean operation, vast room for improvements
+can be found, with some improvements implemented in IRIT.  For
+example, the first step of the intersection computation necessitates
+an $O(n^2)$ polygon--polygon intersection tests, where $n$ is in the
+order of the number of polygons in ${\cal M}_i$.  Clearly, one can
+hope for a better time complexity.  Bounding boxes, hierarchical
+bounding boxes, or three dimensional space sweep techniques can all be
+applied to reduce the overhead invested in these $O(n^2)$ tests.
+Efficient sorting of line segments within a polygon, when forming the
+open and closed loops is another optimization consideration.
+
+\section{Library Functions}
+\input{prog_man/bool_lib.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{CAGD Library, cagd\_lib}
+
+\section{General Information}
+
+This library provides a rich set of function to create, convert,
+display and process freeform Bezier and NURBs curves and surfaces. The
+interface of the library is defined in {\em include/cagd\_lib.h}. This
+library mainly supports low level freeform curve and surface
+operations.  Supported are curves and surfaces from scalars to five
+dimensions as E1/P1 to E5/P5 using the {\bf CagdPointType}. Pi is a
+rational (projective) version of Ei, with an additional W coefficient.
+Polynomial in the power basis have some very limited support as well.
+Different data structures to hold UV parameter values, control points,
+vectors, planes, bounding boxes, polylines and polygons are defined as
+well as the data strcutures to hold the curves and surfaces
+themselves,
+\begin{verbatim}
+typedef struct CagdCrvStruct {
+    struct CagdCrvStruct *Pnext;
+    struct IPAttributeStruct *Attr;
+    CagdGeomType GType;
+    CagdPointType PType;
+    int Length;            /* Number of control points (== order in Bezier). */
+    int Order;	    /* Order of curve (only for Bspline, ignored in Bezier). */
+    CagdBType Periodic;			   /* Valid only for Bspline curves. */
+    CagdRType *Points[CAGD_MAX_PT_SIZE];     /* Pointer on each axis vector. */
+    CagdRType *KnotVector;
+} CagdCrvStruct;
+
+typedef struct CagdSrfStruct {
+    struct CagdSrfStruct *Pnext;
+    struct IPAttributeStruct *Attr;
+    CagdGeomType GType;
+    CagdPointType PType;
+    int ULength, VLength;	 /* Mesh size in the tensor product surface. */
+    int UOrder, VOrder;   /* Order in tensor product surface (Bspline only). */
+    CagdBType UPeriodic, VPeriodic;      /* Valid only for Bspline surfaces. */
+    CagdRType *Points[CAGD_MAX_PT_SIZE];     /* Pointer on each axis vector. */
+    CagdRType *UKnotVector, *VKnotVector;
+} CagdSrfStruct;
+\end{verbatim}
+
+Curves and surfaces have a geometric type {\bf GType} to prescribe the
+type of entity (such as CAGD\_SBEZIER\_TYPE for Bezier surface) and a
+point type {\bf PType} to prescribe the point type of the entity (such
+as CAGD\_PT\_E3\_TYPE for three dimensional Euclidean control points).
+{\bf Length} and {\bf Order} slots are used to hold the number of
+control points in the mesh and or control polygon and the order(s) of
+the basis functions. {\bf Periodic} flag(s) are used to denote
+periodic end conditions. In addition, {\bf KnotVector} slot(s) are
+used if the entity exploits Bspline basis functions, or NULL
+otherwise.
+
+The control polygon and/or mesh itself is organized in the {\bf
+Points} slot as a vector of size {\bf CAGD\_MAX\_PT\_SIZE} of vectors
+of {\bf CagdRType}s. For surfaces, the mesh is ordered U first and the
+macros of {\bf CAGD\_NEXT\_U} {\bf CAGD\_NEXT\_V}, and {\bf
+CAGD\_MESH\_UV} can be used to determine indices in the mesh.
+
+All structures in the cagd library can be allocated using New
+constrcutures (i.e. {\bf CagdUVNew} or {\bf CagdCrfNew}, freed using
+Free destructores (i.e. {\bf CagdSrfFree} or {CagdBBoxFree}, linked
+list free using FreeList destructores (i.e. {\bf
+CagdPolylineFreeList}), and copied using copy constructores {i.e. {\bf
+CagdPtCopy} or {\bf CagdCtlPtCopyList}).
+
+This library has its own error handler, which by default prints an
+error message and exit the program called {\bf CagdFatalError}.
+
+Most globals in this library have a prefix of {\bf Cagd} for general
+cagd routines. Prefix of {\bf Bzr} is used for Bezier routines, prefix
+of {\bf Bsp} for Bspline specific routines, prefix of {\bf Cnvrt} for
+conversion routines, and {\bf Afd} for adaptive forward differencing
+routines.
+
+\section{Library Functions}
+\input{prog_man/cagd_lib.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Geometry Library, geom\_lib}
+
+\section{General Information}
+
+This library handles general computational geometry algorithms and
+geometric queries such as a distance between two lines, bounding
+boxes, convexity and convex hull of polygons, polygonal constructors
+of primitives (cylinders, spheres, etc.), basic scan conversion
+routines, etc.
+
+\section{Library Functions}
+\input{prog_man/geom_lib.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Graphics Library, grap\_lib}
+
+\section{General Information}
+
+This library handles general drawing and display algorithms, including
+tesselation of all geometric objects, such as curves and surfaces, into
+displayable primitives, i.e. polygons and polylines.
+
+\section{Library Functions}
+\input{prog_man/grap_lib.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Model Library, mdl\_lib}
+
+\section{General Information}
+
+This library provides the necessary tools to represent and process
+models.  Models are sets of trimmed surfaces forming a closed
+2-manifold shell.  Models are typically the result of Boolean operations
+over freeform (trimmed) NURBs geometry but can also be constructed
+directly or via other schemes.
+
+\section{Library Functions}
+\input{prog_man/mdl_lib.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Miscelleneous Library, misc\_lib}
+
+\section{General Information}
+
+This library holds general miscelleneous functions such as reading
+configuration files, low level homogeneous matrices computation, low
+level attributes and general machine specific low level routines.
+Several header files can be found for this library:
+\begin{center}
+\begin{tabular}{||c|c||} \hline
+    Header (include/*.h) & Functionality \\ \hline
+    config.h   & Manipulation of configuration files (*.cfg files) \\
+    dist\_pts.h & Enegry based distribution of points. \\
+    gen\_mat.h  & Homogeneous matrices manipulation \\
+    getarg.h   & Command line parsing for application tools \\
+    imalloc.h  & Low level dynamic memory functions for IRIT \\
+    miscattr.h & Low level attribute related functions \\
+    priorque.h & An implementation of a priority queue \\
+    xgeneral.h & Low level, machine specific, routines \\ \hline
+\end{tabular}
+\end{center}
+
+\section{Library Functions}
+\input{prog_man/misc_lib.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Multi variate functions, mvar\_lib}
+
+\section{General Information}
+
+This library holds functions to handle functions of arbitrary number
+of variables. In this context curves (univariate), surfaces
+(bivariate) and trivariates are special cases. This library provides a
+rich set of functions to manipulate freeform Bezier and/or NURBs
+multivariates. This library heavily depends on the cagd an symb
+libraries. Functions are provided to create, copy, and destruct
+multivariates, to extract isoparametric lower degree multivariates, to
+evaluate, refine and subdivide, to read and write multivariates, to
+differentiate, degree raise, make compatible and convert back and
+forth to/from curves, surfaces, and trivariates.
+
+A multivariate has m orders, m Length prescriptions and,
+possibly, m knot vectors (if Bspline).  In addition it contains
+an m dimensional volume of control points,
+\begin{verbatim}
+typedef struct MvarMVStruct {
+    struct MvarMVStruct *Pnext;
+    struct IPAttributeStruct *Attr;
+    MvarGeomType GType;
+    CagdPointType PType;
+    int Dim;		      /* Number of dimensions in this multi variate. */
+    int *Lengths;               /* Dimensions of mesh size in multi-variate. */
+    int *SubSpaces;	   /* SubSpaces[i] = Prod(i = 0, i-1) of Lengths[i]. */
+    int *Orders;                /* Orders of multi varariate (Bspline only). */
+    CagdBType *Periodic;            /* Periodicity - valid only for Bspline. */
+    CagdRType *Points[CAGD_MAX_PT_SIZE];     /* Pointer on each axis vector. */
+    CagdRType **KnotVectors;
+} MvarMVStruct;
+\end{verbatim}
+
+The interface of the library is defined in {\em include/mvar\_lib.h}. 
+
+This library has its own error handler, which by default prints an
+error message and exit the program called {\bf MvarFatalError}.
+
+All globals in this library have a prefix of {\bf Mvar}.
+
+\section{Library Functions}
+\input{prog_man/mvar_lib.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Prsr Library, prsr\_lib}
+
+\section{General Information}
+
+This library provides the data file interface for IRIT. Functions are
+provided to read and write data files, both compressed (on unix only,
+using {\em compress}), and uncompressed, in binary and/or ascii text
+modes. This library is also used to exchange data between the IRIT
+server and the display devices' clients.  Several header files can be
+found for this library:
+\begin{center}
+\begin{tabular}{||c|c||} \hline
+    Header (include/*.h) & Functionality \\ \hline
+    allocate.h & High level dynamic allocation of objects \\
+    attribut.h & High level attributes for objects \\
+    ip\_cnvrt.h & Freeform to polygon and polyline high level conversion \\
+    iritprsr.h & Main interface to reading and writing data \\
+    irit\_soc.h & Socket communication for data exchange \\ \hline
+\end{tabular}
+\end{center}
+
+\section{Library Functions}
+\input{prog_man/prsr_lib.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Rendering Library, rndr\_lib}
+
+\section{General Information}
+
+This library provides a powerful full screen scan conversion Z-buffer
+tool to process IRIT geometry and convert it into images.  This
+library allows one to scan convert any IRIT geometry including
+polylines and curves that are converted to skinny polygons on the fly.
+The library offers regular scan conversion with flat, Gouraud, and
+Phong shading and several antialiasing filters along with advanced
+features such as transparency and animation support, and width depth
+cueing on polyline/curves rendering.  The library also provide direct
+access to the depth Z-buffer as well as a stencil buffer.
+
+\section{Library Functions}
+\input{prog_man/rndr_lib.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Symbolic Library, symb\_lib}
+
+\section{General Information}
+
+This library provides a rich set of functions to symbolically manipulate
+freeform curves and surfaces. This library heavily depends on the cagd
+library. Functions are provided to low level add, subtract, and multiply
+freeform curves and surfaces, to compute fields such as curvature,
+and to extract singular points such as extremums, zeros, and inflections.
+High level tools to metamorph curves and surfaces, to compute layout (prisa)
+of freeform surfaces, to compute offset approximations of curves and
+surfaces, and to compose curves and surfaces are also provided.
+
+The interface of the library is defined in {\em include/symb\_lib.h}. 
+
+This library has its own error handler, which by default prints an
+error message and exit the program called {\bf SymbFatalError}.
+
+Globals in this library have a prefix of {\bf Symb} for general
+symbolic routines. Prefix of {\bf Bzr} is used for Bezier routines,
+and prefix of {\bf Bsp} for Bspline specific routines.
+
+\section{Library Functions}
+\input{prog_man/symb_lib.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Trimmed surfaces Library, trim\_lib}
+
+\section{General Information}
+
+This library provides a set of functions to manipulate freeform
+trimmed Bezier and/or NURBs surfaces. This library heavily depends on
+the cagd library. Functions are provided to create, copy, and destruct
+trimmed surfaces to extract isoparametric curves, to evaluate, refine
+and subdivide, to read and write trimmed surfaces, degree raise, and
+approximate using polygonal representations.  A trimming surface is
+defined out of a tensor product surface and a set of trimming loops
+that trims out portions of the parametric space of the surface,
+\begin{verbatim}
+typedef struct TrimSrfStruct {
+    struct TrimSrfStruct *Pnext;
+    IPAttributeStruct *Attr;
+    int Tags;
+    CagdSrfStruct *Srf;			  /* Surface trimmed by TrimCrvList. */
+    TrimCrvStruct *TrimCrvList;		         /* List of trimming curves. */
+} TrimSrfStruct;
+\end{verbatim}
+
+Each trimming loop consists of a set of trimming curve segments:
+\begin{verbatim}
+typedef struct TrimCrvStruct {
+    struct TrimCrvStruct *Pnext;
+    IPAttributeStruct *Attr;
+    TrimCrvSegStruct *TrimCrvSegList;    /* List of trimming curve segments. */
+} TrimCrvStruct;
+\end{verbatim}
+
+Each trimming curve segment contains a representation for the curve in the
+UV space of the surface as well as a representation in the Euclidean space,
+\begin{verbatim}
+typedef struct TrimCrvSegStruct {
+    struct TrimCrvSegStruct *Pnext;
+    IPAttributeStruct *Attr;
+    CagdCrvStruct *UVCrv;    /* Trimming crv segment in srf's param. domain. */
+    CagdCrvStruct *EucCrv;       /* Trimming curve as an E3 Euclidean curve. */
+} TrimCrvSegStruct;
+\end{verbatim}
+
+
+The interface of the library is defined in {\em include/trim\_lib.h}. 
+
+This library has its own error handler, which by default prints an
+error message and exit the program called {\bf TrimFatalError}.
+
+All globals in this library have a prefix of {\bf Trim}.
+
+\section{Library Functions}
+\input{prog_man/trim_lib.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Trivariate Library, triv\_lib}
+
+\section{General Information}
+
+This library provides a rich set of functions to manipulate freeform
+Bezier and/or NURBs trivariate. This library heavily depends on the cagd
+library. Functions are provided to create, copy, and destruct trivariates,
+to extract isoparametric surfaces, to evaluate, refine and subdivide, to
+read and write trivariates, to differentiate, degree raise, make compatible
+and approximate iso-surface at iso values using polygonal representations.
+
+A trivariate has three orders, three Length prescriptions and,
+possibly, three knot vectors (if Bspline).  In addition it contains
+a three dimensional volume of control points,
+\begin{verbatim}
+typedef struct TrivTVStruct {
+    struct TrivTVStruct *Pnext;
+    struct IPAttributeStruct *Attr;
+    TrivGeomType GType;
+    CagdPointType PType;
+    int ULength, VLength, WLength;/* Mesh size in tri-variate tensor product.*/
+    int UVPlane;	  /* Should equal ULength * VLength for fast access. */
+    int UOrder, VOrder, WOrder;       /* Order in trivariate (Bspline only). */
+    CagdBType UPeriodic, VPeriodic, WPeriodic;    /* Valid only for Bspline. */
+    CagdRType *Points[CAGD_MAX_PT_SIZE];     /* Pointer on each axis vector. */
+    CagdRType *UKnotVector, *VKnotVector, *WKnotVector;
+} TrivTVStruct;
+\end{verbatim}
+
+The interface of the library is defined in {\em include/triv\_lib.h}. 
+
+This library has its own error handler, which by default prints an
+error message and exit the program called {\bf TrivFatalError}.
+
+All globals in this library have a prefix of {\bf Triv}.
+
+\section{Library Functions}
+\input{prog_man/triv_lib.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Triangular Library, trng\_lib}
+
+\section{General Information}
+
+This library provides a subset of functions to manipulate freeform
+triangular Bezier and Bspline patches. This library heavily depends on
+the cagd library. Functions are provided to create, copy, and destruct
+triangular patches, to extract isoparametric curves, to evaluate,
+refine and subdivide, to read and write triangular patches, to
+differentiate, and approximate using polygonal representations.
+
+A triangular patch has one prescription of Length and one prescription
+of Order, the total Order and the length of an edge of the triangle.
+The control mesh mesh has Length * (Length + 1) / 2 control points,
+\begin{verbatim}
+typedef struct TrngTriangSrfStruct {
+    struct TrngTriangSrfStruct *Pnext;
+    struct IPAttributeStruct *Attr;
+    TrngGeomType GType;
+    CagdPointType PType;
+    int Length;		    /* Mesh size (length of edge of triangular mesh. */
+    int Order;		      /* Order of triangular surface (Bspline only). */
+    CagdRType *Points[CAGD_MAX_PT_SIZE];     /* Pointer on each axis vector. */
+    CagdRType *KnotVector;
+} TrngTriangSrfStruct;
+\end{verbatim}
+
+The interface of the library is defined in {\em include/trng\_lib.h}. 
+
+This library has its own error handler, which by default prints an
+error message and exit the program called {\bf TrngFatalError}.
+
+All globals in this library have a prefix of {\bf Trng}.
+
+\section{Library Functions}
+\input{prog_man/trng_lib.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{User Library, user\_lib}
+
+\section{General Information}
+
+This library includes user interface related geometrical functions such
+as ray surface intersection (for mouse click/select operations), etc.
+
+The interface of the library is defined in {\em include/user\_lib.h}. 
+
+\section{Library Functions}
+\input{prog_man/user_lib.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Extra Library, xtra\_lib}
+
+\section{General Information}
+
+This library is not an official part of IRIT and contains public
+domain code that is used by routines in IRIT.
+
+The interface of the library is defined in {\em include/extra\_fn.h}. 
+
+\section{Library Functions}
+\input{prog_man/xtra_lib.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Programming Examples}
+\label{chap-examples}
+
+This chapter describes several simple examples of C programs that
+exploits the libraries of IRIT. All external function are defined in
+the {\em include} subdirectory of IRIT and one can 'grep' there for the
+exact include file that contains a certain function name. All C programs
+in all C files should include 'irit\_sm.h' as their first include file
+of IRIT, before any other include file of IRIT. Header files are set so
+C++ code can compile and link to it without any special treatment.
+
+\section{Setting up the Compilation Environment}
+
+In order to compile programs that uses the libraries of IRIT, a makefile
+has to be constructed. Assuming IRIT is installed in {\em /usr/local/irit},
+here is a simple makefile that can be used (for a unix environment):
+
+\begin{verbatim}
+IRIT_DIR = /usr/local/irit
+
+include $(IRIT_DIR)/makeflag.unx
+
+OBJS	= program.o
+
+program: $(OBJS)
+	$(CC) $(CFLAGS) -o program $(OBJS) $(LIBS) -lm $(MORELIBS)
+\end{verbatim}
+
+The simplicity of this makefile is drawn from the complexity of
+makeflag.unx. The file makeflag.unx sets the CC, CFLAGS, LIBS, and
+MORELIBS for the machined using among other things. Furthermore,
+makeflag.unx also sets the default compilation rules from C sources to
+object files.  The file makeflag.unx had to be modified once, when
+IRIT was installed on this system. If the used system is not a unix
+environment, then the file makefile.unx will have to be replaced with
+the proper makeflag file.  In an OS2 environment, using the emx gcc
+compiler, the makefile is even simpler since the linking rule is also
+defined in makeflag.os2:
+
+\begin{verbatim}
+IRIT_DIR = \usr\local\irit
+
+include $(IRIT_DIR)\makeflag.os2
+
+OBJS	= program.o
+
+program.exe: $(OBJS)
+\end{verbatim}
+
+Finally, here is a proper makefile for Windows NT:
+
+\begin{verbatim}
+IRIT_DIR = \usr\local\irit
+
+include $(IRIT_DIR)\makeflag.wnt
+
+OBJS	= program.obj
+
+program.exe: $(OBJS)
+        $(IRITCONLINK) -out:program.exe $(OBJS) $(LIBS) $(W32CONLIBS)
+\end{verbatim}
+
+\section{Simple C Programs using IRIT}
+
+Now that we have an idea how to compile C code using IRIT, here are several
+examples to read, manipulate and write IRIT data files. You will be able to
+find all these examples in the doc/cexample directory.
+
+\subsection{Boolean Operations over Polyhedra (boolean.c)}
+
+This example demonstates the use of the Boolean operations package
+(bool\_lib), creates few polygonal primitives and apply Boolean
+operations between them.  The resulting model is dumped to stdout.
+
+\input{cexample/boolean.tex}
+
+\subsection{Distance Maps to Planar Curves (dist\_map.c)}
+
+This example demonstates the use of symbolic distance maps
+computations to freeform curves, in the plane, and the sampling
+of the map into an image that is dumped out.
+
+\input{cexample/dist_map.tex}
+
+\subsection{Importance Edges Evaluations in Polygonal Meshes (imprtnc.c)}
+
+This example demonstates the tesselation of arbitrary input model(s)
+into polygons and the probabalistic estimation of importance edges in the
+polygonal geometry.  Dumped out is the polygonal geometry with vertices
+having UV coordinates if available, normals if available, and importance.
+
+\input{cexample/imprtnc.tex}
+
+\subsection{Least sqaures curve fitting and process communication (lst\_sqrs.c)}
+
+This example creates a Bspline curve that least squares approximates
+a given set of data points. In the default values, a quadratic Bspline
+curve of 10 control points least sqaures approximates a set of 100
+three dimensional points. Also shown is a polyline of the original
+(100) points. Arbitrary number of curves will be displayed every, one
+for every <return> keystroke until Q<return> is typed.
+
+\input{cexample/lst_sqrs.tex}
+
+\subsection{Multivariate Solver (msolve.c)}
+
+This example demonstates the use of the multivariate solver from the
+mvar\_lib library.  Input is a set of n polynomial equations in m
+variables and dumped out are the solutions to these equations.
+
+\input{cexample/msolve.tex}
+
+\subsection{Compute Area of a Polygonal Model (polyarea.c)}
+
+Here is a simple program to compute the total area of all polygons in
+the given data file. The program expects one argument on the command
+line which is the name of the file to read, and it prints out one
+line with the total computed area.
+
+\input{cexample/polyarea.tex}
+
+\subsection{Converts a Freeform Surface into Polygons (polygons.c)}
+
+This true filter reads a single surface from stdin and dumps out a
+polygonal approximation of it to stdout. They are several parameters
+that controls the way a surface is approximated into polygons and in
+this simple filter they are being held fixed in a set of integer
+variables.
+
+\input{cexample/polygons.tex}
+
+\subsection{Linear Transformations' Filter (transfrm.c)}
+
+This little more complex program transfroms all the geometry in the
+read data which can be any number of files according to the specified
+transformations on the command line. The command line is parsed via
+{\bf GAGetArgs} and its associated functions. The transformation
+matrix is then computed with the aid of the matrix package and applied
+to the read geometry at once.
+
+\input{cexample/transfrm.tex}
+
+Here is the result of running 'transfrm -h':
+\begin{verbatim}
+This is Transform...
+Usage: Transfrm [-x Degs] [-y Degs] [-z Degs] [-t X Y Z] [-s Scale] [-h] DFiles
+\end{verbatim}
+
+When you are considering the usefulness of this tool remember that the
+transformations are applied to the geometry in an internal order which is
+different from the command line order. That is,
+\begin{verbatim}
+     transfrm -x 30 -y 30 geometry.dat > tgeometry.dat
+\end{verbatim}
+will compute the exact same transfrom as,
+\begin{verbatim}
+     transfrm -y 30 -x 30 geometry.dat > tgeometry.dat
+\end{verbatim}
+This, while rotation is not a commutative operation.
+Nonetheless, you may split the operations. That is:
+\begin{verbatim}
+     transfrm -y 30 geometry.dat | transfrm -x 30 - > tgeometry.dat
+\end{verbatim}
+or
+\begin{verbatim}
+     transfrm -x 30 geometry.dat | transfrm -y 30 - > tgeometry.dat
+\end{verbatim}
+will do exactly what one expects.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\twocolumn
+\input{prog_man.ind}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}

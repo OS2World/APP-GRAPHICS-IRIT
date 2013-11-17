@@ -1,0 +1,117 @@
+#
+# This file existance is justified to demonstrate loops:
+#
+
+step = 5;
+
+save_mat = view_mat;
+
+b = surfRev( ctlpt( E3, 0.0, 0.0, -0.5 ) +
+	     ctlpt( E3, 0.3, 0.0, -0.5 ) +
+	     ctlpt( E3, 0.0, 0.0,  0.5 ) );
+
+rotstepx = rotx( step );
+rotstepy = roty( step );
+rotstepz = rotz( step );
+rotstep111 = rotvec( vector( 1, 1, 1 ), step );
+
+#
+# Rotate around	the X axis:
+#
+for ( a = 1, 1, 360 / step,
+	view_mat = rotstepx * view_mat:
+	view( list( view_mat, b, axes ), on )
+    );
+
+
+#
+# Rotate around	the Y axis:
+#
+for ( a = 1, 1, 360 / step,
+	view_mat = rotstepy * view_mat:
+	viewobj( view_mat )
+    );
+
+
+#
+# Rotate around	the Z axis:
+#
+for ( a = 1, 1, 360 / step,
+        view_mat = rotstepz * view_mat:
+	viewobj( view_mat )
+    );
+
+#
+# Rotate around	the (1,1,1) axis:
+#
+for ( a = 1, 1, 360 / step,
+        view_mat = rotstep111 * view_mat:
+	viewobj( view_mat )
+    );
+
+free( rotstepx );
+free( rotstepy );
+free( rotstepz );
+free( rotstep111 );
+
+#
+# Use of MatPosDir - view transfromation from a point and direction.
+#
+
+for ( a = 1, 1, 720 / step,
+        view_mat = MatPosDir( point( a / ( 1440 / step ),
+				     a / ( 1440 / step ), 0 ),
+	 	              vector( 0.0, 0.0, 1.0 ),
+		              vector( cos( a * step * Pi / 360),
+				      sin( a * step * Pi / 360), 0 ) ):
+	viewobj( view_mat )
+    );
+
+for ( a = 1, 1, 720 / step,
+        view_mat = MatPosDir( point( 0, 0, 0.5 ),
+	 	              vector( cos( a * step * Pi / 360),
+				      sin( a * step * Pi / 360), 1.0 ),
+		              vector( 0, 1, 0 ) ):
+	viewobj( view_mat )
+    );
+
+for ( a = 1, 1, 720 / step,
+        view_mat = MatPosDir( point( 0.5, 0.1, 0.5 ),
+	 	              vector( 0.0, 1.0, 0.0 ),
+		              vector( cos( a * step * Pi / 360 ), 0,
+				      sin( a * step * Pi / 360 ) ) ):
+	viewobj( view_mat )
+    );
+
+#
+# Direct use of HomoMat to create perspective views.
+#
+for ( a = 1, 1, 720 / step,
+	view_mat = save_mat *
+		   homomat( list( list( 1, 0, 0, 0 ),
+				  list( 0, 1, 0, 0 ),
+				  list( 0, 0, 1, -a * step / 500 ),
+				  list( 0, 0, a * step / 500, 1 ) ) ):
+	viewobj( view_mat )
+    );
+view_mat = save_mat;
+view( list( view_mat ), 0 );
+#
+# Direct use of homomat to create shear effects.
+#
+shearb = b;
+for ( a = 1, 1, 360 / step,
+	shearb = b * homomat( list( list( 1, a * step / 360, 0, 0 ),
+				    list( 0, 1, 0, 0 ),
+				    list( 0, 0, 1, 0 ),
+				    list( 0, 0, 0, 1 ) ) ):
+	view( list( shearb, axes ), on )
+    );
+free(shearb);
+
+free( a );
+free( b );
+free( step );
+
+view_mat = save_mat;
+view(list(view_mat), 0);

@@ -1,0 +1,208 @@
+#
+# Optimal polygonization of freeform surfaces.
+#
+#					Gershon Elber, March 1994
+#
+
+save_res = resolution;
+save_approx_opt = poly_approx_opt;
+
+#############################################################################
+
+cross = ctlpt( E3, 0.0001, 0.0, 1.0 ) +
+        ctlpt( E3, 1.0,    0.0, 1.0 ) +
+        ctlpt( E3, 1.0,    0.0, 0.95 ) +
+	cbspline( 3,
+		  list( ctlpt( E3, 0.1, 0.0, 0.95 ),
+			ctlpt( E3, 0.1, 0.0, 0.9 ),
+			ctlpt( E3, 0.1, 0.0, 0.7 ),
+			ctlpt( E3, 0.2, 0.0, 0.6 ),
+			ctlpt( E3, 0.2, 0.0, 0.2 ),
+			ctlpt( E3, 0.4, 0.0, 0.05 ),
+			ctlpt( E3, 0.4, 0.0, 0.0 ) ),
+		  list( KV_OPEN ) ) +
+	ctlpt( E3, 0.0001, 0.0, 0.0 );
+color( cross, yellow );
+
+resolution = 32;
+p = gpolyline(cross, 0);
+interact(list(cross, p));
+
+resolution = 0.01;
+p = gpolyline(cross, 2);
+interact(list(cross, p));
+
+
+table = surfprev( -cross );
+color(table, green);
+
+poly_approx_opt = 1;
+poly_approx_tol = 0.01;
+poly_approx_tri = false;
+p = gpolygon(table, on);
+interact(list(table, p));
+
+poly_approx_opt = 1;
+poly_approx_tol = 0.1;
+poly_approx_tri = true;
+p = gpolygon(table, on);
+interact(list(table, p));
+
+poly_approx_opt = 0;
+resolution = 10;
+p = gpolygon(table, on);
+interact(list(table, p));
+
+t = 4 * (sqrt(2) - 1) / 3;
+c1 = cbezier( list( ctlpt( E3,  1.0, 0.0, 0.0 ),
+		    ctlpt( E3,  1.0,   t, 0.0 ),
+		    ctlpt( E3,    t, 1.0, 0.0 ),
+		    ctlpt( E3,  0.0, 1.0, 0.0 ) ) );
+c2 = -c1 * rotz( 180 );
+c3 = -c1 * rotz( 270 );
+c4 = c1 * rotz( 90 );
+srf = boolsum( c1, c2, c3, c4 );
+color(srf, green);
+
+poly_approx_opt = true;
+poly_approx_tol = 0.1;
+poly_approx_tri = true;
+p = gpolygon(srf, on);
+interact(list(srf, p));
+
+poly_approx_opt = true;
+poly_approx_tol = 0.01;
+poly_approx_tri = true;
+p = gpolygon(srf, on);
+interact(list(srf, p));
+
+poly_approx_opt = 0;
+poly_approx_tol = 10;
+poly_approx_tri = false;
+p = gpolygon(srf, on);
+interact(list(srf, p));
+
+c1 = cbspline( 3,
+	       list( ctlpt( E3, -1.0, 1.0, 0.0 ),
+		     ctlpt( E3, -0.2, 0.2, 0.0 ),
+		     ctlpt( E3,  0.2, 0.2, 0.0 ),
+		     ctlpt( E3,  1.0, 1.0, 0.0 ) ),
+	       list( KV_OPEN ) );
+c2 = c1 * trans( vector( 0.0,  0.0, 2.0 ) );
+
+srf = sfromcrvs( list( c1, c2 ), 2, kv_open );
+color(srf, green);
+
+poly_approx_opt = true;
+poly_approx_tol = 0.01;
+poly_approx_tri = false;
+p = gpolygon(srf, on);
+interact(list(srf, p));
+
+poly_approx_opt = 0;
+poly_approx_tol = 10;
+poly_approx_tri = true;
+p = gpolygon(srf, on);
+interact(list(srf, p));
+
+c1 = cbspline( 3,
+	       list( ctlpt( E3, -1.0, 1.0, 0.0 ),
+		     ctlpt( E3, -0.2, 0.2, 0.0 ),
+		     ctlpt( E3,  0.2, 0.2, 0.0 ),
+		     ctlpt( E3,  1.0, 1.0, 0.0 ) ),
+	       list( KV_OPEN ) );
+c2 = c1 * trans( vector( 0.0, -0.5, 0.9 ) );
+c3 = c1 * trans( vector( 0.0, -0.5, 1.1 ) );
+c4 = c1 * trans( vector( 0.0,  0.0, 2.0 ) );
+
+srf = sfromcrvs( list( c1, c2, c3, c4 ), 3, kv_open );
+color(srf, green);
+
+poly_approx_opt = true;
+poly_approx_tol = 0.01;
+poly_approx_tri = false;
+p = gpolygon(srf, on);
+interact(list(srf, p));
+
+poly_approx_opt = true;
+poly_approx_tol = 0.003;
+poly_approx_tri = false;
+p = gpolygon(srf, on);
+interact(list(srf, p));
+
+poly_approx_opt = 0;
+poly_approx_tol = 10;
+poly_approx_tri = false;
+p = gpolygon(srf, on);
+interact(list(srf, p));
+
+wiggle = sbspline( 3, 3, 
+	list( list( ctlpt( E3, 0.01, 0.4, -1.0 ),
+	            ctlpt( E3, 0.4, -0.5, -0.9 ),
+	            ctlpt( E3, 0.7, 0.0, -0.4 ) ),
+	      list( ctlpt( E3, -0.2, 1.2, -0.3 ),
+	            ctlpt( E3, 0.2, 0.0, -0.3 ),
+	            ctlpt( E3, 0.5, 0.6, 0.2 ) ),
+	      list( ctlpt( E3, -0.3, 0.2, -0.2 ),
+	            ctlpt( E3, 0.1, -0.7, -0.1 ),
+	            ctlpt( E3, 0.4, -0.2, 0.4 ) ),
+	      list( ctlpt( E3, -0.5, 0.8, 0.4 ),
+	            ctlpt( E3, -0.1, -0.3, 0.4 ),
+	            ctlpt( E3, 0.2, 0.3, 1.0 ) ),
+	      list( ctlpt( E3, -0.6, -0.1, 0.5 ),
+	            ctlpt( E3, -0.2, -1.0, 0.6 ),
+	            ctlpt( E3, 0.1, -0.5, 1.2 ) ) ),
+	list( list( KV_OPEN ),
+	      list( KV_OPEN ) ) );
+color(wiggle, green);
+
+poly_approx_opt = true;
+poly_approx_tol = 0.03;
+poly_approx_tri = false;
+p = gpolygon(wiggle, on);
+interact(list(wiggle, p));
+
+poly_approx_opt = true;
+poly_approx_tol = 0.01;
+poly_approx_tri = false;
+p = gpolygon(wiggle, on);
+interact(list(wiggle, p));
+
+resolution = 20;
+poly_approx_opt = false;
+poly_approx_tri = false;
+p = gpolygon(wiggle, on);
+interact(list(wiggle, p));
+
+wiggl2 = offset( wiggle, 0.1, 0.1, true );
+
+Bndry = sshell( wiggle, wiggl2 );
+
+All = list( wiggle, -wiggl2, Bndry );
+view( list( axes, All ), 1 );
+
+resolution = 20;
+poly_approx_opt = false;
+poly_approx_tri = false;
+p = gpolygon( All, on );
+interact( p );
+
+save( "polygon1", p );
+
+#############################################################################
+
+poly_approx_opt = save_approx_opt;
+resolution = save_res;
+
+free( p );
+free( c1 );
+free( c2 );
+free( c3 );
+free( c4 );
+free( cross );
+free( wiggle );
+free( wiggl2 );
+free( Bndry );
+free( srf );
+free( table );
+free( t );

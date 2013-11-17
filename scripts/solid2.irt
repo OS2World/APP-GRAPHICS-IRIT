@@ -1,0 +1,88 @@
+#
+# This solid was taken from: Geometric Modeling,
+# by Michael E. Mortenson page 441, figure 10.9
+#
+#				Created by Gershon Elber,	Jan 89
+#
+
+t = time( true );
+free( t );
+
+save_mat = view_mat;
+view_mat = view_mat * scale( vector( 0.5, 0.5, 0.5 ) );
+save_res = resolution;
+
+#
+# Try it with coplanar false for fun.
+#
+# iritstate( "coplanar", false );
+#
+
+PSort = iritstate( "polysort", 0 );
+
+T1 = BOX( vector( -2.0, -0.35, 0.0 ), 4, 0.7, 0.4 );
+resolution = 40;
+T2 = CYLIN( vector( 0.0, 0.0, 0.0 ), vector( 0.0, 0.0, 0.4 ), 1.4, 3 );
+S1 = T1 * T2;
+free( T1 );
+free( T2 );
+view( list( view_mat, S1 ), true );
+
+resolution = 20;
+T3 = CYLIN( vector( 0.0, 0.0, 0.0 ), vector( 0.0, 0.0, 0.4 ), 0.9, 3 );
+S2 = S1 + T3;
+free( T3 );
+free( S1 );
+view( S2, true );
+
+resolution = 40;
+T4 = CYLIN( vector(  1.45, -0.5, 1.0 ), vector( 0.0, 1.0, 0.0 ), 0.8, 3 );
+T5 = CYLIN( vector( -1.45, -0.5, 1.0 ), vector( 0.0, 1.0, 0.0 ), 0.8, 3 );
+S3 = S2 - T4 - T5;
+free( T4 );
+free( T5 );
+free( S2 );
+view( S3, true );
+
+resolution = 8;
+T6 = CYLIN( vector(  1.2, 0.0, -0.1 ), vector( 0.0, 0.0, 0.5 ), 0.1, 3 );
+T7 = CYLIN( vector( -1.2, 0.0, -0.1 ), vector( 0.0, 0.0, 0.5 ), 0.1, 3 );
+S4 = S3 - T6 - T7;
+free( S3 );
+free( T6 );
+free( T7 );
+view( S4, true );
+
+resolution = 16;
+T8 = CYLIN( vector( 0.0, 0.0, -0.2 ), vector( 0.0, 0.0, 0.9 ), 0.3, 3 );
+T9 = BOX( vector( -0.6, -0.15,-0.1 ), 1.2, 0.3, 0.7 );
+S5 = T8 + T9;
+free( T8 );
+free( T9 );
+view( S5, false );
+
+S6 = S4 - S5;
+free( S4 );
+free( S5 );
+
+final = convex( S6 );
+free( S6 );
+
+printf( "Total Time = %f\\n", list( time( false ) ) ); # In Seconds
+
+save( "solid2", final );
+interact( final );
+
+final2 = triangl( final, 1 );  # Convert to triangles
+
+save( "solid2t", final2 );
+interact( final2 );
+
+free( final );
+free( final2 );
+
+view_mat = save_mat;
+resolution = save_res;
+
+PSort = iritstate( "polysort", PSort );
+free( PSort );

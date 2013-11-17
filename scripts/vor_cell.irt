@@ -1,0 +1,484 @@
+#
+# Some examples of voronoi cell of freeform curves.
+#
+#			M. Ramanathan, January 2005.
+#
+
+#
+# Set states.
+#
+save_mat = view_mat;
+view_mat = sc( 1 );
+viewobj( view_mat );
+
+# Faster product using Bezier decomposition
+IProd = iritstate( "BspProdMethod", 0 );
+
+#############################################################################
+#
+# Example 0 - Two simple open curves 
+#
+
+C1 = cbezier(
+    list( ctlpt( E2, -0.441758, -0.503296 ),
+          ctlpt( E2,  0.560439, -0.516483 ) ) ) * ty( 0.3 );
+
+C2 = cbezier(
+    list( ctlpt( E2,  0.608924, -0.358027 ),
+          ctlpt( E2,  0.164947, -0.371462 ),
+          ctlpt( E2,  0.173393, 0.881714  ),
+          ctlpt( E2,  0.107802, -0.375890 ),
+          ctlpt( E2,  -0.507619, -0.363037 ) ) ) * ty( 0.3 );
+
+view( list( C1, C2 ), 1 );
+
+voronoi = CVoronoiCell( list( C1, C2 ) );
+color( voronoi, green );
+attrib( voronoi, "width", 0.005 );
+
+interact( list( C1, C2, voronoi ) );
+
+#############################################################################
+#
+# Example 1
+#
+
+C1 = cbspline( 4,
+    list( ctlpt( E2, 1/3, -1/3 ),
+          ctlpt( E2, 1/6, -0.5 ),
+          ctlpt( E2, -0.5, -0.5 ),
+          ctlpt( E2, -0.5,  0.5 ),
+          ctlpt( E2,  0.5,  0.5 ),
+          ctlpt( E2,  0.5, -1/6 ),
+          ctlpt( E2, 1/3, -1/3 ) ),
+    list( kv_open ) ) * sc( 0.3 );
+
+C2 = cbspline( 4,
+    list( ctlpt( E2,  2.333333, -1/3 ),
+          ctlpt( E2,  2.166667, -0.5 ),
+          ctlpt( E2,  1.5,      -0.5 ),
+          ctlpt( E2,  1.5,       0.5 ),
+          ctlpt( E2,  2.5,       0.5 ),
+          ctlpt( E2,  2.5,      -1/6 ),
+          ctlpt( E2,  2.333333, -1/3 ) ),
+    list( kv_open ) ) * sc( 0.3 );
+
+C3 = cbspline( 4,
+    list( ctlpt( E2, -1.666667, -1/3 ),
+          ctlpt( E2, -1.833333, -0.5 ),
+          ctlpt( E2, -2.5,      -0.5 ),
+          ctlpt( E2, -2.5,       0.5 ),
+          ctlpt( E2, -1.5,       0.5 ),
+          ctlpt( E2, -1.5,      -1/6 ),
+          ctlpt( E2, -1.666667, -1/3 ) ),
+    list( kv_open ) ) * sc( 0.3 );
+
+C4 = cbspline( 4,
+    list( ctlpt( E2, 1/3,      -2.333333 ),
+          ctlpt( E2, 0.166667, -2.5 ),
+          ctlpt( E2,  -0.5,    -2.5 ),
+          ctlpt( E2,  -0.5,    -1.5 ),
+          ctlpt( E2, 0.5,      -1.5 ),
+          ctlpt( E2, 0.5,      -2.166666 ),
+          ctlpt( E2, 1/3,      -2.333333 ) ),
+    list( kv_open ) ) * sc( 0.3 );
+
+C5 = cbspline( 4,
+    list( ctlpt( E2, 1/3,  1.666667 ),
+          ctlpt( E2, 0.166667,  1.5 ),
+          ctlpt( E2,  -0.5,     1.5 ),
+          ctlpt( E2,  -0.5,     2.5 ),
+          ctlpt( E2,   0.5,     2.5 ),
+          ctlpt( E2,   0.5,     1.833333 ),
+          ctlpt( E2, 1/3,     1.666667 ) ),
+    list( kv_open ) ) * sc( 0.3 );
+
+view( list( C1, C2, C3, C4, C5 ), 1 );
+
+voronoi = CVoronoiCell( list( C1, C2, C3, C4, C5 )  );
+color( voronoi, green );
+attrib( voronoi, "width", 0.005 );
+
+interact( list( C1, C2, C3, C4, C5, voronoi ) );
+
+save( "vor1cell", list( C1, C2, C3, C4, C5, voronoi ) );
+
+#############################################################################
+#
+# Example 2
+#
+
+C1 = cbspline( 4,
+    list( ctlpt( E2,  1/3, -1/3 ),
+          ctlpt( E2,  1/6, -0.5 ),
+          ctlpt( E2, -0.5, -0.5 ),
+          ctlpt( E2, -0.5,  0.5 ),
+          ctlpt( E2,  0.5,  0.5 ),
+          ctlpt( E2,  0.5, -1/6 ),
+          ctlpt( E2,  1/3, -1/3 ) ),
+    list( kv_open ) ) * sc( 0.075 ) * tx( -0.35 );
+
+C2 = cbezier(
+    list( ctlpt( E2, 12,  0 ),
+          ctlpt( E1,  8 ),
+          ctlpt( E2, 12,  3 ),
+          ctlpt( E1, 16 ),
+          ctlpt( E1, 12 ) ) ) * sc( 0.075 ) * tx( -0.35 );
+
+C3 = cbezier(
+    list( ctlpt( E2,  0,  -1 ),
+          ctlpt( E2,  7,  -1 ),
+          ctlpt( E2,  4,  -3 ),
+          ctlpt( E2, -7,  -1 ),
+          ctlpt( E2,  0,  -1 ) ) ) * sc( 0.075 ) * tx( -0.35 );
+
+view( list( C1, C2, C3 ), 1 );
+
+voronoi1 = CVoronoiCell( list( C1, C2, C3 ) );
+voronoi2 = CVoronoiCell( list( C2, C1, C3 ) );
+voronoi3 = CVoronoiCell( list( C3, C1, C2 ) );
+color( voronoi1, magenta );
+color( voronoi2, yellow );
+color( voronoi3, cyan );
+attrib( voronoi1, "width", 0.005 );
+attrib( voronoi2, "width", 0.005 );
+attrib( voronoi3, "width", 0.005 );
+
+interact( list( C1, C2, C3, voronoi1, voronoi2, voronoi3 ) );
+
+save( "vor2cell", list( C1, C2, C3, voronoi1, voronoi2, voronoi3  ) );
+
+#############################################################################
+#
+# Example 3
+#
+
+C1 = cbezier(
+    list( ctlpt( E2,  0.730003, 0.951656 ),
+          ctlpt( E2,  0.929191, 0.720024 ),
+          ctlpt( E2, -0.094494, 0.170865 ),
+          ctlpt( E2,  0.482313, 1.253418 ),
+          ctlpt( E2,  0.730003, 0.951656 ) ) ) * sc( 0.6 );
+
+C2 = cbezier(
+    list( ctlpt( E2,  0.232423, -0.5074025 ),
+          ctlpt( E2, -0.101480, -0.4615725 ),
+          ctlpt( E2,  0.441931,  0.5663266 ),
+          ctlpt( E2,  0.533591, -0.5270438 ),
+          ctlpt( E2,  0.232423, -0.5074025 ) ) ) * sc( 0.6 );
+
+C3 = cbezier(
+    list( ctlpt( E2, -0.802023, 0.455025 ),
+          ctlpt( E2, -0.867494, 0.723457 ),
+          ctlpt( E2,  0.356818, 0.756193 ),
+          ctlpt( E2, -0.730004, 0.206234 ),
+          ctlpt( E2, -0.802023, 0.455025 ) ) ) * sc( 0.6 );
+
+C4 = cbezier(
+    list( ctlpt( E2, -0.721854, -0.690958 ),
+          ctlpt( E2, -0.836644, -0.554091 ),
+          ctlpt( E2,  0.536423,  0.262696 ),
+          ctlpt( E2, -0.584989, -0.845486 ),
+          ctlpt( E2, -0.721854, -0.690958 ) ) ) * sc( 0.6 );
+
+view( list( C1, C2, C3, C4 ), 1 );
+
+voronoi = CVoronoiCell( list( C1, C2, C3, C4 )  );
+color( voronoi, green );
+attrib( voronoi, "width", 0.005 );
+
+interact( list( C1, C2, C3, C4, voronoi ) );
+
+save( "vor3cell", list( C1, C2, C3, C4, voronoi ) );
+
+#############################################################################
+#
+# Example 4
+#
+
+C1 = cbspline( 4,
+    list( ctlpt( E2,  1/3,       -1/3 ),
+          ctlpt( E2,  1/6,       -0.5 ),
+          ctlpt( E2, -0.5,       -0.5 ),
+          ctlpt( E2, -1.250586,   1.403719 ),
+          ctlpt( E2,  0.5,        0.5 ),
+          ctlpt( E2,  0.5,        -1/6 ),
+          ctlpt( E2,  1/3,        -1/3 ) ),
+    list( kv_open ) ) * sc( 0.25 ) * tx( 0.3 ) * ty( -0.2 );
+
+C2 = cbspline( 4,
+    list( ctlpt( E2,  1/3,        1.666667 ),
+          ctlpt( E2,  1/6,        1.5 ),
+          ctlpt( E2, -0.5,       1.5 ),
+          ctlpt( E2, -0.936653,  2.333118 ),
+          ctlpt( E2, -1.890336,  5.398529 ),
+          ctlpt( E2,  0.5,       1.833333 ),
+          ctlpt( E2,  1/3,       1.666667 ) ),
+    list( kv_open ) ) * sc( 0.25 ) * tx( 0.3 ) * ty( -0.2 );
+
+C3 = cbspline( 4,
+    list( ctlpt( E2,  2.333333, -1/3 ),
+          ctlpt( E2,  2.166667, -0.5 ),
+          ctlpt( E2,  1.413494, -1.311314 ),
+          ctlpt( E2,  1.243194,  2.264998 ),
+          ctlpt( E2,  2.5     ,  0.5 ),
+          ctlpt( E2,  2.5     , -1/6 ),
+          ctlpt( E2,  2.333333, -1/3 ) ),
+    list( kv_open ) ) * sc( 0.25 ) * tx( 0.3 ) * ty( -0.2 );
+
+C4 = cbspline( 4,
+    list( ctlpt( E2,  1/3,      -2.333333 ),
+          ctlpt( E2,  1/6,      -2.5 ),
+          ctlpt( E2, -0.085150, -2.367178 ),
+          ctlpt( E2, -0.5,      -1.5 ),
+          ctlpt( E2,  0.017030, -0.527931 ),
+          ctlpt( E2,  0.5,      -2.166666 ),
+          ctlpt( E2,  1/3,      -2.333333 ) ),
+    list( kv_open ) ) * sc( 0.25 ) * tx( 0.3 ) * ty( -0.2 );
+
+C5 = cbspline( 4,
+    list( ctlpt( E2, -1.666667, -1/3 ),
+          ctlpt( E2, -1.833333, -0.5 ),
+          ctlpt( E2, -5.233517, -0.395913 ),
+          ctlpt( E2, -5.229314,  0.565233 ),
+          ctlpt( E2, -1.5,       0.5 ),
+          ctlpt( E2, -1.5,      -1/6 ),
+          ctlpt( E2, -1.666667, -1/3 ) ),
+    list( kv_open ) ) * sc( 0.25 ) * tx( 0.3 ) * ty( -0.2 );
+
+view( list( C1, C2, C3, C4, C5 ), 1 );
+
+voronoi = CVoronoiCell( list( C1, C2, C3, C4, C5 )  );
+color( voronoi, green );
+attrib( voronoi, "width", 0.005 );
+
+interact( list( C1, C2, C3, C4, C5, voronoi ) );
+
+save( "vor4cell", list( C1, C2, C3, C4, C5, voronoi ) );
+
+#############################################################################
+#
+# Example 5
+#
+
+C1 = cbspline( 4,
+    list( ctlpt( E2,   1/3,  -1/3 ),
+          ctlpt( E2,   1/6,  -0.5 ),
+          ctlpt( E2,  -0.5,  -0.5 ),
+          ctlpt( E2,  -0.5,   0.5 ),
+          ctlpt( E2,   0.5,   0.5 ),
+          ctlpt( E2,   0.5,  -1/6 ),
+          ctlpt( E2,   1/3,  -1/3 ) ),
+    list( kv_open ) ) * sc( 0.5 );
+
+C2 = cbspline( 4,
+    list( ctlpt( E2, -4.075620, -0.295707 ),
+          ctlpt( E2, -4.075620,  4.795604 ),
+          ctlpt( E2, -3.201355,  0.861408 ),
+          ctlpt( E2, -2.095666,  4.769890 ),
+          ctlpt( E2, -1.992811, -3.844197 ),
+          ctlpt( E2, -2.764222,  0.295707 ),
+          ctlpt( E2, -4.075620, -3.895625 ),
+          ctlpt( E2, -4.075620, -0.321421 ) ),
+    list( kv_open ) ) * sc( 0.5 );
+
+C3 = cbspline( 4,
+    list( ctlpt( E2,  0.846348,  0.507809 ),
+          ctlpt( E2,  1.151697,  1.098593 ),
+          ctlpt( E2,  1.457047,  0.069699 ),
+          ctlpt( E2,  0.713588, -0.912728 ),
+          ctlpt( E2,  1.184887,  0.720226 ),
+          ctlpt( E2,  0.242288, -0.673759 ),
+          ctlpt( E2,  0.852986,  0.527723 ) ),
+    list( kv_open ) ) * sc( 0.5 );
+
+view( list( C1, C2, C3 ), 1 );
+
+voronoi = CVoronoiCell( list( C1, C2, C3 ) );
+color( voronoi, green );
+attrib( voronoi, "width", 0.005 );
+
+interact( list( C1, C2, C3, voronoi ) );
+
+save( "vor5cell", list( C1, C2, C3, voronoi ) );
+
+#############################################################################
+#
+# Example 6
+#
+
+C1 = cbspline( 4,
+    list( ctlpt( E2,       1/3,      -1/3 ),
+          ctlpt( E2,       1/6,      -0.5 ),
+          ctlpt( E2,      -0.5,      -0.5 ),
+          ctlpt( E2, -1.250586,  1.403719 ),
+          ctlpt( E2,       0.5,       0.5 ),
+          ctlpt( E2,       0.5,      -1/6 ),
+          ctlpt( E2,       1/3,      -1/3 ) ),
+    list( kv_open ) ) * sc( 0.4 );
+
+C2 = cbspline( 4,
+    list( ctlpt( E2,  -0.666667,  1.666667 ),
+          ctlpt( E2,  -0.833333,  1.5 ),
+          ctlpt( E2,  -1.5,       1.5 ),
+          ctlpt( E2,  -1.5,       2.5 ),
+          ctlpt( E2,  -0.533,     3.615641 ),
+          ctlpt( E2,  -0.5,       1.833333 ),
+          ctlpt( E2,  -0.666667,       1.666667 ) ),
+    list( kv_open ) ) * sc( 0.4 );
+
+C3 = cbspline( 4,
+    list( ctlpt( E2,  3.204210,  1.113245 ),
+          ctlpt( E2,  2.507222,  0.048401 ),
+          ctlpt( E2,  1.539182,  1.384296 ),
+          ctlpt( E2,  3.881837,  3.068684 ),
+          ctlpt( E2, -1.384296,  2.158727 ),
+          ctlpt( E2,  4.966042,  4.114167 ),
+          ctlpt( E2,  3.223571,  1.093884 ) ),
+    list( kv_open ) ) * sc( 0.4 );
+
+C4 = cbspline( 4,
+    list( ctlpt( E2,  1/3,  -2.333333 ),
+          ctlpt( E2,  1/6,  -2.5 ),
+          ctlpt( E2, -0.5,  -2.5 ),
+          ctlpt( E2, -0.5,  -1.5 ),
+          ctlpt( E2,  0.5,  -1.5 ),
+          ctlpt( E2,  0.5,  -2.166666 ),
+          ctlpt( E2,  1/3,  -2.333333 ) ),
+    list( kv_open ) ) * sc( 0.4 );
+
+C5 = cbspline( 4,
+    list( ctlpt( E2,   1/3,   1.666667 ),
+          ctlpt( E2,   1/6,   1.5 ),
+          ctlpt( E2,  -0.5,   1.5 ),
+          ctlpt( E2,  -0.5,   2.5 ),
+          ctlpt( E2,   0.5,   2.5 ),
+          ctlpt( E2,   0.5,   1.833333 ),
+          ctlpt( E2,   1/3,   1.666667 ) ),
+    list( kv_open ) ) * sc( 0.4 );
+
+view( list( C1, C2, C3, C4, C5 ), 1 );
+
+voronoi1 = cvoronoicell( list( C1, C2, C3, C4, C5 ) );
+voronoi2 = cvoronoicell( list( C2, C1, C3, C4, C5 ) );
+voronoi3 = cvoronoicell( list( C4, C1, C2, C3, C5 ) );
+voronoi4 = cvoronoicell( list( C5, C1, C2, C3, C4 ) );
+color( voronoi1, magenta );
+color( voronoi2, yellow );
+color( voronoi3, cyan );
+color( voronoi4, green );
+attrib( voronoi1, "width", 0.005 );
+attrib( voronoi2, "width", 0.005 );
+attrib( voronoi3, "width", 0.005 );
+attrib( voronoi4, "width", 0.005 );
+
+interact( list( C1, C2, C3, C4, C5, voronoi1, voronoi2, voronoi3, voronoi4 ) );
+
+save( "vor6cell", list( C1, C2, C3, C4, C5,
+			voronoi1, voronoi2, voronoi3, voronoi4 ) );
+
+#############################################################################
+#
+# Example 7 - Pt Crv bisectors as well.
+#
+
+C0 = cbspline( 4,
+    list( ctlpt( E2, 1/3, -1/3 ),
+          ctlpt( E2, 1/6, -0.5 ),
+          ctlpt( E2, -0.5, -0.5 ),
+          ctlpt( E2, -0.5,  0.5 ),
+          ctlpt( E2,  0.5,  0.5 ),
+          ctlpt( E2,  0.5, -1/6 ),
+          ctlpt( E2, 1/3, -1/3 ) ),
+    list( kv_open ) ) * sc( 0.25 );
+
+C1 = cbezier(
+    list( ctlpt( E2,  -1, 1),
+          ctlpt( E2,  -2, 1),
+          ctlpt( E2,  -2, 2),
+          ctlpt( E2,  -1, 1) ) ) * sc( 0.25 );
+
+C2 = cbezier(
+    list( ctlpt( E2,  1, -1),
+          ctlpt( E2,  2, -1), 
+          ctlpt( E2,  2, -2), 
+          ctlpt( E2,  1, -1) ) ) * sc( 0.25 );
+
+C3 = cbezier(
+    list( ctlpt( E2,  0, 2),
+          ctlpt( E2,  -1, 3),
+          ctlpt( E2,  1, 3),
+          ctlpt( E2,  0, 2) ) ) * sc( 0.25 );
+
+C4 = cbezier(
+    list( ctlpt( E2,  0, -2),
+          ctlpt( E2,  1, -3),
+          ctlpt( E2,  -1, -3),
+          ctlpt( E2,  0, -2) ) ) * sc( 0.25 );
+
+view( list( C0, C1, C2, C3, C4 ), 1 );
+
+voronoi = cvoronoicell( list( C0, C1, C2, C3, C4 )  );
+color( voronoi, green );
+attrib( voronoi, "width", 0.005 );
+
+interact( list( C0, C1, C2, C3, C4, voronoi ) );
+
+save( "vor7cell", list( C0, C1, C2, C3, C4, voronoi ) );
+
+#############################################################################
+#
+# Example 8 - Pt Crv bisectors as well.
+#
+
+C0 = cbezier(
+    list( ctlpt( E2, -2, 0 ),
+	  ctlpt( E2, 0, 0.5 ),
+          ctlpt( E2,  2, 0 ) ) ) * sc( 0.35 ) * ty( -0.4 );
+
+C1 = cbezier(
+    list( ctlpt( E2,  -1, 1 ),
+          ctlpt( E2,  -2, 1 ),
+          ctlpt( E2,  -2, 2 ),
+          ctlpt( E2,  -1, 1 ) ) ) * sc( 0.35 ) * ty( -0.4 );
+
+C2 = cbezier(
+    list( ctlpt( E2,  1, 1 ),
+          ctlpt( E2,  2, 2 ),
+          ctlpt( E2,  2, 1 ),
+          ctlpt( E2,  1, 1 ) ) ) * sc( 0.35 ) * ty( -0.4 );
+
+C3 = cbezier(
+    list( ctlpt( E2,  0, 2 ),
+          ctlpt( E2,  -1, 3 ),
+          ctlpt( E2,  1, 3 ),
+          ctlpt( E2,  0, 2 ) ) ) * sc( 0.35 ) * ty( -0.4 );
+
+view( list( C0, C1, C2, C3 ), 1 );
+
+voronoi = cvoronoicell( list( C0, C1, C2, C3 )  );
+color( voronoi, green );
+attrib( voronoi, "width", 0.005 );
+
+interact( list( C0, C1, C2, C3, voronoi ) );
+
+save( "vor8cell", list( C0, C1, C2, C3, voronoi ) );
+
+#############################################################################
+
+IProd = iritstate( "BspProdMethod", IProd );
+free( IProd );
+
+free( C0 );
+free( C1 );
+free( C2 );
+free( C3 );
+free( C4 );
+free( C5 );
+
+free( voronoi );
+free( voronoi1 );
+free( voronoi2 );
+free( voronoi3 );
+free( voronoi4 );
+

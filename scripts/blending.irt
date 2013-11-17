@@ -1,0 +1,348 @@
+#
+# Some example of using the hermite function.
+#
+#				Gershon Elber, April 1995
+#
+
+#
+# Simple blend between two lines:
+#
+
+c1 = ctlpt( e3, 0, 0, 0 ) + ctlpt( e3, 0, 1, 0 );
+c2 = ctlpt( e3, 1, 0, 0 ) + ctlpt( e3, 1, 1, 0 );
+
+d1 = ctlpt( e3,  1, 0,  1 ) + ctlpt( e3,  1, 0,  0.1 );
+d2 = ctlpt( e3,  1, 0, -0.1 ) + ctlpt( e3,  1, 0, -1 );
+
+s1 = hermite( c1, c2, d1, d2 );
+color( s1, red );
+
+
+cSec1 = cbspline( 3,
+		  list( ctlpt( e2, -1,    0 ),
+		        ctlpt( e2, -1,    0 ),
+		        ctlpt( e2,  1,    0 ),
+		        ctlpt( e2,  1,    0 ) ),
+		  list( kv_open ) );
+
+cSec2 = cbspline( 3,
+		  list( ctlpt( e2, -1,    0 ),
+		        ctlpt( e2, -1,    0 ),
+		        ctlpt( e2, -0.14, 0.26 ),
+		        ctlpt( e2, -0.65, 0.51 ),
+		        ctlpt( e2,  0,    0.76 ),
+		        ctlpt( e2,  0.65, 0.51 ),
+		        ctlpt( e2,  0.14, 0.26 ),
+		        ctlpt( e2,  1,    0 ),
+		        ctlpt( e2,  1,    0 ) ),
+		  list( kv_open ) );
+
+n = ctlpt( e3, 0, 0, 1 ) + ctlpt( e3, 0, 0, 1 );
+
+s2 = blhermite( c1, c2, d1, d2, cSec1, n );
+color( s2, green );
+
+s3 = blhermite( c1, c2, d1, d2, cSec2, n );
+color( s3, yellow );
+
+save("blending1", list( s1, s2, s3 ) );
+
+interact( list( axes, s1, s2, s3 ) );
+
+#
+# Blend on a (polynomial approximation of a) sphere:
+#
+
+s = surfPRev( cregion( pcircle( vector( 0, 0, 0 ), 1 ), 0, 2 )
+						 * rz( -90 ) * rx( 90 ) );
+attrprop( s, "u_resolution", 3 );
+attrprop( s, "v_resolution", 3 );
+ds = sDerive( s, row );
+
+c1 = -cSurface( s, row, 0.8 );
+c2 = -cSurface( s, row, 1.2 );
+
+d1 = -cSurface( ds, row, 0.8 );
+d2 = -cSurface( ds, row, 1.2 );
+
+s1 = hermite( c1, c2, d1, d2 );
+color( s1, red );
+
+n = cSurface( s, row, 1.0 );
+
+s2 = blhermite( c1, c2, d1, d2, cSec1, n );
+color( s2, green );
+
+cSec2 = cbspline( 3,
+		  list( ctlpt( e2, -1,    0 ),
+		        ctlpt( e2, -1,    0 ),
+		        ctlpt( e2, -0.5,  0.2 ),
+		        ctlpt( e2, -0.7,  0.3 ),
+		        ctlpt( e2,  0,    0.5 ),
+		        ctlpt( e2,  0.7,  0.3 ),
+		        ctlpt( e2,  0.5,  0.2 ),
+		        ctlpt( e2,  1,    0 ),
+		        ctlpt( e2,  1,    0 ) ),
+		  list( kv_open ) );
+
+interact( list( axes, s, s1, s2 ) );
+
+s3 = blhermite( c1, c2, d1, d2, cSec2, -n );
+color( s3, yellow );
+
+save("blending2", list( s, s1, s2, s3 ) );
+
+interact( list( axes, s, s3 ) );
+
+n = cSurface( s, row, 0.6 );
+
+s3 = blhermite( c1, c2, d1, d2, cSec2, -n );
+color( s3, yellow );
+
+interact( list( axes, s, s3 ) );
+
+n = cSurface( s, row, 1.4 );
+
+s3 = blhermite( c1, c2, d1, d2, cSec2, -n );
+color( s3, yellow );
+
+interact( list( axes, s, s3 ) );
+
+#
+# Blend on a (polynomial approximation of a) sphere using BlSHermite:
+#
+
+s = surfPRev( cregion( pcircle( vector( 0, 0, 0 ), 1 ), 0, 2 )
+						 * rz( -90 ) * rx( 90 ) );
+attrprop( s, "u_resolution", 3 );
+attrprop( s, "v_resolution", 3 );
+attrib( s, "rgb", "200,100,200" );
+
+s1 = -BlSHermite( s, ctlpt( E2, 0, 1 ) + ctlpt( E2, 4, 1 ),
+		  cSec2, 1, 0.2, 0.5 );
+color( s1, red );
+
+s2 = -BlSHermite( s, ctlpt( E2, 0, 1.5 ) + ctlpt( E2, 4, 1.5 ),
+		  cSec2, 0.1, 0.2, 0.5 );
+color( s2, green );
+
+s3 = -BlSHermite( s, ctlpt( E2, 0, 0.3 ) + ctlpt( E2, 4, 0.3 ),
+		  cSec2, 1.5, 0.2, 0.5 );
+color( s3, yellow );
+
+interact( list( s, s1, s2, s3 ) );
+
+save("blending3", list( s, s1, s2, s3 ) );
+
+#
+# Blend on a (polynomial approximation of a) sphere using BlSHermite
+# with scaling curves:
+#
+
+SclCrv = cbspline( 3,
+		   list( ctlpt( E1, 0.01 ),
+			 ctlpt( E1, 0.4 ),
+			 ctlpt( E1, 0.01 ),
+			 ctlpt( E1, 0.4 ),
+			 ctlpt( E1, 0.01 ),
+			 ctlpt( E1, 0.4 ),
+			 ctlpt( E1, 0.01 ),
+			 ctlpt( E1, 0.4 ) ),
+		   list( kv_periodic ) );
+SclCrv = coerce( SclCrv, kv_open );
+
+s1 = -BlSHermite( s,
+		  cbezier( list( ctlpt( E2, 0,  0.9 ),
+				 ctlpt( E2, 2,  0.9 ),
+				 ctlpt( E2, 4,  0.9 ) ) ),
+		  cSec2, 1, 0.2, SclCrv * sc( 5 ) );
+color( s1, red );
+
+s2 = -BlSHermite( s,
+		  cbezier( list( ctlpt( E2, 0,  1.5 ),
+				 ctlpt( E2, 2,  1.5 ),
+				 ctlpt( E2, 4,  1.5 ) ) ),
+		  cSec2, 0.7, SclCrv * sc( 0.35 ) * tx( 0.2 ), 1.5 );
+color( s2, green );
+
+s3 = -BlSHermite( s,
+		  cbezier( list( ctlpt( E2, 0,  0.4 ),
+				 ctlpt( E2, 2,  0.4 ),
+				 ctlpt( E2, 4,  0.4 ) ) ),
+		  cSec2, 0.5, SclCrv * sc( 0.3 ) * tx( 0.12 ),
+		  SclCrv * sc( 3 ) );
+color( s3, yellow );
+
+free( SclCrv );
+
+interact( list( s, s1, s2, s3 ) );
+
+save("blending4", list( s, s1, s2, s3 ) );
+
+###################################################
+#
+# Do some filleted blends.
+#
+
+cSec1 = cbspline( 2,
+		  list( ctlpt( e2, -1,    0 ),
+		        ctlpt( e2, -1,    0 ),
+		        ctlpt( e2, -0.3,  0 ),
+		        ctlpt( e2, -0.3,  0.2 ),
+		        ctlpt( e2, -0.7,  0.2 ),
+		        ctlpt( e2, -0.7,  0.4 ),
+		        ctlpt( e2,  0.7,  0.4 ),
+		        ctlpt( e2,  0.7,  0.2 ),
+		        ctlpt( e2,  0.3,  0.2 ),
+		        ctlpt( e2,  0.3,  0 ),
+		        ctlpt( e2,  1,    0 ),
+		        ctlpt( e2,  1,    0 ) ),
+		  list( kv_open ) );
+cSec2 = cbspline( 3,
+		  list( ctlpt( e2, -1,    0 ),
+		        ctlpt( e2, -1,    0 ),
+		        ctlpt( e2, -0.5,  0.2 ),
+		        ctlpt( e2, -0.7,  0.3 ),
+		        ctlpt( e2,  0,    0.5 ),
+		        ctlpt( e2,  0.7,  0.3 ),
+		        ctlpt( e2,  0.5,  0.2 ),
+		        ctlpt( e2,  1,    0 ),
+		        ctlpt( e2,  1,    0 ) ),
+		  list( kv_open ) );
+cSec3 = cbspline( 3,
+    list( ctlpt( E2, -1, 0 ),
+          ctlpt( E1, -1 ),
+          ctlpt( E2, -0.1, 0.06 ),
+          ctlpt( E2, -1.0, 1.8 ),
+          ctlpt( E2,  0.0, 0.4 ),
+          ctlpt( E2,  1.0, 1.8 ),
+          ctlpt( E2,  0.1, 0.06 ),
+          ctlpt( E1,  1 ),
+          ctlpt( E1,  1 ) ),
+    list( kv_open ) );
+
+Srf1 = sbspline( 4, 3, 
+    list( list( ctlpt( E3, -0.365, 1.1, 0.122 ),
+                ctlpt( E3, -0.292, 0.188, -0.334 ),
+                ctlpt( E3, -0.334, -0.171, -0.147 ),
+                ctlpt( E3, -0.293, -0.632, -0.145 ) ),
+          list( ctlpt( E3, 0.0448, 0.639, -0.239 ),
+                ctlpt( E3, 0.0636, 0.159, -0.467 ),
+                ctlpt( E3, 0.0242, -0.308, -0.238 ),
+                ctlpt( E3, 0.0812, -0.631, 0.0995 ) ),
+          list( ctlpt( E3, 0.404, 0.697, 0.00532 ),
+                ctlpt( E3, 0.451, 0.167, -0.265 ),
+                ctlpt( E3, 0.234, -0.279, 0.0477 ),
+                ctlpt( E3, 0.369, -0.929, -0.187 ) ) ),
+    list( list( kv_open ),
+          list( kv_open ) ) );
+attrib( Srf1, "rgb", "255,255,100" );
+
+Srf2 = sbspline( 4, 3, 
+    list( list( ctlpt( E3, 0.633, 0.711, 0.316 ),
+                ctlpt( E3, 0.916, -0.0498, 0.157 ),
+                ctlpt( E3, 0.767, -0.586, 0.258 ),
+                ctlpt( E3, 0.651, -1.07, 0.0614 ) ),
+          list( ctlpt( E3, 0.938, 0.741, 0.563 ),
+                ctlpt( E3, 1.05, 0.00168, 0.603 ),
+                ctlpt( E3, 0.87, -0.535, 0.649 ),
+                ctlpt( E3, 0.668, -0.963, 0.649 ) ),
+          list( ctlpt( E3, 0.645, 0.697, 0.804 ),
+                ctlpt( E3, 1.11, -0.0865, 1.08 ),
+                ctlpt( E3, 0.75, -0.462, 0.971 ),
+                ctlpt( E3, 0.837, -0.929, 0.769 ) ) ),
+    list( list( kv_open ),
+          list( kv_open ) ) );
+attrib( Srf2, "rgb", "255,255,100" );
+
+c1 = cSurface( Srf1, row, 1 );
+c2 = cSurface( Srf2, row, 0 );
+
+d1 = cSurface( sDerive( Srf1, row ), row, 1 );
+d2 = cSurface( sDerive( Srf2, row ), row, 0 );
+
+sHer = hermite( c1, c2, d1, d2 );
+attrib( sHer, "rgb", "100,255,255" );
+
+All1 = list( Srf1, Srf2, sHer );
+interact( list( All1, axes ) );
+
+
+n = ctlpt( E3, 1, 0, -1 ) + ctlpt( E3, 1, 0, -1 );
+
+
+SBlHer2 = blhermite( c1, c2, d1 * sc( 0.5 ), d2 * sc( 0.5 ),
+		     cSec1, n * sc( 0.3 ) );
+attrib( SBlHer2, "transp", 0.5 );
+attrib( SBlHer2, "rgb", "100,255,255" );
+
+All2 = list( Srf1, Srf2, SBlHer2 );
+interact( list( All2, axes ) );
+
+
+SBlHer3 = blhermite( c1, c2, d1 * sc( 1.25 ), d2 * sc( 1.25 ),
+		     cSec2, n * sc( 0.5 ) );
+attrib( SBlHer3, "transp", 0.5 );
+attrib( SBlHer3, "rgb", "100,255,255" );
+
+All3 = list( Srf1, Srf2, SBlHer3 );
+interact( list( All3, axes ) );
+
+
+SBlHer4 = blhermite( c1, c2, d1 * sc( 0.5 ), d2 * sc( 0.5 ),
+		     cSec3, n * sc( 0.15 ) );
+attrib( SBlHer4, "transp", 0.5 );
+attrib( SBlHer4, "rgb", "100,255,255" );
+
+All4 = list( Srf1, Srf2, SBlHer4 );
+interact( list( All4, axes ) );
+save( "blending5", list( Srf1, Srf2, sHer, SBlHer2, SBlHer3, SBlHer4 ) );
+
+#############################################################################
+#
+# Animate the blended parameters:
+#
+
+for ( TanLen = 0, 0.025, 1.25,
+    SBlHer3 = blhermite( c1, c2, d1 * sc( TanLen ), d2 * sc( TanLen ),
+		         cSec2, n * sc( 0.5 ) ):
+    attrib( SBlHer3, "transp", 0.5 ):
+    attrib( SBlHer3, "rgb", "100,255,255" ):
+
+    view( list( Srf1, Srf2, SBlHer3 ), 1 ) );
+
+for ( Height = 0, 0.025, 1,
+    SBlHer3 = blhermite( c1, c2, d1, d2,
+		         cSec2, n * sc( Height ) ):
+    attrib( SBlHer3, "transp", 0.5 ):
+    attrib( SBlHer3, "rgb", "100,255,255" ):
+
+    view( list( Srf1, Srf2, SBlHer3 ), 1 ) );
+
+#############################################################################
+
+free( s );
+free( ds );
+free( s1 );
+free( s2 );
+free( s3 );
+free( c1 );
+free( c2 );
+free( d1 );
+free( d2 );
+free( cSec1 );
+free( cSec2 );
+free( cSec3 );
+free( n );
+free( Srf1 );
+free( Srf2 );
+free( sHer );
+free( SBlHer2 );
+free( SBlHer3 );
+free( SBlHer4 );
+free( TanLen );
+free( Height );
+free( All1 );
+free( All2 );
+free( All3 );
+free( All4 );

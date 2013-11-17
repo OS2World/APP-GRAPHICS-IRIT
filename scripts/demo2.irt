@@ -1,0 +1,60 @@
+#
+# Real (but more complex) object.
+#
+demo_save_mat = view_mat;
+include("solid0.irt");
+
+#
+# Real (but more complex) object.
+#
+view_mat = demo_save_mat;
+viewobj(view_mat);
+include("solid2.irt");
+
+#
+# A model of the b58 plane.
+#
+view_mat = demo_save_mat;
+viewobj(view_mat);
+include("b58.irt");
+
+#
+# Some nice scene.
+#
+# view_mat = demo_save_mat;
+# viewobj(view_mat);
+# include("dinner.irt");
+
+#
+# Layout (prisa) of freeform surfaces.
+#
+viewclear();
+include("prisa.irt");
+
+#
+# Some simple surface morphing examples.
+#
+viewclear();
+include("cmorph2.irt");
+
+#
+# Some Simple surface morphing examples.
+#
+view_mat = demo_save_mat;
+viewobj(view_mat);
+include("smorph2.irt");
+
+#
+# Bisectors of freeform varieties.
+#
+viewclear();
+include("bisectrs.irt");
+
+#
+# A complete chess set.
+#
+view_mat = demo_save_mat;
+viewobj(view_mat);
+include("chess.irt");
+
+# exit();

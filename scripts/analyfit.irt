@@ -1,0 +1,130 @@
+#
+# Bilinear and quadratic fitting, Gershon Elber December 2003
+#
+
+ri = iritstate( "RandomInit", 1964 );  # Seed-initiate the randomizer,
+free( ri );
+
+#
+# Bilinear:
+#
+
+Fitting = nil();
+Eps = 1e-2;
+
+PrintFitResult = procedure( Str, FittedSrf ): i:
+    snoc( FittedSrf, Fitting ):
+    printf( "%s:\\n", list( Str ) ):
+    for ( i = 1, 1, sizeof( FittedSrf ),
+	printf( "\\t%9.6pf\\n", list( nth( FittedSrf, i ) ) ) );
+
+PtPln = nil():
+for (i = 1, 1, 15,
+    snoc( point( random( -1, 1 ), random( -1, 1 ), random( -Eps, Eps ) ),
+	  PtPln ) );
+
+PrintFitResult( "BILINEAR FIT: Plane XY (15 pts):",
+	        Analyfit( PtPln, PtPln, 0, 1 ) );
+
+PrintFitResult( "BILINEAR FIT: Plane XY SclX 2 SclY 3 (15 pts):",
+	        Analyfit( PtPln, PtPln * sx( 2 ) * sy( 3 ), 0, 1 ) );
+
+PrintFitResult( "BILINEAR FIT: Plane XY Trasnaled X=1, Y=2 (15 pts):",
+	        Analyfit( PtPln, PtPln * tx( 1 ) * ty( 2 ), 0, 1 ) );
+
+PrintFitResult( "BILINEAR FIT: Plane XY rotated 45 along X (15 pts):",
+	        Analyfit( PtPln, PtPln * sy( sqrt( 2 ) ) * rx( 45 ), 0, 1 ) );
+
+PrintFitResult( "BILINEAR FIT: Plane XY rotated 45 along X, 75 along Y (15 pts):",
+		Analyfit( PtPln, PtPln * sy( sqrt( 2 ) ) * rx( 45 ) * ry( 75 ),
+			  0, 1 ) );
+
+PtPln = nil():
+for (i = 1, 1, 500,
+    snoc( point( random( -1, 1 ), random( -1, 1 ), random( -Eps, Eps ) ),
+	  PtPln ) );
+
+PrintFitResult( "BILINEAR FIT: Plane XY (500 pts):",
+	        Analyfit( PtPln, PtPln, 0, 1 ) );
+
+PrintFitResult( "BILINEAR FIT: Plane XY SclX 2 SclY 3 (500 pts):",
+	        Analyfit( PtPln, PtPln * sx( 2 ) * sy( 3 ), 0, 1 ) );
+
+PrintFitResult( "BILINEAR FIT: Plane XY Trasnaled X=1, Y=2 (500 pts):",
+	        Analyfit( PtPln, PtPln * tx( 1 ) * ty( 2 ), 0, 1 ) );
+
+PrintFitResult( "BILINEAR FIT: Plane XY rotated 45 along X (500 pts):",
+	        Analyfit( PtPln, PtPln * sy( sqrt( 2 ) ) * rx( 45 ), 0, 1 ) );
+
+PrintFitResult( "BILINEAR FIT: Plane XY rotated 45 along X, 75 along Y (500 pts):",
+		Analyfit( PtPln, PtPln * sy( sqrt( 2 ) ) * rx( 45 ) * ry( 75 ),
+			  0, 1 ) );
+
+
+PtPln = nil():
+for (i = 1, 1, 100,
+    x = random( -1, 1 ):
+    y = random( -1, 1 ):
+    snoc( point( x, y, x * y + random( -Eps, Eps ) ),
+	  PtPln ) );
+
+PrintFitResult( "BILINEAR FIT: Hyperboloid X*Y (100 pts):",
+	        Analyfit( PtPln, PtPln, 0, 1 ) );
+
+PtPln = nil():
+for (i = 1, 1, 10,
+    x = random( -1, 1 ):
+    y = random( -1, 1 ):
+    snoc( point( x, y, 2 * x - 3 * y +  x * y / 2 + random( -Eps, Eps ) ),
+	  PtPln ) );
+
+PrintFitResult( "BILINEAR FIT: Hyperboloid 2*X - 3*Y + X*Y/2 (100 pts):",
+	        Analyfit( PtPln, PtPln, 0, 1 ) );
+
+
+#
+# Quadratic:
+#
+
+PrintFitResult( "BIQUADRATIC FIT: Hyperboloid 2*X - 3*Y + X*Y/2 (100 pts):",
+	        Analyfit( PtPln, PtPln, 0, 2 ) );
+
+PtPln = nil():
+PtPlnUV = nil():
+for (i = 1, 1, 100,
+    x = random( -1, 1 ):
+    y = random( -1, 1 ):
+    snoc( point( x, y, 0 ), PtPlnUV ):
+    snoc( point( x * x + 10 + random( -Eps, Eps ),
+		 y * y + 11 + random( -Eps, Eps ),
+		 2 * x - 3 * y + x * y / 2 + random( -Eps, Eps ) ),
+	  PtPln ) );
+
+PrintFitResult( "BIQUADRATIC FIT: X^2 + 10, Y^2 + 11, 2*X - 3*Y + X*Y/2 (100 pts):",
+	        Analyfit( PtPlnUV, PtPln, 0, 2 ) );
+
+PtPln = nil():
+PtPlnUV = nil():
+for (i = 1, 1, 100,
+    x = random( -1, 1 ):
+    y = random( -1, 1 ):
+    snoc( point( x, y, 0 ), PtPlnUV ):
+    snoc( point( x * x * x + random( -Eps, Eps ),
+		 y * y * y + y + random( -Eps, Eps ),
+		 x * x - y * y + random( -Eps, Eps ) ),
+	  PtPln ) );
+
+PrintFitResult( "BIQUADRATIC FIT: X^3, Y^4, X^2 - Y^2 (100 pts):",
+	        Analyfit( PtPlnUV, PtPln, 0, 2 ) );
+
+#############################################################################
+
+save( "analyfit", Fitting );
+
+free( PtPln );
+free( PtPlnUV );
+free( i );
+free( x );
+free( y );
+free( Fitting );
+free( Eps );

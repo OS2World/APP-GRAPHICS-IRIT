@@ -1,0 +1,22 @@
+
+#
+# This is the make file for the extensions lib subdirectory.
+#
+#				Gershon Elber, August 2009
+#
+
+# Get the destination directories:
+include ..\makeflag.wnt
+
+OBJS =  crv2rect.$(IRIT_OBJ_PF) explfunc.$(IRIT_OBJ_PF)
+
+$(EXT_LIB): $(OBJS)
+	-del $(EXT_LIB)
+	$(IRITLIB) -out:$(EXT_LIB) $(OBJS)
+
+$(IRIT_LIB_DIR)\$(EXT_LIB): $(EXT_LIB)
+	copy $(EXT_LIB) $(IRIT_LIB_DIR)
+
+install: $(IRIT_LIB_DIR)\$(EXT_LIB)
+
+# Dependencies starts here - do not touch, generated automatically.

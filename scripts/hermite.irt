@@ -1,0 +1,87 @@
+#
+# Some example of using the hermite function.
+#
+#				Gershon Elber, April 1995
+#
+
+save_mat = view_mat;
+view_mat = view_mat * sc( 0.4 );
+viewobj( view_mat );
+
+srf1 = sbezier( list( list( ctlpt( E3, 0.1, 0.0, 0.0 ),
+		            ctlpt( E3, 0.3, 1.0, 0.0 ),
+		            ctlpt( E3, 0.0, 2.0, 0.0 ) ),
+	              list( ctlpt( E3, 1.1, 0.0, 0.0 ),
+		            ctlpt( E3, 1.3, 1.0, 0.0 ),
+		            ctlpt( E3, 1.0, 2.0, 0.0 ) ),
+        	      list( ctlpt( E3, 2.1, 0.0, 0.0 ),
+		            ctlpt( E3, 2.3, 1.0, 0.0 ),
+		            ctlpt( E3, 2.0, 2.0, 0.0 ) ),
+	              list( ctlpt( E3, 3.1, 0.0, 0.0 ),
+		            ctlpt( E3, 3.3, 1.0, 0.0 ),
+		            ctlpt( E3, 3.0, 2.0, 0.0 ) ) ) );
+
+tcrv1 = cbspline( 3,
+		  list( ctlpt( E2, 0.5, 0.25 ),
+			ctlpt( E2, 0.8, 0.25 ),
+			ctlpt( E2, 0.8, 0.75 ),
+			ctlpt( E2, 0.6, 0.75 ),
+			ctlpt( E2, 0.6, 0.9 ),
+			ctlpt( E2, 0.4, 0.9 ),
+			ctlpt( E2, 0.4, 0.75 ),
+			ctlpt( E2, 0.2, 0.75 ),
+			ctlpt( E2, 0.2, 0.25 ),
+			ctlpt( E2, 0.5, 0.25 ) ),
+		  list( KV_OPEN ) );
+tsrf1 = trimsrf( srf1, tcrv1, false );
+attrib( tsrf1, "resolution", 2.0 );
+
+crv1 = compose( srf1, tcrv1 );
+free( srf1 );
+free( tcrv1 );
+color( crv1, green );
+
+pc = crefine( pcircle( vector( -1.7, -1, 1 ), 0.4 ), false, list( 1, 2, 3 ) );
+srf2 = ruledsrf( ceditpt( ceditpt( pc, ctlpt( E3, -1.7, -1.4, 1.2 ), 9 ),
+			  ctlpt( E3, -1.7, -0.6, 1.2 ), 3 ),
+		 pc * tz( 1 ) )
+	* rotz( -90 ) * trans( vector( 2.7, -0.7, 0 ) );
+
+crv2 = csurface( srf2, row, 0 );
+color( crv2, green );
+free( pc );
+
+tan1 = symbdiff( crv1 * scale( vector( 0.6, 0.4, 1.0 ) )
+		      * trans( vector( 0.7, 0.6, 0.0 ) ),
+	         crv1 );
+tan2 = pcircle( vector( 0, 0, 3 ), 0 );
+
+blend = hermite( crv1, -crv2, tan1 * sc( 1.0 ), -tan2 * sc( 1.0 ) );
+color( blend, red );
+attrib( blend, "width", 0.02 );
+
+All = list( blend, tsrf1, -srf2 );
+interact( All );
+save( "blend1", All );
+
+crv2a = ffmatch( crv1, -crv2, 5, 25, 2, false, 1 );
+
+blend = hermite( crv1, crv2a, tan1 * sc( 1.0 ), -tan2 * sc( 1.0 ) );
+free( crv1 );
+free( crv2 );
+free( crv2a );
+free( tan1 );
+free( tan2 );
+color( blend, red );
+attrib( blend, "width", 0.02 );
+
+All = list( blend, tsrf1, srf2 );
+free( blend );
+free( tsrf1 );
+free( srf2 );
+
+interact( All );
+save( "blend2", All );
+free( All );
+
+view_mat = save_mat;

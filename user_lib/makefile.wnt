@@ -1,0 +1,45 @@
+#
+# This is the make file for the user_lib library.
+#
+
+# Get the destination directories:
+include ..\makeflag.wnt
+
+OBJS =  belts.$(IRIT_OBJ_PF) \
+	crvtranl.$(IRIT_OBJ_PF) \
+	crv_arng.$(IRIT_OBJ_PF) \
+	ddm_text.$(IRIT_OBJ_PF) \
+	dtr3d2im.$(IRIT_OBJ_PF) \
+	dtr3d3im.$(IRIT_OBJ_PF) \
+	ff_krnl.$(IRIT_OBJ_PF) \
+	geomcovr.$(IRIT_OBJ_PF) \
+	hrmt_crv.$(IRIT_OBJ_PF) \
+	imgshd3d.$(IRIT_OBJ_PF) \
+	nc_tpath.$(IRIT_OBJ_PF) \
+	register.$(IRIT_OBJ_PF) \
+	rldmatch.$(IRIT_OBJ_PF) \
+	scalimag.$(IRIT_OBJ_PF) \
+	srfcrvtr.$(IRIT_OBJ_PF) \
+	srfpgeom.$(IRIT_OBJ_PF) \
+	srf_ssi.$(IRIT_OBJ_PF) \
+	srf_mrch.$(IRIT_OBJ_PF) \
+	srf_cntr.$(IRIT_OBJ_PF) \
+	textwarp.$(IRIT_OBJ_PF) \
+	tv0jacob.$(IRIT_OBJ_PF) \
+	user_ftl.$(IRIT_OBJ_PF) \
+	userpick.$(IRIT_OBJ_PF) \
+	user_err.$(IRIT_OBJ_PF) \
+	usrcnvrt.$(IRIT_OBJ_PF) \
+	visible.$(IRIT_OBJ_PF) \
+	zcollide.$(IRIT_OBJ_PF)
+
+$(USER_LIB): $(OBJS)
+	-del $(USER_LIB)
+	$(IRITLIB) -out:$(USER_LIB) *.$(IRIT_OBJ_PF)
+
+$(IRIT_LIB_DIR)\$(USER_LIB): $(USER_LIB)
+	copy $(USER_LIB) $(IRIT_LIB_DIR)
+
+install: $(IRIT_LIB_DIR)\$(USER_LIB)
+
+# Dependencies starts here - do not touch, generated automatically.

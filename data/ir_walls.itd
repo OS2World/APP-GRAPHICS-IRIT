@@ -1,0 +1,42 @@
+[OBJECT MATRICES
+    [OBJECT VIEW_MAT
+	[MATRIX
+	     0.095846646 -0.036871030  0.083665695  0.000000000 
+	    -0.004529077  0.119149359  0.057696782  0.000000000 
+	    -0.091317569 -0.044608997  0.084953646  0.000000000 
+	     0.000000000  0.000000000  0.000000000  1.000000000 
+	]
+    ]
+]
+[OBJECT WALLS
+    [OBJECT
+	[color 15]
+	[ptexture "checker.ppm, S 1 1"] _XY_PLANE
+	[POLYGON [PLANE        0        0       1       5] 	    4
+	    [[uvvals "0 0"]       5       -5       -5]
+	    [[uvvals "0 1"]       5        5       -5]
+	    [[uvvals "1 1"]      -5        5       -5]
+	    [[uvvals "1 0"]      -5       -5       -5]
+	]
+    ]
+    [OBJECT
+	[color 15]
+	[ptexture "checker.ppm, S 0.25 0.25"] _XZ_PLANE
+	[POLYGON [PLANE        0        1        0        5] 	    4
+	    [[uvvals "0 0"]      -5       -5       -5]
+	    [[uvvals "0 1"]      -5       -5        5]
+	    [[uvvals "1 1"]       5       -5        5]
+	    [[uvvals "1 0"]       5       -5       -5]
+	]
+    ]
+    [OBJECT
+	[color 15]
+	[ptexture "checker.ppm, S 2 2"] _YZ_PLANE
+	[POLYGON [PLANE       1        0        0       5] 	    4
+	    [[uvvals "0 0"]      -5        5       -5]
+	    [[uvvals "0 1"]      -5        5        5]
+	    [[uvvals "1 1"]      -5       -5        5]
+	    [[uvvals "1 0"]      -5       -5       -5]
+	]
+    ]
+]

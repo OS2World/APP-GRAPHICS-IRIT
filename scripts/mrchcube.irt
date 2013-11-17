@@ -1,0 +1,162 @@
+#
+# Some examples of marching cubes on trivariates and volumes.
+#
+#				Gershon Elber, February 1997.
+#
+
+WireBox = function( SizeX, SizeY, SizeZ ):
+    return = list( ctlpt( E3,  0.0,   0.0,   0.0 ) +
+		   ctlpt( E3,  0.0,   0.0,   SizeZ ) +
+		   ctlpt( E3,  0.0,   SizeY, SizeZ ) +
+		   ctlpt( E3,  0.0,   SizeY, 0.0 ) +
+		   ctlpt( E3,  0.0,   0.0,   0.0 ) +
+		   ctlpt( E3,  SizeX, 0.0,   0.0 ) +
+		   ctlpt( E3,  SizeX, 0.0,   SizeZ ) +
+		   ctlpt( E3,  SizeX, SizeY, SizeZ ) +
+		   ctlpt( E3,  SizeX, SizeY, 0.0 ) +
+		   ctlpt( E3,  SizeX, 0.0,   0.0 ),
+		   ctlpt( E3,  0.0,   0.0,   SizeZ ) +
+		   ctlpt( E3,  SizeX, 0.0,   SizeZ ),
+		   ctlpt( E3,  0.0,   SizeY, SizeZ ) +
+		   ctlpt( E3,  SizeX, SizeY, SizeZ ), 
+		   ctlpt( E3,  0.0,   SizeY, 0.0 ) +
+		   ctlpt( E3,  SizeX, SizeY, 0.0 ) );
+WireBox3 = function( Size ):
+    return = WireBox( Size, Size, Size );
+
+#
+# Marching cubes of trivariates:
+#		   
+
+Tv = load("../data/sphere16.itd");
+
+Size = 0.03;
+Srf1 = mrchcube( list( Tv, 1, 2, off ), point( Size, Size, Size ), 1, 0.25 );
+color( Srf1, magenta );
+Srf2 = mrchcube( list( Tv, 1, 1, off ), point( Size, Size, Size ), 1, 0.5 );
+color( Srf2, green );
+Srf3 = mrchcube( list( Tv, 1, 0.5, off ), point( Size, Size, Size ), 1, 0.75 );
+color( Srf3, yellow );
+
+interact( list( axes, WireBox3( Size * 16 ), Srf1, Srf2, Srf3 ) );
+
+Size = 0.03;
+Srf1 = mrchcube( list( Tv, 1, 0.5, on ), point( Size, Size, Size ), 1, 0.25 );
+color( Srf1, magenta );
+Srf2 = mrchcube( list( Tv, 1, 0.5, on ), point( Size, Size, Size ), 1, 0.5 );
+color( Srf2, green );
+Srf3 = mrchcube( list( Tv, 1, 0.5, on ), point( Size, Size, Size ), 1, 0.75 );
+color( Srf3, yellow );
+
+interact( list( axes, WireBox3( Size * 16 ), Srf1, Srf2, Srf3 ) );
+
+Size = 0.06;
+Srf1 = mrchcube( list( Tv, 1, 1, on ), point( Size, Size, Size ), 2, 0.25 );
+color( Srf1, magenta );
+Srf2 = mrchcube( list( Tv, 1, 1, on ), point( Size, Size, Size ), 2, 0.5 );
+color( Srf2, green );
+Srf3 = mrchcube( list( Tv, 1, 2, on ), point( Size, Size, Size ), 2, 0.75 );
+color( Srf3, yellow );
+
+interact( list( axes, WireBox3( Size * 16 / 2 ), Srf1, Srf2, Srf3 ) );
+
+Size = 0.12;
+Srf1 = mrchcube( list( Tv, 1, 2, on ), point( Size, Size, Size ), 4, 0.25 );
+color( Srf1, magenta );
+Srf2 = mrchcube( list( Tv, 1, 2, on ), point( Size, Size, Size ), 4, 0.5 );
+color( Srf2, green );
+Srf3 = mrchcube( list( Tv, 1, 2, on ), point( Size, Size, Size ), 4, 0.75 );
+color( Srf3, yellow );
+
+interact( list( axes, WireBox3( Size * 16 / 4 ), Srf1, Srf2, Srf3 ) );
+free( Tv );
+
+save( "mrchcub1",
+      list( axes, WireBox3( Size * (16 - 1) / 4 ), Srf1, Srf2, Srf3 ) );
+
+#
+# marching cubes of volume data:
+#
+
+Size = 0.03;
+Srf1 = mrchcube( list( "../data/3dhead.32", 1, 32, 32, 13 ),
+		 point( Size, Size, Size ), 1, 500 );
+color( Srf1, magenta );
+Srf2 = mrchcube( list( "../data/3dhead.32", 1, 32, 32, 13 ),
+		 point( Size, Size, Size ), 1, 150 );
+color( Srf2, green );
+
+interact( list( axes, WireBox( Size * 32, Size * 32, Size * 13 ),
+	        Srf1, Srf2 ) );
+
+Size = 0.06;
+Srf1 = mrchcube( list( "../data/3dhead.32", 1, 32, 32, 13 ),
+		 point( Size, Size, Size ), 2, 500 );
+color( Srf1, magenta );
+Srf2 = mrchcube( list( "../data/3dhead.32", 1, 32, 32, 13 ),
+		 point( Size, Size, Size ), 2, 150 );
+color( Srf2, green );
+
+interact( list( axes, WireBox( Size * 32 / 2, Size * 32 / 2, Size * 13 / 2 ),
+	        Srf1, Srf2 ) );
+
+
+Size = 0.12;
+Srf1 = mrchcube( list( "../data/3dhead.32", 1, 32, 32, 13 ),
+		 point( Size, Size, Size ), 4, 500 );
+color( Srf1, magenta );
+Srf2 = mrchcube( list( "../data/3dhead.32", 1, 32, 32, 13 ),
+		 point( Size, Size, Size ), 4, 150 );
+color( Srf2, green );
+
+interact( list( axes, WireBox( Size * 32 / 4, Size * 32 / 4, Size * 13 / 4 ),
+	        Srf1, Srf2 ) );
+save( "mrchcub2",
+      list( axes, WireBox( Size * 31 / 4, Size * 31 / 4, Size * 12 / 4 ),
+	    Srf1, Srf2 ) );
+
+#
+# Compute a uniform point distribution to the object.
+#
+
+PtSrf1 = CoverPt( Srf1, 1000, vector( 0, 0, 0 ) );
+color( PtSrf1, white );
+interact( list( axes, Srf1, PtSrf1 ) );
+
+PtSrf2 = CoverPt( Srf2, 1000, vector( 0, 0, 0 ) );
+color( PtSrf2, white );
+interact( list( axes, Srf2, PtSrf2 ) );
+free( PtSrf1 );
+free( PtSrf2 );
+
+
+#
+# marching cubes of volume data, smoothed as a trivariate:
+#
+
+Tv =  tvload( "../data/3dhead.32", 1, vector( 32, 32, 13 ), vector( 3, 3, 3 ) );
+
+Size = 0.03;
+Srf1 = mrchcube( list( Tv, 1, 2, off ), point( Size, Size, Size ), 1, 500 );
+color( Srf1, magenta );
+
+interact( list( axes, WireBox( Size * 32, Size * 32, Size * 13 ), Srf1 ) );
+
+Size = 0.03;
+Srf1 = mrchcube( list( Tv, 1, 1, on ), point( Size, Size, Size ), 1, 500 );
+color( Srf1, magenta );
+
+interact( list( axes, WireBox( Size * 32, Size * 32, Size * 13 ), Srf1 ) );
+
+save( "mrchcub3",
+      list( axes, WireBox( Size * 32, Size * 32, Size * 13 ), Srf1, Srf2 ) );
+
+
+#
+# free
+#
+free( Tv );
+free( Srf1 );
+free( Srf2 );
+free( Srf3 );
+free( Size );

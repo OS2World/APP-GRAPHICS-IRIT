@@ -1,0 +1,2126 @@
+************* Execution Time for adap_iso.irt  is 1.7790    ******************
+************* Execution Time for algsum.irt    is 0.1240    ******************
+************* Execution Time for alphsect.irt  is 0.2500    ******************
+************* Execution Time for alphsec2.irt  is 0.0310    ******************
+************* Execution Time for ambiguit.irt  is 0.0000    ******************
+BILINEAR FIT: Plane XY (15 pts)::
+	-0.000000,  0.000000,  0.000855
+	 1.000000, -0.000000,  0.001453
+	-0.000000,  1.000000,  0.000622
+	 0.000000,  0.000000,  0.004649
+BILINEAR FIT: Plane XY SclX 2 SclY 3 (15 pts)::
+	-0.000000,  0.000000,  0.000855
+	 2.000000, -0.000000,  0.001453
+	-0.000000,  3.000000,  0.000622
+	 0.000000,  0.000000,  0.004649
+BILINEAR FIT: Plane XY Trasnaled X=1, Y=2 (15 pts)::
+	 1.000000,  2.000000,  0.000855
+	 1.000000, -0.000000,  0.001453
+	-0.000000,  1.000000,  0.000622
+	-0.000000, -0.000000,  0.004649
+BILINEAR FIT: Plane XY rotated 45 along X (15 pts)::
+	-0.000000, -0.000605,  0.000605
+	 1.000000, -0.001028,  0.001028
+	-0.000000,  0.999560,  1.000440
+	 0.000000, -0.003287,  0.003287
+BILINEAR FIT: Plane XY rotated 45 along X, 75 along Y (15 pts)::
+	 0.000584, -0.000605,  0.000156
+	 0.259812, -0.001028, -0.965660
+	 0.966351,  0.999560,  0.258933
+	 0.003175, -0.003287,  0.000851
+BILINEAR FIT: Plane XY (500 pts)::
+	-0.000000, -0.000000,  0.000302
+	 1.000000, -0.000000, -0.000269
+	 0.000000,  1.000000, -0.000452
+	 0.000000,  0.000000, -0.000781
+BILINEAR FIT: Plane XY SclX 2 SclY 3 (500 pts)::
+	-0.000000, -0.000000,  0.000302
+	 2.000000, -0.000000, -0.000269
+	 0.000000,  3.000000, -0.000452
+	 0.000000,  0.000000, -0.000781
+BILINEAR FIT: Plane XY Trasnaled X=1, Y=2 (500 pts)::
+	 1.000000,  2.000000,  0.000302
+	 1.000000, -0.000000, -0.000269
+	 0.000000,  1.000000, -0.000452
+	 0.000000,  0.000000, -0.000781
+BILINEAR FIT: Plane XY rotated 45 along X (500 pts)::
+	-0.000000, -0.000214,  0.000214
+	 1.000000,  0.000190, -0.000190
+	 0.000000,  1.000320,  0.999680
+	 0.000000,  0.000552, -0.000552
+BILINEAR FIT: Plane XY rotated 45 along X, 75 along Y (500 pts)::
+	 0.000206, -0.000214,  0.000055
+	 0.258635,  0.000190, -0.965975
+	 0.965617,  1.000320,  0.258736
+	-0.000533,  0.000552, -0.000143
+BILINEAR FIT: Hyperboloid X*Y (100 pts)::
+	-0.000000,  0.000000, -0.000249
+	 1.000000,  0.000000, -0.000467
+	 0.000000,  1.000000, -0.000231
+	 0.000000, -0.000000,  0.997973
+BILINEAR FIT: Hyperboloid 2*X - 3*Y + X*Y/2 (100 pts)::
+	-0.000000,  0.000000, -0.001190
+	 1.000000,  0.000000,  2.000428
+	 0.000000,  1.000000, -2.998630
+	 0.000000, -0.000000,  0.494274
+BIQUADRATIC FIT: Hyperboloid 2*X - 3*Y + X*Y/2 (100 pts)::
+	-0.000000, -0.000000, -0.000977
+	 1.000000,  0.000000,  1.998141
+	-0.000000,  1.000000, -2.996507
+	-0.000000, -0.000000, -0.016176
+	 0.000000, -0.000000,  0.495099
+	 0.000000, -0.000000,  0.013847
+BIQUADRATIC FIT: X^2 + 10, Y^2 + 11, 2*X - 3*Y + X*Y/2 (100 pts)::
+	 9.997554, 11.001799, -0.001912
+	 0.000765, -0.000514,  1.999983
+	-0.000598,  0.000072, -2.999263
+	 0.999755, -0.003365, -0.001361
+	 0.001193, -0.000857,  0.500257
+	 0.003460,  0.998290,  0.001869
+BIQUADRATIC FIT: X^3, Y^4, X^2 - Y^2 (100 pts)::
+	 0.023425,  0.021444, -0.001098
+	 0.607390, -0.009190, -0.001549
+	-0.021663,  1.572774,  0.001191
+	-0.054852, -0.053737,  1.002529
+	-0.047459, -0.039578, -0.001943
+	-0.035818,  0.051183, -1.000039
+************* Execution Time for analyfit.irt  is 0.0310    ******************
+************* Execution Time for animball.irt  is 0.1710    ******************
+************* Execution Time for animdemo.irt  is 0.0160    ******************
+************* Execution Time for ant.irt       is 1.0760    ******************
+3 antipodal points detected
+23 antipodal points detected
+5 antipodal points detected
+2 antipodal points detected
+************* Execution Time for antipodl.irt  is 1.2320    ******************
+Speed bounds of original curve:  [0.000000 3.000000]
+Speed bounds of arc length approx curve:  [0.841385 1.179812]
+Speed bounds of arc length approx curve:  [0.985678 1.006383]
+Speed bounds of original curve:  [0.000000 12.744455]
+Speed bounds of arc length approx curve:  [0.247008 1.235505]
+Speed bounds of arc length approx curve:  [0.710880 1.103997]
+************* Execution Time for arc_len.irt   is 0.3900    ******************
+101 Views are considered
+101 Views are considered
+101 Views are considered
+************* Execution Time for art_glry.irt  is 0.7020    ******************
+************* Execution Time for aspct_gr.irt  is 0.3280    ******************
+************* Execution Time for b58.irt       is 0.0310    ******************
+************* Execution Time for bed.irt       is 0.0470    ******************
+************* Execution Time for bez_clip.irt  is 0.0460    ******************
+C/SDerive tests = 1  1  1
+Tangent evaluations for
+	polynomial - 1
+	rational - 1
+************* Execution Time for bezier.irt    is 0.0320    ******************
+2 arcs were used in this approximation
+2 arcs were used in this approximation
+16 arcs were used in this approximation
+2 arcs were used in this approximation
+4 arcs were used in this approximation
+8 arcs were used in this approximation
+112 arcs were used in this approximation
+16 arcs were used in this approximation
+14 arcs were used in this approximation
+25 arcs were used in this approximation
+52 arcs were used in this approximation
+26 arcs were used in this approximation
+106 arcs were used in this approximation
+40 arcs were used in this approximation
+84 arcs were used in this approximation
+276 arcs were used in this approximation
+24 arcs were used in this approximation
+44 arcs were used in this approximation
+208 arcs were used in this approximation
+11 arcs were used in this approximation
+11 arcs were used in this approximation
+11 arcs were used in this approximation
+************* Execution Time for biarc.irt     is 0.0930    ******************
+************* Execution Time for bisectrs.irt  is 0.2030    ******************
+************* Execution Time for blending.irt  is 2.6520    ******************
+
+                          Bezier test -  1 1 1 1 1,  1 1 1 1,  1 1 1
+          Bspline open uniform 1 test -  1 1 1 1 1,  1 1 1 1,  1 1 1
+           Bspline float uniform test -  1 1 1 1 1 1 1,  1 1 1,  1 1 1 1
+      Bspline float nonuniform 1 test -  1 1 1 1 1 1 1,  1 1 1,  1 1 1 1 1
+      Bspline float nonuniform 2 test -  1 1 1 1 1 1 1,  1 1 1,  1 1 1 1 1
+          Bspline open uniform 2 test -  1 1 1 1 1 1 1,  1 1 1 1,  1 1 1 1 1 1
+                     Bspline srf test -  1 1 1 1 1 1 1,  1 1 1,  1 1 1 1 1
+************* Execution Time for blossom.irt   is 0.0000    ******************
+************* Execution Time for box-box.irt   is 0.0000    ******************
+************* Execution Time for bsc_geom.irt  is 0.0000    ******************
+************* Execution Time for bsct_smp.irt  is 0.9360    ******************
+CDerive/CIntegrate test = 1
+SDerive/SIntegrate tests = 1  1
+Tangent evaluations for
+	rational - 1
+	polynomial - 1
+************* Execution Time for bspline.irt   is 0.2650    ******************
+************* Execution Time for bulb.irt      is 0.0310    ******************
+************* Execution Time for cbi_anim.irt  is 1.8100    ******************
+************* Execution Time for cbi2anim.irt  is 6.4270    ******************
+************* Execution Time for cbisec3d.irt  is 0.1870    ******************
+************* Execution Time for cbisect.irt   is 0.3280    ******************
+************* Execution Time for cbisect2.irt  is 0.1560    ******************
+CBSP_FIT: default values selected for "(ErrorChangeLimit, Lambda)".
+Iteration 1, Average error per point = 0.006057.
+Iteration 2, Average error per point = 0.001505.
+Iteration 3, Average error per point = 0.000065.
+CBSP_FIT: default values selected for "(ErrorChangeLimit, Lambda)".
+Iteration 1, Average error per point = 0.006057.
+Iteration 2, Average error per point = 0.001256.
+Iteration 3, Average error per point = 0.000014.
+Iteration 1, Average error per point = 0.000064.
+Iteration 2, Average error per point = 0.000048.
+Iteration 3, Average error per point = 0.000040.
+Iteration 1, Average error per point = 0.000013.
+Iteration 2, Average error per point = 0.000012.
+Iteration 3, Average error per point = 0.000012.
+CBSP_FIT: default values selected for "(MaxIter, ErrorLimit, ErrorChangeLimit, Lambda)".
+Iteration 1, Average error per point = 0.011194.
+Iteration 2, Average error per point = 0.001735.
+Iteration 3, Average error per point = 0.001648.
+Iteration 4, Average error per point = 0.001639.
+Iteration 1, Average error per point = 0.001639.
+Iteration 2, Average error per point = 0.001638.
+CBSP_FIT: default values selected for "(MaxIter, ErrorLimit, ErrorChangeLimit, Lambda)".
+Iteration 1, Average error per point = 0.000336.
+Iteration 1, Average error per point = 0.000363.
+Iteration 2, Average error per point = 0.000371.
+Iteration 3, Average error per point = 0.000267.
+CBSP_FIT: default values selected for "(MaxIter, ErrorLimit, ErrorChangeLimit, Lambda)".
+Iteration 1, Average error per point = 0.000015.
+Iteration 1, Average error per point = 0.000015.
+Iteration 2, Average error per point = 0.000014.
+CBSP_FIT: default values selected for "(MaxIter, ErrorLimit, ErrorChangeLimit, Lambda)".
+Iteration 1, Average error per point = 0.000410.
+Iteration 1, Average error per point = 0.000402.
+Iteration 2, Average error per point = 0.000389.
+Iteration 1, Average error per point = 0.012635.
+Iteration 2, Average error per point = 0.007901.
+Iteration 3, Average error per point = 0.005375.
+Iteration 4, Average error per point = 0.005050.
+Iteration 5, Average error per point = 0.004901.
+Iteration 1, Average error per point = 0.005212.
+Iteration 2, Average error per point = 0.003467.
+Iteration 3, Average error per point = 0.003198.
+Iteration 4, Average error per point = 0.003043.
+Iteration 5, Average error per point = 0.002851.
+Iteration 6, Average error per point = 0.002655.
+Iteration 7, Average error per point = 0.002420.
+Iteration 8, Average error per point = 0.002272.
+Iteration 9, Average error per point = 0.002018.
+Iteration 10, Average error per point = 0.001750.
+Iteration 11, Average error per point = 0.001469.
+Iteration 12, Average error per point = 0.001278.
+Iteration 13, Average error per point = 0.001063.
+Iteration 14, Average error per point = 0.000747.
+Iteration 15, Average error per point = 0.000592.
+************* Execution Time for cbsp_fit.irt  is 2.9320    ******************
+************* Execution Time for cenvoff.irt   is 0.0630    ******************
+************* Execution Time for chess.irt     is 0.1250    ******************
+************* Execution Time for closloop.irt  is 0.0150    ******************
+************* Execution Time for cmorph.irt    is 0.3750    ******************
+************* Execution Time for cmorph2.irt   is 0.1870    ******************
+************* Execution Time for colors.irt    is 0.0000    ******************
+************* Execution Time for cone-cyl.irt  is 0.0000    ******************
+************* Execution Time for cone2cyl.irt  is 0.0310    ******************
+************* Execution Time for cone3cyl.irt  is 0.0310    ******************
+************* Execution Time for conicdst.irt  is 1.0140    ******************
+************* Execution Time for conics.irt    is 0.0000    ******************
+************* Execution Time for contours.irt  is 0.6090    ******************
+************* Execution Time for coords.irt    is 0.0310    ******************
+************* Execution Time for coplanar.irt  is 0.1870    ******************
+************* Execution Time for corkplug.irt  is 0.0310    ******************
+************* Execution Time for cort_map.irt  is 3.5730    ******************
+************* Execution Time for cos_sphr.irt  is 0.0000    ******************
+************* Execution Time for crosplug.irt  is 0.0150    ******************
+Input is invalid or not plannar
+Input is invalid or not plannar
+************* Execution Time for crv_arng.irt  is 0.6090    ******************
+************* Execution Time for crv_dist.irt  is 0.0930    ******************
+************* Execution Time for crv_krnl.irt  is 1.3260    ******************
+************* Execution Time for crv_tan.irt   is 1.4200    ******************
+Numer of intersections detected = 904
+************* Execution Time for crvarrng.irt  is 2.0590    ******************
+************* Execution Time for crvdecmp.irt  is 0.0630    ******************
+************* Execution Time for crvtrrec.irt  is 0.6080    ******************
+************* Execution Time for cslogo.irt    is 0.0310    ******************
+************* Execution Time for csrfproj.irt  is 0.5620    ******************
+************* Execution Time for cube.irt      is 0.0310    ******************
+************* Execution Time for cube2.irt     is 0.0000    ******************
+************* Execution Time for cube3cut.irt  is 0.4060    ******************
+************* Execution Time for cubes.irt     is 0.0620    ******************
+************* Execution Time for cube_spr.irt  is 0.0000    ******************
+************* Execution Time for cup.irt       is 0.3900    ******************
+************* Execution Time for cupmodel.irt  is 2.5120    ******************
+Principal curvatures at (u, v) = (4.000000, 1.695780) equal -0.572732628 and -0.572732616
+Principal curvatures at (u, v) = (4.000000, 0.304220) equal 0.572732616 and 0.572732628
+Principal curvatures at (u, v) = (4.000000, 0.844160) equal 0.759673596 and 0.759673613
+Principal curvatures at (u, v) = (4.000000, 1.155840) equal -0.759673605 and -0.759673605
+Principal curvatures at (u, v) = (3.034199, 1.023953) equal -3.195248351 and -2.151683907
+Principal curvatures at (u, v) = (3.029238, 0.977338) equal 2.152599397 and 3.362977986
+Principal curvatures at (u, v) = (3.000000, 0.963501) equal 2.149520650 and 2.149520650
+Principal curvatures at (u, v) = (3.000000, 1.036499) equal -2.149520650 and -2.149520650
+Principal curvatures at (u, v) = (2.970140, 0.977301) equal 2.152535630 and 3.358257279
+Principal curvatures at (u, v) = (2.965557, 1.023926) equal -3.198802995 and -2.151614306
+Principal curvatures at (u, v) = (2.000000, 1.695780) equal -0.572732622 and -0.572732622
+Principal curvatures at (u, v) = (2.000000, 0.304220) equal 0.572732622 and 0.572732622
+Principal curvatures at (u, v) = (1.031348, 1.024269) equal -3.154307216 and -2.152392200
+Principal curvatures at (u, v) = (1.031348, 0.975731) equal 2.152392200 and 3.154307216
+Principal curvatures at (u, v) = (1.000000, 1.036499) equal -2.149520650 and -2.149520650
+Principal curvatures at (u, v) = (1.000000, 0.963501) equal 2.149520655 and 2.149520655
+Principal curvatures at (u, v) = (0.970140, 0.977301) equal 2.152535630 and 3.358257279
+Principal curvatures at (u, v) = (0.965557, 1.023926) equal -3.198802995 and -2.151614306
+Principal curvatures at (u, v) = (0.000000, 0.844160) equal 0.759673605 and 0.759673605
+Principal curvatures at (u, v) = (0.000000, 1.155840) equal -0.759673613 and -0.759673596
+Principal curvatures at (u, v) = (0.000000, 1.695780) equal -0.572732622 and -0.572732622
+Principal curvatures at (u, v) = (0.000000, 0.304220) equal 0.572732622 and 0.572732622
+Principal curvatures at (u, v) = (1.000000, 0.861657) equal -0.648291109 and -0.648291094
+Principal curvatures at (u, v) = (1.000000, 0.020948) equal -0.387723272 and -0.387723272
+Principal curvatures at (u, v) = (0.788676, 0.863140) equal -0.667501609 and -0.667501609
+Principal curvatures at (u, v) = (0.788675, 0.023030) equal -0.399052268 and -0.399052259
+Principal curvatures at (u, v) = (0.788675, 0.451694) equal -0.773986685 and -0.773986685
+Principal curvatures at (u, v) = (0.500000, 0.862430) equal -0.658354016 and -0.658354016
+Principal curvatures at (u, v) = (0.500000, 0.022021) equal -0.393624070 and -0.393624070
+Principal curvatures at (u, v) = (0.211325, 0.023030) equal -0.399052263 and -0.399052263
+Principal curvatures at (u, v) = (0.211325, 0.863140) equal -0.667501596 and -0.667501580
+Principal curvatures at (u, v) = (0.211325, 0.451694) equal -0.773986685 and -0.773986685
+Principal curvatures at (u, v) = (0.000000, 0.020948) equal -0.387723279 and -0.387723266
+Principal curvatures at (u, v) = (0.000000, 0.861657) equal -0.648291101 and -0.648291101
+Principal curvatures at (u, v) = (0.892768, 0.752247) equal -3.302995530 and -3.302995530
+Principal curvatures at (u, v) = (0.791737, 0.606311) equal 0.167516221 and 0.167516241
+Principal curvatures at (u, v) = (0.093502, 0.586020) equal 0.594409176 and 0.594409176
+K Spans from -9.000000 to 6.705069
+H Spans from 0.000000 to 4.769003
+K Spans from -1.000000 to 0.306122
+H Spans from 0.000000 to 1.000000
+K Spans from -1.000000 to 0.773081
+H Spans from -1.000000 to 1.000000
+K Spans from -1.000000 to 0.773081
+H Spans from -1.000000 to 1.000000
+Split/Merge test = 1
+************* Execution Time for curvatur.irt  is 2.4490    ******************
+73 Views are considered
+Curve 1 [Idx = 14] covers from t = -0.291262 to t = 0.174512
+Curve 2 [Idx = 50] covers from t = 0.174512 to t = 0.708738
+181 Views are considered
+Curve 1 [Idx = 7] covers from t = -0.362989 to t = 0.039203
+Curve 2 [Idx = 70] covers from t = -0.008615 to t = 0.411335
+Curve 3 [Idx = 137] covers from t = 0.390606 to t = 0.696913
+************* Execution Time for cvisible.irt  is 1.1540    ******************
+************* Execution Time for cylin3.irt    is 0.0940    ******************
+************* Execution Time for decimate.irt  is 0.2340    ******************
+************* Execution Time for depend.irt    is 0.0780    ******************
+************* Execution Time for dinner.irt    is 0.0460    ******************
+************* Execution Time for disjoint.irt  is 0.0780    ******************
+************* Execution Time for disp_map.irt  is 1.8570    ******************
+Distance Square         bound from -0.96600 to  3.45402  (Failed)
+Projection on Crv1Nrml bound from -2.59000 to  2.29300  (Failed)
+Projection on Crv2Nrml bound from  0.06500 to  7.57750  (Successful)
+Distance Square         bound from  0.12624 to  3.18500  (Successful)
+Projection on Crv1Nrml bound from -2.59000 to  1.80675  (Failed)
+Projection on Crv2Nrml bound from  1.35687 to  7.57750  (Successful)
+Distance Square         bound from -1.32620 to  2.11250  (Failed)
+Projection on Crv1Nrml bound from -2.67000 to  1.33200  (Failed)
+Projection on Crv2Nrml bound from -0.82000 to  4.35600  (Failed)
+Distance Square         bound from -0.29141 to  2.11250  (Failed)
+Projection on Crv1Nrml bound from -2.67000 to  0.64163  (Failed)
+Projection on Crv2Nrml bound from  0.06575 to  4.35600  (Successful)
+Distance Square         bound from -0.30964 to  3.69410  (Failed)
+Projection on Crv1Nrml bound from -3.22050 to  2.97000  (Failed)
+Projection on Crv2Nrml bound from  0.04174 to  7.62300  (Successful)
+Distance Square         bound from  0.15097 to  3.69410  (Successful)
+Projection on Crv1Nrml bound from -3.22050 to  2.68650  (Failed)
+Projection on Crv2Nrml bound from  0.62793 to  7.62300  (Successful)
+Distance Square         bound from -0.84493 to  3.69410  (Failed)
+Projection on Crv1Nrml bound from -3.58200 to  2.97000  (Failed)
+Projection on Crv2Nrml bound from -1.34000 to  7.62300  (Failed)
+Distance Square         bound from -0.19918 to  3.69410  (Failed)
+Projection on Crv1Nrml bound from -3.58200 to  2.68650  (Failed)
+Projection on Crv2Nrml bound from -0.14000 to  7.62300  (Failed)
+Distance Square         bound from -0.09243 to  1.97887  (Failed)
+Projection on Crv1Nrml bound from  0.02069 to  3.83157  (Successful)
+Projection on Crv2Nrml bound from -1.66551 to  1.76291  (Failed)
+Distance Square         bound from  0.20831 to  1.58729  (Successful)
+Projection on Crv1Nrml bound from  0.64632 to  3.83157  (Successful)
+Projection on Crv2Nrml bound from -1.66551 to  1.76291  (Failed)
+Distance Square         bound from -0.71873 to  1.86104  (Failed)
+Projection on Crv1Nrml bound from -0.79224 to  4.99479  (Failed)
+Projection on Crv2Nrml bound from -4.27848 to  0.90253  (Failed)
+Distance Square         bound from -0.15757 to  1.86104  (Failed)
+Projection on Crv1Nrml bound from -0.12014 to  4.99479  (Failed)
+Projection on Crv2Nrml bound from -4.27848 to  0.62560  (Failed)
+Distance Square         bound from -0.16250 to  1.69250  (Failed)
+Projection on Crv1Nrml bound from -2.65500 to -0.07050  (Successful)
+Projection on Crv2Nrml bound from -1.25000 to  0.88000  (Failed)
+Distance Square         bound from -0.00500 to  1.69250  (Failed)
+Projection on Crv1Nrml bound from -2.61750 to -0.39234  (Successful)
+Projection on Crv2Nrml bound from -1.05000 to  0.88000  (Failed)
+Distance Square         bound from -0.18300 to  1.69250  (Failed)
+Projection on Crv1Nrml bound from -2.23500 to  0.25350  (Failed)
+Projection on Crv2Nrml bound from -1.05000 to  0.88000  (Failed)
+Distance Square         bound from -0.03959 to  1.69250  (Failed)
+Projection on Crv1Nrml bound from -1.86375 to -0.01500  (Successful)
+Projection on Crv2Nrml bound from -0.77000 to  0.88000  (Failed)
+Distance Square         bound from -0.12500 to  1.69250  (Failed)
+Projection on Crv1Nrml bound from -2.32500 to -0.03150  (Successful)
+Projection on Crv2Nrml bound from -1.12500 to  0.81000  (Failed)
+Distance Square         bound from  0.04537 to  1.69250  (Successful)
+Projection on Crv1Nrml bound from -2.22750 to -0.50991  (Successful)
+Projection on Crv2Nrml bound from -1.12500 to  0.81000  (Failed)
+Distance Square         bound from -0.12500 to  1.00250  (Failed)
+Projection on Crv1Nrml bound from -1.27500 to  0.20700  (Failed)
+Projection on Crv2Nrml bound from -0.60000 to  0.81000  (Failed)
+Distance Square         bound from -0.02122 to  1.00250  (Failed)
+Projection on Crv1Nrml bound from -0.93750 to -0.00581  (Successful)
+Projection on Crv2Nrml bound from -0.51750 to  0.81000  (Failed)
+Distance Square         bound from -0.04413 to  0.17785  (Failed)
+Projection on Srf1Nrml bound from -0.02993 to  0.03184  (Failed)
+Projection on Srf2Nrml bound from -0.03904 to  0.02669  (Failed)
+Distance Square         bound from  0.00347 to  0.17785  (Successful)
+Projection on Srf1Nrml bound from -0.02993 to  0.02777  (Failed)
+Projection on Srf2Nrml bound from -0.03904 to  0.02017  (Failed)
+Distance Square         bound from -0.66453 to  1.82579  (Failed)
+Projection on Srf1Nrml bound from -2.33763 to  0.53746  (Failed)
+Projection on Srf2Nrml bound from -0.48939 to  0.98785  (Failed)
+Distance Square         bound from -0.12723 to  1.37154  (Failed)
+Projection on Srf1Nrml bound from -2.33763 to -0.06064  (Successful)
+Projection on Srf2Nrml bound from -0.41742 to  0.98785  (Failed)
+Distance Square         bound from -0.76916 to  1.78189  (Failed)
+Projection on Srf1Nrml bound from -2.50674 to  0.66465  (Failed)
+Projection on Srf2Nrml bound from -0.56922 to  1.63196  (Failed)
+Distance Square         bound from -0.19150 to  1.60034  (Failed)
+Projection on Srf1Nrml bound from -2.50674 to  0.05752  (Failed)
+Projection on Srf2Nrml bound from -0.33211 to  1.63196  (Failed)
+Distance Square         bound from -0.07451 to  1.60034  (Failed)
+Projection on Srf1Nrml bound from -2.50674 to -0.00369  (Successful)
+Projection on Srf2Nrml bound from -0.29862 to  1.63196  (Failed)
+Distance Square         bound from -0.97093 to  1.72692  (Failed)
+Projection on Srf1Nrml bound from -1.49652 to  0.35284  (Failed)
+Projection on Srf2Nrml bound from -0.43777 to  1.22384  (Failed)
+Distance Square         bound from -0.22929 to  1.72663  (Failed)
+Projection on Srf1Nrml bound from -1.49652 to -0.00207  (Successful)
+Projection on Srf2Nrml bound from -0.33048 to  1.22384  (Failed)
+Distance Square         bound from -1.00725 to  1.80158  (Failed)
+Projection on Srf1Nrml bound from -1.54283 to  0.40240  (Failed)
+Projection on Srf2Nrml bound from -0.46280 to  1.36365  (Failed)
+Distance Square         bound from -0.24873 to  1.80158  (Failed)
+Projection on Srf1Nrml bound from -1.54283 to  0.04342  (Failed)
+Projection on Srf2Nrml bound from -0.24796 to  1.36365  (Failed)
+Distance Square         bound from -0.10591 to  1.80158  (Failed)
+Projection on Srf1Nrml bound from -1.54283 to -0.01495  (Successful)
+Projection on Srf2Nrml bound from -0.23082 to  1.36365  (Failed)
+************* Execution Time for dist2ff.irt   is 0.7640    ******************
+************* Execution Time for distmtch.irt  is 0.0470    ******************
+************* Execution Time for domino.irt    is 0.0470    ******************
+************* Execution Time for duality.irt   is 0.1250    ******************
+************* Execution Time for duck.irt      is 0.0310    ******************
+************* Execution Time for ellipses.irt  is 0.0620    ******************
+************* Execution Time for escher.irt    is 0.1410    ******************
+************* Execution Time for f16.irt       is 0.0310    ******************
+************* Execution Time for facemask.irt  is 0.0150    ******************
+************* Execution Time for ffcmpcrv.irt  is 0.0160    ******************
+************* Execution Time for ffcnvhul.irt  is 0.1400    ******************
+************* Execution Time for ffloops.irt   is 0.0000    ******************
+************* Execution Time for ffmatch4.irt  is 0.2500    ******************
+************* Execution Time for ffptdist.irt  is 0.3430    ******************
+************* Execution Time for flecnodl.irt  is 3.4940    ******************
+************* Execution Time for flippage.irt  is 0.0470    ******************
+Power/Bezier curve coercion test = 1
+Power/Bezier surface coercion test = 1
+Power/Bezier surface coercion test = 1
+Root 1 is 0.0000000000000000 (0.0000000000000000 / 12)
+Root 2 is 0.0833333333333334 (1.0000000000000002 / 12)
+Root 3 is 0.1666666666666644 (1.9999999999999725 / 12)
+Root 4 is 0.2499999999999976 (2.9999999999999711 / 12)
+Root 5 is 0.3333333333333386 (4.0000000000000631 / 12)
+Root 6 is 0.4166666666666565 (4.9999999999998783 / 12)
+Root 7 is 0.5000000000000018 (6.0000000000000213 / 12)
+Root 8 is 0.5833333333333387 (7.0000000000000639 / 12)
+Root 9 is 0.6666666666666639 (7.9999999999999662 / 12)
+Root 10 is 0.7500000000000009 (9.0000000000000107 / 12)
+Root 11 is 0.8333333333333355 (10.0000000000000250 / 12)
+Root 12 is 0.9166666666666666 (11.0000000000000000 / 12)
+Root 13 is 0.9999999999990884 (11.9999999999890610 / 12)
+Root 1 is 0.0000000000000000 (0.0000000000000000 / 19)
+Root 2 is 0.0526315789473683 (0.9999999999999976 / 19)
+Root 3 is 0.1052631578947432 (2.0000000000001203 / 19)
+Root 4 is 0.1578947368412718 (2.9999999999841642 / 19)
+Root 5 is 0.2105263157899701 (4.0000000000094325 / 19)
+Root 6 is 0.2631578947351560 (4.9999999999679643 / 19)
+Root 7 is 0.3157894736878344 (6.0000000000688543 / 19)
+Root 8 is 0.3684210526262120 (6.9999999998980282 / 19)
+Root 9 is 0.4210526315843446 (8.0000000001025473 / 19)
+Root 10 is 0.4736842105237547 (8.9999999999513385 / 19)
+Root 11 is 0.5263157894724537 (9.9999999999766214 / 19)
+Root 12 is 0.5789473684224997 (11.0000000000274940 / 19)
+Root 13 is 0.6315789473701151 (12.0000000000321880 / 19)
+Root 14 is 0.6842105263125181 (12.9999999999378430 / 19)
+Root 15 is 0.7368421052652504 (14.0000000000397580 / 19)
+Root 16 is 0.7894736842098670 (14.9999999999874730 / 19)
+Root 17 is 0.8421052631585785 (16.0000000000129920 / 19)
+Root 18 is 0.8947368421052560 (16.9999999999998610 / 19)
+Root 19 is 0.9473684210535981 (18.0000000000183640 / 19)
+Root 20 is 0.9999999999990884 (18.9999999999826810 / 19)
+************* Execution Time for freeform.irt  is 0.8110    ******************
+************* Execution Time for function.irt  is 0.0470    ******************
+Angle = 18.00
+Angle = 18.10
+Angle = 18.20
+Angle = 18.30
+Angle = 18.40
+Angle = 18.50
+Angle = 18.60
+Angle = 18.70
+Angle = 18.80
+Angle = 18.90
+Angle = 19.00
+Angle = 19.10
+Angle = 19.20
+Angle = 19.30
+Angle = 21.00
+Angle = 21.10
+Angle = 21.20
+Angle = 21.30
+Angle = 21.40
+Angle = 21.50
+Angle = 21.60
+Angle = 21.70
+Angle = 21.80
+Angle = 21.90
+Angle = 22.00
+Angle = 22.10
+Angle = 22.20
+Angle = 22.30
+Angle = 22.40
+Angle = 22.50
+************* Execution Time for gamakrnl.irt  is 0.0780    ******************
+************* Execution Time for gearbox.irt   is 0.0310    ******************
+************* Execution Time for gersktch.irt  is 0.0000    ******************
+************* Execution Time for glocal.irt    is 0.0470    ******************
+************* Execution Time for gpolylin.irt  is 0.0310    ******************
+************* Execution Time for handset.irt   is 0.0630    ******************
+TWO Sided Hausdorff distance 0.230000 detected at t1 = 1.000000
+ONE Sided Hausdorff distance 0.230000 detected at t1 = 1.000000
+TWO Sided Hausdorff distance 0.230000 detected at t2 = 1.000000
+ONE Sided Hausdorff distance 0.091450 detected at t2 = 0.354537
+TWO Sided Hausdorff distance 0.331948 detected at t1 = 0.332656
+ONE Sided Hausdorff distance 0.331948 detected at t1 = 0.332656
+TWO Sided Hausdorff distance 0.331948 detected at t2 = 0.332656
+ONE Sided Hausdorff distance 0.014558 detected at t2 = 0.738028
+TWO Sided Hausdorff distance 0.361954 detected at t2 = 0.317459
+ONE Sided Hausdorff distance 0.099323 detected at t2 = 1.000000
+TWO Sided Hausdorff distance 0.361954 detected at t1 = 0.317459
+ONE Sided Hausdorff distance 0.361954 detected at t1 = 0.317459
+TWO Sided Hausdorff distance 0.111352 detected at t1 = 1.000000
+TWO Sided Hausdorff distance 0.111352 detected at t2 = 0.321869
+ONE Sided Hausdorff distance 0.046234 detected at t1 = 0.598979
+ONE Sided Hausdorff distance 0.046234 detected at t2 = 0.609186
+ONE Sided Hausdorff distance 0.046234 detected at t2 = 0.096227
+ONE Sided Hausdorff distance 0.111352 detected at t1 = 0.321869
+ONE Sided Hausdorff distance 0.111352 detected at t2 = 1.000000
+TWO Sided Hausdorff distance 0.209564 detected at t1 = 0.418275
+TWO Sided Hausdorff distance 0.209564 detected at t2 = 0.445065
+ONE Sided Hausdorff distance 0.209564 detected at t1 = 0.418275
+ONE Sided Hausdorff distance 0.209564 detected at t2 = 0.445065
+ONE Sided Hausdorff distance 0.126838 detected at t1 = 0.533673
+ONE Sided Hausdorff distance 0.126838 detected at t2 = 1.000000
+ONE Sided Hausdorff distance 0.126838 detected at t2 = 0.000000
+TWO Sided Hausdorff distance 0.147340 detected at t1 = 0.422522
+TWO Sided Hausdorff distance 0.147340 detected at t1 = 0.020027
+TWO Sided Hausdorff distance 0.147340 detected at t2 = 0.138189
+ONE Sided Hausdorff distance 0.123839 detected at t1 = 0.209452
+ONE Sided Hausdorff distance 0.123839 detected at t2 = 0.213375
+ONE Sided Hausdorff distance 0.123839 detected at t2 = 1.000000
+ONE Sided Hausdorff distance 0.147340 detected at t1 = 0.138189
+ONE Sided Hausdorff distance 0.147340 detected at t2 = 0.422522
+ONE Sided Hausdorff distance 0.147340 detected at t2 = 0.020027
+TWO Sided Hausdorff distance 0.586066 detected at t1 = 1.000000
+TWO Sided Hausdorff distance 0.586066 detected at t2 = 0.965292
+TWO Sided Hausdorff distance 0.606994 detected at t1 = 0.437815
+TWO Sided Hausdorff distance 0.606994 detected at t2 = 1.000000
+TWO Sided Hausdorff distance 1.573532 detected at t1 = 0.527786
+TWO Sided Hausdorff distance 1.573532 detected at t2 = 1.000000
+TWO Sided Hausdorff distance 1.609505 detected at t1 = 0.679189
+TWO Sided Hausdorff distance 1.609505 detected at t2 = 0.000000
+TWO Sided Hausdorff distance 0.083530 detected at t1 = 4.000000
+TWO Sided Hausdorff distance 0.083530 detected at t2 = 0.000000
+TWO Sided Hausdorff distance 0.147542 detected at t1 = 0.843757
+TWO Sided Hausdorff distance 0.147542 detected at t2 = 0.801009
+************* Execution Time for hausdorf.irt  is 20.0300   ******************
+************* Execution Time for hermite.irt   is 0.0470    ******************
+************* Execution Time for interpol.irt  is 0.2650    ******************
+************* Execution Time for isocline.irt  is 4.4460    ******************
+************* Execution Time for knight.irt    is 0.0160    ******************
+Size of c1 is 50 and c1r1 is 16
+Size of c1 is 50 and c1r2 is 8
+Size of c1 is 50 and c1r3 is 7
+Size of c1 is 50 and c1r1 is 36
+************* Execution Time for knotrmvl.irt  is 0.0310    ******************
+************* Execution Time for knots.irt     is 0.0160    ******************
+************* Execution Time for lightmil.irt  is 0.0150    ******************
+************* Execution Time for lj8000.irt    is 0.0780    ******************
+************* Execution Time for ln2circ.irt   is 0.0160    ******************
+
+
+BEZIER CURVE: TOLERANCE = 1.000000, Dist = 0.400000
+	OFFSET : Min 0.000000, Max 0.400000, Max Error 0.400000 (ctlpts = 4)
+	OFFSETI: Min 0.000000, Max 0.635019, Max Error 0.400000 (ctlpts = 4)
+	AOFFSET: Min 0.000000, Max 0.400000, Max Error 0.400000 (ctlpts = 4)
+	LOFFSET: Min 0.000000, Max 0.724520, Max Error 0.400000 (ctlpts = 4)
+
+BEZIER CURVE: TOLERANCE = 0.316228, Dist = 0.400000
+	OFFSET : Min 0.114087, Max 0.400000, Max Error 0.285913 (ctlpts = 7)
+	OFFSETI: Min 0.339604, Max 0.433941, Max Error 0.060396 (ctlpts = 10)
+	AOFFSET: Min 0.000000, Max 0.400000, Max Error 0.400000 (ctlpts = 4)
+	LOFFSET: Min 0.369976, Max 0.440154, Max Error 0.040154 (ctlpts = 10)
+
+BEZIER CURVE: TOLERANCE = 0.100000, Dist = 0.400000
+	OFFSET : Min 0.341084, Max 0.400000, Max Error 0.058916 (ctlpts = 10)
+	OFFSETI: Min 0.339604, Max 0.433941, Max Error 0.060396 (ctlpts = 10)
+	AOFFSET: Min 0.321770, Max 0.400000, Max Error 0.078230 (ctlpts = 7)
+	LOFFSET: Min 0.369976, Max 0.440154, Max Error 0.040154 (ctlpts = 10)
+
+BEZIER CURVE: TOLERANCE = 0.031623, Dist = 0.400000
+	OFFSET : Min 0.377538, Max 0.400000, Max Error 0.022462 (ctlpts = 19)
+	OFFSETI: Min 0.382303, Max 0.409121, Max Error 0.017697 (ctlpts = 19)
+	AOFFSET: Min 0.369604, Max 0.400000, Max Error 0.030396 (ctlpts = 15)
+	LOFFSET: Min 0.396435, Max 0.402983, Max Error 0.003565 (ctlpts = 19)
+
+BEZIER CURVE: TOLERANCE = 0.010000, Dist = 0.400000
+	OFFSET : Min 0.391535, Max 0.400000, Max Error 0.008465 (ctlpts = 28)
+	OFFSETI: Min 0.396466, Max 0.401857, Max Error 0.003534 (ctlpts = 22)
+	AOFFSET: Min 0.387851, Max 0.400000, Max Error 0.012149 (ctlpts = 21)
+	LOFFSET: Min 0.398848, Max 0.401348, Max Error 0.001348 (ctlpts = 22)
+
+BEZIER CURVE: TOLERANCE = 0.003162, Dist = 0.400000
+	OFFSET : Min 0.396933, Max 0.400000, Max Error 0.003067 (ctlpts = 37)
+	OFFSETI: Min 0.397499, Max 0.401521, Max Error 0.002501 (ctlpts = 25)
+	AOFFSET: Min 0.397904, Max 0.400000, Max Error 0.002096 (ctlpts = 43)
+	LOFFSET: Min 0.398991, Max 0.400856, Max Error 0.001009 (ctlpts = 25)
+
+CHESS PAWN CSECTION: TOLERANCE = 1.000000, Dist = 0.500000
+	OFFSET : Min 0.302646, Max 0.500000, Max Error 0.197354 (ctlpts = 13)
+	OFFSETI: Min 0.302646, Max 0.500000, Max Error 0.197354 (ctlpts = 13)
+	AOFFSET: Min 0.302646, Max 0.500000, Max Error 0.197354 (ctlpts = 13)
+	LOFFSET: Min 0.322420, Max 0.588725, Max Error 0.177580 (ctlpts = 13)
+
+CHESS PAWN CSECTION: TOLERANCE = 0.316228, Dist = 0.500000
+	OFFSET : Min 0.302646, Max 0.500000, Max Error 0.197354 (ctlpts = 13)
+	OFFSETI: Min 0.302646, Max 0.500000, Max Error 0.197354 (ctlpts = 13)
+	AOFFSET: Min 0.302646, Max 0.500000, Max Error 0.197354 (ctlpts = 13)
+	LOFFSET: Min 0.322420, Max 0.588725, Max Error 0.177580 (ctlpts = 13)
+
+CHESS PAWN CSECTION: TOLERANCE = 0.100000, Dist = 0.500000
+	OFFSET : Min 0.412254, Max 0.500000, Max Error 0.087746 (ctlpts = 27)
+	OFFSETI: Min 0.412254, Max 0.506784, Max Error 0.087746 (ctlpts = 27)
+	AOFFSET: Min 0.394892, Max 0.500000, Max Error 0.105108 (ctlpts = 16)
+	LOFFSET: Min 0.468641, Max 0.519228, Max Error 0.031359 (ctlpts = 27)
+
+CHESS PAWN CSECTION: TOLERANCE = 0.031623, Dist = 0.500000
+	OFFSET : Min 0.475110, Max 0.500000, Max Error 0.024890 (ctlpts = 42)
+	OFFSETI: Min 0.475110, Max 0.506784, Max Error 0.024890 (ctlpts = 39)
+	AOFFSET: Min 0.484878, Max 0.500000, Max Error 0.015122 (ctlpts = 39)
+	LOFFSET: Min 0.494217, Max 0.506300, Max Error 0.006300 (ctlpts = 39)
+
+CHESS PAWN CSECTION: TOLERANCE = 0.010000, Dist = 0.500000
+	OFFSET : Min 0.490974, Max 0.500000, Max Error 0.009026 (ctlpts = 69)
+	OFFSETI: Min 0.490974, Max 0.506784, Max Error 0.009026 (ctlpts = 57)
+	AOFFSET: Min 0.491722, Max 0.500000, Max Error 0.008278 (ctlpts = 67)
+	LOFFSET: Min 0.498310, Max 0.501578, Max Error 0.001690 (ctlpts = 57)
+
+CHESS PAWN CSECTION: TOLERANCE = 1.000000, Dist = 1.500000
+	OFFSET : Min 0.907938, Max 1.500000, Max Error 0.592062 (ctlpts = 13)
+	OFFSETI: Min 0.907938, Max 1.500000, Max Error 0.592062 (ctlpts = 13)
+	AOFFSET: Min 1.184676, Max 1.500000, Max Error 0.315324 (ctlpts = 16)
+	LOFFSET: Min 0.967261, Max 1.766176, Max Error 0.532739 (ctlpts = 13)
+
+CHESS PAWN CSECTION: TOLERANCE = 0.316228, Dist = 1.500000
+	OFFSET : Min 1.236762, Max 1.500000, Max Error 0.263238 (ctlpts = 27)
+	OFFSETI: Min 1.236762, Max 1.520351, Max Error 0.263238 (ctlpts = 27)
+	AOFFSET: Min 1.454633, Max 1.500000, Max Error 0.045367 (ctlpts = 38)
+	LOFFSET: Min 1.405755, Max 1.557706, Max Error 0.094245 (ctlpts = 27)
+
+CHESS PAWN CSECTION: TOLERANCE = 0.100000, Dist = 1.500000
+	OFFSET : Min 1.404163, Max 1.500000, Max Error 0.095837 (ctlpts = 39)
+	OFFSETI: Min 1.404163, Max 1.520351, Max Error 0.095837 (ctlpts = 36)
+	AOFFSET: Min 1.475167, Max 1.500000, Max Error 0.024833 (ctlpts = 65)
+	LOFFSET: Min 1.458253, Max 1.530178, Max Error 0.041747 (ctlpts = 36)
+
+CHESS PAWN CSECTION: TOLERANCE = 0.031623, Dist = 1.500000
+	OFFSET : Min 1.469145, Max 1.500000, Max Error 0.030855 (ctlpts = 66)
+	OFFSETI: Min 1.469145, Max 1.520351, Max Error 0.030855 (ctlpts = 54)
+	AOFFSET: Min 1.490570, Max 1.500000, Max Error 0.009430 (ctlpts = 104)
+	LOFFSET: Min 1.491512, Max 1.506609, Max Error 0.008488 (ctlpts = 54)
+
+CROSS SECTION: TOLERANCE = 0.100000, Dist = 0.300000
+	OFFSET : Min 0.222338, Max 0.300000, Max Error 0.077662 (ctlpts = 9)
+	OFFSETI: Min 0.222338, Max 0.300000, Max Error 0.077662 (ctlpts = 9)
+	AOFFSET: Min 0.189019, Max 0.300000, Max Error 0.110981 (ctlpts = 7)
+	LOFFSET: Min 0.290342, Max 0.307410, Max Error 0.009658 (ctlpts = 9)
+
+CROSS SECTION: TOLERANCE = 0.031623, Dist = 0.300000
+	OFFSET : Min 0.269831, Max 0.300000, Max Error 0.030169 (ctlpts = 13)
+	OFFSETI: Min 0.287071, Max 0.310833, Max Error 0.012929 (ctlpts = 13)
+	AOFFSET: Min 0.283872, Max 0.300000, Max Error 0.016128 (ctlpts = 21)
+	LOFFSET: Min 0.295760, Max 0.304889, Max Error 0.004889 (ctlpts = 13)
+
+CROSS SECTION: TOLERANCE = 0.010000, Dist = 0.300000
+	OFFSET : Min 0.290737, Max 0.300000, Max Error 0.009263 (ctlpts = 25)
+	OFFSETI: Min 0.298851, Max 0.300732, Max Error 0.001149 (ctlpts = 25)
+	AOFFSET: Min 0.295392, Max 0.300000, Max Error 0.004608 (ctlpts = 27)
+	LOFFSET: Min 0.299709, Max 0.300294, Max Error 0.000294 (ctlpts = 25)
+
+CROSS SECTION: TOLERANCE = 0.003162, Dist = 0.300000
+	OFFSET : Min 0.297162, Max 0.300000, Max Error 0.002838 (ctlpts = 49)
+	OFFSETI: Min 0.298851, Max 0.300732, Max Error 0.001149 (ctlpts = 25)
+	AOFFSET: Min 0.295392, Max 0.300000, Max Error 0.004608 (ctlpts = 27)
+	LOFFSET: Min 0.299709, Max 0.300294, Max Error 0.000294 (ctlpts = 25)
+
+CROSS SECTION: TOLERANCE = 0.001000, Dist = 0.300000
+	OFFSET : Min 0.299181, Max 0.300000, Max Error 0.000819 (ctlpts = 97)
+	OFFSETI: Min 0.299941, Max 0.300050, Max Error 0.000059 (ctlpts = 49)
+	AOFFSET: Min 0.299521, Max 0.300000, Max Error 0.000479 (ctlpts = 143)
+	LOFFSET: Min 0.299975, Max 0.300029, Max Error 0.000029 (ctlpts = 49)
+
+CIRC: TOLERANCE = 0.100000, Dist = 0.500000
+	OFFSET : Min 0.477071, Max 0.500000, Max Error 0.022929 (ctlpts = 17)
+	OFFSETI: Min 0.494120, Max 0.512409, Max Error 0.012409 (ctlpts = 9)
+	AOFFSET: Min 0.353553, Max 0.500000, Max Error 0.146447 (ctlpts = 9)
+	LOFFSET: Min 0.485844, Max 0.517569, Max Error 0.017569 (ctlpts = 9)
+
+CIRC: TOLERANCE = 0.031623, Dist = 0.500000
+	OFFSET : Min 0.477071, Max 0.500000, Max Error 0.022929 (ctlpts = 17)
+	OFFSETI: Min 0.494120, Max 0.512409, Max Error 0.012409 (ctlpts = 9)
+	AOFFSET: Min 0.489390, Max 0.500000, Max Error 0.010610 (ctlpts = 21)
+	LOFFSET: Min 0.485844, Max 0.517569, Max Error 0.017569 (ctlpts = 9)
+
+CIRC: TOLERANCE = 0.010000, Dist = 0.500000
+	OFFSET : Min 0.493979, Max 0.500000, Max Error 0.006021 (ctlpts = 33)
+	OFFSETI: Min 0.498728, Max 0.502254, Max Error 0.002254 (ctlpts = 17)
+	AOFFSET: Min 0.494268, Max 0.500000, Max Error 0.005732 (ctlpts = 45)
+	LOFFSET: Min 0.498122, Max 0.502403, Max Error 0.002403 (ctlpts = 17)
+
+CIRC: TOLERANCE = 0.100000, Dist = -0.600000
+	OFFSET : Min 0.572485, Max 0.600000, Max Error 0.027515 (ctlpts = 17)
+	OFFSETI: Min 0.558353, Max 0.608600, Max Error 0.041647 (ctlpts = 9)
+	AOFFSET: Min 0.550645, Max 0.600000, Max Error 0.049355 (ctlpts = 13)
+	LOFFSET: Min 0.595315, Max 0.603783, Max Error 0.004685 (ctlpts = 9)
+
+CIRC: TOLERANCE = 0.031623, Dist = -0.600000
+	OFFSET : Min 0.592774, Max 0.600000, Max Error 0.007226 (ctlpts = 33)
+	OFFSETI: Min 0.592728, Max 0.604475, Max Error 0.007272 (ctlpts = 17)
+	AOFFSET: Min 0.587269, Max 0.600000, Max Error 0.012731 (ctlpts = 21)
+	LOFFSET: Min 0.599359, Max 0.600501, Max Error 0.000641 (ctlpts = 17)
+
+CIRC: TOLERANCE = 0.010000, Dist = -0.600000
+	OFFSET : Min 0.592774, Max 0.600000, Max Error 0.007226 (ctlpts = 33)
+	OFFSETI: Min 0.592728, Max 0.604475, Max Error 0.007272 (ctlpts = 17)
+	AOFFSET: Min 0.596088, Max 0.600000, Max Error 0.003912 (ctlpts = 53)
+	LOFFSET: Min 0.599359, Max 0.600501, Max Error 0.000641 (ctlpts = 17)
+
+OFFSET DOCS CRV: TOLERANCE = 0.100000, Dist = 0.400000
+	OFFSET : Min 0.310211, Max 0.400000, Max Error 0.089789 (ctlpts = 15)
+	OFFSETI: Min 0.310211, Max 0.434263, Max Error 0.089789 (ctlpts = 15)
+	AOFFSET: Min 0.203042, Max 0.400000, Max Error 0.196958 (ctlpts = 8)
+	LOFFSET: Min 0.320275, Max 0.437387, Max Error 0.079725 (ctlpts = 15)
+
+OFFSET DOCS CRV: TOLERANCE = 0.031623, Dist = 0.400000
+	OFFSET : Min 0.377298, Max 0.400000, Max Error 0.022702 (ctlpts = 25)
+	OFFSETI: Min 0.371031, Max 0.411217, Max Error 0.028969 (ctlpts = 23)
+	AOFFSET: Min 0.363588, Max 0.400000, Max Error 0.036412 (ctlpts = 16)
+	LOFFSET: Min 0.387017, Max 0.406040, Max Error 0.012983 (ctlpts = 23)
+
+OFFSET DOCS CRV: TOLERANCE = 0.010000, Dist = 0.400000
+	OFFSET : Min 0.390073, Max 0.400000, Max Error 0.009927 (ctlpts = 41)
+	OFFSETI: Min 0.393312, Max 0.404892, Max Error 0.006688 (ctlpts = 35)
+	AOFFSET: Min 0.388057, Max 0.400000, Max Error 0.011943 (ctlpts = 29)
+	LOFFSET: Min 0.397718, Max 0.402376, Max Error 0.002376 (ctlpts = 35)
+
+OFFSET DOCS CRV: TOLERANCE = 0.100000, Dist = -0.200000
+	OFFSET : Min 0.101521, Max 0.200000, Max Error 0.098479 (ctlpts = 8)
+	OFFSETI: Min 0.101521, Max 0.200000, Max Error 0.098479 (ctlpts = 8)
+	AOFFSET: Min 0.101521, Max 0.200000, Max Error 0.098479 (ctlpts = 8)
+	LOFFSET: Min 0.000000, Max 0.292957, Max Error 0.200000 (ctlpts = 8)
+
+OFFSET DOCS CRV: TOLERANCE = 0.031623, Dist = -0.200000
+	OFFSET : Min 0.173189, Max 0.200000, Max Error 0.026811 (ctlpts = 19)
+	OFFSETI: Min 0.173189, Max 0.205609, Max Error 0.026811 (ctlpts = 19)
+	AOFFSET: Min 0.101521, Max 0.200000, Max Error 0.098479 (ctlpts = 8)
+	LOFFSET: Min 0.182695, Max 0.209181, Max Error 0.017305 (ctlpts = 19)
+
+OFFSET DOCS CRV: TOLERANCE = 0.010000, Dist = -0.200000
+	OFFSET : Min 0.190737, Max 0.200000, Max Error 0.009263 (ctlpts = 29)
+	OFFSETI: Min 0.190737, Max 0.203301, Max Error 0.009263 (ctlpts = 27)
+	AOFFSET: Min 0.173189, Max 0.200000, Max Error 0.026811 (ctlpts = 14)
+	LOFFSET: Min 0.196685, Max 0.201772, Max Error 0.003315 (ctlpts = 27)************* Execution Time for loffset.irt   is 1.2790    ******************
+************* Execution Time for loffset2.irt  is 0.2340    ******************
+************* Execution Time for logos.irt     is 0.0470    ******************
+************* Execution Time for loops.irt     is 0.0150    ******************
+0) v1 = -0.4314, -0.0089, -0.9021  v2 = -0.0023,  0.9812, -0.1931 :: OK
+1) v1 =  0.8189, -0.5194, -0.2441  v2 = -0.8614, -0.4137,  0.2947 :: OK
+2) v1 =  0.0069, -1.0000, -0.0069  v2 =  0.4872,  0.7410,  0.4622 :: OK
+3) v1 =  0.0335, -0.5544, -0.8316  v2 =  0.6598,  0.6912, -0.2947 :: OK
+4) v1 = -0.1628, -0.8111,  0.5618  v2 = -0.1959, -0.9756, -0.0990 :: OK
+5) v1 =  0.1542, -0.7310,  0.6647  v2 = -0.2894,  0.8469,  0.4461 :: OK
+6) v1 = -0.8241,  0.0005, -0.5665  v2 = -0.2145,  0.7155,  0.6649 :: OK
+7) v1 = -0.3994, -0.4591,  0.7935  v2 =  0.6853, -0.3700,  0.6272 :: OK
+8) v1 = -0.2510, -0.8780, -0.4076  v2 = -0.4431, -0.5880,  0.6767 :: OK
+9) v1 = -0.5956, -0.0266, -0.8028  v2 = -0.7529,  0.6512, -0.0952 :: OK
+************* Execution Time for macros.irt    is 0.1100    ******************
+************* Execution Time for make_spr.irt  is 0.1410    ******************
+Mat Decomp: Scale 2.00, 2.00, 2.00, Trans 1.00, 2.00, 3.00, Trans 
+NONE       (2) - Matrix    type
+[OBJECT NONE
+    [MATRIX
+	    0.32 0.56 -0.77 0.
+	    -0.42 0.81 0.41 0.
+	    0.85 0.19 0.49 0.
+	    0. 0. 0. 1.]
+]
+
+Mat Decomp: Rot [40.00, 50.00, 60.00], Scl (2.00), Trans [1.000. 2.000. 3.000]
+Mat Decomp: Rot [-2.00, -30.00, 179.00], Scl (3.00), Trans [1.000. 2.000. 3.000]
+Mat Decomp: Rot [-2.00, -30.00, 179.00], Scl (3.00), Trans [1.000. 2.000. -3.000]
+Matrix decomp/recomp = 1 1 1
+************* Execution Time for mat_comp.irt  is 0.5770    ******************
+Found 29 points
+Found 57 points
+Found 414 points
+Found 74 points
+Found 81 points
+************* Execution Time for mbisect.irt   is 0.7330    ******************
+NONE       (0) - Vector    type
+[OBJECT NONE
+    [VECTOR 0.01 0.00000001 0.01]
+]
+************* Execution Time for mdl1bool.irt  is 15.3500   ******************
+Total Time = 3.292000
+************* Execution Time for mdl_sld2.irt  is 3.4170    ******************
+Total Time = 3.494000
+************* Execution Time for mdl_sd2a.irt  is 3.6040    ******************
+Total Time = 5.538000
+************* Execution Time for mdl_sd2b.irt  is 5.6780    ******************
+************* Execution Time for mdl_sld6.irt  is 3.1820    ******************
+BFrom2Img: total computed penalty = 10584.000000
+NONE       (0) - Numeric   type
+[OBJECT NONE
+    [NUMBER 414244.]
+]
+BFrom2Img: total computed penalty = 8890.000000
+NONE       (0) - Numeric   type
+[OBJECT NONE
+    [NUMBER 225869.]
+]
+Sizes of micro-blobs are 414244 225869
+BFrom3Img: total computed penalty = 0.884692
+NONE       (0) - Numeric   type
+[OBJECT NONE
+    [NUMBER 116228.]
+]
+BFrom3Img: total computed penalty = 0.886974
+NONE       (0) - Numeric   type
+[OBJECT NONE
+    [NUMBER 237000.]
+]
+************* Execution Time for mdl3dimg.irt  is 15.5690   ******************
+Total Time = 0.031000
+************* Execution Time for molecule.irt  is 0.1090    ******************
+Min distance 0.458017 detected at t2 = 0.415239
+Min distance 0.026820 detected at t2 = 0.121396
+Min distance 0.074965 detected at t2 = 0.944496
+Min distance 0.200973 detected at t1 = 0.475878
+Min distance 0.200973 detected at t2 = 0.004294
+Min distance 0.485119 detected at t1 = 0.429513
+Min distance 0.485119 detected at t2 = 0.429513
+Min distance 0.398474 detected at t1 = 0.629810
+Min distance 0.398474 detected at t2 = 0.000000
+Min distance 0.452065 detected at uv1 = 0.491070 0.575526
+Min distance 0.452065 detected at t2 = 0.981050
+Min distance 0.668365 detected at uv1 = 0.546379 0.253293
+Min distance 0.668365 detected at t2 = 0.475266
+Min distance 1.243778 detected at uv1 = 0.629136 0.000000
+Min distance 1.243778 detected at t2 = 0.622576
+Min distance 1.242093 detected at uv1 = 0.632124 1.000000
+Min distance 1.242093 detected at uv2 = 0.632124 1.000000
+Min distance 1.237789 detected at uv1 = 0.632124 0.000000
+Min distance 1.237789 detected at uv2 = 0.632124 0.000000
+Min distance 1.150666 detected at uv1 = 0.632124 1.000000
+Min distance 1.150666 detected at uv2 = 0.632124 1.000000
+Min distance 0.624628 detected at uv1 = 0.004939 0.000000
+Min distance 0.624628 detected at uv2 = 0.485506 0.000000
+Min distance 0.710214 detected at uv1 = 0.000000 0.446084
+Min distance 0.710214 detected at uv2 = 0.485208 0.944139
+Min distance 0.951426 detected at uv1 = 0.801447 0.436367
+Min distance 0.951426 detected at uv2 = 0.487651 0.000000
+Min distance 0.337118 detected at uv1 = 0.493642 0.720960
+Min distance 0.337118 detected at uv2 = 0.431642 0.390645
+************* Execution Time for min_dist.irt  is 1.8730    ******************
+************* Execution Time for models.irt    is 8.2830    ******************
+Volume1 = -3.143794  -3.143794
+Moments1 = 0.000000  -0.838824  -0.838824  -0.838561
+Volume2 = -0.031438  -0.031438
+Moments2 = -0.000084  -0.000084  -0.008386
+************* Execution Time for moments.irt   is 1.3890    ******************
+************* Execution Time for mrchcube.irt  is 1.0920    ******************
+************* Execution Time for mrescrv.irt   is 0.0940    ******************
+Processing    4 2D pts...done (Center = 0.05934 0.13382, Radius = 0.68808).
+Processing    8 2D pts...done (Center = 0.30425 -0.09262, Radius = 0.74547).
+Processing   16 2D pts...done (Center = 0.096865 0.071449, Radius = 0.8681).
+Processing   32 2D pts...done (Center = -0.0062625 -0.066885, Radius = 0.94672).
+Processing   64 2D pts...done (Center = 0.00026283 -0.0061756, Radius = 0.99272).
+Processing  128 2D pts...done (Center = -0.0029363 0.011483, Radius = 0.98583).
+Processing  256 2D pts...done (Center = -0.0011035 0.0033458, Radius = 0.9963).
+Processing  512 2D pts...done (Center = 0.0080186 0.0039824, Radius = 0.99364).
+Processing 1024 2D pts...done (Center = 0.0049735 -0.0010508, Radius = 0.99656).
+Processing    4 3D pts...done (Center = -0.45641 0.055261, Radius = 0.99354).
+Processing   16 3D pts...done (Center = 0.13267 -0.041703, Radius = 1.2245).
+Processing   64 3D pts...done (Center = -0.057426 -0.11972, Radius = 1.3776).
+Processing  256 3D pts...done (Center = -0.077579 -0.0059677, Radius = 1.5691).
+Processing 1024 3D pts...done (Center = 0.038913 0.015327, Radius = 1.6206).
+Processing    4 vecs...done Radius1 = 0.15821 Radius2 = 0.16388.
+Processing    8 vecs...done Radius1 = 0.33706 Radius2 = 0.36934.
+Processing   16 vecs...done Radius1 = 0.41661 Radius2 = 0.44692.
+Processing   32 vecs...done Radius1 = 0.45854 Radius2 = 0.47464.
+Processing   64 vecs...done Radius1 = 0.45048 Radius2 = 0.49543.
+Processing  128 vecs...done Radius1 = 0.452 Radius2 = 0.47233.
+Processing  256 vecs...done Radius1 = 0.4597 Radius2 = 0.46752.
+Processing  512 vecs...done Radius1 = 0.45917 Radius2 = 0.47285.
+Processing 1024 vecs...done Radius1 = 0.46328 Radius2 = 0.47669.
+Processing    4 vecs in R^3...done Radius1 = 0.4029 Radius2 = 0.44156.
+Processing    8 vecs in R^3...done Radius1 = 0.32136 Radius2 = 0.43421.
+Processing   16 vecs in R^3...done Radius1 = 0.51928 Radius2 = 0.6842.
+Processing   32 vecs in R^3...done Radius1 = 0.60933 Radius2 = 0.69129.
+Processing   64 vecs in R^3...done Radius1 = 0.67369 Radius2 = 0.74956.
+Processing  128 vecs in R^3...done Radius1 = 0.63259 Radius2 = 0.70422.
+Processing  256 vecs in R^3...done Radius1 = 0.67109 Radius2 = 0.768.
+Processing  512 vecs in R^3...done Radius1 = 0.72501 Radius2 = 0.73124.
+Processing 1024 vecs in R^3...done Radius1 = 0.74513 Radius2 = 0.76212.
+Processing    4 vecs in R^4...done Radius1 = 0.65361 Radius2 = 0.76689.
+Processing    8 vecs in R^4...done Radius1 = 0.90273 Radius2 = 1.1878.
+Processing   16 vecs in R^4...done Radius1 = 0.87084 Radius2 = 1.0105.
+Processing   32 vecs in R^4...done Radius1 = 0.87755 Radius2 = 0.99068.
+Processing   64 vecs in R^4...done Radius1 = 0.90191 Radius2 = 1.0468.
+Processing  128 vecs in R^4...done Radius1 = 1.0362 Radius2 = 1.0866.
+Processing  256 vecs in R^4...done Radius1 = 1.0942 Radius2 = 1.1115.
+Processing  512 vecs in R^4...done Radius1 = 1.0694 Radius2 = 1.0977.
+Processing 1024 vecs in R^4...done Radius1 = 1.0838 Radius2 = 1.1035.
+Processing    4 vecs in R^5...done Radius1 = 0.52989 Radius2 = 0.62559.
+Processing    8 vecs in R^5...done Radius1 = 0.7593 Radius2 = 0.94677.
+Processing   16 vecs in R^5...done Radius1 = 0.80013 Radius2 = 0.94995.
+Processing   32 vecs in R^5...done Radius1 = 0.87358 Radius2 = 0.94825.
+Processing   64 vecs in R^5...done Radius1 = 0.8276 Radius2 = 1.0014.
+Processing  128 vecs in R^5...done Radius1 = 0.89799 Radius2 = 1.0551.
+Processing  256 vecs in R^5...done Radius1 = 0.90239 Radius2 = 1.0981.
+Processing  512 vecs in R^5...done Radius1 = 0.91597 Radius2 = 1.0616.
+Processing 1024 vecs in R^5...done Radius1 = 0.92336 Radius2 = 1.0736.
+************* Execution Time for msc_ch.irt    is 6.0210    ******************
+   COERCE test - 1
+   COERCE test - 1
+   COERCE test - 1
+   COERCE test - 1
+   COERCE test - 1
+   COERCE test - 1
+   COERCE test - 1
+   COERCE test - 1
+   COERCE test - 1
+   COERCE test - 1
+   COERCE test - 1
+   COERCE test - 1
+   COERCE test - 1
+   COERCE test - 1
+   COERCE test - 1
+   COERCE test - 1
+   COERCE test - 1
+   COERCE test - 1
+   COERCE test - 1
+  PDOMAIN test - 1
+  PDOMAIN test - 1
+  PDOMAIN test - 1
+    MEVAL test - 1
+    MEVAL test - 1
+    MEVAL test - 1
+    MEVAL test - 1
+    MEVAL test - 1
+    MEVAL test - 1
+    MEVAL test - 1
+  MFromMv test - 1
+  MFromMv test - 1
+  MFromMv test - 1
+  MFromMv test - 1
+  MFromMv test - 1
+  MFromMv test - 1
+MFromMesh test - 1
+MFromMesh test - 1
+MFromMesh test - 1
+MFromMesh test - 1
+MFromMesh test - 1
+MFromMesh test - 1
+ MeshSize test - 1
+ MeshSize test - 1
+ MeshSize test - 1
+ MeshSize test - 1
+ MeshSize test - 1
+ MeshSize test - 1
+ MeshSize test - 1
+  MREFINE test - 1
+  MREFINE test - 1
+  MREFINE test - 1
+  MREFINE test - 1
+  MREFINE test - 1
+  MREFINE test - 1
+  MREFINE test - 1
+  MDERIVE test - 1
+  MDERIVE test - 1
+  MDERIVE test - 1
+  MDERIVE test - 1
+  MDERIVE test - 1
+  MDERIVE test - 1
+  MDERIVE test - 1
+  MDIVIDE test - 1
+  MDIVIDE test - 1
+  MDIVIDE test - 1
+  MDIVIDE test - 1
+  MDIVIDE test - 1
+  MDIVIDE test - 1
+  MDIVIDE test - 1
+  MDIVIDE test - 1
+  MDIVIDE test - 1
+  MDIVIDE test - 1
+  MDIVIDE test - 1
+  MDIVIDE test - 1
+  MDIVIDE test - 1
+  MDIVIDE test - 1
+  MDIVIDE test - 1
+  MDIVIDE test - 1
+  MDIVIDE test - 1
+  MREGION test - 1
+  MREGION test - 1
+  MREGION test - 1
+  MREGION test - 1
+  MREGION test - 1
+  MREGION test - 1
+  MREGION test - 1
+  MREGION test - 1
+  MREGION test - 1
+ MPROMOTE test - 1
+ MPROMOTE test - 1
+ MPROMOTE test - 1
+ MPROMOTE test - 1
+ MPROMOTE test - 1
+ MPROMOTE test - 1
+ MPROMOTE test - 1
+ MPROMOTE test - 1
+ MPROMOTE test - 1
+ MPROMOTE test - 1
+     LOAD test - 1
+     LOAD test - 1
+************* Execution Time for multivar.irt  is 0.0940    ******************
+   CRAISE test - 1
+   CRAISE test - 1
+   CRAISE test - 1
+   CRAISE test - 1
+   SRAISE test - 1
+   SRAISE test - 1
+   SRAISE test - 1
+   SRAISE test - 1
+  TSRAISE test - 1
+  TSRAISE test - 1
+  TSRAISE test - 1
+  TSRAISE test - 1
+  TSRAISE test - 1
+  TSRAISE test - 1
+   SMERGE test - 1
+   SMERGE test - 1
+   SMERGE test - 1
+   SMERGE test - 1
+  MDIVIDE test - 1
+  MDIVIDE test - 1
+  MDIVIDE test - 1
+  MDIVIDE test - 1
+  MDIVIDE test - 1
+  MDIVIDE test - 1
+  FFMERGE test - 1
+  FFMERGE test - 1
+  FFMERGE test - 1
+  FFMERGE test - 1
+ SymbDiff test - 1
+ SymbDiff test - 1
+ SymbDiff test - 1
+  SymbSum test - 1
+  SymbSum test - 1
+  SymbSum test - 1
+ SymbDiff test - 1
+ SymbDiff test - 1
+ SymbDiff test - 1
+ SymbProd test - 1
+ SymbProd test - 1
+ SymbProd test - 1
+ SymbProd test - 1
+ SymbProd test - 1
+ SymbProd test - 1
+************* Execution Time for multivr2.irt  is 0.0780    ******************
+************* Execution Time for mvarpack.irt  is 1.1390    ******************
+Mean curvature sqaure computed for the Enneper surface spans -0.00000000000000 to 0.00000000000000
+************* Execution Time for mvexplct.irt  is 0.1400    ******************
+MVContact: Solution test equality = 1
+************* Execution Time for mvinter.irt   is 5.3510    ******************
+No "NCFeedRate" attribute detected, using 10.000000 instead
+No "NCBridgeRelFeedRate" attribute detected, using 1.000000 instead
+"NCReverseZ" attributed detected = 0
+"NCRetractZLevel" set at 1.000000
+"NCUpRetractFast" set to 0
+"NCDownPlungeFast" set to 23197171528332553000000000.000000
+No "NCMaxZBridgeGap" attribute detected, using 0.080000 instead
+No "NCCommentChar" attribute detected, dumping no comment
+Processing object "Rough".
+Processing object "irit2GCode".
+Retracting before approaching object "irit2GCode"; DXY = 2.525982, DZ = 0.000000.
+No "NCFeedRate" attribute detected, using 10.000000 instead
+No "NCBridgeRelFeedRate" attribute detected, using 1.000000 instead
+"NCReverseZ" attributed detected = 0
+"NCRetractZLevel" set at 0.500000
+"NCUpRetractFast" set to 0
+"NCDownPlungeFast" set to 23197171528332553000000000.000000
+No "NCMaxZBridgeGap" attribute detected, using 0.080000 instead
+Processing object "Rough".
+Processing object "irit2GCode".
+Retracting before approaching object "irit2GCode"; DXY = 0.528186, DZ = 0.000000.
+No "NCBridgeRelFeedRate" attribute detected, using 1.000000 instead
+"NCReverseZ" attributed detected = 0
+"NCRetractZLevel" set at 0.500000
+"NCUpRetractFast" set to 0
+"NCDownPlungeFast" set to 23197171528332553000000000.000000
+No "NCMaxZBridgeGap" attribute detected, using 0.080000 instead
+Processing object "Rough".
+Processing object "irit2GCode".
+Retracting before approaching object "irit2GCode"; DXY = 1.679796, DZ = 0.000000.
+No "NCFeedRate" attribute detected, using 10.000000 instead
+No "NCBridgeRelFeedRate" attribute detected, using 1.000000 instead
+"NCReverseZ" attributed detected = 0
+"NCRetractZLevel" set at 1.000000
+"NCUpRetractFast" set to 0
+"NCDownPlungeFast" set to 23197171528332553000000000.000000
+No "NCMaxZBridgeGap" attribute detected, using 0.080000 instead
+No "NCCommentChar" attribute detected, dumping no comment
+Processing object "Rough".
+Processing object "irit2GCode".
+Retracting before approaching object "irit2GCode"; DXY = 0.640747, DZ = 0.000000.
+No "NCFeedRate" attribute detected, using 10.000000 instead
+No "NCBridgeRelFeedRate" attribute detected, using 1.000000 instead
+"NCReverseZ" attributed detected = 0
+"NCRetractZLevel" set at 0.500000
+"NCUpRetractFast" set to 0
+"NCDownPlungeFast" set to 23197171528332553000000000.000000
+No "NCMaxZBridgeGap" attribute detected, using 0.080000 instead
+No "NCCommentChar" attribute detected, dumping no comment
+Processing object "Rough".
+Processing object "irit2GCode".
+Retracting before approaching object "irit2GCode"; DXY = 1.154390, DZ = 0.000000.
+No "NCFeedRate" attribute detected, using 10.000000 instead
+No "NCBridgeRelFeedRate" attribute detected, using 1.000000 instead
+"NCReverseZ" attributed detected = 0
+"NCRetractZLevel" set at 10.000000
+"NCUpRetractFast" set to 0
+"NCDownPlungeFast" set to 23197171528332553000000000.000000
+No "NCMaxZBridgeGap" attribute detected, using 0.080000 instead
+No "NCCommentChar" attribute detected, dumping no comment
+Processing object "NCPATH".
+No "NCFeedRate" attribute detected, using 10.000000 instead
+No "NCBridgeRelFeedRate" attribute detected, using 1.000000 instead
+"NCReverseZ" attributed detected = 0
+"NCRetractZLevel" set at 3.500000
+"NCUpRetractFast" set to 0
+"NCDownPlungeFast" set to 23197171528332553000000000.000000
+No "NCMaxZBridgeGap" attribute detected, using 0.080000 instead
+No "NCCommentChar" attribute detected, dumping no comment
+Processing object "NCPATH".
+Processing object "BODY" into file "nc_tpot.stl".
+Processing object "SPOUT" into file "nc_tpot.stl".
+Processing object "HANDLE" into file "nc_tpot.stl".
+Processing object "CAP" into file "nc_tpot.stl".
+************* Execution Time for nc_tpath.irt  is 4.6180    ******************
+           10           85           10           80 = 0.333617
+           10           85           10           80 = 0.333617
+      48.9725           85      14.6149           80 = 0.165087
+           10      48.9725           10      14.6149 = 0.007079
+           10           85           10           80 = 0.333617
+      48.9725           85      14.6149           80 = 0.165087
+      68.2831           85      21.1402           80 = 0.072340
+      48.9725      68.2831      14.6149      21.1402 = 0.008273
+           10      48.9725           10      14.6149 = 0.007079
+           10           85           10           80 = 0.333617
+      48.9725           85      14.6149           80 = 0.165087
+      68.2831           85      21.1402           80 = 0.072340
+      77.6439           85      31.3282           80 = 0.027719
+      68.2831      77.6439      21.1402      31.3282 = 0.006960
+      48.9725      68.2831      14.6149      21.1402 = 0.008273
+           10      48.9725           10      14.6149 = 0.007079
+           10           45           10          170 = 0.716150
+      65.4999           45       47.051          170 = 0.306780
+           10      65.4999           10       47.051 = 0.106369
+           10           45           10          170 = 0.716150
+      65.4999           45       47.051          170 = 0.306780
+      69.8259           45      134.147          170 = 0.059271
+      65.4999      69.8259       47.051      134.147 = 0.102410
+           10      65.4999           10       47.051 = 0.106369
+           10           45           10          170 = 0.716150
+      65.4999           45       47.051          170 = 0.306780
+      69.8259           45      134.147          170 = 0.059271
+      65.4999      69.8259       47.051      134.147 = 0.102410
+      73.3562      69.8259      85.6052      134.147 = 0.028699
+      65.4999      73.3562       47.051      85.6052 = 0.026685
+           10      65.4999           10       47.051 = 0.106369
+      38.9761      65.4999      20.7524       47.051 = 0.043255
+           10      38.9761           10      20.7524 = 0.010162
+           10           45           10          170 = 0.716150
+      65.4999           45       47.051          170 = 0.306780
+      69.8259           45      134.147          170 = 0.059271
+       58.536           45       158.43          170 = 0.009485
+      69.8259       58.536      134.147       158.43 = 0.019710
+      65.4999      69.8259       47.051      134.147 = 0.102410
+      73.3562      69.8259      85.6052      134.147 = 0.028699
+      65.4999      73.3562       47.051      85.6052 = 0.026685
+           10      65.4999           10       47.051 = 0.106369
+      38.9761      65.4999      20.7524       47.051 = 0.043255
+           10      38.9761           10      20.7524 = 0.010162
+           10           45           10          170 = 0.716150
+      65.4999           45       47.051          170 = 0.306780
+           10      65.4999           10       47.051 = 0.106369
+           10           45           10          170 = 0.716150
+      65.4999           45       47.051          170 = 0.306780
+      69.8259           45      134.147          170 = 0.059271
+      65.4999      69.8259       47.051      134.147 = 0.102410
+           10      65.4999           10       47.051 = 0.106369
+           10           45           10          170 = 0.716150
+      65.4999           45       47.051          170 = 0.306780
+      69.8259           45      134.147          170 = 0.059271
+      65.4999      69.8259       47.051      134.147 = 0.102410
+      73.3562      69.8259      85.6052      134.147 = 0.028699
+      65.4999      73.3562       47.051      85.6052 = 0.026685
+           10      65.4999           10       47.051 = 0.106369
+      38.9761      65.4999      20.7524       47.051 = 0.043255
+           10      38.9761           10      20.7524 = 0.010162
+           10           45           10          170 = 0.716150
+      65.4999           45       47.051          170 = 0.306780
+      69.8259           45      134.147          170 = 0.059271
+       58.536           45       158.43          170 = 0.009485
+      69.8259       58.536      134.147       158.43 = 0.019710
+      65.4999      69.8259       47.051      134.147 = 0.102410
+      73.3562      69.8259      85.6052      134.147 = 0.028699
+      65.4999      73.3562       47.051      85.6052 = 0.026685
+           10      65.4999           10       47.051 = 0.106369
+      38.9761      65.4999      20.7524       47.051 = 0.043255
+           10      38.9761           10      20.7524 = 0.010162
+           35           85           40           70 = 0.104928
+           35           85           40           70 = 0.104928
+      60.2915           85      42.7887           70 = 0.049274
+           35      60.2915           40      42.7887 = 0.004039
+           35           85           40           70 = 0.104928
+      60.2915           85      42.7887           70 = 0.049274
+      72.8773           85      46.7667           70 = 0.021026
+      60.2915      72.8773      42.7887      46.7667 = 0.003513
+           35      60.2915           40      42.7887 = 0.004039
+           35           85           40           70 = 0.104928
+      60.2915           85      42.7887           70 = 0.049274
+      72.8773           85      46.7667           70 = 0.021026
+       79.094           85      52.0119           70 = 0.008012
+      72.8773       79.094      46.7667      52.0119 = 0.002411
+      60.2915      72.8773      42.7887      46.7667 = 0.003513
+           35      60.2915           40      42.7887 = 0.004039
+           70            5           70          130 = 0.211126
+      40.4549            5      115.761          130 = 0.015636
+           70      40.4549           70      115.761 = 0.089310
+           70            5           70          130 = 0.211126
+      40.4549            5      115.761          130 = 0.015636
+           70      40.4549           70      115.761 = 0.089310
+      57.0631      40.4549      101.986      115.761 = 0.013313
+           70      57.0631           70      101.986 = 0.030383
+           70            5           70          130 = 0.211126
+      40.4549            5      115.761          130 = 0.015636
+           70      40.4549           70      115.761 = 0.089310
+      57.0631      40.4549      101.986      115.761 = 0.013313
+           70      57.0631           70      101.986 = 0.030383
+      64.3757      57.0631      89.7274      101.986 = 0.006156
+           70      64.3757           70      89.7274 = 0.008862
+           70            5           70          130 = 0.211126
+      40.4549            5      115.761          130 = 0.015636
+      22.8831            5      123.839          130 = 0.002064
+      40.4549      22.8831      115.761      123.839 = 0.005748
+           70      40.4549           70      115.761 = 0.089310
+      57.0631      40.4549      101.986      115.761 = 0.013313
+      48.9589      40.4549      110.026      115.761 = 0.002632
+      57.0631      48.9589      101.986      110.026 = 0.004016
+           70      57.0631           70      101.986 = 0.030383
+      64.3757      57.0631      89.7274      101.986 = 0.006156
+           70      64.3757           70      89.7274 = 0.008862
+           70            5           70          130 = 0.211126
+      40.4549            5      115.761          130 = 0.015636
+           70      40.4549           70      115.761 = 0.089310
+           70            5           70          130 = 0.211126
+      40.4549            5      115.761          130 = 0.015636
+           70      40.4549           70      115.761 = 0.089310
+      57.0631      40.4549      101.986      115.761 = 0.013313
+           70      57.0631           70      101.986 = 0.030383
+           70            5           70          130 = 0.211126
+      40.4549            5      115.761          130 = 0.015636
+           70      40.4549           70      115.761 = 0.089310
+      57.0631      40.4549      101.986      115.761 = 0.013313
+           70      57.0631           70      101.986 = 0.030383
+      64.3757      57.0631      89.7274      101.986 = 0.006156
+           70      64.3757           70      89.7274 = 0.008862
+           70            5           70          130 = 0.211126
+      40.4549            5      115.761          130 = 0.015636
+      22.8831            5      123.839          130 = 0.002064
+      40.4549      22.8831      115.761      123.839 = 0.005748
+           70      40.4549           70      115.761 = 0.089310
+      57.0631      40.4549      101.986      115.761 = 0.013313
+      48.9589      40.4549      110.026      115.761 = 0.002632
+      57.0631      48.9589      101.986      110.026 = 0.004016
+           70      57.0631           70      101.986 = 0.030383
+      64.3757      57.0631      89.7274      101.986 = 0.006156
+           70      64.3757           70      89.7274 = 0.008862
+************* Execution Time for nc5axis.irt   is 0.5140    ******************
+************* Execution Time for ofstmtch.irt  is 0.0630    ******************
+************* Execution Time for orthotmc.irt  is 0.8890    ******************
+************* Execution Time for platonic.irt  is 0.0310    ******************
+************* Execution Time for playgrnd.irt  is 0.1250    ******************
+XDomain = [-1.000000 5.000000], YDomain = [-15.000000 15.000000]
+XDomain = [-10.000000 10.000000], YDomain = [-10.000000 10.000000], ZDomain = [-0.216756 0.126211]
+************* Execution Time for plotter.irt   is 0.0160    ******************
+NONE       (0) - Numeric   type
+[OBJECT NONE
+    [NUMBER 2128.]
+]
+************* Execution Time for plycrvtr.irt  is 5.3350    ******************
+************* Execution Time for pmorph.irt    is 0.0310    ******************
+************* Execution Time for polygons.irt  is 0.1410    ******************
+************* Execution Time for polypris.irt  is 0.0310    ******************
+************* Execution Time for polytrnc.irt  is 0.0620    ******************
+16 quadratic segements
+7 quadratic segements
+7 cubic segements
+4 cubic segements
+15 quadratic segements
+8 quadratic segements
+11 cubic segements
+7 cubic segements
+21 quadratic segements
+11 quadratic segements
+9 cubic segements
+6 cubic segements
+14 quadratic segements
+4 quadratic segements
+5 cubic segements
+3 cubic segements
+1 quadratic segements
+1 quadratic segements
+1 cubic segements
+1 cubic segements
+1 quadratic segements
+1 quadratic segements
+1 cubic segements
+1 cubic segements
+8 quadratic segements
+4 quadratic segements
+8 cubic segements
+4 cubic segements
+************* Execution Time for pp_apprx.irt  is 0.1090    ******************
+0), Error = 0.000738
+1), Error = 0.000708
+2), Error = 0.000733
+3), Error = 0.000717
+4), Error = 0.000704
+5), Error = 0.000711
+6), Error = 0.000703
+7), Error = 0.000723
+8), Error = 0.000713
+9), Error = 0.000714
+10), Error = 0.000667
+************* Execution Time for prim_fit.irt  is 2.9330    ******************
+************* Execution Time for primitiv.irt  is 0.0000    ******************
+************* Execution Time for primsrfs.irt  is 0.0470    ******************
+this is a line.
+this is a string "STRING".
+this is an integer 3141    , 3141, 6105, 00c45
+this is a float 3.141593      3.1 3.14159E+000
+this is a vector [ 1.00000,  2.00000,  3.00000], [    1,     2,     3]
+this is a point [1.00000, 2.00000, 3.00000], [1, 2, 3]
+this is a plane 0.999912, 0.017702, -0.999755, -0.026551
+this is a object 
+AXES       (19) - Poly      type
+[OBJECT AXES
+    [POLYLINE 	3
+	[[rgb "255,255,255"] 0. 0. 0.]
+	[[rgb "255,64,64"] 1. 0. 0.]
+	[[rgb "255,64,64"] 1. 0.1 0.1]
+    ]
+    [POLYLINE 	2
+	[[rgb "255,64,64"] 1. 0.1 0.]
+	[[rgb "255,64,64"] 1. 0. 0.1]
+    ]
+    [POLYLINE 	6
+	[[rgb "255,255,255"] 0. 0. 0.]
+	[[rgb "64,255,64"] 0. 1. 0.]
+	[[rgb "64,255,64"] 0. 1. 0.06]
+	[[rgb "64,255,64"] 0.04 1. 0.1]
+	[[rgb "64,255,64"] 0. 1. 0.06]
+	[[rgb "64,255,64"] -0.04 1. 0.1]
+    ]
+    [POLYLINE 	5
+	[[rgb "255,255,255"] 0. 0. 0.]
+	[[rgb "64,64,255"] 0. 0. 1.]
+	[[rgb "64,64,255"] 0.1 0. 1.]
+	[[rgb "64,64,255"] 0. 0.1 1.]
+	[[rgb "64,64,255"] 0.1 0.1 1.]
+    ]
+]
+, until here...
+this is a object 
+AXES       (19) - Poly      type
+[OBJECT AXES
+    [POLYLINE 	3
+	[[rgb "255,255,255"] 0. 0. 0.]
+	[[rgb "255,64,64"] 1. 0. 0.]
+	[[rgb "255,64,64"] 1. 0.1 0.1]
+    ]
+    [POLYLINE 	2
+	[[rgb "255,64,64"] 1. 0.1 0.]
+	[[rgb "255,64,64"] 1. 0. 0.1]
+    ]
+    [POLYLINE 	6
+	[[rgb "255,255,255"] 0. 0. 0.]
+	[[rgb "64,255,64"] 0. 1. 0.]
+	[[rgb "64,255,64"] 0. 1. 0.06]
+	[[rgb "64,255,64"] 0.04 1. 0.1]
+	[[rgb "64,255,64"] 0. 1. 0.06]
+	[[rgb "64,255,64"] -0.04 1. 0.1]
+    ]
+    [POLYLINE 	5
+	[[rgb "255,255,255"] 0. 0. 0.]
+	[[rgb "64,64,255"] 0. 0. 1.]
+	[[rgb "64,64,255"] 0.1 0. 1.]
+	[[rgb "64,64,255"] 0. 0.1 1.]
+	[[rgb "64,64,255"] 0.1 0.1 1.]
+    ]
+]
+, until here...
+this is a object 
+AXES       (19) - Poly      type
+[OBJECT AXES
+    [POLYLINE 	3
+	[[rgb "255,255,255"]          0          0          0]
+	[[rgb "255,64,64"]          1          0          0]
+	[[rgb "255,64,64"]          1        0.1        0.1]
+    ]
+    [POLYLINE 	2
+	[[rgb "255,64,64"]          1        0.1          0]
+	[[rgb "255,64,64"]          1          0        0.1]
+    ]
+    [POLYLINE 	6
+	[[rgb "255,255,255"]          0          0          0]
+	[[rgb "64,255,64"]          0          1          0]
+	[[rgb "64,255,64"]          0          1       0.06]
+	[[rgb "64,255,64"]       0.04          1        0.1]
+	[[rgb "64,255,64"]          0          1       0.06]
+	[[rgb "64,255,64"]      -0.04          1        0.1]
+    ]
+    [POLYLINE 	5
+	[[rgb "255,255,255"]          0          0          0]
+	[[rgb "64,64,255"]          0          0          1]
+	[[rgb "64,64,255"]        0.1          0          1]
+	[[rgb "64,64,255"]          0        0.1          1]
+	[[rgb "64,64,255"]        0.1        0.1          1]
+    ]
+]
+, until here...
+************* Execution Time for printf.irt    is 0.0620    ******************
+Curve of order 4, poly size 10 and point type E3
+Control Polygon:
+    [
+	[        1         0         0 ]
+	[        1  0.552285         0 ]
+	[ 0.552285         1         0 ]
+	[-0.552285         1         0 ]
+	[       -1  0.552285         0 ]
+	[       -1 -0.552285         0 ]
+	[-0.552285        -1         0 ]
+	[ 0.552285        -1         0 ]
+	[        1 -0.552285         0 ]
+	[        1         0         0 ]
+
+    ]
+    [U KnotVector: 0 0 0 0 1 1 2 2 3 3 4 4 4 4]
+Surface of orders 3 x 3, mesh size 9 x 5 and point type P3
+Control Mesh:
+    [
+	[W=1                 0         0        -1 ]
+	[W=0.707107          0         0 -0.707107 ]
+	[W=1                 0         0        -1 ]
+	[W=0.707107          0         0 -0.707107 ]
+	[W=1                 0         0        -1 ]
+	[W=0.707107          0         0 -0.707107 ]
+	[W=1                 0         0        -1 ]
+	[W=0.707107          0         0 -0.707107 ]
+	[W=1                 0         0        -1 ]
+
+	[W=0.707107  -0.707107         0 -0.707107 ]
+	[W=0.5            -0.5      -0.5      -0.5 ]
+	[W=0.707107          0 -0.707107 -0.707107 ]
+	[W=0.5             0.5      -0.5      -0.5 ]
+	[W=0.707107   0.707107         0 -0.707107 ]
+	[W=0.5             0.5       0.5      -0.5 ]
+	[W=0.707107          0  0.707107 -0.707107 ]
+	[W=0.5            -0.5       0.5      -0.5 ]
+	[W=0.707107  -0.707107         0 -0.707107 ]
+
+	[W=1                -1         0         0 ]
+	[W=0.707107  -0.707107 -0.707107         0 ]
+	[W=1                 0        -1         0 ]
+	[W=0.707107   0.707107 -0.707107         0 ]
+	[W=1                 1         0         0 ]
+	[W=0.707107   0.707107  0.707107         0 ]
+	[W=1                 0         1         0 ]
+	[W=0.707107  -0.707107  0.707107         0 ]
+	[W=1                -1         0         0 ]
+
+	[W=0.707107  -0.707107         0  0.707107 ]
+	[W=0.5            -0.5      -0.5       0.5 ]
+	[W=0.707107          0 -0.707107  0.707107 ]
+	[W=0.5             0.5      -0.5       0.5 ]
+	[W=0.707107   0.707107         0  0.707107 ]
+	[W=0.5             0.5       0.5       0.5 ]
+	[W=0.707107          0  0.707107  0.707107 ]
+	[W=0.5            -0.5       0.5       0.5 ]
+	[W=0.707107  -0.707107         0  0.707107 ]
+
+	[W=1                 0         0         1 ]
+	[W=0.707107          0         0  0.707107 ]
+	[W=1                 0         0         1 ]
+	[W=0.707107          0         0  0.707107 ]
+	[W=1                 0         0         1 ]
+	[W=0.707107          0         0  0.707107 ]
+	[W=1                 0         0         1 ]
+	[W=0.707107          0         0  0.707107 ]
+	[W=1                 0         0         1 ]
+
+    ]
+    [U KnotVector: 0 0 0 1 1 2 2 3 3 4 4 4]
+    [V KnotVector: 0 0 0 1 1 2 2 2]
+Trivar of orders 3 x 3 x 2 mesh size 9 x 5 x 2 and point type E3
+Control Mesh:
+    [
+	[        0         0        -1 ]
+	[        0         0        -1 ]
+	[        0         0        -1 ]
+	[        0         0        -1 ]
+	[        0         0        -1 ]
+	[        0         0        -1 ]
+	[        0         0        -1 ]
+	[        0         0        -1 ]
+	[        0         0        -1 ]
+
+	[       -1         0        -1 ]
+	[       -1        -1        -1 ]
+	[        0        -1        -1 ]
+	[        1        -1        -1 ]
+	[        1         0        -1 ]
+	[        1         1        -1 ]
+	[        0         1        -1 ]
+	[       -1         1        -1 ]
+	[       -1         0        -1 ]
+
+	[       -1         0         0 ]
+	[       -1        -1         0 ]
+	[        0        -1         0 ]
+	[        1        -1         0 ]
+	[        1         0         0 ]
+	[        1         1         0 ]
+	[        0         1         0 ]
+	[       -1         1         0 ]
+	[       -1         0         0 ]
+
+	[       -1         0         1 ]
+	[       -1        -1         1 ]
+	[        0        -1         1 ]
+	[        1        -1         1 ]
+	[        1         0         1 ]
+	[        1         1         1 ]
+	[        0         1         1 ]
+	[       -1         1         1 ]
+	[       -1         0         1 ]
+
+	[        0         0         1 ]
+	[        0         0         1 ]
+	[        0         0         1 ]
+	[        0         0         1 ]
+	[        0         0         1 ]
+	[        0         0         1 ]
+	[        0         0         1 ]
+	[        0         0         1 ]
+	[        0         0         1 ]
+
+	[        2         0        -1 ]
+	[        2         0        -1 ]
+	[        2         0        -1 ]
+	[        2         0        -1 ]
+	[        2         0        -1 ]
+	[        2         0        -1 ]
+	[        2         0        -1 ]
+	[        2         0        -1 ]
+	[        2         0        -1 ]
+
+	[        1         0        -1 ]
+	[        1        -1        -1 ]
+	[        2        -1        -1 ]
+	[        3        -1        -1 ]
+	[        3         0        -1 ]
+	[        3         1        -1 ]
+	[        2         1        -1 ]
+	[        1         1        -1 ]
+	[        1         0        -1 ]
+
+	[        1         0         0 ]
+	[        1        -1         0 ]
+	[        2        -1         0 ]
+	[        3        -1         0 ]
+	[        3         0         0 ]
+	[        3         1         0 ]
+	[        2         1         0 ]
+	[        1         1         0 ]
+	[        1         0         0 ]
+
+	[        1         0         1 ]
+	[        1        -1         1 ]
+	[        2        -1         1 ]
+	[        3        -1         1 ]
+	[        3         0         1 ]
+	[        3         1         1 ]
+	[        2         1         1 ]
+	[        1         1         1 ]
+	[        1         0         1 ]
+
+	[        2         0         1 ]
+	[        2         0         1 ]
+	[        2         0         1 ]
+	[        2         0         1 ]
+	[        2         0         1 ]
+	[        2         0         1 ]
+	[        2         0         1 ]
+	[        2         0         1 ]
+	[        2         0         1 ]
+
+    ]
+    [U KnotVector: 0 0 0 1 1 2 2 3 3 4 4 4]
+    [V KnotVector: 0 0 0 1 1 2 2 2]
+    [W KnotVector: 0 0 1 1]
+Multivariate of orders 3 3 2, mesh size 9 5 2 and point type E3
+Control Mesh:
+    [
+	[        0         0        -1 ]
+	[        0         0        -1 ]
+	[        0         0        -1 ]
+	[        0         0        -1 ]
+	[        0         0        -1 ]
+	[        0         0        -1 ]
+	[        0         0        -1 ]
+	[        0         0        -1 ]
+	[        0         0        -1 ]
+
+	[       -1         0        -1 ]
+	[       -1        -1        -1 ]
+	[        0        -1        -1 ]
+	[        1        -1        -1 ]
+	[        1         0        -1 ]
+	[        1         1        -1 ]
+	[        0         1        -1 ]
+	[       -1         1        -1 ]
+	[       -1         0        -1 ]
+
+	[       -1         0         0 ]
+	[       -1        -1         0 ]
+	[        0        -1         0 ]
+	[        1        -1         0 ]
+	[        1         0         0 ]
+	[        1         1         0 ]
+	[        0         1         0 ]
+	[       -1         1         0 ]
+	[       -1         0         0 ]
+
+	[       -1         0         1 ]
+	[       -1        -1         1 ]
+	[        0        -1         1 ]
+	[        1        -1         1 ]
+	[        1         0         1 ]
+	[        1         1         1 ]
+	[        0         1         1 ]
+	[       -1         1         1 ]
+	[       -1         0         1 ]
+
+	[        0         0         1 ]
+	[        0         0         1 ]
+	[        0         0         1 ]
+	[        0         0         1 ]
+	[        0         0         1 ]
+	[        0         0         1 ]
+	[        0         0         1 ]
+	[        0         0         1 ]
+	[        0         0         1 ]
+
+	[        2         0        -1 ]
+	[        2         0        -1 ]
+	[        2         0        -1 ]
+	[        2         0        -1 ]
+	[        2         0        -1 ]
+	[        2         0        -1 ]
+	[        2         0        -1 ]
+	[        2         0        -1 ]
+	[        2         0        -1 ]
+
+	[        1         0        -1 ]
+	[        1        -1        -1 ]
+	[        2        -1        -1 ]
+	[        3        -1        -1 ]
+	[        3         0        -1 ]
+	[        3         1        -1 ]
+	[        2         1        -1 ]
+	[        1         1        -1 ]
+	[        1         0        -1 ]
+
+	[        1         0         0 ]
+	[        1        -1         0 ]
+	[        2        -1         0 ]
+	[        3        -1         0 ]
+	[        3         0         0 ]
+	[        3         1         0 ]
+	[        2         1         0 ]
+	[        1         1         0 ]
+	[        1         0         0 ]
+
+	[        1         0         1 ]
+	[        1        -1         1 ]
+	[        2        -1         1 ]
+	[        3        -1         1 ]
+	[        3         0         1 ]
+	[        3         1         1 ]
+	[        2         1         1 ]
+	[        1         1         1 ]
+	[        1         0         1 ]
+
+	[        2         0         1 ]
+	[        2         0         1 ]
+	[        2         0         1 ]
+	[        2         0         1 ]
+	[        2         0         1 ]
+	[        2         0         1 ]
+	[        2         0         1 ]
+	[        2         0         1 ]
+	[        2         0         1 ]
+
+    ]
+    [KnotVector: 0 0 0 1 1 2 2 3 3 4 4 4]
+    [KnotVector: 0 0 0 1 1 2 2 2]
+    [KnotVector: 0 0 1 1]
+************* Execution Time for print_it.irt  is 0.2810    ******************
+************* Execution Time for prisa.irt     is 0.3590    ******************
+************* Execution Time for prisanim.irt  is 0.3430    ******************
+************* Execution Time for prismovi.irt  is 11.9650   ******************
+************* Execution Time for pt_incld.irt  is 0.1870    ******************
+Irit Warning: Computed belt self-intersects.
+Irit Warning: Computed belt self-intersects.
+Irit Warning: Computed belt self-intersects.
+Irit Warning: Computed belt self-intersects.
+Irit Warning: Computed belt self-intersects.
+************* Execution Time for pulleys.irt   is 0.0470    ******************
+************* Execution Time for puz12pcs.irt  is 0.0150    ******************
+************* Execution Time for puz3cube.irt  is 0.0310    ******************
+************* Execution Time for puz4pcs.irt   is 0.3900    ******************
+************* Execution Time for puz_anim.irt  is 0.1250    ******************
+************* Execution Time for puz_crnr.irt  is 0.0310    ******************
+************* Execution Time for puz_cube.irt  is 0.0320    ******************
+************* Execution Time for puz_dvd.irt   is 0.0150    ******************
+************* Execution Time for puz_snak.irt  is 0.0310    ******************
+************* Execution Time for puzcubes.irt  is 0.0160    ******************
+************* Execution Time for puzzles.irt   is 0.2030    ******************
+************* Execution Time for quadric.irt   is 0.0470    ******************
+Error = 0.00000000000000
+Error = 0.00000000000010
+Error = 0.00000000000000
+Error = 0.00000000000000
+Error = 0.00000000000001
+Error = 0.00000000000000
+Error = 0.00000000000000
+Error = 0.00000000000000
+Error = 0.00000000000007
+Error = 0.00000000000000
+Error = 0.00000000000004
+Error = 0.00000000000000
+Error = 0.00000000000000
+Error = 0.00000000000000
+Error = 0.00000000000000
+Error = 0.00000000000002
+Error = 0.00000000000006
+Error = 0.00000000000001
+Error = 0.00000000000000
+Error = 0.00000000000000
+Error = 0.00000000000000
+Error = 0.00000000000003
+Error = 0.00000000000000
+Error = 0.00000000000000
+Error = 0.00000000000000
+8 solution(s) found
+Error = 0.00000000000001
+Error = 0.00000000000000
+Error = 0.00000000000001
+Error = 0.00000000000001
+Error = 0.00000000000000
+Error = 0.00000000000000
+Error = 0.00000000000000
+Error = 0.00000000000001
+16 solution(s) found
+Error = 0.00000000000000
+Error = 0.00000000000001
+Error = 0.00000000000001
+Error = 0.00000000000001
+Error = 0.00000000000002
+Error = 0.00000000000001
+Error = 0.00000000000001
+Error = 0.00000000000001
+Error = 0.00000000000000
+Error = 0.00000000000000
+Error = 0.00000000000001
+Error = 0.00000000000001
+Error = 0.00000000000001
+Error = 0.00000000000000
+Error = 0.00000000000001
+Error = 0.00000000000000
+Error = 0.00000000000000
+************* Execution Time for ray_trap.irt  is 13.2130   ******************
+************* Execution Time for rbt_hand.irt  is 0.0160    ******************
+************* Execution Time for register.irt  is 0.0310    ******************
+************* Execution Time for rflct_ln.irt  is 0.2490    ******************
+************* Execution Time for ringring.irt  is 0.1410    ******************
+************* Execution Time for rrinter.irt   is 5.7560    ******************
+Ruled fit: Error = 2.359890, MaxError = 0.057192
+Ruled fit: Error = 2.419580, MaxError = 0.080738
+Ruled fit: Error = 0.902298, MaxError = 0.066754
+************* Execution Time for ruledfit.irt  is 5.1640    ******************
+Line test - 1
+Line test - 1
+Line test - 1
+Line test - 1
+Circle test - 1
+Circle test - 1
+Circle test - 1
+Circle test - 1
+Plane test - 1
+Plane test - 1
+Plane test - 1
+Plane test - 1
+Plane test - 1
+Sphere test - 1
+Ruled test - 1
+Ruled test - 1
+Ruled test - 1
+Ruled test - 1
+Ruled test - 1
+Ruled test - 1
+Ruled test - 1
+Extrusion test - 1
+Extrusion test - 1
+Extrusion test - 1
+Extrusion test - 1
+Extrusion test - 1
+Extrusion test - 1
+Srf of revolution test - 1
+Srf of revolution test - 1
+Srf of revolution test - 1
+Srf of revolution test - 1
+Srf of revolution test - 1
+Srf of revolution test - 1
+************* Execution Time for rvrs_eng.irt  is 0.1400    ******************
+************* Execution Time for saccess.irt   is 6.4740    ******************
+************* Execution Time for saloon2.irt   is 0.0780    ******************
+************* Execution Time for sbisect.irt   is 3.3390    ******************
+************* Execution Time for sbisect2.irt  is 3.3380    ******************
+3 antipodal points detected
+23 antipodal points detected
+5 antipodal points detected
+2 antipodal points detected
+Size of self intersection verification: 1
+Size of self intersection verification: 1
+Size of self intersection verification: 1
+Size of self intersection verification: 1
+************* Execution Time for selfintr.irt  is 11.5600   ******************
+Detected 8 silhouette high order contact points.
+Detected 8 silhouette high order contact points.
+Detected 8 silhouette high order contact points.
+************* Execution Time for silh.irt      is 2.4180    ******************
+4 solutions detected
+2 solutions detected
+2 solutions detected
+2 solutions detected
+3 solutions detected
+2 solutions detected
+5 solutions detected
+3 solutions detected
+2 solutions detected
+5 solutions detected
+2 solutions detected
+2 solutions detected
+2 solutions detected
+4 solutions detected
+2 solutions detected
+5 solutions detected
+2 solutions detected
+2 solutions detected
+4 solutions detected
+2 solutions detected
+3 solutions detected
+2 solutions detected
+2 solutions detected
+4 solutions detected
+4 solutions detected
+5 solutions detected
+2 solutions detected
+4 solutions detected
+8 solutions detected
+8 solutions detected
+76 solutions detected
+36 solutions detected
+136 solutions detected
+************* Execution Time for skel2d.irt    is 3.4470    ******************
+************* Execution Time for smorph.irt    is 0.3440    ******************
+************* Execution Time for smorph2.irt   is 0.0150    ******************
+************* Execution Time for snakanim.irt  is 0.0630    ******************
+************* Execution Time for solid0.irt    is 0.0150    ******************
+************* Execution Time for solid1.irt    is 0.0160    ******************
+Total Time = 0.000000
+************* Execution Time for solid2.irt    is 0.0310    ******************
+Total Time = 0.016000
+************* Execution Time for solid2h.irt   is 0.0780    ******************
+Total Time = 0.016000
+************* Execution Time for solid3.irt    is 0.0310    ******************
+Total Time = 0.016000
+************* Execution Time for solid3h.irt   is 0.0630    ******************
+Total Time = 0.015000
+************* Execution Time for solid4.irt    is 0.0930    ******************
+Total Time = 0.078000
+************* Execution Time for solid4h.irt   is 0.4680    ******************
+Total Time = 0.016000
+************* Execution Time for solid5.irt    is 0.0630    ******************
+************* Execution Time for solid6.irt    is 0.0460    ******************
+************* Execution Time for solid6h.irt   is 0.0620    ******************
+************* Execution Time for solid7.irt    is 0.0780    ******************
+************* Execution Time for solid7h.irt   is 0.1720    ******************
+************* Execution Time for solid8.irt    is 0.0620    ******************
+************* Execution Time for solid8h.irt   is 0.0160    ******************
+Total Time = 0.047000
+************* Execution Time for solid9.irt    is 0.1870    ******************
+************* Execution Time for sphercon.irt  is 0.0000    ******************
+************* Execution Time for sqriacle.irt  is 0.1250    ******************
+************* Execution Time for srfray.irt    is 0.9830    ******************
+************* Execution Time for srf_dist.irt  is 1.5290    ******************
+************* Execution Time for srf_krnl.irt  is 1.4190    ******************
+No Alignment: Length of intersection curve 66, Time = 0.000000 Sec.
+Z Alignment:  Length of intersection curve 66, Time = 0.015000 Sec.
+RZ Alignment: Length of intersection curve 66, Time = 0.110000 Sec.
+No Alignment: Length of intersection curve 519, Time = 0.296000 Sec.
+Z Alignment:  Length of intersection curve 519, Time = 0.187000 Sec.
+RZ Alignment: Length of intersection curve 519, Time = 0.952000 Sec.
+No Alignment: Length of intersection curve 66, Time = 0.015000 Sec.
+Z Alignment:  Length of intersection curve 66, Time = 0.032000 Sec.
+RZ Alignment: Length of intersection curve 66, Time = 0.093000 Sec.
+No Alignment: Length of intersection curve 519, Time = 0.296000 Sec.
+Z Alignment:  Length of intersection curve 519, Time = 0.172000 Sec.
+RZ Alignment: Length of intersection curve 519, Time = 1.201000 Sec.
+No Alignment: Length of intersection curve 34, Time = 0.016000 Sec.
+Z Alignment:  Length of intersection curve 34, Time = 0.046000 Sec.
+RZ Alignment: Length of intersection curve 7, Time = 0.094000 Sec.
+No Alignment: Length of intersection curve 111, Time = 0.234000 Sec.
+Z Alignment:  Length of intersection curve 111, Time = 0.218000 Sec.
+RZ Alignment: Length of intersection curve 111, Time = 0.328000 Sec.
+No Alignment: Length of intersection curve 29, Time = 0.000000 Sec.
+Z Alignment:  Length of intersection curve 29, Time = 0.000000 Sec.
+RZ Alignment: Length of intersection curve 29, Time = 0.016000 Sec.
+No Alignment: Length of intersection curve 109, Time = 0.015000 Sec.
+Z Alignment:  Length of intersection curve 109, Time = 0.000000 Sec.
+RZ Alignment: Length of intersection curve 109, Time = 0.031000 Sec.
+************* Execution Time for srf_ssi.irt   is 0.0310    ******************
+************* Execution Time for srf_tan.irt   is 5.7410    ******************
+Found 1 intersection connected components.
+Found 1 intersection connected components.
+Found 2 intersection connected components.
+************* Execution Time for ssidscnt.irt  is 1.9190    ******************
+Found 1 intersection connected components.
+Found 1 intersection connected components.
+Found 1 intersection connected components.
+Found 1 intersection connected components.
+Found 2 intersection connected components.
+Found 4 intersection connected components.
+Found 4 intersection connected components.
+Found 4 intersection connected components.
+Found 2 intersection connected components.
+Found 2 intersection connected components.
+Found 2 intersection connected components.
+Found 2 intersection connected components.
+Found 0 intersection connected components.
+Found 1 intersection connected components.
+Found 1 intersection connected components.
+Found 1 intersection connected components.
+Found 1 intersection connected components.
+Found 3 intersection connected components.
+Found 1 intersection connected components.
+Found 0 intersection connected components.
+Found 0 intersection connected components.
+Found 1 intersection connected components.
+Found 1 intersection connected components.
+Found 1 intersection connected components.
+Found 1 intersection connected components.
+Found 1 intersection connected components.
+Found 3 intersection connected components.
+************* Execution Time for ssi-test.irt  is 15.0230   ******************
+************* Execution Time for surfrev.irt   is 0.0310    ******************
+0.143 0.071 0.032 0.004 0.000 0.000 0.000 0.000 0.000 
+0.071 0.086 0.079 0.014 0.000 0.000 0.000 0.000 0.000 
+0.032 0.079 0.229 0.143 0.016 0.002 0.000 0.000 0.000 
+0.004 0.014 0.143 0.229 0.095 0.016 0.000 0.000 0.000 
+0.000 0.000 0.016 0.095 0.229 0.143 0.016 0.002 0.000 
+0.000 0.000 0.002 0.016 0.143 0.229 0.095 0.016 0.000 
+0.000 0.000 0.000 0.000 0.016 0.095 0.229 0.143 0.014 
+0.000 0.000 0.000 0.000 0.002 0.016 0.143 0.229 0.079 
+0.000 0.000 0.000 0.000 0.000 0.000 0.014 0.079 0.086 
+0.000 0.000 0.000 0.000 0.000 0.000 0.004 0.032 0.071 
+************* Execution Time for symbolic.irt  is 0.2030    ******************
+************* Execution Time for tea-bool.irt  is 0.2340    ******************
+************* Execution Time for tea1bool.irt  is 11.6060   ******************
+************* Execution Time for tea2bool.irt  is 0.3590    ******************
+************* Execution Time for teacrvtr.irt  is 0.5460    ******************
+************* Execution Time for teapot.irt    is 0.0470    ******************
+************* Execution Time for teapot2.irt   is 0.0150    ******************
+************* Execution Time for techlogo.irt  is 0.0470    ******************
+************* Execution Time for textgeom.irt  is 0.1560    ******************
+************* Execution Time for textwarp.irt  is 0.0630    ******************
+************* Execution Time for tmorph.irt    is 2.1680    ******************
+************* Execution Time for trees.irt     is 0.0940    ******************
+************* Execution Time for triang.irt    is 0.0000    ******************
+Trim surfaces save/load test = 1
+************* Execution Time for trimsrfs.irt  is 0.3120    ******************
+************* Execution Time for trim_off.irt  is 6.4890    ******************
+************* Execution Time for trisetrs.irt  is 15.6630   ******************
+************* Execution Time for trisrfs.irt   is 0.0150    ******************
+Trivar save/load equality test (high precision - might fail) = 0
+Trivar save/load equality test (low precision) = 1
+************* Execution Time for trivars.irt   is 9.2820    ******************
+************* Execution Time for turbine.irt   is 0.0320    ******************
+************* Execution Time for tvcover.irt   is 1.0760    ******************
+************* Execution Time for vor_cell.irt  is 9.7030    ******************
+************* Execution Time for warp2trv.irt  is 0.3120    ******************
+************* Execution Time for warptriv.irt  is 0.1250    ******************
+************* Execution Time for warp_tea.irt  is 0.3740    ******************
+************* Execution Time for weights.irt   is 0.0160    ******************
+Total Time = 0.016000
+************* Execution Time for wheel.irt     is 0.0470    ******************
+Error: undefined IritState "BoolPerturb" ignored
+NONE       (0) - Numeric   type
+[OBJECT NONE
+    [NUMBER 0.000001]
+]
+NONE       (0) - Numeric   type
+[OBJECT NONE
+    [NUMBER 0.]
+]
+NONE       (0) - Numeric   type
+[OBJECT NONE
+    [NUMBER 1.]
+]
+NONE       (0) - Numeric   type
+[OBJECT NONE
+    [NUMBER 0.]
+]
+NONE       (0) - Numeric   type
+[OBJECT NONE
+    [NUMBER 0.]
+]
+NONE       (0) - Numeric   type
+[OBJECT NONE
+    [NUMBER 0.]
+]
+NONE       (0) - Numeric   type
+[OBJECT NONE
+    [NUMBER 23.]
+]
+NONE       (0) - Numeric   type
+[OBJECT NONE
+    [NUMBER 0.]
+]
+test_all > iritstate("FlatLoad", 0);
+NONE       (0) - Numeric   type
+[OBJECT NONE
+    [NUMBER 0.]
+]
+test_all > iritstate("FloatFrmt", "%-16.14lg");
+NONE       (0) - String    type
+[OBJECT NONE
+    [STRING "%-.12f"]
+]
+test_all > iritstate("GMEpsilon", 0);
+NONE       (0) - Numeric   type
+[OBJECT NONE
+    [NUMBER 1e-014]
+]
+test_all > iritstate("InterCrv", 0);
+NONE       (0) - Numeric   type
+[OBJECT NONE
+    [NUMBER 0]
+]
+test_all > iritstate("BspProdMethod", 2);
+NONE       (0) - Numeric   type
+[OBJECT NONE
+    [NUMBER 2]
+]
+test_all > iritstate("PolySort", 0);
+NONE       (0) - Numeric   type
+[OBJECT NONE
+    [NUMBER 0]
+]
+test_all > iritstate("PrimType", 0);
+NONE       (0) - Numeric   type
+[OBJECT NONE
+    [NUMBER 0]
+]
+test_all > iritstate("PrimRatSrfs", 1);
+NONE       (0) - Numeric   type
+[OBJECT NONE
+    [NUMBER 1]
+]
+test_all > iritstate("RandomInit", 0);
+NONE       (0) - Numeric   type
+[OBJECT NONE
+    [NUMBER 0]
+]
+test_all > iritstate("TrimCrvs", 0);
+test_all > iritstate("UVBoolean", 0);
+NONE       (0) - Numeric   type
+[OBJECT NONE
+    [NUMBER 0]
+]
+test_all > 
+test_all > comment $
+test_all > 
+test_all > #
+test_all > # These files are really slow to execute!
+test_all > #
+test_all > 
+test_all > BTime = TimedInclude("x.irt");
+test_all >         PrintTime("x.irt", BTime );
+test_all > 
+test_all > $
+test_all > 
+test_all > LastEchoSrc = iritState( "EchoSource", LastEchoSrc );
+test_all > printf("############# Total Execution Time is %9.4f ##################\\n",
+test_all >            list( TotalTime ) ):
+test_all > 
+test_all > logfile( off );
+############# Total Execution Time is  324.1520 ##################

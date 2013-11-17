@@ -1,0 +1,63 @@
+
+#
+# A simple model of a cup.
+#
+
+OldBFF = iritstate( "BoolFreeform", vector( 0.025, 1e-8, 0.025 ) );
+
+BodySection = cbspline( 4,
+    list( ctlpt( E3, 0., 0.0689063, 0. ),
+          ctlpt( E2, 0.367534, 0.0653027 ),
+          ctlpt( E2, 0.371137, 0.090528 ),
+          ctlpt( E2, 0.531498, 0.200438 ),
+          ctlpt( E2, 0.637804, 0.490528 ),
+          ctlpt( E2, 0.717083, 0.631068 ),
+          ctlpt( E2, 0.740507, 0.577014 ),
+          ctlpt( E2, 0.670236, 0.456294 ),
+          ctlpt( E2, 0.576543, 0.196834 ),
+          ctlpt( E2, 0.425191, 0.0761135 ),
+          ctlpt( E1, 0.407173 ),
+          ctlpt( E1, 0.407173 ),
+          ctlpt( E1, 0. ) ),
+    list( kv_open ) );
+Body = surfRev( -BodySection * rx( 90 ) );
+free( BodySection );
+
+
+HandleAxis = cbspline( 4,
+    list( ctlpt( E3, 0.673233, 0.503324, 0. ),
+          ctlpt( E2, 0.901444, 0.507287 ),
+          ctlpt( E2, 0.935155, 0.46037 ),
+          ctlpt( E2, 0.948487, 0.405206 ),
+          ctlpt( E2, 0.883419, 0.328547 ),
+          ctlpt( E2, 0.665247, 0.249267 ),
+          ctlpt( E2, 0.582233, 0.285644 ) ),
+    list( kv_open ) );
+HandleSection = circle( vector( 0, 0, 0 ), 0.058 ) * sy( 0.68 );
+Handle = sweepSrf( HandleSection * rz( 90 ) * ry( -10 ), HandleAxis, off )
+							 * rx( 90 );
+free( HandleAxis );
+free( HandleSection );
+
+view( list( Handle, Body ), 1 );
+
+mHandle = coerce( Handle, model_type );
+mBody = coerce( Body, model_type );
+free( Handle );
+free( Body );
+
+Cup = mHandle + mBody * rz( 45 ) + mHandle * rz( 180 );
+free( mHandle );
+free( mBody );
+
+save( "CupModel", Cup );
+interact( Cup );
+
+CupTSrfs = coerce( Cup, trimsrf_type );
+save( "CupTSrfs", CupTSrfs );
+
+free( CupTSrfs );
+free( Cup );
+
+OldBFF = iritstate( "BoolFreeform", OldBFF );
+free( OldBFF );

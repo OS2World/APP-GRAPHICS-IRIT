@@ -1,0 +1,364 @@
+#
+# Some tests for symbolic computation.
+#
+#						Gershon Elber, Nov. 1992
+#
+
+#
+# Set display to on to view some results, off to view nothing.
+#
+display = on;
+
+#
+# The symbolic computation below is faster this way.
+#
+IProd = iritstate( "BspProdMethod", 0 );
+
+#
+# Control the surface to polygons subdivison resolution, and isolines gen.
+#
+save_res = resolution;
+
+resolution = 20;
+if ( machine == msdos, (resolution = 5) );
+
+s45 = sin( pi / 4 );
+
+#
+# marker function for curves...
+#
+CrvEqlParamSegMarkers = function( c ): crvsWsegs: crvsBsegs: NumSegs: i:
+    crvsWsegs = nil():
+    crvsBsegs = nil():
+    NumSegs = 10.0:
+    for ( i = 1, 1, NumSegs,
+	snoc( cregion( c, ( i - 1.0 ) / NumSegs, ( i - 0.5 ) / NumSegs ),
+	      crvsWsegs ): 
+	snoc( cregion( c, ( i - 0.5 ) / NumSegs, ( i - 0.0 ) / NumSegs ),
+	      crvsBsegs )
+    ):
+    color( crvsWsegs, red ):
+    color( crvsBsegs, yellow ):
+    return = list( crvsWsegs, crvsBsegs );
+
+#
+# Simple polynomial surface.
+#
+sbsp = list ( list( ctlpt( E3, 0.0, 0.0, 1.0 ),
+	            ctlpt( E3, 0.0, 1.0, 0.8 ),
+	            ctlpt( E3, 0.0, 2.1, 1.0 ) ),
+              list( ctlpt( E3, 1.0, 0.0, 2.0 ),
+	            ctlpt( E3, 1.1, 1.0, 1.0 ),
+	            ctlpt( E3, 1.0, 2.1, 2.0 ) ),
+              list( ctlpt( E3, 2.0, 0.0, 1.0 ),
+	            ctlpt( E3, 2.0, 1.0, 0.8 ),
+	            ctlpt( E3, 2.0, 2.1, 1.0 ) ),
+              list( ctlpt( E3, 3.0, 0.0, 2.0 ),
+	            ctlpt( E3, 3.1, 1.0, 1.8 ),
+	            ctlpt( E3, 3.0, 2.1, 2.0 ) ) );
+s = sbspline( 3, 4, sbsp, list( list( KV_OPEN ),
+				list( KV_OPEN ) ) );
+color( s, white );
+free( sbsp );
+
+dus = sderive( s, ROW ) * scale( vector( 0.5, 0.5, 0.5 ) );
+color( dus, green );
+dvs = sderive( s, COL ) * scale( vector( 0.5, 0.5, 0.5 ) );
+color( dvs, magenta );
+if ( display == on, viewobj( axes ):
+		    viewstate( "DSrfMesh", 1 ):
+		    interact( list( axes, s, dus, dvs ) ):
+		    viewstate( "DSrfMesh", 0 ) );
+
+ns = snrmlsrf(s) * scale( vector( 0.3, 0.3, 0.3 ) );
+color( ns, green );
+if ( display == on, interact( list( axes, s, ns ) ) );
+
+# Compute the normal at the center of the surface, in three ways.
+
+save( "nrml1srf",
+      list( axes, s, ns, dus, dvs,
+	    coerce( seval( dus, 0.5, 0.5 ), VECTOR_TYPE ) ^
+	    coerce( seval( dvs, 0.5, 0.5 ), VECTOR_TYPE ),
+	    coerce( seval( ns, 0.5, 0.5 ), VECTOR_TYPE ),
+	    snormal( s, 0.5, 0.5 ) ) );
+
+#
+# A (portion of) sphere (rational surface).
+#
+halfcirc = cbspline( 3,
+		     list( ctlpt( P3, 1.0,  0.0, 0.0,  1.0 ),
+		           ctlpt( P3, s45, -s45, 0.0,  s45 ),
+		           ctlpt( P3, 1.0, -1.0, 0.0,  0.0 ),
+		           ctlpt( P3, s45, -s45, 0.0, -s45 ),
+			   ctlpt( P3, 1.0,  0.0, 0.0, -1.0 ) ),
+		     list( 0, 0, 0, 1, 1, 2, 2, 2 ) );
+color( halfcirc, white );
+
+s = surfrev( halfcirc );
+color( s, white );
+free( halfcirc );
+
+dus = sderive(s, ROW);
+color( dus, green );
+dvs = sderive(s, COL);
+color( dvs, magenta );
+if ( display == on, interact( list( axes, s, dus, dvs ) ) );
+
+ns = snrmlsrf(s);
+color( ns, green );
+if ( display == on, interact( list( axes, s, ns ) ) );
+
+s = sregion( sregion( s, ROW, 0.2, 0.5 ), COL, 0.0, 2.0 );
+color( s, white );
+
+dus = sderive(s, ROW);
+color( dus, green );
+dvs = sderive(s, COL);
+color( dvs, magenta );
+if ( display == on, interact( list( axes, s, dus, dvs ) ) );
+
+ns = snrmlsrf(s);
+color( ns, green );
+if ( display == on, interact( list( axes, s, ns ) ) );
+
+#
+# A Glass.
+#
+gcross = cbspline( 3,
+		   list( ctlpt( E3, 0.3, 0.0, 0.0 ),
+		         ctlpt( E3, 0.3, 0.0, 0.05 ),
+		         ctlpt( E3, 0.1, 0.0, 0.05 ),
+		         ctlpt( E3, 0.1, 0.0, 0.4 ),
+		         ctlpt( E3, 0.5, 0.0, 0.4 ),
+		         ctlpt( E3, 0.6, 0.0, 0.8 ) ),
+		   list( 0, 0, 0, 1, 2, 3, 4, 4, 4 ) );
+color( gcross, white );
+s = surfrev( gcross );
+color( s, white );
+free( gcross );
+
+dus = sderive(s, ROW);
+color( dus, green );
+dvs = sderive(s, COL);
+color( dvs, magenta );
+if ( display == on, interact( list( axes, s, dus, dvs ) ) );
+
+ns = snrmlsrf(s);
+color( ns, green );
+if ( display == on, interact( list( axes, s, ns ) ) );
+
+save( "nrml2srf", list( axes, s, ns, dus, dvs ) );
+
+
+#
+# Compute two surfaces, one is an offset approximation to the surface and
+# the other is just a translation. Then compute the distance square scalar
+# surface between them and the original surface. With the data below both
+# Should have a distance square of 3 (if exact, the offset is obviously not).
+#
+s1 = s * trans( vector( 1, -1, 1 ) );
+color( s1, green );
+
+s2 = offset( s, sqrt( 3 ), 1.0, off );
+color( s2, yellow );
+
+DLevel = iritState( "DumpLevel", 255 );
+distsqr1 = symbdprod( symbdiff( s, s1 ), symbdiff( s, s1 ) );
+distsqr2 = symbdprod( symbdiff( s, s2 ), symbdiff( s, s2 ) );
+
+DLevel = iritState( "DumpLevel", DLevel );
+
+save( "dist1sqr", list( distsqr1, distsqr2 ) );
+
+free( s );
+free( s1 );
+free( s2 );
+free( distsqr1 );
+free( distsqr2 );
+free( dus );
+free( dvs );
+free( ns );
+
+#
+# Curve-curve and curve-surface composition.
+#
+DLevel = iritState( "DumpLevel", 255 );
+viewstate( "DSrfMesh", 1 );
+
+crv1 = circle( vector( 0.0, 0.0, 0.0 ), 0.8 );
+
+crv2 = cbspline( 5,
+		 list( ctlpt( E1, 0.0 ),
+		       ctlpt( E1, 1.0 ),
+		       ctlpt( E1, 2.0 ),
+		       ctlpt( E1, 3.0 ),
+		       ctlpt( E1, 4.0 ) ),
+		 list( KV_OPEN ) );
+crv1c = compose( crv1, crv2 );
+crv1m = creparam( cmoebius( crv1, 1 ), 0, 1 );
+
+All = list( CrvEqlParamSegMarkers( crv1c ),
+	    CrvEqlParamSegMarkers( crv1m ) * tz( 0.1 ) );
+if ( display == on, interact( All ) );
+
+save("cc1comps", All );
+
+crv2 = cbspline( 5,
+		 list( ctlpt( E1, 0.0 ),
+		       ctlpt( E1, 0.0 ),
+		       ctlpt( E1, 0.0 ),
+		       ctlpt( E1, 0.0 ),
+		       ctlpt( E1, 4.0 ) ),
+		 list( KV_OPEN ) );
+crv1c = compose( crv1, crv2 );
+crv1m = creparam( cmoebius( crv1, 0.2 ), 0, 1 );
+
+All = list( CrvEqlParamSegMarkers( crv1c ),
+	    CrvEqlParamSegMarkers( crv1m ) * tz( 0.1 ) );
+if ( display == on, interact( All ) );
+
+save("cc2comps", All );
+
+crv2 = cbspline( 5,
+		 list( ctlpt( E1, 0.0 ),
+		       ctlpt( E1, 4.0 ),
+		       ctlpt( E1, 4.0 ),
+		       ctlpt( E1, 4.0 ),
+		       ctlpt( E1, 4.0 ) ),
+		 list( KV_OPEN ) );
+crv1c = compose( crv1, crv2 );
+crv1m = creparam( cmoebius( crv1, 5 ), 0, 1 );
+
+All = list( CrvEqlParamSegMarkers( crv1c ),
+	    CrvEqlParamSegMarkers( crv1m ) * tz( 0.1 ) );
+if ( display == on, interact( All ) );
+
+save("cc3comps", All );
+
+################################# 
+
+srf = sbezier( list( list( ctlpt( E3, 0.0, 0.0, 0.0 ),
+		           ctlpt( E3, 0.0, 0.5, 1.0 ),
+		           ctlpt( E3, 0.0, 1.0, 0.0 ) ),
+	             list( ctlpt( E3, 0.5, 0.0, 1.0 ),
+		           ctlpt( E3, 0.5, 0.5, 0.0 ),
+		           ctlpt( E3, 0.5, 1.0, 1.0 ) ),
+	             list( ctlpt( E3, 1.0, 0.0, 1.0 ),
+		           ctlpt( E3, 1.0, 0.5, 0.0 ),
+		           ctlpt( E3, 1.0, 1.0, 1.0 ) ) ) );
+color( srf, magenta );
+
+crv = circle( vector( 0.5, 0.5, 0.0 ), 0.4 );
+color( crv, yellow );
+
+ccrv = compose( srf, crv );
+color( ccrv, cyan );
+
+if ( display == on, interact( list( srf, crv, ccrv ) ) );
+
+save("cs1comps", list( srf, crv, ccrv ) );
+
+################################# 
+
+srf = sbspline( 3, 3,
+		list( list( ctlpt( E3, 0.0, 0.0, 0.0 ),
+		            ctlpt( E3, 0.0, 0.5, 1.0 ),
+		            ctlpt( E3, 0.0, 1.0, 0.0 ) ),
+	              list( ctlpt( E3, 0.5, 0.0, 1.0 ),
+		            ctlpt( E3, 0.5, 0.5, 0.0 ),
+		            ctlpt( E3, 0.5, 1.0, 1.0 ) ),
+	              list( ctlpt( E3, 1.0, 0.0, 1.0 ),
+		            ctlpt( E3, 1.0, 0.5, 0.0 ),
+		            ctlpt( E3, 1.0, 1.0, 0.9 ) ),
+	              list( ctlpt( E3, 1.5, 0.0, 0.0 ),
+		            ctlpt( E3, 1.5, 0.5, 1.1 ),
+		            ctlpt( E3, 1.5, 1.0, 0.0 ) ),
+	              list( ctlpt( E3, 2.1, 0.0, 1.0 ),
+		            ctlpt( E3, 2.0, 0.5, 0.5 ),
+		            ctlpt( E3, 2.1, 1.0, 1.1 ) ) ),
+		list( list( kv_open ), list( kv_open ) ) );
+color( srf, magenta );
+
+crv = circle( vector( 0.5, 0.5, 0.0 ), 0.4 );
+color( crv, yellow );
+
+ccrv = compose( srf, crv );
+color( ccrv, cyan );
+
+if ( display == on, interact( list( srf, crv, ccrv ) ) );
+
+save("cs2comps", list( srf, crv, ccrv ) );
+
+################################# 
+
+srf = sreparam( surfPRev( ctlpt( E3, 1, 0, -1 ) + ctlpt( E3, 1, 0, 1 ) ),
+		col, 0, 1 ) * sc( 0.5 );
+color( srf, magenta );
+
+crv = pcircle( vector( 0.45, 0.55, 0.0 ), 0.4 );
+color( crv, yellow );
+
+ccrv = compose( srf, crv );
+color( ccrv, cyan );
+
+if ( display == on, interact( list( axes, srf, crv, ccrv ) ) );
+
+save("cs3comps", list( srf, crv, ccrv ) );
+
+for ( x = -1.1, 0.02, 0.9,
+    crv = pcircle( vector( x, 0.45, 0.0 ), 0.4 ):
+    color( crv, yellow ):
+
+    ccrv = compose( srf, crv ):
+    color( ccrv, cyan ):
+
+    if ( display == on, view( list( axes, srf, crv, ccrv ), 1 ) ) );
+free( x );
+
+for ( y = -1.1, 0.02, 0.9,
+    crv = pcircle( vector( 0.45, y, 0.0 ), 0.4 ):
+    color( crv, yellow ):
+
+    ccrv = compose( sreverse( srf ), crv ):
+    color( ccrv, cyan ):
+
+    if ( display == on, view( list( axes, srf, crv, ccrv ), 1 ) ) );
+free( y );
+
+interact( list( axes, srf, crv, ccrv ) );
+
+save("cs4comps", list( srf, crv, ccrv ) );
+
+#
+# Bspline basis inner products
+#
+
+i = symbiprod( crv = pcircle( vector( 0, 0, 0 ), 1 ), 4, 4 );
+for ( i = 0, 1, nth( ffmsize( crv ), 1 ) - 1,
+    for ( j = 0, 1, nth( ffmsize( crv ), 1 ) - 2,
+        printf( "%3.3f ", list( symbiprod( 0, i, j ) ) ) ):
+    printf( "\\n", nil() ) );
+
+#############################################################################
+
+resolution = save_res;
+
+free( display );
+free( s45 );
+free( srf );
+free( crv );
+free( crv1 );
+free( crv1c );
+free( crv1m );
+free( crv2 );
+free( ccrv );
+free( All );
+free( i );
+free( j );
+
+DLevel = iritState( "DumpLevel", DLevel );
+free( DLevel );
+
+IProd = iritstate( "BspProdMethod", IProd );
+free( IProd );

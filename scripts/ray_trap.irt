@@ -1,0 +1,192 @@
+#
+# Some tests of ray traps of n curves.
+#
+#						Gershon Elber, Aug 99
+#
+
+RayTrapTris = function( Crvs, SubEps, NumEps ): Pts: i: j: Pt: Points: Err:
+    Pts = raytraps( Crvs, true, SubEps, NumEps, true ):
+    return = nil():
+    if ( sizeof( Pts ) > 1,
+	printf("%d solution(s) found\\n", list( sizeof( Pts ) ) ) ):
+    for ( i = 1, 1, sizeof( Pts ) ,
+        Pt = coord( Pts, i ):
+        Err = GetAttr( Pt, "RngError" ):
+	if ( thisobj("Err") == numeric_type,
+	    printf("Error = %16.14f\\n", list( Err ) ),
+	    printf("Error is not provided\\n", nil() ) ):
+        Points = nil():
+        for ( j = 1, 1, sizeof( Crvs ),
+	    snoc( ceval( nth( Crvs, j ), coord( Pt, j ) ), Points ) ):
+        snoc( poly( Points, false ), return ) );
+
+RayTrapTris3D = function( Srfs, SubEps, NumEps ): Pts: i: j: Pt: Points: Err:
+    Pts = raytraps( Srfs, true, SubEps, NumEps, true ):
+    return = nil():
+    if ( sizeof( Pts ) > 1,
+	printf("%d solution(s) found\\n", list( sizeof( Pts ) ) ) ):
+    for ( i = 1, 1, sizeof( Pts ),
+        Pt = coord( Pts, i ):
+        Err = GetAttr( Pt, "RngError" ):
+	if ( thisobj("Err") == numeric_type,
+	    printf("Error = %16.14f\\n", list( Err ) ),
+	    printf("Error is not provided\\n", nil() ) ):
+        Points = nil():
+        for ( j = 1, 1, sizeof( Srfs ),
+	    snoc( seval( nth( Srfs, j ), coord( Pt, 1 + (j - 1) * 2 ),
+	                                 coord( Pt, 2 + (j - 1) * 2 ) ),
+	          Points ) ):
+        snoc( poly( Points, false ), return ) );
+
+save_mat = view_mat;
+view_mat = sc( 0.5 );
+
+#############################################################################
+
+Crv1 = cbezier( list( ctlpt( E2, -1.5, 0 ),
+		      ctlpt( E2,  0,   2 ),
+		      ctlpt( E2,  1.5, 0 ) ) ) * ty( -1.5 );
+Crv2 = Crv1 * rz( 110 );
+Crv3 = Crv1 * rz( 230 );
+Crvs = list( Crv1, Crv2, Crv3 );
+view( list( view_mat, Crvs ), 1 );
+
+Tris1 = RayTrapTris( Crvs, 0.001, 1e-10 );
+Tris2 = RayTrapTris( Crvs, 0.005, 1e-6 );
+Tris = list( Tris1, Tris2 );
+interact( list( Crvs, Tris1, Tris2 ) );
+save( "raytrap1", list( Crvs, Tris1, Tris2 ) );
+
+for ( Trs = 0, 5, 50,
+    Crv3a = Crv3 * rz( Trs ) * ty( Trs / 100 ):
+    Crvs = list( Crv1, Crv2, Crv3a ):
+    Tris = RayTrapTris( Crvs, 0.05, 1e-6 ):
+    view( list( Crvs, Tris ), 1 ) );
+
+for ( Trs = 0, 10, 100,
+    Crv3a = Crv3 * tx( -Trs / 100 ) * ty( Trs / 100 ):
+    Crvs = list( Crv1, Crv2, Crv3a ):
+    Tris = RayTrapTris( Crvs, 0.05, 1e-6 ):
+    view( list( Crvs, Tris ), 1 ) );
+
+free( Crv3a );
+free( Trs );
+pause();
+
+#############################################################################
+
+Crv1 = cbezier( list( ctlpt( E2, -0.5, 0 ),
+		      ctlpt( E2,  0,   2 ),
+		      ctlpt( E2,  0.5, 0 ) ) ) * ty( -1.5 );
+Crv2 = Crv1 * rz( 57 ) * ty( 0.1 ) * tx( -0.1 );
+Crv3 = Crv1 * rz( 110 );
+Crv4 = Crv1 * rz( 155 );
+Crv5 = Crv1 * rz( 210 );
+Crv6 = Crv1 * rz( 260 );
+Crv7 = Crv1 * rz( 310 );
+
+Crvs = list( Crv1,
+	     Crv2,
+	     Crv3,
+	     Crv4,
+	     Crv5,
+	     Crv6,
+	     Crv7 );
+
+view( list( view_mat, Crvs ), 1 );
+
+Tris = RayTrapTris( Crvs, 0.001, 1e-10 );
+
+interact( list( Crvs, Tris ) );
+save( "raytrap2", list( Crvs, Tris ) );
+
+#############################################################################
+
+Crv1 = pcircle( vector( -0.75, -0.75, 0 ), 0.5 );
+Crv2 = Crv1 * sc( 1.5 ) * tx( 2 );
+Crv3 = Crv1 * sc( 0.5 ) * tx( 0.2 ) * ty( 0.6 );
+Crvs = list( Crv1, Crv2, Crv3 );
+view( list( Crvs ), 1 );
+
+Tris = RayTrapTris( Crvs, 0.001, -1e-10 );
+interact( list( Crvs, Tris ) );
+save( "raytrap3", list( Crvs, Tris ) );
+
+#############################################################################
+
+Crv1 = pcircle( vector( -0.75, -0.75, 0 ), 0.5 );
+Crv2 = Crv1 * sc( 0.75 ) * tx( 2 );
+Crv3 = Crv1 * sc( 0.75 ) * tx( 2 ) * ty( 2 );
+Crv4 = Crv1 * sc( 0.5 ) * tx( -0.5 ) * ty( 1.6 );
+Crvs = list( Crv1, Crv2, Crv3, Crv4 );
+view( list( Crvs ), 1 );
+
+Tris = RayTrapTris( Crvs, 0.001, -1e-10 );
+interact( list( Crvs, Tris ) );
+save( "raytrap4", list( Crvs, Tris ) );
+
+#############################################################################
+#
+# This one can take some seconds.
+#
+Srf1 = planeSrf(-1, -1, 1, 1 ):
+Srf1 = coerce( sraise( sraise( Srf1, row, 3 ), col, 3 ), e3 ):
+Srf1 = seditpt( Srf1, ctlpt( E3, 0, 0, 4 ), 1, 1 ) * tz( -2 ) 
+						   * rx( 12 ) * ry( 23 ):
+Srf1 = sregion( sregion( Srf1, row, 0.2, 0.8 ), col, 0.2, 0.8 );
+
+
+Srf2 = Srf1 * ry( 110 ) * rx( 23 ):
+Srf3 = Srf1 * ry( 230 ) * rx( -24 ):
+Srfs = list( Srf1, Srf2, Srf3 );
+
+Tris1 = RayTrapTris3D( Srfs, 0.001, 1e-10 );
+
+interact( list( Srfs, Tris1 ) );
+save( "rytrp3d1", list( Srfs, Tris1 ) );
+
+#############################################################################
+#
+# This one is much slower (minutes).
+#
+comment $
+Srf1 = planeSrf(-1, -1, 1, 1 ):
+Srf1 = coerce( sraise( sraise( Srf1, row, 3 ), col, 3 ), e3 ):
+Srf1 = seditpt( Srf1, ctlpt( E3, 0, 0, 4 ), 1, 1 ) * tz( -2 ) 
+						   * rx( 22 ) * ry( 23 ):
+Srf1 = sregion( sregion( Srf1, row, 0.2, 0.8 ), col, 0.2, 0.8 );
+
+Srf2 = Srf1 * ry( 110 ) * rx( 23 ):
+Srf3 = Srf1 * ry( 230 ) * rx( -24 ):
+Srf4 = Srf1 * rx( -114 ):
+Srfs = list( Srf1, Srf2, Srf3, Srf4 );
+
+Tris1 = RayTrapTris3D( Srfs, 0.001, 1e-10 );
+
+interact( list( Srfs, Tris1 ) );
+save( "rytrp3d2", list( Srfs, Tris1 ) );
+
+free( Srf4 );
+$
+
+#############################################################################
+
+free( Crv1 );
+free( Crv2 );
+free( Crv3 );
+free( Crv4 );
+free( Crv5 );
+free( Crv6 );
+free( Crv7 );
+free( Crvs );
+
+free( Srf1 );
+free( Srf2 );
+free( Srf3 );
+free( Srfs );
+
+free( Tris );
+free( Tris1 );
+free( Tris2 );
+
+view_mat = save_mat;

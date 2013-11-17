@@ -1,0 +1,48 @@
+#
+# The most common example of wireframe ambiguity. See for example:
+# Geometric Modeling by Michael E. Mortenson, page 4...
+#
+
+save_res = resolution;
+save_mat = view_mat;
+
+view_mat = view_mat * scale(vector(0.6, 0.6, 0.6)) * rotx(30) * roty(20);
+
+A = box(vector(-0.5, -0.5, -0.55), 1.0, 1.0, 1.1);
+
+resolution = 4;			# To create 4 sided pyramids from cones...
+C1 = cone(vector(0.0, 0.0, -0.6), vector(0.0, 0.0,  0.6001),
+	  0.6 * sqrt(2.0), 1) *	rotz(45);
+C2 = cone(vector(0.0, 0.0,  0.6), vector(0.0, 0.0, -0.6),
+	  0.6 * sqrt(2.0), 1) * rotz(45);
+
+A = A - C1 - C2;
+free(C1);
+free(C2);
+view(list(view_mat, A), on);
+
+B = box(vector(-0.3, -0.3, -1.0), 0.6, 0.6, 2.0);
+C = A - B;
+free(A);
+free(B);
+
+final = convex(C);
+free(C);
+
+beep();
+interact(final);
+save("ambiguit", final);
+
+f1 = instance( "final", rx( 90 ) * tx( 2 ) );
+f2 = instance( "final", ry( 90 ) * tx( -2 ) );
+
+view_mat = scale(vector(0.3, 0.3, 0.3)) * rotx(40) * rotz(10) * roty(20);
+interact(list(view_mat, final, f1, f2));
+save("ambigui2", list(final, f1, f2));
+
+free(f1);
+free(f2);
+free(final);
+
+view_mat = save_mat;
+resolution = save_res;

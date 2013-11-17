@@ -1,0 +1,46 @@
+a = axes * view_mat;
+
+ared = a;
+color(ared, red);
+viewobj(ared);
+free(ared);
+
+agreen = a * rotz(15);
+color(agreen, green);
+viewobj(agreen);
+free(agreen);
+
+ablue = a * rotz(30);
+color(ablue, blue);
+viewobj(ablue);
+free(ablue);
+
+ayellow = a * rotz(45);
+color(ayellow, yellow);
+viewobj(ayellow);
+free(ayellow);
+
+acyan = a * rotz(60);
+color(acyan, cyan);
+viewobj(acyan);
+free(acyan);
+
+amagenta = a * rotz(75);
+color(amagenta, magenta);
+viewobj(amagenta);
+free(amagenta);
+
+awhite = a * rotz(90);
+color(awhite, white);
+viewobj(awhite);
+free(awhite);
+
+ablack = a * rotz(105);
+color(ablack, black);
+viewobj(ablack);
+free(ablack);
+
+free(a);
+
+pause();
+

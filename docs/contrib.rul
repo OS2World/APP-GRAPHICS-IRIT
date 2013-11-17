@@ -1,0 +1,15 @@
+There are two possibilities to include source code in IRIT distribution:
+
+1. Release all rights on the code to the original developer of IRIT. This
+   means that the code will become part of the regular distribution and
+   will be completely support by us from now on. It means, for example,
+   that this C code will be compiled as part of the regular makefiles of
+   IRIT. The original owner is Gershon Elber, Technion, Israel.
+
+2. Keep rights on the code. In this mode, the C code will be include as
+   part of the contrib directory and will be part of the regular IRIT
+   distribution. However, it will not be compiled regularly, nor will it
+   be supported.
+
+In both modes, all the author(s) of the source code will obviously be
+acknowledged.

@@ -1,0 +1,21 @@
+lst = nil();
+for ( i = 1, 1, 10,
+    for ( j = 1, 1, 10,
+	pl = poly( list( point( i, j, 0 ),
+		         point( i + 1, j, 0 ),
+			 point( i + 1, j + 1, 0 ),
+			 point( i, j + 1, 0 ) ),
+		   off ):
+	if ( 2 * floor((i + j) / 2) == i + j,
+	     attrib( pl, "rgb", "255,255,255" ),
+	     attrib( pl, "rgb", "100,100,100" ) ):
+	lst = lst + list( pl * sc( 1 ) ) ) );
+viewclear();
+viewobj( lst );
+
+save( "ir_chckr", lst );
+
+free( pl );
+free( lst );
+
+exit();

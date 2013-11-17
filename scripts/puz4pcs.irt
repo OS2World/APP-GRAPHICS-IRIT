@@ -1,0 +1,139 @@
+#
+# A four identical pieces puzzle.
+#
+#					Gershon Elber, Oct 1998
+#
+
+save_res = resolution;
+
+resolution = 10;
+
+Arc1a = arc( vector( -0.19,  0.0,  0.0 ),
+	     vector( -0.2,   0.1,  0.0 ),
+	     vector( -0.19,  0.2,  0.0 ) );
+Arc1b = arc( vector( -0.19, -0.04, 0.0 ),
+	     vector( -0.2,   0.08, 0.0 ),
+	     vector( -0.19,  0.2,  0.0 ) );
+Arc2a = arc( vector( -0.4,   0.2,  0.0 ),
+	     vector( -0.39,  0.3,  0.0 ),
+	     vector( -0.4,   0.4,  0.0 ) );
+Arc2b = arc( vector( -0.25,  0.2,  0.0 ),
+	     vector( -0.24,  0.25, 0.0 ),
+	     vector( -0.25,  0.3,  0.0 ) );
+Arc2c = arc( vector( -0.22,  0.2,  0.0 ),
+	     vector( -0.21,  0.25, 0.0 ),
+	     vector( -0.22,  0.3,  0.0 ) );
+Arc2d = arc( vector( -0.37,  0.2,  0.0 ),
+	     vector( -0.36,  0.28, 0.0 ),
+	     vector( -0.37,  0.36, 0.0 ) );
+
+Sctn1 = ( Arc1a + Arc2a + -Arc2a * sx( -1 ) + -Arc1a * sx( -1 ) ) * sc( 0.75 );
+Sctn2 = ( Arc1a + Arc2b + -Arc2b * sx( -1 ) + -Arc1a * sx( -1 ) ) * sc( 0.75 );
+
+Sctn3 = ( Arc1b + Arc2d + -Arc2d * sx( -1 ) + -Arc1b * sx( -1 ) )
+	* ty( 0.04 ) * sc( 0.65 );
+Sctn4 = ( Arc1b + Arc2c + -Arc2c * sx( -1 ) + -Arc1b * sx( -1 ) )
+	* ty( 0.04 ) * sc( 0.65 );
+free( Arc1a );
+free( Arc1b );
+free( Arc2a );
+free( Arc2b );
+free( Arc2c );
+free( Arc2d );
+
+RldSrf1 = RuledSrf( Sctn1, Sctn2 * tz( 0.5 ) )
+	* ty( -0.01 ) * tz( -0.001 ) * sz( 1.004 );
+Piece1a = box( vector( -0.5, 0.0, 0.0 ), 1.0, 1.0, 0.5 ) * RldSrf1;
+
+RldSrf2 = RuledSrf( Sctn3, Sctn4 * tz( 0.5 ) )
+	 * ty( -0.01 ) * tz( -0.001 ) * sz( 1.004 );
+Piece1b = box( vector( -0.5, 0.0, 0.0 ), 1.0, 1.0, 0.5 ) * -RldSrf2;
+
+free( RldSrf1 );
+free( RldSrf2 );
+
+free( Sctn1 );
+free( Sctn2 );
+free( Sctn3 );
+free( Sctn4 );
+
+Piece1 = ( Piece1a ^ ( Piece1b * rz( -90 ) * tx( 0.5 ) * ty( 0.5 ) ) )
+	* tx( -0.5 );
+color( Piece1, red );
+
+free( Piece1a );
+free( Piece1b );
+
+Piece2 = Piece1 * rz( 90 );
+color( Piece2, green );
+
+Piece3 = Piece1 * rz( 180 );
+color( Piece3, cyan );
+
+Piece4 = Piece1 * rz( 270 );
+color( Piece4, yellow );
+
+# All = list( Piece1, Piece2, Piece3, Piece4 ) * tz( -0.25 );
+# view( All, 1 );
+# save( "puz4pcs", All );
+
+mov_z1 = creparam( cbezier( list( ctlpt( E1, 0.0 ), ctlpt( E1, 0.16 ) ) ),
+		   0.0, 1.0 );
+mov_z2 = creparam( cbezier( list( ctlpt( E1, 0.0 ), ctlpt( E1, -0.16 ) ) ),
+		   0.0, 1.0 );
+
+rot_x1 = creparam( cbezier( list( ctlpt( E1, 0.0 ), ctlpt( E1, 12 ) ) ),
+		   1.0, 2.0 );
+rot_x2 = creparam( cbezier( list( ctlpt( E1, 0.0 ), ctlpt( E1, -12 ) ) ),
+		   1.0, 2.0 );
+
+mov_x1 = creparam( cbezier( list( ctlpt( E1, 0.0 ), ctlpt( E1, -0.5 ) ) ),
+		   2.0, 3.0 );
+mov_x2 = creparam( cbezier( list( ctlpt( E1, 0.0 ), ctlpt( E1, 0.5 ) ) ),
+		   2.0, 3.0 );
+
+rot_x3 = creparam( cbezier( list( ctlpt( E1, 0.0 ), ctlpt( E1, -12 ) ) ),
+		   2.0, 3.0 );
+rot_x4 = creparam( cbezier( list( ctlpt( E1, 0.0 ), ctlpt( E1,  12 ) ) ),
+		   2.0, 3.0 );
+
+mov_z3 = creparam( cbezier( list( ctlpt( E1, 0.0 ), ctlpt( E1, -0.5 ) ) ),
+		   3.0, 4.0 );
+mov_z4 = creparam( cbezier( list( ctlpt( E1, 0.0 ), ctlpt( E1,  0.5 ) ) ),
+		   3.0, 4.0 );
+
+attrib( Piece1, "animation", list( mov_x1, rot_x1, mov_z2, rot_x3, mov_z4 ) );
+attrib( Piece2, "animation", list( mov_x1, rot_x1, mov_z1, rot_x3, mov_z3 ) );
+attrib( Piece3, "animation", list( mov_x2, rot_x2, mov_z2, rot_x4, mov_z4 ) );
+attrib( Piece4, "animation", list( mov_x2, rot_x2, mov_z1, rot_x4, mov_z3 ) );
+
+#############################################################################
+
+resolution = save_res;
+
+free( mov_z1 );
+free( mov_z2 );
+free( mov_z3 );
+free( mov_z4 );
+free( rot_x1 );
+free( rot_x2 );
+free( rot_x3 );
+free( rot_x4 );
+free( mov_x1 );
+free( mov_x2 );
+
+All = list( Piece1, Piece2, Piece3, Piece4 ) * tz( -0.25 );
+free( Piece1 );
+free( Piece2 );
+free( Piece3 );
+free( Piece4 );
+
+save( "puz4pcs", All );
+view( list( All ), 1 );
+
+for ( t = 0, 0.5, 4,
+    view( animeval( t, All, 0 ), 1 ) );
+
+save( "puz4pcs2", animeval( 1, All, 0 ) );
+
+free( All );

@@ -1,0 +1,142 @@
+
+#
+# Makefile for the IRIT solid modeler (unix).
+#
+
+include ../makeflag.ami
+
+OBJS = 	bsc_geom.o ctrl-brk.o dosintr.o freefrm1.o freefrm2.o freefrm3.o \
+	freefrm4.o freefrm5.o freefrm6.o freefrm7.o freefrm8.o inptevl0.o \
+	inptevl1.o inptevl2.o inptevl3.o inptevl4.o inptgetc.o inptprsr.o \
+	irit.o irit_db.o irit_io.o objects1.o objects2.o overload.o support.o
+
+all:	irit
+
+irit:	$(OBJS)
+	$(CC) $(CFLAGS) -o irit $(OBJS) $(IRIT_LIBS) $(IRIT_MORE_LIBS) -lm
+
+install: irit
+	mv -f irit $(IRIT_BIN_DIR)
+	cp iritinit.irt $(IRIT_BIN_DIR)
+	cp iritfont.itd $(IRIT_BIN_DIR)
+	cp irit-unx.cfg $(IRIT_BIN_DIR)/irit.cfg	# sic!
+
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.
+
+bsc_geom.o: program.h ../include/irit_sm.h ../include/cagd_lib.h
+bsc_geom.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+bsc_geom.o: ../include/trim_lib.h ../include/triv_lib.h ../include/mvar_lib.h
+bsc_geom.o: ../include/allocate.h ../include/iritprsr.h ../include/trng_lib.h
+bsc_geom.o: ../include/mdl_lib.h ../include/obj_dpnd.h ../include/attribut.h
+bsc_geom.o: ../include/geom_lib.h bsc_geom.h
+ctrl-brk.o: program.h ../include/irit_sm.h ../include/cagd_lib.h
+ctrl-brk.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+ctrl-brk.o: ../include/trim_lib.h ../include/triv_lib.h ../include/mvar_lib.h
+ctrl-brk.o: ../include/allocate.h ../include/iritprsr.h ../include/trng_lib.h
+ctrl-brk.o: ../include/mdl_lib.h ../include/obj_dpnd.h ../include/attribut.h
+ctrl-brk.o: inptprsg.h ctrl-brk.h
+dosintr.o: program.h ../include/irit_sm.h ../include/cagd_lib.h
+dosintr.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+dosintr.o: ../include/trim_lib.h ../include/triv_lib.h ../include/mvar_lib.h
+dosintr.o: ../include/allocate.h ../include/iritprsr.h ../include/trng_lib.h
+dosintr.o: ../include/mdl_lib.h ../include/obj_dpnd.h ../include/attribut.h
+dosintr.o: dosintr.h ctrl-brk.h
+freefrm1.o: program.h ../include/irit_sm.h ../include/cagd_lib.h
+freefrm1.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+freefrm1.o: ../include/trim_lib.h ../include/triv_lib.h ../include/mvar_lib.h
+freefrm1.o: ../include/allocate.h ../include/iritprsr.h ../include/trng_lib.h
+freefrm1.o: ../include/mdl_lib.h ../include/obj_dpnd.h ../include/attribut.h
+freefrm1.o: objects.h ../include/geom_lib.h ../include/ip_cnvrt.h freeform.h
+freefrm2.o: program.h ../include/irit_sm.h ../include/cagd_lib.h
+freefrm2.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+freefrm2.o: ../include/trim_lib.h ../include/triv_lib.h ../include/mvar_lib.h
+freefrm2.o: ../include/allocate.h ../include/iritprsr.h ../include/trng_lib.h
+freefrm2.o: ../include/mdl_lib.h ../include/obj_dpnd.h ../include/attribut.h
+freefrm2.o: objects.h ../include/geom_lib.h ../include/ip_cnvrt.h
+freefrm2.o: ../include/bool_lib.h freeform.h
+freefrm3.o: program.h ../include/irit_sm.h ../include/cagd_lib.h
+freefrm3.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+freefrm3.o: ../include/trim_lib.h ../include/triv_lib.h ../include/mvar_lib.h
+freefrm3.o: ../include/allocate.h ../include/iritprsr.h ../include/trng_lib.h
+freefrm3.o: ../include/mdl_lib.h ../include/obj_dpnd.h ../include/attribut.h
+freefrm3.o: objects.h ../include/geom_lib.h ../include/ip_cnvrt.h freeform.h
+freefrm4.o: program.h ../include/irit_sm.h ../include/cagd_lib.h
+freefrm4.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+freefrm4.o: ../include/trim_lib.h ../include/triv_lib.h ../include/mvar_lib.h
+freefrm4.o: ../include/allocate.h ../include/iritprsr.h ../include/trng_lib.h
+freefrm4.o: ../include/mdl_lib.h ../include/obj_dpnd.h ../include/attribut.h
+freefrm4.o: ../include/geom_lib.h objects.h ../include/ip_cnvrt.h
+freefrm4.o: ../include/user_lib.h freeform.h
+freefrm5.o: program.h ../include/irit_sm.h ../include/cagd_lib.h
+freefrm5.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+freefrm5.o: ../include/trim_lib.h ../include/triv_lib.h ../include/mvar_lib.h
+freefrm5.o: ../include/allocate.h ../include/iritprsr.h ../include/trng_lib.h
+freefrm5.o: ../include/mdl_lib.h ../include/obj_dpnd.h ../include/attribut.h
+freefrm5.o: ../include/user_lib.h ../include/geom_lib.h objects.h
+freefrm5.o: ../include/mrchcube.h freeform.h
+freefrm6.o: program.h ../include/irit_sm.h ../include/cagd_lib.h
+freefrm6.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+freefrm6.o: ../include/trim_lib.h ../include/triv_lib.h ../include/mvar_lib.h
+freefrm6.o: ../include/allocate.h ../include/iritprsr.h ../include/trng_lib.h
+freefrm6.o: ../include/mdl_lib.h ../include/obj_dpnd.h ../include/attribut.h
+freefrm6.o: ../include/user_lib.h ../include/geom_lib.h objects.h
+freefrm6.o: ../include/mrchcube.h freeform.h
+inptevl0.o: program.h ../include/irit_sm.h ../include/cagd_lib.h
+inptevl0.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+inptevl0.o: ../include/trim_lib.h ../include/triv_lib.h ../include/mvar_lib.h
+inptevl0.o: ../include/allocate.h ../include/iritprsr.h ../include/trng_lib.h
+inptevl0.o: ../include/mdl_lib.h ../include/obj_dpnd.h ../include/attribut.h
+inptevl0.o: ctrl-brk.h dosintr.h freeform.h ../include/geom_lib.h inptprsg.h
+inptevl0.o: inptprsl.h objects.h overload.h ../include/iritgrap.h bsc_geom.h
+inptevl1.o: program.h ../include/irit_sm.h ../include/cagd_lib.h
+inptevl1.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+inptevl1.o: ../include/trim_lib.h ../include/triv_lib.h ../include/mvar_lib.h
+inptevl1.o: ../include/allocate.h ../include/iritprsr.h ../include/trng_lib.h
+inptevl1.o: ../include/mdl_lib.h ../include/obj_dpnd.h ../include/attribut.h
+inptevl1.o: freeform.h inptprsg.h inptprsl.h objects.h overload.h
+inptevl2.o: program.h ../include/irit_sm.h ../include/cagd_lib.h
+inptevl2.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+inptevl2.o: ../include/trim_lib.h ../include/triv_lib.h ../include/mvar_lib.h
+inptevl2.o: ../include/allocate.h ../include/iritprsr.h ../include/trng_lib.h
+inptevl2.o: ../include/mdl_lib.h ../include/obj_dpnd.h ../include/attribut.h
+inptevl2.o: ctrl-brk.h dosintr.h freeform.h ../include/geom_lib.h inptprsg.h
+inptevl2.o: inptprsl.h objects.h overload.h ../include/iritgrap.h
+inptevl3.o: program.h ../include/irit_sm.h ../include/cagd_lib.h
+inptevl3.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+inptevl3.o: ../include/trim_lib.h ../include/triv_lib.h ../include/mvar_lib.h
+inptevl3.o: ../include/allocate.h ../include/iritprsr.h ../include/trng_lib.h
+inptevl3.o: ../include/mdl_lib.h ../include/obj_dpnd.h ../include/attribut.h
+inptevl3.o: ctrl-brk.h objects.h inptprsg.h inptprsl.h
+inptprsr.o: program.h ../include/irit_sm.h ../include/cagd_lib.h
+inptprsr.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+inptprsr.o: ../include/trim_lib.h ../include/triv_lib.h ../include/mvar_lib.h
+inptprsr.o: ../include/allocate.h ../include/iritprsr.h ../include/trng_lib.h
+inptprsr.o: ../include/mdl_lib.h ../include/obj_dpnd.h ../include/attribut.h
+inptprsr.o: ctrl-brk.h inptprsg.h inptprsl.h objects.h overload.h
+irit.o: program.h ../include/irit_sm.h ../include/cagd_lib.h
+irit.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+irit.o: ../include/trim_lib.h ../include/triv_lib.h ../include/mvar_lib.h
+irit.o: ../include/allocate.h ../include/iritprsr.h ../include/trng_lib.h
+irit.o: ../include/mdl_lib.h ../include/obj_dpnd.h ../include/attribut.h
+irit.o: ctrl-brk.h dosintr.h inptprsg.h objects.h ../include/geom_lib.h
+irit.o: ../include/iritgrap.h ../include/bool_lib.h
+objects1.o: program.h ../include/irit_sm.h ../include/cagd_lib.h
+objects1.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+objects1.o: ../include/trim_lib.h ../include/triv_lib.h ../include/mvar_lib.h
+objects1.o: ../include/allocate.h ../include/iritprsr.h ../include/trng_lib.h
+objects1.o: ../include/mdl_lib.h ../include/obj_dpnd.h ../include/attribut.h
+objects1.o: ../include/geom_lib.h objects.h freeform.h
+objects2.o: program.h ../include/irit_sm.h ../include/cagd_lib.h
+objects2.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+objects2.o: ../include/trim_lib.h ../include/triv_lib.h ../include/mvar_lib.h
+objects2.o: ../include/allocate.h ../include/iritprsr.h ../include/trng_lib.h
+objects2.o: ../include/mdl_lib.h ../include/obj_dpnd.h ../include/attribut.h
+objects2.o: ../include/geom_lib.h objects.h freeform.h
+overload.o: program.h ../include/irit_sm.h ../include/cagd_lib.h
+overload.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+overload.o: ../include/trim_lib.h ../include/triv_lib.h ../include/mvar_lib.h
+overload.o: ../include/allocate.h ../include/iritprsr.h ../include/trng_lib.h
+overload.o: ../include/mdl_lib.h ../include/obj_dpnd.h ../include/attribut.h
+overload.o: ../include/bool_lib.h freeform.h ../include/geom_lib.h inptprsg.h
+overload.o: inptprsl.h objects.h overload.h

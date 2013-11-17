@@ -1,0 +1,181 @@
+#
+# Coverage of iso surfaces of trivariates using curves.
+#
+#					Gershon Elber, March 1997
+#
+
+ri = iritstate( "RandomInit", 1964 );  # Seed-initiate the randomizer,
+free( ri );
+
+ThreeCyls = tbspline( 4, 4, 4,
+	list( list( list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ) ),
+	      list( list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ) ),
+	      list( list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 1 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 1 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ) ),
+	      list( list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ) ),
+	      list( list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ) ) ),
+	list( list( 0, 0, 0, 0, 2, 4, 4, 4, 4 ),
+	      list( 0, 0, 0, 0, 2, 4, 4, 4, 4 ),
+	      list( 0, 0, 0, 0, 2, 4, 4, 4, 4 ) ) );
+attrib( ThreeCyls, "color", red );
+
+RefList = list( 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8,
+	        2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4, 3.6, 3.8 );
+
+ThreeCyls = trefine( trefine( trefine( ThreeCyls, row, false, RefList ),
+			      col, false, RefList ),
+		     depth, false, RefList );
+free( RefList );
+
+IsoVal = 0.12;
+Size = 0.04;
+Srf1 = mrchcube( list( ThreeCyls, 1, TRUE, TRUE ), point( Size, Size, Size ),
+	         1, IsoVal );
+color( Srf1, red );
+interact( Srf1 );
+
+Cover1 = CoverIso( ThreeCyls, 100, 1, vector( 1, 5, 1.0 ), 0.2, IsoVal,
+		   vector( 0, 0, 1 ) ) * sc( Size );
+color( Cover1, yellow );
+viewobj(Cover1);
+save( "tvcover1", list( Srf1, Cover1 ) );
+pause();
+
+Cover1 = CoverIso( ThreeCyls, 100, 2, vector( 1, 5, 1.0 ), 0.2, IsoVal,
+		   vector( 0, 0, 1 ) ) * sc( Size );
+color( Cover1, yellow );
+viewobj(Cover1);
+save( "tvcover2", list( Srf1, Cover1 ) );
+pause();
+
+Cover1 = CoverIso( ThreeCyls, 100, 4, vector( 1, 5, 1.0 ), 0.2, IsoVal,
+		   vector( 0, 0, 1 ) ) * sc( Size );
+color( Cover1, yellow );
+viewobj(Cover1);
+save( "tvcover3", list( Srf1, Cover1 ) );
+pause();
+
+free( Cover1 );
+free( Srf1 );
+free( IsoVal );
+free( Size );
+free( ThreeCyls );

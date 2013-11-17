@@ -1,0 +1,532 @@
+#
+# A model of the B58 Bomber.
+#
+#
+#			Gershon Elber, October 1991.
+#
+
+if ( machine == msdos, resolution = 8, resolution = 10 );
+
+save_mat = view_mat;
+view_mat = view_mat
+           * trans( vector( 5.0, 2.0, 0.0 ) )
+	   * scale( vector( 0.15, 0.15, 0.15 ) );
+
+#
+# Set up for colored or wood texture version. set do_texture to 1 for
+# wood version, otherwise color version. Note locally (in irit) it will
+# always be displayed in colors.
+#
+do_texture = 0;
+
+if ( do_texture == 1,
+
+     woodcolor = "244,164,96":
+     texture = "wood,1":
+     redcolor = woodcolor:
+     graycolor = woodcolor:
+     whitecolor = woodcolor:
+     blackcolor = woodcolor,
+
+     woodcolor = "244,164,96":
+     texture = "wood,1":
+     redcolor = "255,0,0":
+     graycolor = "70,70,70":
+     whitecolor = "255,255,255":
+     blackcolor = "10,10,10" );
+
+#
+# First Lets create the fuselage.
+#
+
+#
+# Front part of the fuselage:
+#
+c1 = circle( vector( 0.0, 0.0, 0.0 ), 0.01 ) *
+     roty( 90 ) *
+     trans( vector( -1.0, 0.0, 0.1 ) );
+color( c1, green );
+c2 = circle( vector( 0.0, 0.0, 0.0 ), 0.025 ) *
+     roty( 90 ) *
+     trans( vector( 0.0, 0.0, 0.1 ) );
+color( c2, green );
+c3 = circle( vector( 0.0, 0.0, 0.0 ), 0.03 ) *
+     roty( 90 ) *
+     trans( vector( 0.1, 0.0, 0.1 ) );
+color( c3, green );
+c4 = cbspline( 3,
+	       list( ctlpt( P3, 1,     2.5,   0.0,   -0.1 ),
+		     ctlpt( P3, 0.707, 1.77,  0.283, -0.071 ),
+		     ctlpt( P3, 1,     2.5,   0.4,    0.0 ),
+		     ctlpt( P3, 0.707, 1.77,  0.283,  0.283 ),
+		     ctlpt( P3, 1,     2.5,   0.0,    0.4 ),
+		     ctlpt( P3, 0.707, 1.77, -0.283,  0.283 ),
+		     ctlpt( P3, 1,     2.5,  -0.4,    0.0 ),
+		     ctlpt( P3, 0.707, 1.77, -0.283, -0.071 ),
+		     ctlpt( P3, 1,     2.5,   0.0,   -0.1 ) ),
+	       list( 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 4 ) ) *
+     trans( vector( -1.5, 0.0, 0.0 ) );
+color( c4, green );
+c5 = cbspline( 3,
+	       list( ctlpt( P3, 1,     2.5,   0.0,   -0.1 ),
+		     ctlpt( P3, 0.707, 1.77,  0.283, -0.071 ),
+		     ctlpt( P3, 1,     2.5,   0.4,    0.0 ),
+		     ctlpt( P3, 0.707, 1.77,  0.283,  0.6 ),
+		     ctlpt( P3, 1,     2.5,   0.0,    0.5 ),
+		     ctlpt( P3, 0.707, 1.77, -0.283,  0.6 ),
+		     ctlpt( P3, 1,     2.5,  -0.4,    0.0 ),
+		     ctlpt( P3, 0.707, 1.77, -0.283, -0.071 ),
+		     ctlpt( P3, 1,     2.5,   0.0,   -0.1 ) ),
+	       list( 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 4 ) ) *
+     trans( vector( 0.0, 0.0, 0.0 ) );
+color( c5, green );
+
+fuseFront = sFromCrvs( list( c1, c2, c3, c4, c5 ), 3, KV_OPEN );
+if ( do_texture == 1, attrib( fuseFront, "texture", texture ) );
+attrib( fuseFront, "rgb", blackcolor );
+color( fuseFront, yellow );
+
+#
+# Back part of the fuselage:
+#
+c1 = cbspline( 3,
+	       list( ctlpt( P3, 1,     2.5,   0.0,   -0.1 ),
+		     ctlpt( P3, 0.707, 1.77,  0.283, -0.071 ),
+		     ctlpt( P3, 1,     2.5,   0.4,    0.0 ),
+		     ctlpt( P3, 0.707, 1.77,  0.283,  0.566 ),
+		     ctlpt( P3, 1,     2.5,   0.0,    0.8 ),
+		     ctlpt( P3, 0.707, 1.77, -0.283,  0.566 ),
+		     ctlpt( P3, 1,     2.5,  -0.4,    0.0 ),
+		     ctlpt( P3, 0.707, 1.77, -0.283, -0.071 ),
+		     ctlpt( P3, 1,     2.5,   0.0,   -0.1 ) ),
+	       list( 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 4 ) ) *
+     trans( vector( 0.0, 0.0, 0.0 ) );
+color( c1, red );
+c2 = c1 * scale( vector( 1.05, 1.05, 1.05 ) ) *
+          trans( vector( 0.3, 0.0, 0.0 ) );
+color( c2, red );
+c3 = c1 * scale( vector( 0.95, 0.95, 0.95 ) ) *
+	  trans( vector( 1.7, 0.0, -0.02 ) );
+color( c3, red );
+c4 = circle( vector( 0.0, 0.0, 0.0 ), 0.35 ) *
+     roty( 90 ) *
+     trans( vector( 5.0, 0.0, 0.2 ) );
+color( c4, red );
+c5 = c4 * trans( vector( 0.2, 0.0, 0.0 ) );
+color( c5, red );
+c6 = circle( vector( 0.0, 0.0, 0.0 ), 0.3 ) *
+     roty( 90 ) *
+     trans( vector( 10.5, 0.0, 0.2 ) );
+color( c6, red );
+c7 = circle( vector( 0.0, 0.0, 0.0 ), 0.01 ) *
+     roty( 90 ) *
+     trans( vector( 11.0, 0.0, 0.25 ) );
+color( c7, red );
+
+fuseBack = sFromCrvs( list( c1, c2, c3, c4, c5, c6, c7 ), 3, KV_OPEN );
+if ( do_texture == 1, attrib( fuseBack, "texture", texture ) );
+attrib( fuseBack, "rgb", graycolor );
+color( fuseBack, white );
+
+#
+# The cockpit:
+#
+cock1 = cregion( c1, 1.3, 2.7 );
+color( cock1, yellow );
+cock2 = cock1 * scale( vector( 0.9, 0.9, 1.1 ) ) *
+	        trans( vector( -0.35, 0.0, -0.15 ) );
+color( cock2, yellow );
+cock3 = cock1 * scale( vector( 0.01, 0.01, 0.01 ) ) *
+	        trans( vector( 1.4, 0.0, 0.38 ) );
+color( cock3, yellow );
+
+cockpit = sFromCrvs( list( cock3, cock2, cock1 ), 3, KV_OPEN );
+if ( do_texture == 1, attrib( cockpit, "texture", texture ) );
+attrib( cockpit, "rgb", whitecolor );
+color( cockpit, white );
+
+free( cock1 );
+free( cock2 );
+free( cock3 );
+free( c1 );
+free( c2 );
+free( c3 );
+free( c4 );
+free( c5 );
+free( c6 );
+free( c7 );
+
+#
+# Now create the steering (vertical) tail.
+#
+c1 = ( cbspline( 3,
+	         list( ctlpt( E3, 0.0,  0.0,  0.0 ),
+		       ctlpt( E3, 0.0,  0.02, 0.0 ),
+		       ctlpt( E3, 1.5,  0.07, 0.0 ),
+		       ctlpt( E3, 3.0,  0.0,  0.0 ) ),
+	         list( KV_OPEN ) ) +
+       cbspline( 3,
+	         list( ctlpt( E3, 3.0,  0.0, 0.0 ),
+		       ctlpt( E3, 1.5, -0.07, 0.0 ),
+		       ctlpt( E3, 0.0, -0.02, 0.0 ),
+		       ctlpt( E3, 0.0,  0.0,  0.0 ) ),
+	         list( KV_OPEN ) ) ) *
+     trans( vector( 7.7, 0.0, 0.3 ) );
+c2 = c1 * scale( vector( 0.65, 0.65, 0.65 ) )
+	* trans( vector( 3.75, 0.0, 0.4 ) );
+c3 = c1 * scale( vector( 0.16, 0.16, 0.16 ) )
+	* trans( vector( 9.5, 0.0, 2.0 ) );
+vTail1 = ruledsrf( c2, c1 );
+vTail2 = ruledsrf( c3, c2 );
+if ( do_texture == 1, attrib( vTail1, "texture", texture ) );
+attrib( vTail1, "rgb", redcolor );
+color( vTail1, red );
+if ( do_texture == 1, attrib( vTail2, "texture", texture ) );
+attrib( vTail2, "rgb", redcolor );
+color( vTail2, red );
+free( c1 );
+free( c2 );
+free( c3 );
+
+vTailTop = swpsclsrf( circle( vector( 0.0, 0.0, 0.0 ), 0.1 ),
+		      cbezier( list( ctlpt( E3, 10.732, 0.0, 2.048 ),
+				     ctlpt( E3, 10.972, 0.0, 2.048 ),
+				     ctlpt( E3, 11.212, 0.0, 2.048 ) ) ),
+		      cbezier( list( ctlpt( E2, 0.0, 0.01 ),
+				     ctlpt( E2, 0.5, 1.0 ),
+				     ctlpt( E2, 1.0, 0.01 ) ) ),
+		      off, 1 );
+if ( do_texture == 1, attrib( vTailTop, "texture", texture ) );
+attrib( vTailTop, "rgb", redcolor );
+color( vTailTop, red );
+
+vTailPara = swpsclsrf( circle( vector( 0.0, 0.0, 0.0 ), 0.075 ),
+		       cbspline( 3,
+			 	 list( ctlpt( E3, 9.15,  0.0, 0.6 ),
+				       ctlpt( E3, 9.5,   0.0, 0.6 ),
+				       ctlpt( E3, 9.9,   0.0, 0.6 ),
+				       ctlpt( E3, 10.7,  0.0, 0.6 ),
+				       ctlpt( E3, 10.8,  0.0, 0.6 ),
+				       ctlpt( E3, 10.85, 0.0, 0.6 ),
+				       ctlpt( E3, 10.9,  0.0, 0.6 ) ),
+				 list(KV_OPEN) ),
+		       cbspline( 3,
+				 list( ctlpt( E2, 0.0,  0.01 ),
+				       ctlpt( E2, 0.01, 1.0 ),
+				       ctlpt( E2, 0.5,  1.0 ),
+				       ctlpt( E2, 0.7,  1.0 ),
+				       ctlpt( E2, 1.0 , 0.01 ) ),
+				list(KV_OPEN) ),
+		       off, 1 );
+if ( do_texture == 1, attrib( vTailPara, "texture", texture ) );
+attrib( vTailPara, "rgb", graycolor );
+color( vTailPara, white );
+
+VTailAntn = -surfrev( ctlpt( E3, 0.001, 0.0, 1.0 ) +
+		      ctlpt( E3, 0.01,  0.0, 1.0 ) +
+		      ctlpt( E3, 0.01,  0.0, 0.8 ) +
+		      ctlpt( E3, 0.03,  0.0, 0.7 ) +
+		      ctlpt( E3, 0.03,  0.0, 0.3 ) +
+		      ctlpt( E3, 0.001, 0.0, 0.0 ) )
+	    * scale( vector( 0.5, 0.5, 0.7 ) )
+	    * roty( -90 )
+	    * trans( vector( 10.8, 0.0, 1.9 ) );
+if ( do_texture == 1, attrib( vTailAntn, "texture", texture ) );
+attrib( vTailAntn, "rgb", redcolor );
+color( vTailAntn, red );
+
+vTail = list( VTail1, VTail2, VTailTop, VTailPara, VTailAntn);
+free( VTail1 );
+free( VTail2 );
+free( VTailTop );
+free( VTailPara );
+free( VTailAntn );
+
+#
+# Here are the wings:
+#
+c1 = cbspline( 3,
+	       list( ctlpt( E3, 3.3, 0.0,  0.1 ),
+		     ctlpt( E3, 3.7, 0.0,  0.3 ),
+		     ctlpt( E3, 4.4, 0.0,  0.3 ),
+		     ctlpt( E3, 9.0, 0.0, -0.1 ) ),
+	       list( KV_OPEN ) ) +
+     cbspline( 3,
+	       list( ctlpt( E3, 9.0, 0.0, -0.1 ),
+		     ctlpt( E3, 6.0, 0.0, -0.1 ),
+		     ctlpt( E3, 3.3, 0.0,  0.1 ) ),
+	       list( KV_OPEN ) );
+c2 = c1
+     * scale( vector( 0.02, 0.02, 0.02) )
+     * trans( vector( 8.4, 3.3, -0.1 ) );
+
+lWingMain = ruledsrf( c1, c2 );
+lWingCntr = sregion( lWingMain, ROW, 0.0, 0.78 );
+if ( do_texture == 1, attrib( lWingCntr, "texture", texture ) );
+attrib( lWingCntr, "rgb", graycolor );
+color( lWingCntr, white );
+lWingEnd = sregion( lWingMain, ROW, 0.78, 1.0);
+if ( do_texture == 1, attrib( lWingEnd, "texture", texture ) );
+attrib( lWingEnd, "rgb", redcolor );
+color( lWingEnd, red );
+
+rWingMain = -lWingMain 
+	    * scale( vector(1.0, -1.0, 1.0));
+rWingCntr = sregion( rWingMain, ROW, 0.0, 0.78);
+if ( do_texture == 1, attrib( rWingCntr, "texture", texture ) );
+attrib( rWingCntr, "rgb", graycolor );
+color( rWingCntr, white );
+rWingEnd = sregion( rWingMain, ROW, 0.78, 1.0);
+if ( do_texture == 1, attrib( rWingEnd, "texture", texture ) );
+attrib( rWingEnd, "rgb", redcolor );
+color( rWingEnd, red );
+
+Wings = list( lWingCntr, lWingEnd, rWingCntr, rWingEnd);
+free( c1 );
+free( c2 );
+free( rWingMain );
+free( lWingCntr );
+free( rWingCntr );
+free( lWingEnd );
+free( rWingEnd );
+
+#
+# Make the four engines:
+#
+c1 = cbspline( 3,
+	       list( ctlpt( E3, 0.0,  0.0, 0.0 ),
+		     ctlpt( E3, 0.17, 0.0, 0.3 ),
+		     ctlpt( E3, 0.17, 0.0, 0.6 ) ),
+	       list( KV_OPEN ) ) +
+     ctlpt( E3, 0.25, 0.0, 0.6 ) +
+     cbspline( 3,
+	       list( ctlpt( E3, 0.25, 0.0, 0.1 ),
+		     ctlpt( E3, 0.35, 0.0, 0.6 ),
+		     ctlpt( E3, 0.3,  0.0, 2.5 ),
+		     ctlpt( E3, 0.25, 0.0, 3.0 ) ),
+	      list( KV_OPEN ) ) +
+     ctlpt( E3, 0.25, 0.0, 2.0 ) +
+     ctlpt( E3, 0.1,  0.0, 2.0 ) +
+     ctlpt( E3, 0.0, 0.0,  2.3 );
+
+EngineIns = surfrev( c1 ) * roty( 90 );
+color(EngineIns, blue);
+
+Eng1Body = EngineIns * trans( vector( 3.2,  1.5, -0.7 ) );
+if ( do_texture == 1, attrib( Eng1Body, "texture", texture ) );
+attrib( Eng1Body, "rgb", graycolor );
+color( Eng1Body, white );
+
+Eng2Body = EngineIns * trans( vector(5.8,  2.6, -0.5));
+if ( do_texture == 1, attrib( Eng2Body, "texture", texture ) );
+attrib( Eng2Body, "rgb", graycolor );
+color( Eng2Body, white );
+free( EngineIns );
+
+c1 = cbspline( 3,
+	       list( ctlpt( E3, 0.0,  0.0,  0.0 ),
+		     ctlpt( E3, 0.5,  0.07, 0.0 ),
+		     ctlpt( E3, 1.0,  0.0,  0.0 ) ),
+	       list( KV_OPEN ) ) +
+     cbspline( 3,
+	       list( ctlpt( E3, 1.0,  0.0,  0.0 ),
+		     ctlpt( E3, 0.5, -0.07, 0.0 ),
+		     ctlpt( E3, 0.0,  0.0,  0.0 ) ),
+	       list( KV_OPEN ) );
+
+Eng1c1 = c1
+         * scale( vector( 2.5, 1.0, 2.5))
+         * trans( vector( 3.45, 1.5, -0.44));
+Eng2c1 = c1
+         * scale( vector( 1.7, 1.0, 1.7 ) )
+         * trans( vector( 6.8, 2.6, -0.24 ) );
+
+#
+# The extraction of the wing profiles just above the engines to make
+# sure the engine holder do not over/under shoot. The commented interaction
+# commands below will display the relevat curves of the engine holder.
+#
+wingProf1 = csurface( lwingMain, ROW, 0.4 );
+color(wingProf1, green);
+wingProf2 = csurface( lwingMain, ROW, 0.78 );
+color(wingProf2, green);
+free( lWingMain );
+
+Eng1c2 = c1
+	 * roty( 3 )
+         * scale( vector( 2.0, 1.0, 2.5 ) )
+         * trans( vector (5.55, 1.5, 0.1 ) );
+# interact( list( Eng1Body, Eng1c1, Eng1c2, Eng1Holder, wingProf1 ) );
+Eng2c2 = c1
+	 * roty( 3.5 )
+         * scale( vector( 1.2, 1.0, 1.2 ) )
+         * trans( vector(7.4, 2.6, -0.03 ) );
+# interact( list( Eng2Body, Eng2c1, Eng2c2, wingProf2 ) );
+
+Eng1Holder = ruledsrf( Eng1c2, Eng1c1 );
+if ( do_texture == 1, attrib( Eng1Holder, "texture", texture ) );
+attrib( Eng1Holder, "rgb", graycolor );
+color( Eng1Holder, white );
+
+Eng2Holder = ruledsrf( Eng2c2, Eng2c1 );
+if ( do_texture == 1, attrib( Eng2Holder, "texture", texture ) );
+attrib( Eng2Holder, "rgb", graycolor );
+color( Eng2Holder, white );
+
+free( wingProf1 ); free( wingProf2 );
+free( Eng1c1); free( Eng1c2 ); free( Eng2c1 ); free( Eng2c2 ); free( c1 );
+
+reflect = scale( vector( 1.0, -1.0, 1.0 ) );
+Engine1 = list( Eng1Body, Eng1Holder );
+Engine2 = list( Eng2Body, Eng2Holder );
+Engine3 = list( -Eng1Body, -Eng1Holder ) * reflect;
+attrib( Engine3, "rgb", graycolor );
+color( Engine3, white );
+Engine4 = list( -Eng2Body, -Eng2Holder ) * reflect;
+attrib( Engine4, "rgb", graycolor );
+color( Engine4, white );
+free( reflect );
+free( Eng1Holder );
+free( Eng2Holder );
+free( Eng1Body );
+free( Eng2Body );
+
+Engines = list( Engine1, Engine2, Engine3, Engine4 );
+free( Engine1 );
+free( Engine2 );
+free( Engine3 );
+free( Engine4 );
+
+#
+# Model the gas tank.
+#
+tankBody = swpsclsrf( circle( vector( 0.0, 0.0, 0.0 ), 0.3 ),
+		      cbspline( 3,
+			        list( ctlpt( E3, 1.5,  0.0, -0.5 ),
+				      ctlpt( E3, 2.5,  0.0, -0.5 ),
+				      ctlpt( E3, 3.5,  0.0, -0.5 ),
+				      ctlpt( E3, 6.0,  0.0, -0.5 ),
+				      ctlpt( E3, 7.5,  0.0, -0.5 ) ),
+			        list( KV_OPEN ) ),
+		      cbspline( 3,
+			        list( ctlpt( E2, 0.0,   0.01 ),
+				      ctlpt( E2, 0.01,  1.0 ),
+				      ctlpt( E2, 0.5,   1.0 ),
+				      ctlpt( E2, 0.9,   1.0 ),
+				      ctlpt( E2, 1.0 ,  0.01 ) ),
+			        list( KV_OPEN ) ),
+		      off, 1 );
+if ( do_texture == 1, attrib( tankBody, "texture", texture ) );
+attrib( tankBody, "rgb", graycolor );
+color( tankBody, white );
+
+c1 = cbspline( 3,
+	       list( ctlpt( E3, 0.0,  0.0,  0.0 ),
+		     ctlpt( E3, 0.0,  0.01, 0.0 ),
+		     ctlpt( E3, 0.5,  0.02, 0.0 ),
+		     ctlpt( E3, 1.0,  0.0,  0.0 ) ),
+	       list( KV_OPEN ) ) +
+     cbspline( 3,
+	       list( ctlpt( E3, 1.0,  0.0,  0.0 ),
+		     ctlpt( E3, 0.5, -0.02, 0.0 ),
+		     ctlpt( E3, 0.0, -0.01, 0.0 ),
+		     ctlpt( E3, 0.0,  0.0,  0.0 ) ),
+	       list( KV_OPEN ) );
+tankWIns = ruledsrf( c1 * sc( 0.01 ) * trans( vector( 0.99, 0.0, 0.56 ) ),
+		     c1 );
+if ( do_texture == 1, attrib( tankWIns, "texture", texture ) );
+attrib( tankWIns, "rgb", graycolor );
+color( tankWIns, white );
+
+tankWing1 = tankWIns * rotx(45) * trans( vector( 6.2, 0.0, -0.5 ) );
+tankWing2 = tankWIns * rotx(135) * trans( vector( 6.2, 0.0, -0.5 ) );
+tankWing3 = tankWIns * rotx(225) * trans( vector( 6.2, 0.0, -0.5 ) );
+tankWing4 = tankWIns * rotx(315) * trans( vector( 6.2, 0.0, -0.5 ) );
+free( tankWIns );
+
+tankHolder = ruledsrf( c1
+		       * scale( vector( 4.0, 5.2, 1.0 ) )
+		       * trans( vector( 2.7, 0.0, 0.1 ) ),
+		       c1
+		       * scale( vector( 5.2, 5.2, 1.0 ) )
+		       * trans( vector( 1.8, 0.0, -0.5 ) ) );
+free( c1 );
+if ( do_texture == 1, attrib( tankHolder, "texture", texture ) );
+attrib( tankHolder, "rgb", graycolor );
+color( tankHolder, white );
+
+tank = list( tankBody, tankHolder, tankWing1, tankWing2, tankWing3, tankWing4 );
+free( tankBody );
+free( tankHolder );
+free( tankWing1 );
+free( tankWing2 );
+free( tankWing3 );
+free( tankWing4 );
+
+
+#
+# Collect all, display and save. Go to single buffer since this one is slow.
+#
+b58 = list( fuseFront, fuseBack, cockpit, Wings, vTail, Engines, tank );
+free( fuseFront );
+free( fuseBack );
+free( cockpit );
+free( Wings );
+free( vTail );
+free( Engines );
+free( tank );
+
+interact( list( view_mat, b58 ) );
+save( "b58", b58 );
+free( b58 );
+
+#
+# Make walls for shadows.
+#
+v1 = vector( 0.0, 0.0, 0.0 );
+v2 = vector( 0.0, 1.0, 0.0 );
+v3 = vector( 1.0, 1.0, 0.0 );
+v4 = vector( 1.0, 0.0, 0.0 );
+xy_plane = poly( list( v1, v2, v3, v4 ), false );
+color( xy_plane, white );
+attrib( xy_plane, "rgb", "100,100,100" );
+
+v1 = vector( 0.0, 0.0, 0.0 );
+v2 = vector( 0.0, 0.0, 1.0 );
+v3 = vector( 1.0, 0.0, 1.0 );
+v4 = vector( 1.0, 0.0, 0.0 );
+xz_plane = poly( list( v1, v2, v3, v4 ), false );
+color( xz_plane, white );
+attrib( xz_plane, "rgb", "100,100,100" );
+
+v1 = vector( 0.0, 0.0, 0.0 );
+v2 = vector( 0.0, 0.0, 1.0 );
+v3 = vector( 0.0, 1.0, 1.0 );
+v4 = vector( 0.0, 1.0, 0.0 );
+yz_plane = poly( list( v1, v2, v3, v4 ), false );
+color( yz_plane, white );
+attrib( yz_plane, "rgb", "100,100,100" );
+walls = list( xy_plane, xz_plane, yz_plane )
+	* scale( vector( 100.0, 100.0, 100.0 ) )
+	* trans( vector( -3.0, -5.0, -3.0 ) );
+save( "b58walls", walls );
+
+view_mat = save_mat;
+view( list( view_mat ), on );
+
+free( walls );
+free( xy_plane );
+free( xz_plane );
+free( yz_plane );
+free( v1 );
+free( v2 );
+free( v3 );
+free( v4 );
+
+free( woodcolor );
+free( texture );
+free( redcolor );
+free( graycolor );
+free( whitecolor );
+free( blackcolor );
+free( do_texture );

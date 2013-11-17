@@ -1,0 +1,87 @@
+#
+# Simple 'robot-hand' to demonstrate animation inheritance.
+#
+#                             Bengad Zohar, July 1996
+#
+
+BoxLength = 2;
+BoxWidth = 2;
+BoxHeight = 10;
+
+LowerBox = box( vector( -BoxLength / 2, -BoxWidth / 2, 0 ),
+                BoxLength, BoxWidth, BoxHeight);
+MiddleBox = LowerBox * sc( 1 );
+UpperBox = LowerBox * sc( 1 );
+Cn1 = cone( vector( 0, 0, 0 ), vector( 0, BoxHeight / 2, 0 ), 2, 1 );
+
+color( LowerBox, magenta );
+color( MiddleBox, yellow );
+color( UpperBox, cyan );
+color( Cn1, green );
+
+rot_x1 = creparam( cbspline( 3,
+			     list( ctlpt( E1,  0 ),
+			           ctlpt( E1,  -200 ),
+			           ctlpt( E1,  200 ),
+		       		   ctlpt( E1,  0 ) ),
+			     list( KV_OPEN ) ),
+		   0, 3 );
+rot_x2 = creparam( cbspline( 4,
+			     list( ctlpt( E1,  0 ),
+			           ctlpt( E1,  400 ),
+			           ctlpt( E1,  -400 ),
+		       		   ctlpt( E1,  0 ) ),
+			     list( KV_OPEN ) ),
+		   0, 3 );
+rot_y = creparam( cbspline( 2,
+			    list( ctlpt( E1,  0 ),
+			          ctlpt( E1,  100 ),
+			          ctlpt( E1, -100 ),
+			          ctlpt( E1,  0 ) ),
+		            list( KV_OPEN ) ),
+		  0, 3 );
+rot_z = creparam( cbspline( 2,
+			    list( ctlpt( E1,  0 ),
+			          ctlpt( E1,  1440 ) ),
+		            list( KV_OPEN ) ),
+		  0, 3 );
+
+attrib( Cn1, "animation", list( rot_z ) );
+Cn1 = Cn1 * tz( 10 );
+
+Upr = list( Cn1, UpperBox );
+attrib( Upr, "animation", list( rot_x2 ) );
+Upr = Upr * tz( 10 );
+
+Mid = list( Upr, MiddleBox );
+attrib( Mid, "animation", list( rot_y ) );
+Mid = Mid * tz( 10 );
+
+rbt_hand = list( Mid, LowerBox );
+attrib( rbt_hand, "animation", list( rot_x1 ) );
+
+interact( list( axes * sc( 30 ),
+		rbt_hand * tx( 0 ),
+		rbt_hand * tx( 20 ),
+		rbt_hand * ty( 20 ),
+		rbt_hand * tx( 20 ) * ty( 20 ) ) );
+
+save( "rbt_hand", rbt_hand );
+
+free( rot_x1 );
+free( rot_x2 );
+free( rot_y );
+free( rot_z );
+free( Upr );
+free( Cn1 );
+
+free( BoxLength );
+free( BoxWidth );
+free( BoxHeight );
+
+free( LowerBox );
+free( MiddleBox );
+free( UpperBox );
+free( Mid );
+
+free( rbt_hand );

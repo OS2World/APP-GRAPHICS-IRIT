@@ -1,0 +1,455 @@
+#
+# Some examples of trivariate morphing/blending...
+#
+#					Gershon Elber, March 1997
+#
+
+ri = iritstate( "RandomInit", 1964 );  # Seed-initiate the randomizer,
+free( ri );
+
+step = 0.05;
+
+#############################################################################
+
+ZeroTV = tbspline( 4, 4, 4,
+	list( list( list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ) ),
+	      list( list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ) ),
+	      list( list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ) ),
+	      list( list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ) ) ),
+	list( list( 0, 0, 0, 0, 4, 4, 4, 4 ),
+	      list( 0, 0, 0, 0, 4, 4, 4, 4 ),
+	      list( 0, 0, 0, 0, 4, 4, 4, 4 ) ) );
+
+Tv1 = ZeroTV;
+for ( i = 0, 1, 3,
+    for ( j = 0, 1, 3,
+	for ( k = 0, 1, 3,
+	    Tv1 = tEditPt( Tv1, CtlPt( E1, random(0, 1) ), i, j, k ) ) ) );
+Tv2 = ZeroTV;
+for ( i = 0, 1, 3,
+    for ( j = 0, 1, 3,
+	for ( k = 0, 1, 3,
+	    Tv2 = tEditPt( Tv2, CtlPt( E1, random(0, 1) ), i, j, k ) ) ) );
+free( ZeroTv );
+
+RefList = list( 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8,
+	        2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4, 3.6, 3.8 );
+# RefList = list( 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5 ); # Rougher yet faster
+
+Tv1 = trefine( trefine( trefine( Tv1, row, false, RefList ),
+			col, false, RefList ),
+	       depth, false, RefList );
+
+ffcompat( Tv1, Tv2 );
+
+#
+# A metamorphosis between two RANDOMLY DEFINED objects.
+#
+# Set the third 'off' parameter in the first mrchcube functiomn to 'on'
+# to get better normals from the trivariate function.
+#
+pause();
+
+Size = 0.05;
+for ( i = 0, step, 1.0 + Step / 2,
+    Tv = tmorph( Tv1, Tv2, i ):
+    view( mrchcube( list( Tv, 1, 1, off ),
+		    point( Size, Size, Size ), 1, 0.5 ), on ) );
+free( i );
+free( Tv1 );
+free( Tv2 );
+free( Tv );
+
+#############################################################################
+
+ThreeCyls = tbspline( 4, 4, 4,
+	list( list( list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ) ),
+	      list( list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ) ),
+	      list( list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 1 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 1 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ) ),
+	      list( list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ) ),
+	      list( list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ) ) ),
+	list( list( 0, 0, 0, 0, 2, 4, 4, 4, 4 ),
+	      list( 0, 0, 0, 0, 2, 4, 4, 4, 4 ),
+	      list( 0, 0, 0, 0, 2, 4, 4, 4, 4 ) ) );
+attrib( ThreeCyls, "color", red );
+
+OneCyl = tbspline( 4, 4, 4,
+	list( list( list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ) ),
+	      list( list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ) ),
+	      list( list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ) ),
+	      list( list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ) ) ),
+	list( list( 0, 0, 0, 0, 1, 1, 1, 1 ),
+	      list( 0, 0, 0, 0, 1, 1, 1, 1 ),
+	      list( 0, 0, 0, 0, 1, 1, 1, 1 ) ) );
+attrib( OneCyl, "color", green );
+
+#
+# Must make them finer and compatible before doing some morphing.
+#
+
+RefList = list( 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8,
+	        2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4, 3.6, 3.8 );
+# RefList = list( 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5 ); # Rougher yet faster
+
+ThreeCyls = trefine( trefine( trefine( ThreeCyls, row, false, RefList ),
+			      col, false, RefList ),
+		     depth, false, RefList );
+
+ffcompat( ThreeCyls, OneCyl );
+
+#
+# A metamorphosis between THREE JOINT CYLINDERS and ONE CYLINDER objects
+#
+# Set the third 'off' parameter in the first mrchcube functiomn to 'on'
+# to get better normals from the trivariate function.
+#
+pause();
+
+Size = 0.075;
+for ( i = 0, step, 1.0 + Step / 2,
+    Tv = tmorph( ThreeCyls, OneCyl, i ):
+    IsoLvl = 0.5 * i + 0.2 * (1.0 - i):
+    view( mrchcube( list( Tv, 1, 1, off ),
+		    point( Size, Size, Size ), 1, IsoLvl ), on ) );
+free( i );
+free( IsoLvl );
+free( Tv );
+free( ThreeCyls );
+
+
+Spr = tbspline( 4, 4, 4,
+	list( list( list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ) ),
+	      list( list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ) ),
+	      list( list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ) ),
+	      list( list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ) ) ),
+	list( list( 0, 0, 0, 0, 1, 1, 1, 1 ),
+	      list( 0, 0, 0, 0, 1, 1, 1, 1 ),
+	      list( 0, 0, 0, 0, 1, 1, 1, 1 ) ) );
+attrib( Spr, "color", cyan );
+
+ffcompat( Spr, OneCyl );
+
+#
+# A metamorphosis between a SPHERICAL and CYLINDRICAL objects
+#
+# Set the third 'off' parameter in the first mrchcube functiomn to 'on'
+# to get better normals from the trivariate function.
+#
+pause();
+
+Size = 0.075;
+for ( i = 0, step, 1.0 + Step / 2,
+    Tv = tmorph( Spr, OneCyl, i ):
+    IsoLvl = 0.2 * i + 0.2 * ( 1.0 - i ):
+    view( mrchcube( list( Tv, 1, 1, off ),
+		    point( Size, Size, Size ), 1, IsoLvl ), on ) );
+free( i );
+free( j );
+free( k );
+free( IsoLvl );
+free( Tv );
+free( Spr );
+free( OneCyl );
+free( RefList );
+free( Size );
+free( Step );

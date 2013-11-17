@@ -1,0 +1,43 @@
+#
+# This is the make file for the mvar_lib library.
+#
+#				Gershon Elber, June 1993
+#
+
+# Get the destination directories:
+include ../makeflag.os2
+
+MAT_OBJS = \
+	mvbiscon.o \
+	mvlowenv.o \
+	mvsplmon.o \
+	mvtrmbis.o \
+	mvtrmpcr.o \
+	mvvorcel.o \
+	mvvorcrv.o
+
+OBJS =  contacts.o crv_krnl.o hasdrf2d.o hasdrf3d.o lndstsqr.o \
+        ms_circ.o ms_sphr.o mvaccess.o \
+	mvar_aux.o mvar_dbg.o mvar_der.o mvar_det.o mvar_err.o \
+	mvar_ftl.o mvar_gen.o mvar_int.o mvar_pll.o \
+	mvar_ref.o mvar_rev.o mvar_ssi.o mvar_sub.o \
+	mvar_sym.o mvar_vec.o mvarcmpt.o mvarcoer.o mvardist.o mvaredit.o \
+	mvareval.o mvarextr.o mvarintr.o mvarkant.o \
+	mvarmrph.o mvarpack.o mvarpck2.o mvarproj.o \
+	mvarprim.o mvarrais.o mvarsils.o mvartopo.o \
+	mvarzero.o mvarzral.o mvarzreq.o \
+	mv_crvtr.o mvbisect.o mvbspsym.o mvbzrpwr.o \
+	mvbzrsym.o mvcones.o mvtangnt.o mvtrivar.o offset2.o \
+	offst2ni.o ray-trap.o raytrp3d.o selfintr.o skel2d.o
+
+libmvar.a: $(OBJS) $(MAT_OBJS)
+	-$(RM) libmvar.a
+	ar rc libmvar.a $(OBJS)
+
+install: libmvar.a
+	$(CP) libmvar.a $(IRIT_LIB_DIR)
+	ar s $(IRIT_LIB_DIR)/libmvar.a
+
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.
+

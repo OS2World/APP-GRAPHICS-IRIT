@@ -1,0 +1,618 @@
+  + MUNIVZERO - computes the zero set of underconstrained multivariates as 
+                univariates.
+  + C2RECTRGN - division/tiling a region bounded by curves with rectangles.
+  + B3DMBLOBS
+  + MFROM2IMG
+  + MFROM3IMG
+  + BFROM2IMG
+  + BFROM3IMG
+
+Version 11.0
+------------
+  + MATDECOMP2,
+    MATRECOMP - matrix decomposition and recomposition functions.
+  + RULEDFIT - Fit a ruled surface to a given general surface.
+  + TVREV - trivariate of revolution.
+  + TVPREV - trivariate of revolution (polynomial approx.).
+  + PINTERP - plane lst square fitting to points.
+  + SINTPCRVS - same as SFROMSRFS but interpolates the input curves.
+  + CARNGMNT2 - curve arrangments processing.
+  + ATTRVPROP
+  + GPOINTLIST
+  + TBOOLSUM, TBOOLONE - Boolean sum/one for volumes.
+  + BELTCURVE
+  + ILOFFSET - examine an offset curve for local self intersections' existence.
+
+Version 10.0
+------------
+  + Major C basic types' naming convension change (RealType -> IrtRType,
+    ByteType -> IrtBType, etc.)
+  + OFFSET now sopport 3D polygonal offset approximation.
+  + CONTOUr now support contouring of polygonal models and curves.
+  + MinDist2FF - minimal distances between points curves and surfaces.
+  + SSHELL - closing boundary gaps between two parallel surfaces.
+  + CHELIX, CSPIRAL, CSINE - a helix/spiral/sine aproximation curve.
+
+* New IRIT commands
+  + MERGEPLLN - merges disjoint polylines.
+  + SSINTR2 - a second implementation of srf-srf-inter.
+  + PPINCLUDE  - 2D polygon/Polyhedra point inclusion tests.
+  + CPINCLUDE - Curve point inclusion tests.
+  + MVInter - intersections of zero dim solution space.
+  + MVCONTACT - contact detection during motion.
+  + TOFFSET - updated to support surfaces as well.
+              added a new trimming method based on self-inter computation.
+  + MSCONE - revision and new commands for minimum spanning cone.
+  + MSSPHERE - Minimum spanning sphere.
+  + CCRVTREVAL - numeric curvature evaluation of curves.
+  + ANTIPODAL - computes antipodal points in curves and surfaces.
+  + SELFINTER - computes self intersection point/curves in curves/surfaces.
+  + CCRVTR1PT - Curvature topology changes domain due to motion of ctlpts.
+  + HAUSDORFF - Hausdorff distance between curves and surfaces.
+  + NCCntrPath - 3-Axis tool path generation using contouring.
+  + NCPcktPath - 2-Axis pocketing tool path generation.
+  + PolyHoles - constructs a polygons with x3holes.
+  + PTS2PLYS - converts points in R^n into polylines.
+
+Version 9.5
+------------
+
+* New IRIT commands
+  + CANGLEMAP - The 2D orthogonality/parallel/angular maps of a planar curve.
+  + CARRANGMNT - CCI and lower envelops of curve arrangments.
+  + CIEXTREME - Implicit curve's extreme locations.
+  + CSPIRAL - compute an spiral approximation curve.
+  + CVISIBLE - Computes visible portion of a curve from a view dir./pos.
+  + MSCIRC - Computes the minimum spanning circle.
+  + POLARSIL - radial/polar silhouttes around an axis.
+  + CVIEWMAP - The 2D view map of a planar curve.
+  + CFNCRVTR - Computes signed curvature signature function for given curve.
+  + PIMPRTNC - Importance estimation of vertices in a poly mesh.
+  + SETCOVER - solutions to set cover problems over reals.
+  + SRADCRVTR - Radial curvature computations.
+  + SRFPTDIST - nearest point on a surface to a point (min dist param).
+  + SRFLNDIST - nearest point on a surface to a line (min dist param).
+  + CBISECTOR2D, CBISECTOR3D, CALPHASECTOR - split of CBISECT that was retired.
+  + ROTV2V - Constructs a rotation matrix between two given vectors.
+  + FFCMPCRVS - comparison of curves.
+  + QUADCRVS - Approximate a given curve by piecewise-quadratics.
+  + CUBICCRVS - Approximate a given curve by piecewise-cubics.
+  + FFGTYPE - Returns the geometric type of a freeform.
+  + QUARTIC - new constructors for quartics by promoting conics to 3D.
+  + IMPLCTRANS - transformations of conics and quartics.
+  + ELLIPSE3PT - fitting an ellipse of minimal area to 3 points.
+  + MAP3PT2EQL - linear mapping for 3 points to an equilateral triangle.
+
+* Cartoon rendering style in irender.
+
+Version 9.0
+-----------
+
+* New IRIT commands
+  + CRVKERNEL - Computes the kernel of a close curve.
+  + CRC2CRVTAN - find circles of prescribed radii tangent to two curves.
+  + CBIARC - Biarc fitting to freeform curves.
+  + SRF3TANS - a plane tangent to a surface/surfaces at 3 locations.
+  + SRF2TANS - a developable bi tangent to a surface/surfaces.
+  + CARCLEN - Curve arc length approximation.  
+  + FITPMODEL - fit a primitive shape to a given polygonal model.
+  + ANALYFIT - linear/quadratic surface fit to a given polygonal model.
+  + PTREGISTER - register two points sets for rigid motion.
+  + SFLECNODAL - Flecnodal curves on surfaces.
+  + SVOLUME - volume of shape bounded by freeforms.
+  + SMOMENTS - moments over freeforms.
+  + FIXPLNRML - fix normals of polygonal models.
+  + FIXPLGEOM - fix geometry of polygonal models.
+  + TNSCRCR - tangents to two circles.
+  + DIST2FF - Distance fields between two freeform curves/surfaces.
+  + SPLITLST - splits lists of objects to object list.
+  + PRINTFILE - redirects the PRINTF command to a file.
+  + MPOWER, MBEZIER, MBSPLINE - Multivariate constructors.
+  + UVPOLY - sets uv coordinates to polygonal models.
+  + TOFFSET - trim global/local intersections in offsets.
+  + SASPCTGRPH - derives the topological aspect graph of a freeform srf on S^2.
+  + TEXTWARP - text warping along a freeform surface.
+  + PRINTER - Polygon Ray Intersection.
+  + SRFKERNEL - Kernel of freeform closed surfaces.
+  + SASYMPEVAL - Asymptotic directions for parametric surfaces.
+  + PPROPFTCH - Fetching of property curves over polygonal objects.
+  + PCRVTR - curvature estimation for polygonal meshes.
+  + SRAYCLIP - Ray surface intersection using Bezier clipping.
+  + BOUNDARY - extracts the boundary of the given geometry.
+  + BSCTCYLCYL, BSCTCONCYL, BSCTCONCN2 - New cone/cylinder bisector functions.
+  + RFLCTMAT, PROJMAT - constructors for reflection and projection matrices.
+  + FNFREE - free user defined function.
+  + IDYNMEM = dynamic memory testing routines (debugging purposes).
+  + PATTRIB - Set/get attributes to vertices of polygons.
+  + PNORMAL - Sets a normal for a vertex in a polygon.
+  + SCRVTREVAL - Principal curvatures/directions for parametric surfaces.
+  + SRFFFORM - Derives the coefficients of 1st/2nd/3rd fundamental forms.
+  + PLANECLIP - Clips a polygonal model against a plane.
+  + MAXEDGELEN - subdivides a polygonal models, bounding maximum edge length
+  + BLHERMITE - Blending hermite with arbitrary cross section.
+  + BLSHERMITE - Blending hermite with arbitrary cross section, over a surface.
+  + MVEXPLICIT - Convert multivariate polynomial expressions to bezier.
+  + DUALITY - Computes the dual to a curve or a surface.
+  + CRVDIAMTR - Computes the diameter of a curve.
+  + BUMPMAP - add bump geometric details to a given surface.
+  + INSERTPOLY - insert a new polygon to existing polygonal object.
+
+* Booleans properly handle disjoint parts.
+* Sweep functions also support a list of cross sections.
+* Irit file types are "real" finally: "itd", "ibd", "imd" for irit text/binary/
+  matrix data.
+* New STL2IRIT utility to convert text/binary stl files to irit data.
+* Support for the MAGELLAN 6DOF mouse
+* Support for PNG images.
+* RGB color and UV values in vertices are properly propagated in Booleans.
+
+Version 8.0
+-----------
+* Full line editing capabilities, including history.
+* Bug fix in boolean sum/one operations.
+* Bug fix in the extrusion operation and added support for caps in curves'
+  extrusion.
+* Many bug fixes in the booleans of polyhedra.
+* Three new line illustration tools - lineshad, aisoshad and izebra.
+* New hidden surface removal tools - ihidden.
+* Most display devices now support in-view-window rotation and translation
+  as well as two levels of fineness with rough levek for active transform
+  and fine when in idle.
+* Handling COPLANAR polygons is now default to TRUE.
+* Equality testing in IRIT now works between almost all objects including
+  freeforms.
+* New multivariate library.
+* COERCE now coerce between surfaces and trimmed surfaces,  between 
+  multivariates and curves/surfaces/trivariates, and between Bezier
+  and Bspline forms.
+* SYMBPROD/DPROD/CPROD/SUM/DIFF now operates on multivariates as well.
+* FFMERGE/FFSPLIT now operates on multivariates as well.
+* Coplanar polygon handling is much improved.
+* New IRIT commands
+  + PTS2PLLS - converts points into polylines
+  + MATDECOMP - decomposition of homogeneous matrix into rot, scale and trans.
+  + TSGREGORY - Creates a triangular gregory patch.
+  + SMOOTHNRML - compute smooth vertex normals to polygonal data.
+  + VIEWSET - allow switching between several display devices, simultaneously.
+  + SETNAME - rename the name of a sub object.
+  + GETNAME - gets the name of a sub object.
+  + RRINTER - ruled ruled intersection.
+  + SPARABOLC - parabolic edges of freeform surfaces
+  + CPOWER, SPOWER- definition of power basis curve/surface.
+  + SMESH - surface from trivariate mesh.
+  + ALGSUM - Algebraic sum surfcae constructor.
+  + SWUNGASUM - Algebraic swung sum.
+  + ARC360 - upto 360 degrees arc.
+  + SREVERSE - reverse a surface.
+  + MDERIVE, MDIVIDE, MEVAL, MFROMMESH, MFROMMV, MREFINE, MREGION,
+    MREPARAM, MPROMOTE, MMERGE, MREVERSE - operations on multivariates.
+  + SURFREVAXS, SURFREV2, SURFREVAX2 - variations on the surface of
+    revolution constructor.
+  + CONICSEC - conic section's construction.
+  + MATPOSDIR - constructs a viewing transformation matrix based on position
+    and direction.
+  + PMORPH - Morphosis of two polyhedral model.
+  + BSCTPLNPT, BSCTCONPT, BSCTCYLPT, BSCTSPRPT, BSCTTRSPT, BSCTPLNLN,
+    BSCTCONLN,  BSCTSPRLN, BSCTSPRPL, BSCTCYLPL, BSCTCONPL, BSCTCONSPR,
+    BSCTCONCON, BSCTCYLSPR, BSCTSPRSPR, BSCTTRSSPR - bisectors of CSG
+    primitives.
+  + LINTERP - least squares fitting of a line in R3 to a set of points.
+  + CLNTCRSR - process mouse display device mouse events in the server.
+  + TRMSRFS - trimmed surfaces constructor from contours in param space.
+  + SILHOUETTE - compute silhouette edges of freeform surfaces
+  + ISOCLINE - compute isocline edges of freeform surfaces
+  + BLOSSOM - blossoming over Bezier and Bspline forms.
+  + FFMESH - extraction of control mesh/polygon from a freeform geometry.
+  + KNOTCLEAN, KNOTREMOVE - knot removal and cleanup for bspline curves.
+  + ISGEOM - query if a given geometry is a line/circle/plane/sphere/
+    ruled srf/extrusion etc.
+  + SSINTER - general surface surface intersection routine.
+  + PPINTER - single polygon polygon intersection computation.
+  + MZERO - computes the zero set of multivariates as a point cloud.
+  + MBISECTOR - computes the bisector of two surfaces or curve-surface, in R3.
+  + RAYTRAPS - computes ray traps between n planar curves
+  + SKEL2DINT - computes points of equal distance from three planar entities.
+  + EXEC - excute a string command in the IRIT interepreter, indirectly.
+  + CAREA - computes the area integral of a curve.
+  + SYMBIPROD - inner product of Bspline basis functions.
+  + TVZRJACOB - Zero Jacobian of a trivariate.
+  + RESET - Reset the environment (clear all variables to initial state)
+  + ANIMEVAL - evaluation of animation curves at a certain time.
+  + QUADRIC - generates quadric surfaces as rationals.
+  + C/SMOEBIUS - Moebius transformation to freeform curves/surfaces.
+  + SACCESS - surface/check surface accessibility analysis.
+  + NRMLCONE - computes a bound on the normal
+  + CINTEG - computation of the integral curve.
+  + MRAISE - degree raising for multivariates.
+  + CREDUCE - curve degree reduction.
+  + RULEDTV - ruled trivariate volume between two surfaces.
+  + ATTRPROP - Same as attrib, but propagates the attribute to all sub-parts.
+  + ZCOLLIDE - Collision computation between two objects in Z direction.
+  + IQUERY - query low level system information.
+  + RFLCTLN - compute reflection lines/circles/highlight lines off
+	freeform surfaces.
+
+Version 7.0
+-----------
+* Display devices for Windows NT/95 and OS2 are now stable.
+* Alpha channel is now properly working in irender.
+* IRIT is now fully working on Windows 95 with no network (use to have
+  IPC problems).
+* Several global name renaming in C space (EPSILON -> IRIT_EPS etc.).
+* New irit2pov - IRIT to POVRAY filter.
+* Primitive constructors (spheres, cones, etc) can now create freeform
+  exact rational surfaces as well as approximated polynomial surfaces.
+* Fix two bugs in BBOX of lists and points.
+* Support for triangular (Bezier) patches has been added.
+* Ability to evaluate a scene at a prescribed animation time in many of the
+  tools, such as irender, poly3d-h and the some filters.
+* Irender now supports surface function texture useful for curvature display
+  as well as contouring texture.
+* Instances of geometry are supported (not completely) via a new instance
+  type.
+* FFCOMPAT also works on trivariates.
+* C/SREPARAM works correctly on float/periodic end conditions.
+* OFFSET and RULEDSRF now works on polyline/gons.
+* SINTERP now allows scattered data (with UV's).
+* New IRIT commands
+  + TMORPH function - trivariate morphing.
+  + TEDITPT function - edit single control point of a trivariate.
+  + COVERPT - uniform point distribution on polygonal models
+  + COVERISO - uniform curves' based coverage of iso surfaces of trivariates.
+  + TVLOAD - load a trivariate out of a data set.
+  + MRCHCUBE - marching cubes on volumeric data sets and trivariates.
+  + TRIANGL - Converts a polygonal model to hold triangles only.
+  + TRAISE - raise the degree of a trivariate (Bezier and linear Bsplines)
+  + TREPARAM - reparameterization of trivariates.
+  + TCRVTR - Curvature properties of iso surfaces of trivariates
+  + PTHMSPR - Point discribution on a hemisphere.
+  + SVISIBLE - Cone visibility decomposition of freeform surfaces.
+  + ORTHOTOMC - K-Orthotomics of curves and surfaces.
+  + SBISECTOR - Bisector surface of a point and a surface.
+  + FFORDER - Returns the order(s) of the freeform.
+  + FFMSIZE - Returns the size of control mesh/polygon of the freeform.
+  + FFKNTVEC - Returns the knot vector(s) of the freeform.
+  + FFCTLPTS - Returns the control mesh/polygon of the freeform.
+  + CNVXHULL - Computes the convex hull of a poly/curve.
+  + CRVPTTAN - All tangents through a point of a curve.
+  + CRV2TANS - All bi-tangents to a given curve.
+  + PDECIMATE - decimation and reduction of polygonal data.
+  + GETATTR - provides a mechanism to fetch attributes.
+  + TSEVAL - evaluation of triangular patches.
+  + TSNORMAL - normals of triangular patches.
+  + TSDERIVE - derivatives of triangular patches.
+  + TSBEZIER, TSBSPLINE - triangular bezier/bspline surface constructors.
+  + CBISECTOR - bisectors of freeform curves and curve/point.
+  + CENVOFF - computes the offset envelope in three space of a planar curve.
+  + FFPTDIST - uniform distribution of points on curves or surfaces.
+  + FFPOLES - checks if a given freeform has poles.
+  + BBOX - returns the Bounding box of the given geometry.
+
+Version 6.0
+-----------
+* Periodic Bspline interpolation is now supported.
+* Documentation can now be shown as man/html www pages.
+* u/v_resolution for polygonization of freeform surfaces.
+* dat2irit now supports attributes.
+* A new irit2hgl tool - irit 2 hpgl plotter language filter.
+* A new irender tool - a quite powerful scan conversion based rendering
+  tool.
+* Some display devices allows rotation and translation by click and drag in
+  the view window.
+* Fix a significant memory leak in the parser that was also manifested
+  as a bug in functions.
+* Have a while clause as well as for loop clause
+* Adding a missing "hither" keyword to irit2nff.
+* More overloaded operators:
+  Vector * Curve -> inner product projection (result is a scalar curve)
+  Vector * Surface -> inner product projection (result is a scalar surface)
+* Support for polygonization of trimmed surfaces. Not the best, but useful.
+* New -B flag for irit2ps - clipping for the drawing window.
+* SDIVIDE, SEVAL, STANGENT, SNORMAL has been modified to support
+  trimmed surfaces as well.
+* Proper initial auto scale to all display devices and proper top/side/up
+  views.
+* Improved animation interface in the motif based display devices.
+* Fix a bug in the curve curve composition code.
+* EVOLUTE now compute evolute for curves and mean curvature based evolute
+  for surfaces.
+* New IRIT commands
+  + FFSPLIT, FFMERGE - splits and merges arbitrary curves and surfaces into
+	   a list of scalar curves/surfaces.
+  + FFPTTYPE - an accessor that returns the type of a freeform.
+  + CNORMAL, CNRMLCRV - normal and normal curve for freeform curves.
+  + DSTPTLN, DSTPTPLN, DSTLNLN - distance between point, lines, planes.
+  + PLN3PTS - plane definition using three points.
+  + PTPTLN, PTLNPLN, PTSLNLN - point of intersection or closest point(s)
+           of points, lines, and planes.
+  + PT3BARY - barycentric coordinates in a triangle.
+  + TEXTGEOM - converts text into displayable geometry.
+  + AWIDTH, ADWIDTH - width and display width attributes.
+  + FFMATCH - computes matching between freeform curves.
+  + SGAUSS - computes a scalar field with the gaussian curvature.
+  + SFOCAL - computes focal surface using normal curvature in isoparametric
+	   directions.
+  + SMEANSQR - symbolic computation of mean curvature square field.
+  + HERMITE supports cubic hermite construction for curves and surfaces.
+  + ROTVEC - rotate around a given vector transformation.
+  + ROTZ2V2, ROTZ2V2 - rotate vector to the Z axis transformation.
+  + TFROMSRFS to construct a trivariate from a list of surfaces.
+  + FLOOR, FMOD, POWER math functions.
+  + MOFFSET - yet another offset of crvs using curve's matching (see FFMATCH).
+  + SRINTER - surface ray intersector.
+  + CONTOUR - slice scalar fields as well as regular surfaces.
+
+* Fix the way illustrt (miss) treated control points.
+
+Version 5.0
+-----------
+* Animation curves and support of animation in all display devices.
+* Many new flags to the display device (as well as new display devices).
+* New constants for DEPTH (for trivariates), TRIMSRF_TYPE, TRIVAR_TYPE.
+* Format of OFFSET and AOFFSET is slightly modified.
+* LOGFILE can change files during IRIT session allowing for writing data
+  files on the fly.
+* ECHOSRC/DUMPLVL variables were replaced with EchoSource and DumpLevel
+  IRITSTATE options.
+* PAUSE was renamed into a macro.
+* Figures in user manual!
+* Programmer's manual (actually more like a reference programmer's manual).
+* Periodic curves/surfaces are supported.
+* any object with prefix of VIEW_MAT/PRSP_MAT is recognized as these
+  important matrices. A complete match used to be required in the past.
+* COPLANAR, INTERCRV, and POLYSORT are retired as variables and are now
+  set via IRITSTATE.
+* New filter dat2bin to convert between text and binary data files.
+* New filter irit2iv - irit to SGI's Inventor ascii format.
+* The config package prints the command line flags on all tools. New
+  config file to illustrt.
+* Created a symbolic lib out of cagd lib to hold all symbolic computation.
+* Add adaptive routines to subdivide a surface into polygons. The whole
+  scheme of srf->polygons was changed accordingly.
+* Fix a bug in printing of data in +/-xxx+/-Eyyy format.
+* Add "IllustrtNoProcess", "SpeedWave, and "HeatWave" attributes to
+  objects in input stream of illustrt.
+* Fix a minor bug in irit help document generator in math formulas.
+* Fix a minor bug that introduces a return variable from user defined
+  functions. Also add debug of user defined functions via IRITSTATE.
+* Fix a loop in the list structure when one does "obj = list(obj, obj2);"
+* New IRIT commands
+  + C/SREPARAM - affine reparametrization of curves and surfaces.
+  + PCIRCLE - A polynomial curve approximation of circle.
+  + SCRVTR - curvature bounds for surfaces.
+  + COERCE - has added semantics for E1/P1 coercetion to E2/P2 for curves and
+    to E3/P3 for surfaces.
+  + SURFPREV - a polynomial approximation of surface of revolution.
+  + IRITSTATE - a unified state modification routine.
+  + GPOLYLINE/GPOLYGON are slightly modified with more options.
+  + CEVOLUTE - exact computation and rep. of an evolute of a curve.
+  + GETLINE - read stdin and construct proper objects from it.
+  + LOFFSET - another offset variation.
+  + FFEXTREME - Comutes extreme values of curves and surfaces.
+  + ERROR function - Error abort functions to be used from user defined funcs.
+  + MSLEEP function - millisconed sleep function.
+  + CMULTIRES function - Least squares multiresolution decomposition of curves.
+  + CMORPH function - curve morphing.
+  + RANDOM function - random values function.
+  + New format to OFFSET and AOFFSET.
+  + PDOMAIN supports trimmed surfaces and trivariates.
+  + TRIMSRF constructs a trimmed surface.
+  + CTRIMSRF extracts trimming curves from trimmed surfaces.
+  + STRIMSRF extracts the surface of a trimmed surface.
+  + STRIVAR extracts a surface from a trivariate function.
+  + TBEZIER constructs a trivariate Bezier function.
+  + TBSPLINE constructs a trivariate Bspline function.
+  + TDERIVE differentiates a trivariate function.
+  + TEVAL evaluates a trivariate function.
+  + TREFINE refines a trivariate function.
+  + TREGION extracts a region out of a trivariate function.
+  + TDIVIDE subdivides a trivariate function.
+  + C/S/TINTERP - a new Bspline interpolation/least squares approximation for
+    curves, surfaces, and trivariates.
+  + CLNTEXEC/CLNTREAD/CLNTWRITE/CLNTCLOSE - set of routines to communicate
+    with several clients. See clients.irt.
+  + MOMENT - compute moments of curves.
+* Fix a minor bug of profiling an E2 curve with E3 point.
+* LISTSIZE was renamed into SIZEOF and supports lists/polys/curves ctlpolys.
+  Surface ctl mesh is supported via MESHSIZE.
+* SWEEPSRF is split into SWEEPSRF and SWPSCLSRF with more functionality
+  and the elimination of the torus bug.
+* More overloaded operators:
+  CtlPt * Matrix -> CtlPt
+  Overloaded unary '-' on a list object reverses the list object.
+* Transformations of CtlPt works as it should.
+* Surfaces/Curves/Profiling can have different ctl points or even regular
+  points.
+* rmattr can now remove attributes created by attrib. Objects can be
+  attributes as well.
+* Objects are read in the proper order - same order as input stream.
+
+Version 4.0
+-----------
+
+* New -H flag to poly3d-h to allow dumping the HIDDEN data (with different
+  color/attributes...), -q to run quietly, -o for output file.
+
+* If clause was made much more reasonable by defining comparison and
+  Logical operators (<, >=, &&, ||, etc.).
+
+* Function definition is available (ALIAS is retired). See function/procedure
+  in docs and function.irt. See plotter.irt for a nontrivial example.
+
+* Assignments need not be within parenthesis any more. Preceding is
+  properly set now.
+
+* New variables are allowed in loops now.
+
+* MSDOS is not really supported (I left DJGCC ifdefs intact although it is
+  not tested any more.). EDIT command retired, SYSTEM command modified.
+  The main reason is that IRIT can no longer be built in the BC Large model
+  and the Huge model will consume pretty much the entire 640k...
+  If you have the ability (I do not) to build MSDOS applications with dos
+  extenders, and willing to dive in, please let me know.
+
+* The good news is that both OS2 2.x and Window NT 3.1 are fully supported.
+
+* A whole new scheme of display drivers was developed. The display driver is
+  a different process. As a result NORMAL, VIEW & INTERACT, BEEP, CLOSED
+  functions are retired, and VIEWOBJ controls the display via VIEWxxxx user
+  defined functions (in iritinit.irt).
+	BEEP, VIEW and INTERACT functions are emulated in iritinit using a
+  user defined function. NORMALs as well as other view states can be set via
+  user defined function VIEWSTATE.
+	poly3d was retired and is replaced by the display drivers which 
+  accepts command lines. In other words, the graphics device driver serves as
+  display program as well.
+
+* Sweep has a new fourth parameter to allow setting normal of orientation
+  (pseudo frenet) frame.
+
+* New line illustration tool - illustrt.
+
+* Lists can now be in any length and are updated dynamically.
+
+* Attributes now can handle spaces by quoting the data:
+  attrib( obj, "rgbcolor", "255 0 255" );
+  see attrib command for more.
+
+* New filter irit2xfg - IRIT to xfig.
+* New filter irit2plg - IRIT to REND386 polygonal format
+* New filter irit2scn - IRIT to scn (close to nff format).
+* New filter irit2dxf - filters to/from DXF. Not fully functional.
+* New filter dxf2irit
+* New filter irit2ps  - more versatile filter to PostScript.
+* New IRIT commands
+  + THISOBJ - returns the type of the object.
+  + PRINTF - a formatted printing routine, C printf style.
+  + BOOLONE - using a single closed curve subdivided into four segments
+							as bool sum input.
+  + BSP2BZR - convertion from Bspline to Bezier curves/surfaces.
+  + BZR2BSP - convertion from Bezier to Bspline curves/surfaces.
+  + FFCOMPAT - making two curves/surfaces compatible (required for
+							SMORPH morphing code)
+  + HOMOMAT - low level homogeneous matrix constructor.
+  + SDERIVE/CDERIVE - compute derivatives.
+  + SMERGE - merge two surfaces into one.
+  + SMORPH - A convex blend between two compatible surfaces (3d morphing).
+  + SNRMLSRF - surface normal.
+  + SYMBPROD/SYMBDPROD/SYMBCPROD/SYMBSUM/SYMBDIFF - a whole set of
+					         symbolic computation tools.
+  + CZEROS - find the zero set of a curve.
+  + CEXTREMES - find the extreme set of a curve.
+  + NIL - returns an empty list.
+  + LISTSIZE - returns the size of a list/poly list/vertex list.
+  + COORD - extract a single coordinate from an object.
+  + AOFFSET - adaptive, error bounded, offset (slow!).
+  + COERCE - coercion of objects.
+  + COMPOSE - curve curve and surface curve symbolic composition.
+  + PRISA - planar layout of surfaces.
+  + CINFLECT - find the inflection points of a curve.
+  + CCRVTR - curvature properties of curves.
+  + CCINTER - curve curve intersection function.
+  + POLY - can accept point and ctlpt types. Has a new second polyline/gon
+							       parameter.
+  + ADAPISO - adaptive isocurve extraction.
+  + CRVPTDST - nearest point on a curve to a point solution (min dist param).
+  + CRVLNDST - nearest point on a curve to a line solution (min dist param).
+  + PDOMAIN - returns the parametric domain of a curve or a surface.
+
+* Ability to dump UV values of vertices of polygons created from freeform
+  surfaces (mainly for 2D texture mapping). See CagdSrf2Polygons and skeleton
+  example in iritfltr directory.
+
+* ATTRIButes can be set to any object, not just geometry. attributes names
+  are case insensetive. 
+
+* POINTs and PLANEs are now supported objects as well. VECTORs, POINTs,
+  CTLPTs are also displayable objects.
+
+* color() and attrib() now can work on lists, in which all elements
+  in list will be appropriately updated.
+
+* More overloaded operators:
+  String + String -> String
+  String ^ Real -> String
+  String + Real -> String
+  Point  + Vector -> Vector
+  Point  * Real -> Point (Scale)
+  Point  * Mat -> Point (Transform)
+  -Point -> Point (scale by -1)
+  -Plane -> Plane (scale by -1)
+
+* New irit configuration variable - FloatFrmt.
+
+* New prsp_mat variable.
+
+* Coplanar polygons are now handled. See coplanar variable and solid2.irt
+  for example.
+
+* Boolean opeartions are almost three times faster using bbox and sorting
+  optimizations! See polysort variable.
+
+* All utilities now support '-' for stdin read. Under unix, compressed data
+  is properly handled (via fork of compress and zcat). For example
+  poly3d-h example.dat.Z | irit2ps - > example.ps
+
+* Spline degree raising is implemented using the new symbolic tools.
+
+Here is what is new in version 3.0:
+-----------------------------------
+1. Normals are fully supported now. Although this increases memory requirements
+   (mainly a problem on IBM PC) all files dumped from IRIT now support normals
+   as well.
+2. A new cut Boolean operation (overloading '/', i.e. C = A / B assigns to C
+   the regions in A out B).
+   A new merge Boolean operation (overloading '^', i.e. C = A ^ B assigns to
+   C all polygons of A and B merged (with no intersection tests.).
+3. Support for freeform curves and surfaces (Bezier/NURBS).
+   All Boolean are still done using polygonal data the surfaces are converted
+   into (No intention to change that in the near future - direct Booleans on
+   surfaces requires support of trimmed surfaces and believe me - it is HARD).
+   However, quite a few tools to manipulate and maintain the curves and surfaces
+   are provided and include:
+   a. direct creation of curves and surfaces by specifying control mesh/poly.
+   b. evaluation of surface/curve, tangents, normals.
+   c. subdivision/refinement.
+   d. degree raising (only Bezier).
+   e. high level surface creation: ruled srf/extrude/srf of revolution/sweep.
+   f. curve constructor out of curve/point pieces.
+   g. conversion to polygons of surfaces including normals.
+4. Support for SGI 4D systems using gl has been added.
+5. lists are much more enhanced now and more functions can now get a list
+   of objects where before they could get a single object only (for example
+   ability to dump to file/read from file list of objects instead of one).
+   This enable merging the *.ply and *.mat into single data files *.dat which
+   also include the freeform data (curves and surfaces).
+6. Ability to handle closed and open loops within the same polygon (see
+   cubes.irt).
+7. Much improved documentation.
+8. Significant improvement in time of polygonal Boolean operations.
+9. Two new variables COPLANAR and POLYSORT.
+10. B&W X11 support added ( petern@bion.kth.se  (Peter Nordlund) ).
+
+Version 2.1
+-----------
+1. Fix problem with Extrude (used to update wrong plane normal), which
+   cuased problems in boolean operations.
+2. Fix boolean operations causing INTERNAL edges been visible.
+3. Fix major memory leak problem (upto %50 less memory usage).
+
+Version 2.0
+-----------
+1. Program has been ported to unix environment using X11 window system.
+   Has been compiled using:
+   a. BSD 4.3 using gcc (gnu cc) compiler.
+   b. SGI 4d, Irix3.2, using cc.
+2. Minor fix in VGA mode.
+3. Ability to dump intersection curves instead of the model in geometry
+   boolean operation, has been added and is controled via a new variable
+   named INTERCRV.
+4. Fix severe bug in the convex decomposition (wheel.irt used to be severely
+   wrong, o.k. now).
+
+Version 1.1
+-----------
+1. Full line editing for input line (see irit.doc), including last command
+   retrieve.
+2. EGA/VGA display device is finally supported.
+3. Faster and smaller allocator makes more space and run faster.

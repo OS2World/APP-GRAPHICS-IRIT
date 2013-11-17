@@ -1,0 +1,263 @@
+#
+# Some tests on curvature estimation of polygonal data sets using PCRVTR.
+#
+#						Gershon Elber, Jan 2003
+#
+
+save_res = resolution;
+
+GaussCrvrtDomain = function( Pl ): i: j: P: K: KMin: KMax:
+    KMin = 1e10:
+    KMax = -1e10:
+    for ( i = 0, 1, sizeof( Pl ) - 1,
+	P = coord( Pl, i ):
+	for ( j = 0, 1, sizeof( P ) - 1,
+	   K = PATTRIB( P, j, "KCurv", nil() ):
+	   if ( KMin > K,
+	       KMin = K ):
+	   if ( KMax < K,
+	       KMax = K ) ) ):
+    return = list( KMin, KMax );
+
+MeanCrvrtDomain = function( Pl ): i: j: P: H: HMin: HMax:
+    HMin = 1e10:
+    HMax = -1e10:
+    for ( i = 0, 1, sizeof( Pl ) - 1,
+	P = coord( Pl, i ):
+	for ( j = 0, 1, sizeof( P ) - 1,
+	   H = PATTRIB( P, j, "HCurv", nil() ):
+	   if ( HMin > H,
+	       HMin = H):
+	   if ( HMax < H,
+	       HMax = H) ) ):
+    return = list( HMin, HMax );
+
+Gauss2RGB2 = function( Pl, Eps ): i: j: P: K:
+    return = axes:
+    for ( i = 0, 1, sizeof( Pl ) - 1,
+	P = coord( Pl, i ):
+	for ( j = 0, 1, sizeof( P ) - 1,
+	    K = PATTRIB( P, j, "KCurv", nil() ):
+	    if ( abs( K ) < Eps,
+		K = PATTRIB( P, j, "rgb", "64,255,64" ),
+		if ( K > 0,
+		     K = PATTRIB( P, j, "rgb", "255,64,64" ),
+		     K = PATTRIB( P, j, "rgb", "64,64,255" ) ) ) ):
+	if ( return == axes,
+	    return = P,
+	    InsertPoly( P, return ) ) );
+
+CrvtrColorBlend = function( K, Eps, R1, G1, B1, R2, G2, B2 ): t: t1:
+    t = abs( K ) / Eps:
+    if ( t > 1,
+	t = 1 ):
+    t1 = 1 - t:
+    return = ( t1 * R1 + t * R2 ) + "," +
+	     ( t1 * G1 + t * G2 ) + "," +
+	     ( t1 * B1 + t * B2 );
+
+Gauss2RGB = function( Pl, Eps ): i: j: P: K:
+    return = axes:
+    for ( i = 0, 1, sizeof( Pl ) - 1,
+	P = coord( Pl, i ):
+	for ( j = 0, 1, sizeof( P ) - 1,
+	    K = PATTRIB( P, j, "KCurv", nil() ):
+	    if ( K > 0,
+		K = PATTRIB( P, j, "rgb", CrvtrColorBlend( K, Eps,
+							   64, 255, 64,
+							   255, 64, 64 ) ),
+		K = PATTRIB( P, j, "rgb", CrvtrColorBlend( K, Eps,
+							   64, 255, 64,
+							   64, 64, 255 ) ) ) ):
+	if ( return == axes,
+	    return = P,
+	    InsertPoly( P, return ) ) );
+
+Mean2RGB2 = function( Pl, Eps ): i: j: P: H:
+    return = axes:
+    for ( i = 0, 1, sizeof( Pl ) - 1,
+	P = coord( Pl, i ):
+	for ( j = 0, 1, sizeof( P ) - 1,
+	    H = PATTRIB( P, j, "HCurv", nil() ):
+	    if ( abs( H ) < Eps,
+		H = PATTRIB( P, j, "rgb", "64,255,64" ),
+		if ( H > 0,
+		     H = PATTRIB( P, j, "rgb", "255,64,64" ),
+		     H = PATTRIB( P, j, "rgb", "64,64,255" ) ) ) ):
+	if ( return == axes,
+	    return = P,
+	    InsertPoly( P, return ) ) );
+
+Mean2RGB = function( Pl, Eps ): i: j: P: H:
+    return = axes:
+    for ( i = 0, 1, sizeof( Pl ) - 1,
+	P = coord( Pl, i ):
+	for ( j = 0, 1, sizeof( P ) - 1,
+	    H = PATTRIB( P, j, "HCurv", nil() ):
+	    if ( H > 0,
+		H = PATTRIB( P, j, "rgb", CrvtrColorBlend( H, Eps,
+							   64, 255, 64,
+							   255, 64, 64 ) ),
+		H = PATTRIB( P, j, "rgb", CrvtrColorBlend( H, Eps,
+							   64, 255, 64,
+							   64, 64, 255 ) ) ) ):
+	if ( return == axes,
+	    return = P,
+	    InsertPoly( P, return ) ) );
+
+#
+# Blends K and H as follows (Assumes K > 0):
+#
+#         K
+#         0    +
+#
+#   +   RGB3  RGB4
+#  
+# H 0   RGB1  RGB2
+#
+#   -   RGB5  RGB5
+#
+CrvtrColorBlend2 = function( K, H, R1, G1, B1, R2, G2, B2,
+				   R3, G3, B3, R4, G4, B4,
+				   R5, G5, B5, R6, G6, B6 ): t1: t2: t3: t4:
+    if ( K > 1,
+	K = 1 ):
+    if ( H > 1,
+	H = 1 ):
+    t1 = (1 - K) * (1 - H):
+    t2 = (1 - K) * H:
+    t3 = K * (1 - H):
+    t4 = K * H:
+    if ( H > 0,
+	return = ( t1 * R1 + t2 * R2 + t3 * R3 + t4 * R4 ) + "," +
+	         ( t1 * G1 + t2 * G2 + t3 * G3 + t4 * G4  ) + "," +
+	         ( t1 * B1 + t2 * B2 + t3 * B3 + t4 * B4 ),
+	return = ( t1 * R1 + t2 * R2 + t3 * R5 + t4 * R6 ) + "," +
+	         ( t1 * G1 + t2 * G2 + t3 * G5 + t4 * G6  ) + "," +
+	         ( t1 * B1 + t2 * B2 + t3 * B5 + t4 * B6 ) );
+
+GausMean2RGB = function( Pl, KEps, HEps ): i: j: P: H: K: KH:
+    return = axes:
+    for ( i = 0, 1, sizeof( Pl ) - 1,
+	P = coord( Pl, i ):
+	for ( j = 0, 1, sizeof( P ) - 1,
+	    H = PATTRIB( P, j, "HCurv", nil() ):
+	    K = PATTRIB( P, j, "KCurv", nil() ):
+	    if ( K > 0,
+		KH = PATTRIB( P, j, "rgb",
+			      CrvtrColorBlend2( K / KEps, H / HEps,
+						255,   64,  64,
+						255,   64, 255,
+						 64,  255, 255,
+						 64,   64, 255,
+						 255, 128, 128,
+						 255, 255, 255 ) ),
+		KH = PATTRIB( P, j, "rgb",
+			      CrvtrColorBlend2( -K / KEps, H / HEps,
+						255,  255,  64,
+						255,   64,  64,
+						 64,  255,  64,
+						 64,  255, 255,
+						 202, 167,  60,
+						 255, 128, 128 ) ) ) ):
+	if ( return == axes,
+	    return = P,
+	    InsertPoly( P, return ) ) );
+
+GaussMeanVal = function( Pl ): i: j: P: K: n: Mean:
+    n = 0:
+    Mean = 0:
+    for ( i = 0, 1, sizeof( Pl ) - 1,
+	P = coord( Pl, i ):
+	for ( j = 0, 1, sizeof( P ) - 1,
+	    K = PATTRIB( P, j, "KCurv", nil() ):
+	    Mean = Mean + K:
+	    n = n + 1 ) ):
+    return = Mean / n;
+
+MeanMeanVal = function( Pl ): i: j: P: H: n: Mean:
+    n = 0:
+    Mean = 0:
+    for ( i = 0, 1, sizeof( Pl ) - 1,
+	P = coord( Pl, i ):
+	for ( j = 0, 1, sizeof( P ) - 1,
+	    H = PATTRIB( P, j, "HCurv", nil() ):
+	    Mean = Mean + H:
+	    n = n + 1 ) ):
+    return = Mean / n;
+
+#############################################################################
+
+resolution = 30;
+
+b1 = box(vector(-0.3, -0.3, 0.0), 0.6, 0.6, 0.15);
+c1 = cylin(vector(0.0, 0.0, 0.1), vector(0.0, 0.0, 0.65), 0.14, 3);
+s1 = sphere(vector(0.0, 0.0, 0.65), 0.3);
+t1 = torus( vector( 0.0, 0.0, 0.7 ), vector( 0.0, 0.0, 1.0 ), 0.3, 0.15 );
+
+obj = MaxEdgeLen( triangl( b1 + c1 + s1 - t1, 1 ), 0.1 );
+
+free( b1 );
+free( c1 );
+free( s1 );
+free( t1 );
+
+CrvtrObj = PCrvtr( obj, 1, false );
+free( obj );
+
+CrvtrObjRgb = Gauss2RGB( CrvtrObj, 15 );
+interact( CrvtrObjRgb );
+
+CrvtrObjRgb = Mean2RGB( CrvtrObj, 1 );
+interact( CrvtrObjRgb );
+save( "pl1crvtr", CrvtrObjRgb );
+
+CrvtrObjRgb = GausMean2RGB( CrvtrObj, 15, 1 );
+interact( CrvtrObjRgb );
+save( "pl2crvtr", CrvtrObjRgb );
+
+# 
+# Teapot
+#
+
+include("teapot2");
+
+resolution = 10;
+Teapot = triangl( gpolygon( load( "teapot2" ), on ), on );
+
+sizeof( Teapot);
+
+free( Body2 );
+free( Cap2 );
+free( Spout2 );
+free( Handle2 );
+
+CrvtrObj = PCrvtr( Teapot, 1, false );
+free( Teapot );
+
+K_0 = PPropFtch( CrvtrObj, 0, list( "KCurv", 0 ) );
+color( K_0, yellow );
+
+H_0 = PPropFtch( CrvtrObj, 0, list( "HCurv", 0 ) );
+color( H_0, cyan );
+
+CrvtrObjRgb = Gauss2RGB( CrvtrObj, 1 );
+interact( list( CrvtrObjRgb, K_0 ) );
+save( "pl3crvtr", list( CrvtrObjRgb, K_0 ) );
+
+CrvtrObjRgb = Mean2RGB( CrvtrObj, 1 );
+interact( list( CrvtrObjRgb, H_0 ) );
+save( "pl4crvtr", list( CrvtrObjRgb, H_0 ) );
+
+CrvtrObjRgb = GausMean2RGB( CrvtrObj, 15, 1 );
+interact( CrvtrObjRgb );
+save( "pl5crvtr", CrvtrObjRgb );
+
+#############################################################################
+
+resolution = save_res;
+
+free( K_0 );
+free( H_0 );
+free( CrvtrObj );
+free( CrvtrObjRgb );

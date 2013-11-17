@@ -1,0 +1,44 @@
+#
+#
+# This make file is for the aisoshad/lineshad program for Window NT
+#
+#					Gershon Elber, June 1997
+#
+
+# Includes generic definitions.
+include ..\makeflag.wnt
+
+GD = ..\grapdrvs
+
+OBJS1	= aisoshad.$(IRIT_OBJ_PF) zbufcrvs.$(IRIT_OBJ_PF)
+
+OBJS2	= lineshad.$(IRIT_OBJ_PF) zbufcrvs.$(IRIT_OBJ_PF)
+
+OBJS3	= izebra.$(IRIT_OBJ_PF) zbufcrvs.$(IRIT_OBJ_PF)
+
+all:	aisoshad$(IRIT_EXE_PF).exe lineshad$(IRIT_EXE_PF).exe \
+	izebra$(IRIT_EXE_PF).exe 
+
+aisoshad$(IRIT_EXE_PF).exe:	$(OBJS1)
+	$(IRITCONLINK) -out:$@ $(OBJS1) $(IRIT_LIBS) \
+		$(IRIT_MORE_LIBS) $(GRAPOGLLIBS) $(W32GUIOGLLIBS)
+	$(IRITMANIFEST) -manifest $@.manifest -outputresource:$@;1
+
+lineshad$(IRIT_EXE_PF).exe:	$(OBJS2)
+	$(IRITCONLINK) -out:$@ $(OBJS2) $(IRIT_LIBS) \
+		$(IRIT_MORE_LIBS) $(GRAPOGLLIBS) $(W32GUIOGLLIBS)
+	$(IRITMANIFEST) -manifest $@.manifest -outputresource:$@;1
+
+izebra$(IRIT_EXE_PF).exe:		$(OBJS3)
+	$(IRITCONLINK) -out:$@ $(OBJS3) $(IRIT_LIBS) \
+		$(IRIT_MORE_LIBS) $(GRAPOGLLIBS) $(W32GUIOGLLIBS)
+	$(IRITMANIFEST) -manifest $@.manifest -outputresource:$@;1
+
+install: aisoshad$(IRIT_EXE_PF).exe lineshad$(IRIT_EXE_PF).exe \
+	 izebra$(IRIT_EXE_PF).exe 
+	copy *.exe $(IRIT_BIN_DIR)
+	del *.exe
+	copy *.cfg $(IRIT_BIN_DIR)
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.
+

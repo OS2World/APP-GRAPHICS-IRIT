@@ -1,0 +1,33 @@
+#
+# This is the make file for the mdl. lib subdirectory.
+#
+#				Gershon Elber, Aug 1991
+#
+
+include ../makeflag.unx
+
+OBJS =  mdl_aux.o$(IRIT_OBJ_PF) \
+	mdl_bbox.o$(IRIT_OBJ_PF) \
+	mdl_bool.o$(IRIT_OBJ_PF) \
+	mdl2bool.o$(IRIT_OBJ_PF) \
+	mdl_dbg.o$(IRIT_OBJ_PF) \
+	mdl_dum.o$(IRIT_OBJ_PF) \
+	mdl_err.o$(IRIT_OBJ_PF) \
+	mdl_ftl.o$(IRIT_OBJ_PF) \
+	mdl_gen.o$(IRIT_OBJ_PF) \
+	mdl_prim.o$(IRIT_OBJ_PF) \
+	mdl_ptch.o$(IRIT_OBJ_PF) \
+	mdlcnvrt.o$(IRIT_OBJ_PF)
+
+all:	libIritMdl$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+
+libIritMdl$(IRIT_LIB_PF).$(IRIT_LIB_SFX): $(OBJS)
+	rm -f libIritMdl$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+	$(IRIT_LIB_MAKE) libIritMdl$(IRIT_LIB_PF).$(IRIT_LIB_SFX) *.o$(IRIT_OBJ_PF)
+	-$(IRIT_LIB_RAN) libIritMdl$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+
+install: libIritMdl$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+	mv -f libIritMdl$(IRIT_LIB_PF).$(IRIT_LIB_SFX) $(IRIT_LIB_DIR)
+
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

@@ -1,0 +1,68 @@
+#
+# This is the make file for the prsr. lib subdirectory.
+#
+#				Gershon Elber, Aug 1991
+#
+
+include ../makeflag.unx
+
+all:	libIritPrsr$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+
+OBJS =	allocate.o$(IRIT_OBJ_PF) \
+	attribut.o$(IRIT_OBJ_PF) \
+	coerce.o$(IRIT_OBJ_PF) \
+	cnv2irit.o$(IRIT_OBJ_PF) \
+	ff_cnvrt.o$(IRIT_OBJ_PF) \
+	igs_irit.o$(IRIT_OBJ_PF) \
+	ip_cnvrt.o$(IRIT_OBJ_PF) \
+	ip_procs.o$(IRIT_OBJ_PF) \
+	irit_dxf.o$(IRIT_OBJ_PF) \
+	irit_igs.o$(IRIT_OBJ_PF) \
+	irit_obj.o$(IRIT_OBJ_PF) \
+	irit_stl.o$(IRIT_OBJ_PF) \
+	iritprs1.o$(IRIT_OBJ_PF) \
+	iritprs2.o$(IRIT_OBJ_PF) \
+	iritprsb.o$(IRIT_OBJ_PF) \
+	iritprsc.o$(IRIT_OBJ_PF) \
+	iritprsd.o$(IRIT_OBJ_PF) \
+	irit_cnc.o$(IRIT_OBJ_PF) \
+	iritvrml.o$(IRIT_OBJ_PF) \
+	iritwcnc.o$(IRIT_OBJ_PF) \
+	linklist.o$(IRIT_OBJ_PF) \
+	obj_dpnd.o$(IRIT_OBJ_PF) \
+	objirlst.o$(IRIT_OBJ_PF) \
+	obj_irit.o$(IRIT_OBJ_PF) \
+	prsr_err.o$(IRIT_OBJ_PF) \
+	prsr_ftl.o$(IRIT_OBJ_PF) \
+	prsrgeom.o$(IRIT_OBJ_PF) \
+	sock_aux.o$(IRIT_OBJ_PF) \
+	sockets.o$(IRIT_OBJ_PF) \
+	stl_irit.o$(IRIT_OBJ_PF)
+
+RW_OBJS = \
+	cagdread.o$(IRIT_OBJ_PF) \
+	cagd_wrt.o$(IRIT_OBJ_PF) \
+	bsp_read.o$(IRIT_OBJ_PF) \
+	bsp_wrt.o$(IRIT_OBJ_PF) \
+	bzr_read.o$(IRIT_OBJ_PF) \
+	bzr_wrt.o$(IRIT_OBJ_PF) \
+	mdl_read.o$(IRIT_OBJ_PF) \
+	mdl_wrt.o$(IRIT_OBJ_PF) \
+	mvarread.o$(IRIT_OBJ_PF) \
+	mvar_wrt.o$(IRIT_OBJ_PF) \
+	trivread.o$(IRIT_OBJ_PF) \
+	triv_wrt.o$(IRIT_OBJ_PF) \
+	trimread.o$(IRIT_OBJ_PF) \
+	trim_wrt.o$(IRIT_OBJ_PF) \
+	trngread.o$(IRIT_OBJ_PF) \
+	trng_wrt.o$(IRIT_OBJ_PF)
+
+libIritPrsr$(IRIT_LIB_PF).$(IRIT_LIB_SFX): $(OBJS) $(RW_OBJS)
+	rm -f libIritPrsr$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+	$(IRIT_LIB_MAKE) libIritPrsr$(IRIT_LIB_PF).$(IRIT_LIB_SFX) *.o$(IRIT_OBJ_PF)
+	-$(IRIT_LIB_RAN) libIritPrsr$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+
+install: libIritPrsr$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+	mv -f libIritPrsr$(IRIT_LIB_PF).$(IRIT_LIB_SFX) $(IRIT_LIB_DIR)
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

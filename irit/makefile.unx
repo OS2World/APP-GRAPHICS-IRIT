@@ -1,0 +1,53 @@
+#
+# Makefile for the IRIT solid modeler (unix).
+#
+
+include ../makeflag.unx
+
+IRIT_INTERP_OBJS = \
+	bsc_geom.o$(IRIT_OBJ_PF) \
+	dosintr.o$(IRIT_OBJ_PF) \
+	freefrm1.o$(IRIT_OBJ_PF) \
+	freefrm2.o$(IRIT_OBJ_PF) \
+	freefrm3.o$(IRIT_OBJ_PF) \
+	freefrm4.o$(IRIT_OBJ_PF) \
+	freefrm5.o$(IRIT_OBJ_PF) \
+	freefrm6.o$(IRIT_OBJ_PF) \
+	freefrm7.o$(IRIT_OBJ_PF) \
+	freefrm8.o$(IRIT_OBJ_PF) \
+	inptevl0.o$(IRIT_OBJ_PF) \
+	inptevl1.o$(IRIT_OBJ_PF) \
+	inptevl2.o$(IRIT_OBJ_PF) \
+	inptevl3.o$(IRIT_OBJ_PF) \
+	inptevl4.o$(IRIT_OBJ_PF) \
+	inptgetc.o$(IRIT_OBJ_PF) \
+	inptprsr.o$(IRIT_OBJ_PF) \
+	objects1.o$(IRIT_OBJ_PF) \
+	objects2.o$(IRIT_OBJ_PF) \
+	overload.o$(IRIT_OBJ_PF) \
+	support.o$(IRIT_OBJ_PF)
+
+OBJS = 	ctrl-brk.o$(IRIT_OBJ_PF) irit.o$(IRIT_OBJ_PF) \
+        irit_db.o$(IRIT_OBJ_PF)  irit_io.o$(IRIT_OBJ_PF) \
+	$(IRIT_INTERP_OBJS)
+
+all:	irit$(IRIT_EXE_PF) libIritIntp$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+
+irit$(IRIT_EXE_PF):	$(OBJS)
+	$(CC) $(CFLAGS) -o irit$(IRIT_EXE_PF) $(OBJS) $(MOREOBJS) \
+	$(IRIT_LIBS) $(IRIT_MORE_LIBS) -lm
+
+libIritIntp$(IRIT_LIB_PF).$(IRIT_LIB_SFX): $(OBJS)
+	rm -f libIritIntp$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+	$(IRIT_LIB_MAKE) libIritIntp$(IRIT_LIB_PF).$(IRIT_LIB_SFX) $(IRIT_INTERP_OBJS)
+	-$(IRIT_LIB_RAN) libIritIntp$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+
+install: irit$(IRIT_EXE_PF) libIritIntp$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+	mv -f libIritIntp$(IRIT_LIB_PF).$(IRIT_LIB_SFX) $(IRIT_LIB_DIR)
+	mv -f irit$(IRIT_EXE_PF) $(IRIT_BIN_DIR)
+	cp iritinit.irt $(IRIT_BIN_DIR)
+	cp iritfont.itd $(IRIT_BIN_DIR)
+	cp irit-unx.cfg $(IRIT_BIN_DIR)/irit.cfg
+
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

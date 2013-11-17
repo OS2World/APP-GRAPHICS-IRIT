@@ -1,0 +1,92 @@
+#
+# The Logo of the Technion
+#
+#				Gershon Elber, March 1998
+#
+
+save_res = resolution;
+
+Tech1 = poly( list( vector(  0.0, -0.35, 0 ),
+		    vector(  0.58,  0.8, 0 ),
+        	    vector( -0.58,  0.8, 0 ) ),
+	      false );
+Tech1Clip = extrude( Tech1, vector( 0, 0, 1 ), 3 ) * tz( -0.5 ) * ty( -0.06 );
+
+angle = 360 / 16;
+angle_log = 4;
+resolution = 16;
+c = cylin( vector( 0.6, 0.0, -0.1 ), vector( 0.0, 0.0, 0.3 ), 0.1, 3 );
+for ( i = 1, 1, angle_log,
+	c = c ^ (c * rotz( angle )):
+	angle = angle * 2
+);
+free( i );
+free( angle );
+free( angle_log );
+
+resolution = 64;
+w = cylin( vector( 0.0, 0.0, 0.0 ), vector( 0.0, 0.0, 0.12 ), 0.6, 3 );
+
+wheel = w * rz( 360 / 32 ) -
+    c -
+    Tech1Clip -
+    cylin( vector( 0.0, 0.0, -0.2 ), vector( 0.0, 0.0, 0.5 ), 0.35, 3 );
+
+free( c );
+free( w );
+
+#
+# The Technion centeral mark.
+#
+
+Tech = poly( list( vector(  0.0,  -0.35, 0 ),
+		   vector(  0.56,  0.8,  0 ),
+		   vector( -0.23,  0.8,  0 ),
+		   vector( -0.15,  0.6,  0 ),
+		   vector(  0.25,  0.6,  0 ),
+		   vector(  0.0,   0.1,  0 ),
+		   vector( -0.3,   0.8,  0 ),
+        	   vector( -0.56,  0.8,  0 ) ),
+	     false );
+TechSolid = extrude( Tech, vector( 0.0, 0.0, 0.12 ), 3 );
+
+#
+# The smoke on top.
+#
+
+FlagCross =
+    cbspline( 4,
+        list( ctlpt( E2, -0.31, 0.87 ),
+              ctlpt( E2, -0.28, 1.0 ),
+              ctlpt( E2, -0.1,  1.0 ),
+              ctlpt( E2,  0.28, 0.83 ),
+              ctlpt( E2,  0.43, 1.03 ),
+              ctlpt( E2,  0.5,  1.25 ) ),
+        list( KV_OPEN ) ) +
+    -cbspline( 4,
+        list( ctlpt( E2, -0.55, 0.87 ),
+              ctlpt( E2, -0.51, 1.20 ),
+              ctlpt( E2, -0.17, 1.31 ),
+              ctlpt( E2,  0.29, 1.13 ),
+              ctlpt( E2,  0.51,  1.29 ) ),
+         list( KV_OPEN ) ) +
+    ctlpt( E2, -0.31, 0.87 );
+FlagCrossP = CnvrtCrvToPolygon( FlagCross, 150, false );
+FlagSolid = extrude( FlagCrossP, vector( 0.0, 0.0, 0.12 ), 3 );
+
+All = list( wheel, TechSolid, FlagSolid );
+view( All, 1 );
+
+save( "techlogo", All );
+
+free( Tech );
+free( Tech1 );
+free( Tech1Clip );
+free( TechSolid );
+free( wheel );
+free( FlagCross );
+free( FlagCrossP );
+free( FlagSolid );
+free( All );
+
+resolution = save_res;

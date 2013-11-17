@@ -1,0 +1,274 @@
+#
+# Some duality tests,  Gershon Elber 2002
+#
+
+# Faster product using Bezier decomposition.
+IProd = iritstate( "BspProdMethod", 0 );
+
+view_mat1 = sc( 0.5 );
+viewobj( view_mat1 );
+viewstate("PllnAprx", 1 );
+viewstate("PllnAprx", 1 );
+
+#
+# An ellipse like curve
+#
+
+c = cbspline( 4,
+    list( ctlpt( E3, -0.6, -0.3, 0 ),
+          ctlpt( E2,  0.6, -0.3 ),
+          ctlpt( E2,  0.6,  0.3 ),
+          ctlpt( E2, -0.6,  0.3 ) ),
+    list( kv_periodic ) ) * sc( 2 );
+d = duality( coerce( c, kv_open ) );
+color( d, yellow );
+
+interact( list( c, d ) );
+
+#
+# An exact circle
+#
+
+c = circle( vector( 0, 0, 0 ), 1.1 );
+d = duality( coerce( c, kv_open ) );
+color( d, yellow );
+
+interact( list( c, d, axes ) );
+
+c1 = pcircle( vector( 0, 0, 0 ), 1.1 );
+d1 = duality( coerce( c1, kv_open ) );
+color( d1, yellow );
+
+interact( list( c, d, c1, d1, axes ) );
+
+#
+# A piecewise linear curve
+#
+C = cbspline( 2,
+    list( ctlpt( E2, -0.227, 0.243 ),
+          ctlpt( E2, -0.0522, 0.203 ),
+          ctlpt( E2, -0.151, -0.0858 ),
+          ctlpt( E2, -0.142, -0.219 ),
+          ctlpt( E2, -0.00121, -0.288 ),
+          ctlpt( E2, 0.125, -0.21 ),
+          ctlpt( E2, 0.143, -0.0708 ),
+          ctlpt( E2, 0.0448, 0.203 ),
+          ctlpt( E2, 0.105, 0.216 ),
+          ctlpt( E2, 0.218, 0.241 ) ),
+    list( kv_periodic ) ) * sc( 3 );
+
+# d is a piecewise points curve and so is drawn as a control polygon, dp.
+d = duality( coerce( c, kv_open ) );
+dp = GetCtlPolygon( d + ceval( d, 0 ) );
+color( dp, yellow );
+
+Pt1 = sphere( vector( 0, 0, 0 ), 0.15 );
+attrib( Pt1, "rgb", "255,128,0" );
+mov_xyz1 = c * tx( 0 );
+attrib( Pt1, "animation", mov_xyz1 );
+
+Pt2 = Pt1;
+attrib( Pt2, "rgb", "255,128,128" );
+mov_xyz2 = d * tx( 0 );
+attrib( Pt2, "animation", mov_xyz2 );
+
+All = list( c, dp, Pt1, Pt2 ) * sc( 0.5 ) * tx( -0.2 );
+interact( All );
+
+save( "duality0", All );
+
+
+#
+# General quadratic curve
+#
+c = cbspline( 3,
+    list( ctlpt( E3, -0.0398, 0.263, 0 ),
+          ctlpt( E2, -0.668, 0.333 ),
+          ctlpt( E2, -0.0634, 0.161 ),
+          ctlpt( E2, -0.299, -0.378 ),
+          ctlpt( E2, 0.0664, 0.0859 ),
+          ctlpt( E2, 0.444, -0.359 ),
+          ctlpt( E2, 0.161, 0.149 ),
+          ctlpt( E2, 0.723, 0.2 ),
+          ctlpt( E2, 0.362, 0.228 ),
+          ctlpt( E2, 0.171, 0.265 ),
+          ctlpt( E2, 0.424, 0.813 ),
+          ctlpt( E2, 0.0703, 0.283 ),
+          ctlpt( E2, -0.244, 0.88 ) ),
+    list( kv_periodic ) ) * sc( 3 ) * tx( -0.1 ) * ty( -0.4 );
+d = duality( coerce( c, kv_open ) );
+color( d, yellow );
+
+view_mat1 = sc( 0.25 );
+interact( list( c, d, axes, view_mat1 ) );
+
+#
+# Another cubic general curve
+#
+c = cbspline( 4,
+    list( ctlpt( E3, -0.02, 0.289, 0 ),
+          ctlpt( E2, -0.668, 0.333 ),
+          ctlpt( E2, -0.192, 0.156 ),
+          ctlpt( E2, -0.252, -0.417 ),
+          ctlpt( E2, 0.0858, 0.0777 ),
+          ctlpt( E2, 0.194, -0.00113 ),
+          ctlpt( E2, 0.416, -0.298 ),
+          ctlpt( E2, 0.691, 0.175 ),
+          ctlpt( E2, 0.362, 0.228 ),
+          ctlpt( E2, 0.171, 0.265 ),
+          ctlpt( E2, 0.325, 0.502 ),
+          ctlpt( E2, 0.0699, 0.656 ),
+          ctlpt( E2, -0.137, 0.5 ) ),
+    list( kv_periodic ) ) * tx( -0.1 ) * ty( -0.2 ) * sc( 3 );
+adwidth( c, 2 );
+
+d = duality( coerce( c, kv_open ) );
+color( d, yellow );
+adwidth( d, 2 );
+
+interact( list( c, d, axes ) );
+
+for ( t = 0, 0.002, 1,
+     pc = circle( coerce( ceval( c, t ), vector_type ), 0.1 ):
+     viewobj( pc ):
+     pd = circle( coerce( ceval( d, t ), vector_type ), 0.1 ):
+     color( pd, yellow ):
+     viewobj( pd ) );
+
+Pt1 = sphere( vector( 0, 0, 0 ), 0.15 );
+attrib( Pt1, "rgb", "255,128,0" );
+mov_xyz1 = c * tx( 0 );
+attrib( Pt1, "animation", mov_xyz1 );
+
+Pt2 = Pt1;
+attrib( Pt2, "rgb", "255,128,128" );
+mov_xyz2 = d * tx( 0 );
+attrib( Pt2, "animation", mov_xyz2 );
+
+All = list( c, d, Pt1, Pt2 ) * sc( 0.22 ) * ty( 0.1 );
+interact( All );
+save( "duality1", All );
+
+free( Pt1 );
+free( Pt2 );
+free( mov_xyz1 );
+free( mov_xyz2 );
+free( All );
+
+#############################################################################
+
+#
+# A sphere centered at the origin
+#
+
+s = sphereSrf( 1.1 );
+d = duality( s );
+color( d, yellow );
+
+view_mat1 = view_mat * sc( 0.5 );
+interact( list( s, d, axes, view_mat1 ) );
+
+#
+# A sphere tangent to the origin
+#
+
+s = sphereSrf( 1 ) * tx( 1 );
+d = duality( s );
+color( d, yellow );
+
+view_mat1 = view_mat * sc( 0.5 ) * tx( 0.3 ) * ty( 0.3 );
+interact( list( s, d, axes, view_mat1 ) );
+
+#
+# A sphere not centered at the origin
+#
+
+s = sphereSrf( 1 ) * tx( 0.6 );
+d = duality( s );
+color( d, yellow );
+
+interact( list( s, d, axes ) );
+
+#
+# An ellipsoid
+#
+
+s = sphereSrf( 1.1 ) * sx( 2 ) * sy( 1.2 );
+d = duality( s );
+color( d, yellow );
+
+view_mat1 = view_mat * sc( 0.5 );
+interact( list( s, d, axes, view_mat1 ) );
+
+#
+# A ruled surface
+#
+
+s = ruledSrf( ctlpt( E3, -1, -1,  0.2 ) + ctlpt( E3, -1,  1, -0.2 ),
+	      ctlpt( E3,  1, -1, -0.2 ) + ctlpt( E3,  1,  1,  0.2 ) )
+	* tz( 0.35 );
+d = duality( s );
+color( d, yellow );
+
+view_mat1 = view_mat * sc( 0.3 ) * ty( 0.5 );
+interact( list( s, d, axes, view_mat1 ) );
+
+#
+# A saddle surface
+#
+
+s = sbezier(
+    list( list( ctlpt( E3, 0, 0, 0 ),
+                ctlpt( E3, 0.05, 0.2, 0.1 ),
+                ctlpt( E3, 0.1, 0.05, 0.2 ) ),
+          list( ctlpt( E2, 0.1, -0.2 ),
+                ctlpt( E3, 0.15, 0.05, 0.1 ),
+                ctlpt( E3, 0.2, -0.1, 0.2 ) ),
+          list( ctlpt( E1, 0.2 ),
+                ctlpt( E3, 0.25, 0.2, 0.1 ),
+                ctlpt( E3, 0.3, 0.05, 0.2 ) ) ) )
+	* sc( 8 ) * tx( -1 ) * ty( 1 ) * tz( -0.65 );
+d = duality( s );
+color( d, yellow );
+
+view_mat1 = view_mat * sc( 0.3 ) * ty( -0.2 ) * tx( 0.4 );
+interact( list( s, d, axes, view_mat1 ) );
+
+#
+# A closed surface
+#
+c = pcircle( vector( 0, 0, 0 ), 1 );
+s = -sFromCrvs( list( c * sc( 0.001 ) * tz( -1 ),
+		      c * sc( 0.4 ) * sy( 0.2 ) * tz( -1 ),
+		      c * sc( 0.4 ) * sy( 0.2 ),
+		      c * sc( 1 ),
+		      c * sc( 1 ) * tz( 1 ),
+		      c * sc( 0.4 ) * sx( 0.2 ) * tz( 1 ),
+		      c * sc( 0.4 ) * sx( 0.2 ) * tz( 2 ),
+		      c * sc( 0.001 ) * tz( 2 ) ),
+		4, kv_open ) * tz( -0.5 ) * sc( 0.3 );
+
+d = duality( s ) * sc( 0.05 );
+color( d, yellow );
+
+All = list( s * tx( 1 ), d * tx( -1 ), axes, view_mat );
+interact( All );
+
+save( "duality2", All );
+free( All );
+
+#############################################################################
+
+IProd = iritstate( "BspProdMethod", IProd );
+free( IProd );
+
+free( view_mat1 );
+free( c );
+free( c1 );
+free( d );
+free( dp );
+free( d1 );
+free( pc );
+free( pd );
+free( t );
+free( s );

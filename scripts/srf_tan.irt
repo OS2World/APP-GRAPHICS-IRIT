@@ -1,0 +1,160 @@
+#
+# Bi tangency computation between freeform surfaces.
+#
+
+EvalOneBiTangency = function( Srfs, Pts ): i: Pt: Srf1: Srf2: Pt1: Pt2:
+    Ruling: Tmp1Pts: Tmp2Pts:
+    Ruling = nil():
+    Tmp1Pts = nil():
+    Tmp2Pts = nil():
+    if ( thisobj("Srfs") == surface_type,
+	Srf1 = Srfs:
+	Srf2 = Srfs,
+        Srf1 = nth( Srfs, 1 ):
+        Srf2 = nth( Srfs, 2 ) ):
+    for ( i = 1, 1, sizeof( Pts ),
+ 	Pt = nth( Pts, i ):
+	Pt1 = seval( Srf1, coord( Pt, 1 ), coord( Pt, 2 ) ):
+	Pt2 = seval( Srf2, coord( Pt, 3 ), coord( Pt, 4 ) ):
+	snoc( Pt1 + Pt2, Ruling ):
+	snoc( Pt1 * tx( 0 ), Tmp1Pts ):
+	snoc( Pt2 * tx( 0 ), Tmp2Pts ) ):
+    attrib( Ruling, "rgb", "255, 128, 128" ):
+    if ( sizeof( Tmp1Pts ) > 1 && sizeof( Tmp2Pts ) > 1,
+	Tmp1Pts = poly( Tmp1Pts, true ):
+	Tmp2Pts = poly( Tmp2Pts, true ):
+	attrib( Tmp1Pts, "rgb", "128, 255, 128" ):
+	attrib( Tmp2Pts, "rgb", "128, 255, 128" ):
+        return = list( Ruling, Tmp1Pts, Tmp2Pts ),
+	return = nil() );
+
+EvalBiTangency = function( Srfs, Pts, Merged ): i:
+    if ( Merged == 0,
+	return = EvalOneBiTangency( Srfs, Pts ),
+	return = nil():
+	for ( i = 1, 1, sizeof( Pts ),
+	    snoc( EvalOneBiTangency( Srfs, nth( Pts, i ) ), return ) ) );
+
+DrawBiTangencies = procedure( Srfs, Orient, SubTol, NumTol, MergeTol,
+			      Merged, SaveName ): BiTansEdges: BiTans:
+    BiTans = Srf2Tans( Srfs, Orient, SubTol, NumTol, MergeTol ):
+    BiTansEdges = EvalBiTangency( Srfs, BiTans, Merged ):
+    color( BiTansEdges, yellow ):
+    color( Srfs, cyan ):
+    if ( sizeof( SaveName ) > 0,
+	save( SaveName, list( Srfs, BiTansEdges ) ) ):
+    interact( list( Srfs, BiTansEdges ) );
+
+EvalTriTangency = function( Srfs, Pts ): i: Pt: Srf1: Srf2: Srf3:
+    return = nil():
+    if ( thisobj("Srfs") == surface_type,
+	Srf1 = Srfs:
+	Srf2 = Srfs:
+	Srf3 = Srfs,
+        Srf1 = nth( Srfs, 1 ):
+        Srf2 = nth( Srfs, 2 ):
+        Srf3 = nth( Srfs, 3 ) ):
+    for ( i = 1, 1, sizeof( Pts ),
+ 	Pt = nth( Pts, i ):
+	snoc( seval( Srf1, coord( Pt, 1 ), coord( Pt, 2 ) ) +
+	      seval( Srf2, coord( Pt, 3 ), coord( Pt, 4 ) ), return ):
+	snoc( seval( Srf1, coord( Pt, 1 ), coord( Pt, 2 ) ) +
+	      seval( Srf3, coord( Pt, 5 ), coord( Pt, 6 ) ), return ):
+	snoc( seval( Srf2, coord( Pt, 3 ), coord( Pt, 4 ) ) +
+	      seval( Srf3, coord( Pt, 5 ), coord( Pt, 6 ) ), return ) );
+
+DrawTriTangencies = procedure( Srfs, Orient, SubTol, NumTol, SaveName ):
+    TriTansEdges: TriTans:
+    TriTans = Srf3Tans( Srfs, Orient, SubTol, NumTol ):
+    TriTansEdges = EvalTriTangency( Srfs, TriTans ):
+    color( TriTansEdges, yellow ):
+    color( Srfs, cyan ):
+    if ( sizeof( SaveName ) > 0,
+	save( SaveName, list( Srfs, TriTansEdges ) ) ):
+    interact( list( Srfs, TriTansEdges ) );
+
+#############################################################################
+
+s = sbspline( 3, 4,
+    list( list( ctlpt( E3, 0.0135, 0.463, -1.01 ),
+                ctlpt( E3, 0.411, -0.462, -0.94 ),
+                ctlpt( E3, 0.699, 0.072, -0.382 ) ),
+          list( ctlpt( E3, -0.202, 1.16, -0.345 ),
+                ctlpt( E3, 0.211, 0.0227, -0.343 ),
+                ctlpt( E3, 0.5, 0.557, 0.215 ) ),
+          list( ctlpt( E3, -0.294, 0.182, -0.234 ),
+                ctlpt( E3, 0.104, -0.744, -0.163 ),
+                ctlpt( E3, 0.392, -0.209, 0.395 ) ),
+          list( ctlpt( E3, -0.509, 0.876, 0.432 ),
+                ctlpt( E3, -0.0963, -0.259, 0.434 ),
+                ctlpt( E3, 0.193, 0.276, 0.992 ) ),
+          list( ctlpt( E3, -0.601, -0.0993, 0.543 ),
+                ctlpt( E3, -0.203, -1.03, 0.614 ),
+                ctlpt( E3, 0.0854, -0.491, 1.17 ) ) ),
+    list( list( kv_open ),
+          list( kv_open ) ) );
+
+DrawBiTangencies( s, 0, 0.125, -1e-6, 1e-1, true, "" );
+
+s1 = sregion( s, row, 0, 0.5 );
+s2 = sreparam( sregion( s, row, 0.5, 1 ) * tz( 0.3 ) * tx( -0.2 ), col, 10, 11 );
+
+DrawBiTangencies( list( s1, s2 ), 0, 0.125, -1e-6, 1e-1, true, "" );
+
+#############################################################################
+
+c1 = cbspline( 3, 
+	       list( ctlpt( E2, -1, -1 ),
+		     ctlpt( E2,  1, -1 ),
+		     ctlpt( E2,  1,  1 ),
+		     ctlpt( E2, -1,  1 ) ),
+	       list( kv_periodic ) );
+c1 = coerce( c1, kv_open );
+
+c2 = cbspline( 3,
+    list( ctlpt( E3,  0.8,  -0.2,  -0.3 ),
+          ctlpt( E3,  0.5,   0.0,  -0.2 ),
+          ctlpt( E2, -0.45, -0.21 ),
+          ctlpt( E2, -0.45,  0.32 ),
+          ctlpt( E3,  0.5,  -0.0,   0.2 ),
+          ctlpt( E3,  0.8,   0.28,  0.3 ) ),
+    list( kv_open ) );
+s = sregion( sweepSrf( c1 * sc( 0.1 ), c2, off ), col, 0, 0.5 );
+
+DrawBiTangencies( list( s, s ), -1, 0.125, -1e-6, 1e-1, true, "srf1tan" );
+
+#############################################################################
+
+c2 = c1 * sy( 0.5 );
+s = sFromCrvs( list( c2 * sc( 0.001 ),
+		     c2,
+		     c2 * tz( 1.0 ),
+		     c2 * sc( 0.5 ) * tz( 1.2 ),
+		     c1 * sc( 0.4 ) * tz( 1.5 ),
+		     c1 * sc( 0.2 ) * tz( 1.6 ) ),
+	       3, kv_open );
+
+DrawBiTangencies( list( s, s ), 0, 0.125, -1e-6, 1e-1, true, "srf2tan" );
+
+#############################################################################
+
+s1 = sFromCrvs( list( c2 * sc( 0.001 ),
+		      c2,
+		      c2 * tz( 1.0 ),
+		      c2 * sc( 0.001 ) * tz( 1.0 ) ),
+	        3, kv_open ) * sc( 0.1 );
+s2 = s1 * ry( 14 ) * tx( 0.6 ) * tz( 0.02 );
+s3 = s1 * rx( 12 ) * ty( 0.6 ) * tx( 0.3 ) * tz( 0.01 );
+
+DrawTriTangencies( list( s1, s2, s3 ) * sz( 1 ), 1, 0.5, -1e-6, "srf3tan" );
+
+DrawTriTangencies( list( s1, s2, s3 ) * sz( 1 ), 0, 0.5, -1e-6, "srf4tan" );
+
+#############################################################################
+
+free( c1 );
+free( c2 );
+free( s );
+free( s1 );
+free( s2 );
+free( s3 );

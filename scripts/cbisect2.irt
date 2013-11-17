@@ -1,0 +1,146 @@
+#
+# Some examples of 2d bisector computations of 2-space freeform curves.
+#
+#			Gershon Elber, December 1996.
+#
+
+Epsilon = 1e-6;
+save_res = resolution;
+save_mat = view_mat;
+view_mat = sc( 0.7 );
+viewobj( view_mat );
+
+viewstate( "DepthCue", 0 );
+
+#############################################################################
+#
+# Two quadratic curves
+#
+c1 = cbezier( list( ctlpt( E2, -0.5,  0.1 ),
+		    ctlpt( E2,  0.0,  0.3 ),
+		    ctlpt( E2,  0.5,  0.7 ) ) );
+c2 = coerce( c1 * sy( -1 ), e2 );
+color( c1, yellow );
+color( c2, yellow );
+adwidth( c1, 3 );
+adwidth( c2, 3 );
+
+BisectSrf = cbisector3d( list( c1, c2 ), 4 );
+color( BisectSrf, red );
+
+resolution = 25;
+BisectCrv = contour( BisectSrf, plane( 0, 0, 1, Epsilon ) );
+color( BisectCrv, green );
+adwidth( BisectCrv, 3 );
+
+interact( list( c1, c2, BisectCrv, BisectSrf ) );
+
+#############################################################################
+#
+# Two quadratic curves
+#
+c1 = cbezier( list( ctlpt( E2, -0.5,  0.5 ),
+		    ctlpt( E2,  0.0,  0.3 ),
+		    ctlpt( E2,  0.5,  0.7 ) ) );
+c2 = coerce( c1 * sy( -1 ), e2 );
+color( c1, yellow );
+color( c2, yellow );
+adwidth( c1, 3 );
+adwidth( c2, 3 );
+
+BisectSrf = cbisector3d( list( c1, c2 ), 4 );
+color( BisectSrf, red );
+
+resolution = 25;
+BisectCrv = contour( BisectSrf, plane( 0, 0, 1, Epsilon ) );
+color( BisectCrv, green );
+adwidth( BisectCrv, 3 );
+
+interact( list( c1, c2, BisectCrv, BisectSrf ) );
+
+#############################################################################
+#
+# Two quadratic curves
+#
+c1 = cbezier( list( ctlpt( E2, -0.5,  0.1 ),
+		    ctlpt( E2,  0.0,  0.3 ),
+		    ctlpt( E2,  0.5,  0.7 ) ) );
+c2 = cbezier( list( ctlpt( E2, -0.5, -0.5 ),
+		    ctlpt( E2,  0.0, -0.3 ),
+		    ctlpt( E2,  0.5, -0.7 ) ) );
+color( c1, yellow );
+color( c2, yellow );
+adwidth( c1, 3 );
+adwidth( c2, 3 );
+
+BisectSrf = cbisector3d( list( c1, c2 ), 4 );
+color( BisectSrf, red );
+
+resolution = 50;
+BisectCrv = contour( BisectSrf, plane( 0, 0, 1, Epsilon ) );
+color( BisectCrv, green );
+adwidth( BisectCrv, 3 );
+
+interact( list( axes, c1, c2, BisectCrv, BisectSrf ) );
+save("cbisect2a", list( c1, c2, BisectCrv, BisectSrf ) );
+
+#############################################################################
+#
+# A line and a (approximation of a) circle.
+#
+c1 = cbezier( list( ctlpt( E2,  0.0, -1.0 ),
+		    ctlpt( E2,  0.0,  1.0 ) ) );
+c2 = coerce( creparam( pcircle( vector( 0.0, 0.0, 0.0 ), 1 ), 0, 1 ), e2 );
+color( c1, yellow );
+color( c2, yellow );
+adwidth( c1, 3 );
+adwidth( c2, 3 );
+
+BisectSrf = cbisector3d( list( c1, c2 ), 4 ) * sz( 0.1 );
+color( BisectSrf, red );
+
+resolution = 150;
+BisectCrv = contour( BisectSrf, plane( 0, 0, 1, Epsilon ) );
+color( BisectCrv, green );
+adwidth( BisectCrv, 3 );
+
+interact( list( c1, c2, BisectCrv, BisectSrf ) );
+save("cbisect2b", list( c1, c2, BisectCrv, BisectSrf ) );
+
+#############################################################################
+#
+# Two cubic curves
+#
+c1 = cbezier( list( ctlpt( E2, -0.8,  0.4 ),
+		    ctlpt( E2, -0.2, -0.3 ),
+		    ctlpt( E2,  0.3,  0.4 ),
+		    ctlpt( E2,  0.7, -0.4 ) ) );
+c2 = cbezier( list( ctlpt( E2, -0.7, -0.4 ),
+		    ctlpt( E2, -0.3, -0.3 ),
+		    ctlpt( E2,  0.2, -0.1 ),
+		    ctlpt( E2,  0.8,  0.2 ) ) );
+color( c1, yellow );
+color( c2, yellow );
+adwidth( c1, 3 );
+adwidth( c2, 3 );
+
+BisectSrf = cbisector3d( list( c1, c2 ), 4 );
+color( BisectSrf, red );
+
+resolution = 50;
+BisectCrv = contour( BisectSrf, plane( 0, 0, 1, Epsilon ) );
+color( BisectCrv, green );
+adwidth( BisectCrv, 3 );
+
+interact( list( c1, c2, BisectCrv, BisectSrf ) );
+save("cbisect2c", list( c1, c2, BisectCrv, BisectSrf ) );
+
+#############################################################################
+view_mat = save_mat;
+resolution = save_res;
+
+free( BisectCrv );
+free( BisectSrf );
+free( Epsilon );
+free( c1 );
+free( c2 );

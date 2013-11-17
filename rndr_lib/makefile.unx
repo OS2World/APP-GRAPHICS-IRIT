@@ -1,0 +1,36 @@
+#
+# This is the make file for the rndr. lib subdirectory.
+#
+#				Gershon Elber, Aug 2003
+#
+
+include ../makeflag.unx
+
+OBJS =  color.o$(IRIT_OBJ_PF) \
+	fstalloc.o$(IRIT_OBJ_PF) \
+	interpol.o$(IRIT_OBJ_PF) \
+	lights.o$(IRIT_OBJ_PF) \
+	nc_zbufr.o$(IRIT_OBJ_PF) \
+	object.o$(IRIT_OBJ_PF) \
+	polyline.o$(IRIT_OBJ_PF) \
+	report.o$(IRIT_OBJ_PF) \
+	rndr_lib.o$(IRIT_OBJ_PF) \
+	scene.o$(IRIT_OBJ_PF) \
+	stencil.o$(IRIT_OBJ_PF) \
+	texture.o$(IRIT_OBJ_PF) \
+	triangle.o$(IRIT_OBJ_PF) \
+	vis_maps.o$(IRIT_OBJ_PF) \
+	zbuffer.o$(IRIT_OBJ_PF) \
+	zbufr_1d.o$(IRIT_OBJ_PF)
+
+all:	libIritRndr$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+
+libIritRndr$(IRIT_LIB_PF).$(IRIT_LIB_SFX): $(OBJS)
+	rm -f libIritRndr$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+	$(IRIT_LIB_MAKE) libIritRndr$(IRIT_LIB_PF).$(IRIT_LIB_SFX) *.o$(IRIT_OBJ_PF)
+	-$(IRIT_LIB_RAN) libIritRndr$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+
+install: libIritRndr$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+	mv -f libIritRndr$(IRIT_LIB_PF).$(IRIT_LIB_SFX) $(IRIT_LIB_DIR)
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

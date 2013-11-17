@@ -1,0 +1,161 @@
+#############################################################################
+#
+# Warping teapot using FFD trivariates.
+#
+#						Gershon Elber, Sep 1999.
+#
+
+save_mat2 = view_mat;
+view_mat = rotx( 0 );
+
+#
+# Get a model of a teapot.
+#
+
+EchoSrc2 = iritState( "EchoSource", false );
+interact = procedure(none):
+    viewclear();
+
+include("teapot");
+TeapotOrig = load( "teapot" );
+
+interact = procedure(none):
+    viewdclear():
+    viewobj(none):
+    pause();
+EchoSrc2 = iritState( "EchoSource", EchoSrc2 );
+free( EchoSrc2 );
+
+#
+# Define the trivarate warping function.
+#
+
+s1 = ruledSrf( ctlpt( E3, 0.5, 0.0, 0.0 ) + ctlpt( E3, 1.5, 0.0, 0.0 ),
+	       ctlpt( E3, 0.5, 1.2, 0.0 ) + ctlpt( E3, 1.5, 1.2, 0.0 ) );
+Tv = TFromSrfs( list( s1,
+		      s1 * ry( 30 ),
+		      s1 * ry( 60 ),
+		      s1 * ry( 90 ),
+		      s1 * ry( 120 ),
+		      s1 * ry( 150 ),
+		      s1 * ry( 180 ) ),
+		3, kv_open );
+Tv = treparam( treparam( Tv, col, 0.0, 0.5 ), row, 0.2, 0.8 );
+awidth( Tv, 0.001 );
+free( s1 );
+
+#
+# Define our warping function.
+#
+
+WarpSurface = function( Srf, Tv ): i: Clr: USize: VSize: Pt: x: y: z: u: v:
+    USize = nth( ffmsize( Srf ), 1 ):
+    VSize = nth( ffmsize( Srf ), 2 ):
+    Clr = getAttr( Srf, "color" ):
+    for ( i = 0, 1, USize * VSize - 1,
+	Pt = coord( Srf, i ):
+	x = coord( Pt, 1 ):
+	y = coord( Pt, 2 ):
+	z = coord( Pt, 3 ):
+	Pt = teval( Tv, x, y, z ):
+	v = floor( i / USize ):
+	u = i - v * USize:
+	Srf = sEditPt( Srf, Pt, u, v ) ):
+    attrib( Srf, "color", Clr ):
+    return = Srf;
+
+#
+# Properly orient the Teapot in the parametric space of the Trivariate
+#
+PrmDomain = box( vector( 0, 0, 0 ), 0.5, 1, 1 );
+attrib( PrmDomain, "transp", 0.8 );
+
+Teapot = TeapotOrig * sc( 0.13 ) * rz( 90 ) * rx( 90 ) * sx( -1 )
+	* trans( vector( 0.0, 0.5, 0.5 ) );
+
+All = list( PrmDomain, Teapot ) * rz( 90 ) * ry( 40 ) * rx( 40 );
+
+interact( list( All, view_mat ) );
+save( "warp1trv", All );
+
+#
+# Warp the teapot, one surface at a time, after some surface refinement.
+#
+WarpedTeapot = nil();
+for ( i = 1, 1, sizeof( Teapot ),
+    Srf = nth( Teapot, i ):
+    Clr = getAttr( Srf, "color" ):
+    Srf = sreparam( sreparam( Srf, col, 0, 1 ), row, 0, 1 ):
+    Srf = srefine( srefine( Srf, col, false, list( 0.1, 0.2, 0.3, 0.4, 0.5,
+					           0.6, 0.7, 0.8, 0.9 ) ),
+		   row, false, list( 0.1, 0.2, 0.3, 0.4, 0.5,
+				     0.6, 0.7, 0.8, 0.9 ) ):
+    attrib( Srf, "color", Clr ):
+    snoc( WarpSurface( Srf, Tv ), WarpedTeapot ) );
+
+PrmDomain = list( sTrivar( Tv, col, 0.0 ),
+		  sTrivar( Tv, col, 0.5 ),
+		  sTrivar( Tv, row, 0.2 ),
+		  sTrivar( Tv, row, 0.8 ),
+		  sTrivar( Tv, depth, 0.0 ),
+		  sTrivar( Tv, depth, 1.0 ) );
+attrib( PrmDomain, "transp", 0.8 );
+
+All = list( WarpedTeapot, PrmDomain )
+	* rx( 90 ) * ry( 20 ) * rx( 10 ) * sc( 0.5 );
+
+interact( list( All, view_mat ) );
+
+save( "warp2trv", All );
+
+#############################################################################
+#
+# Let the Genie come out of the teapot...
+#
+
+Teapot = TeapotOrig * sc( 0.2 ) * sx( -1 ) * rx( 90 ) * rz( 180 );
+
+s = planeSrf( -1, -1, 1, 1 ) * sc( 1.7 );
+Discs = list( s * sc( 0.01 ) * sx( 2 ) * tx( 0.58 ) * tz( 0.42 ),
+	      s * sc( 0.01 ) * sx( 2 ) * tx( 0.62 ) * tz( 0.46 ),
+	      s * sc( 0.05 ) * sx( 1.5 ) * tx( 0.65 ) * tz( 0.55 ),
+	      s * sc( 0.07 ) * sx( 1.5 ) * tx( 0.7 ) * tz( 0.7 ),
+	      s * sc( 0.09 ) * sx( 1.5 ) * tx( 0.65 ) * tz( 0.85 ),
+	      s * sc( 0.08 ) * sx( 1.5 ) * tx( 0.7 ) * tz( 1 ),
+	      s * sc( 0.07 ) * tx( 0.7 ) * tz( 1.1 ) );
+Tv = tFromSrfs( Discs, 3, kv_open );
+
+# Create a refined cylinder to warp out of the teapot...
+
+c = creparam( pcircle( vector( 0.5, 0.5, 0.001 ), 0.45 ), 0, 1 );
+Srf = extrude( c, vector( 0, 0, 0.99 ), 0 );
+Srf = srefine( srefine( Srf, col, false, list( 0.1, 0.2, 0.3, 0.4,
+					       0.6, 0.7, 0.8, 0.9 ) ),
+		        row, false, list( 0.1, 0.2, 0.3, 0.4, 0.5,
+				          0.6, 0.7, 0.8, 0.9 ) );
+WarpedSrf = WarpSurface( -Srf, Tv );
+attrib( WarpedSrf, "ptexture", "g.gif" );
+
+view( list( Teapot, WarpedSrf ), 1 );
+
+save( "warp3trv", All );
+
+#############################################################################
+
+view_mat = save_mat2;
+
+free( TeapotOrig );
+free( Teapot );
+free( WarpedTeapot );
+free( Clr );
+free( WarpedSrf );
+free( Srf );
+free( All );
+free( i );
+free( c );
+free( Tv );
+free( PrmDomain );
+free( Body );
+free( Spout );
+free( Handle );
+free( Cap );

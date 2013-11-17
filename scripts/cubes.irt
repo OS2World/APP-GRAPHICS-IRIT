@@ -1,0 +1,55 @@
+#
+# Model from "Partitioning Polyhedral Objects into Nonintersecting parts'
+# by mark Segal and Carlo H. Sequin, IEE CG&A, January 1988, pp 53-67.
+#
+
+save_mat = view_mat;
+
+b1 = box(vector(  0.2,  0.2,  0.2),  0.8,  0.8,  0.8);
+b2 = box(vector(  0.2,  0.2, -0.2),  0.8,  0.8, -0.8);
+b3 = box(vector(  0.2, -0.2,  0.2),  0.8, -0.8,  0.8);
+b4 = box(vector(  0.2, -0.2, -0.2),  0.8, -0.8, -0.8);
+b5 = box(vector( -0.2,  0.2,  0.2), -0.8,  0.8,  0.8);
+b6 = box(vector( -0.2,  0.2, -0.2), -0.8,  0.8, -0.8);
+b7 = box(vector( -0.2, -0.2,  0.2), -0.8, -0.8,  0.8);
+b8 = box(vector( -0.2, -0.2, -0.2), -0.8, -0.8, -0.8);
+
+cubes = b1 ^ b2 ^ b3 ^ b4 ^ b5 ^ b6 ^ b7 ^ b8;
+free(b1); free(b2); free(b3); free(b4); free(b5); free(b6); free(b7); free(b8);
+
+rot_cubes = cubes * rotx(30) * rotz(25);
+
+IntrCrv = iritstate( "intercrv", true );
+crvs_cubes = cubes + rot_cubes;
+color( crvs_cubes, green );
+interact(list( crvs_cubes, cubes, rot_cubes ) );
+free( crvs_cubes );
+IntrCrv = iritstate( "intercrv", IntrCrv );
+free( IntrCrv );
+
+u_cubes = cubes + rot_cubes;
+interact(u_cubes);
+
+i_cubes = cubes * rot_cubes;
+interact(i_cubes);
+
+s_cubes = cubes - rot_cubes;
+interact(s_cubes);
+
+view_mat = rotx( 0 );
+u_cubes = convex( u_cubes );
+i_cubes = convex( i_cubes );
+s_cubes = convex( s_cubes );
+
+save( "cubes_u", u_cubes );
+save( "cubes_i", i_cubes );
+save( "cubes_s", s_cubes );
+
+view_mat = save_mat;
+
+free( u_cubes );
+free( i_cubes );
+free( s_cubes );
+
+free( cubes );
+free( rot_cubes );

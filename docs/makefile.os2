@@ -1,0 +1,31 @@
+#
+# Makefile for the IRIT solid modeler documentation (OS2).
+#
+
+# Includes generic definitions.
+include ..\makeflag.os2
+
+all:	irit.tex irit.doc irit.hlp
+
+HELP_OBJS = irithlp.o
+
+irithlp.exe: $(HELP_OBJS)
+
+install: irit.hlp
+	$(CP) irit.hlp $(IRIT_BIN_DIR)
+	$(RM) irit.hlp
+
+irit.tex: irithlp.exe irit.src
+	./irithlp -l -o irit.tex irit.src
+
+irit.doc: irithlp.exe irit.src
+	./irithlp -t -o irit.doc irit.src
+
+irit.hlp: irithlp.exe irit.src
+	./irithlp -h -o irit.hlp irit.src
+
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.
+
+irithlp.o: ../include/irit_sm.h
+progman.o: ../include/irit_sm.h ../include/misc_lib.h

@@ -1,0 +1,21 @@
+#
+# This make file is for the poly3d-h utility for Windows NT
+#
+#				Gershon Elber, June 1993
+#
+
+# Includes generic definitions.
+include ..\makeflag.wnt
+
+OBJS =	out-edge.$(IRIT_OBJ_PF) poly3d-h.$(IRIT_OBJ_PF) prepdata.$(IRIT_OBJ_PF)
+
+poly3d-h$(IRIT_EXE_PF).exe: $(OBJS)
+	$(IRITCONLINK) -out:$@ $(OBJS) $(IRIT_LIBS) $(IRIT_MORE_LIBS) $(W32CONLIBS)
+	$(IRITMANIFEST) -manifest $@.manifest -outputresource:$@;1
+
+install: poly3d-h$(IRIT_EXE_PF).exe
+	copy poly3d-h$(IRIT_EXE_PF).exe $(IRIT_BIN_DIR)
+	del poly3d-h$(IRIT_EXE_PF).exe 
+	copy poly3d-h.cfg $(IRIT_BIN_DIR)
+
+# Dependencies starts here - do not touch, generated automatically.

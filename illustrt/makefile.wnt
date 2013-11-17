@@ -1,0 +1,22 @@
+#
+#
+# This make file is for the illustrt program for Window NT
+#
+#					Gershon Elber, June 1993
+#
+
+# Includes generic definitions.
+include ..\makeflag.wnt
+
+OBJS =  illustrt.$(IRIT_OBJ_PF) intersct.$(IRIT_OBJ_PF) spltsort.$(IRIT_OBJ_PF)
+
+illustrt$(IRIT_EXE_PF).exe: $(OBJS)
+	$(IRITCONLINK) -out:$@ $(OBJS) $(IRIT_LIBS) $(W32CONLIBS)
+	$(IRITMANIFEST) -manifest $@.manifest -outputresource:$@;1
+
+install: illustrt$(IRIT_EXE_PF).exe
+	copy illustrt$(IRIT_EXE_PF).exe $(IRIT_BIN_DIR)
+	del illustrt$(IRIT_EXE_PF).exe 
+	copy illustrt.cfg $(IRIT_BIN_DIR)
+
+# Dependencies starts here - do not touch, generated automatically.

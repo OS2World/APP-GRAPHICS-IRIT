@@ -1,0 +1,109 @@
+
+AC_INIT(src/irit/irit.c)
+AM_INIT_AUTOMAKE(irit,0.0.1)
+AM_CONFIG_HEADER(autoconfig.h)
+
+AC_PROG_CC
+AC_PROG_INSTALL
+AC_PROG_MAKE_SET
+AC_HEADER_STDC
+AM_PROG_LIBTOOL
+
+AC_SUBST(IRIT_INC_DIR, src/include)
+
+AC_CHECK_FUNC(getcwd, [], AC_DEFINE([GETCWD], [1], [getcwd is not defined in this system]))
+AC_CHECK_FUNC(strstr, [], AC_DEFINE([STRSTR], [1], [strstr is not defined in this system]))
+AC_CHECK_FUNC(strdup, [], AC_DEFINE([STRDUP], [1], [strdup is not defined in this system]))
+#AC_CHECK_FUNC(strcasecmp, [], AC_CHECK_FUNC(stricmp, [], AC_DEFINE([STRICMP], [], [niether strcasecmp nor stricmp are defined in this system])))
+
+#AC_CHECK_FUNC(times, [], AC_DEFINE([TIMES], [], [times is defined in your system, otherwise uses time]))
+
+#AC_CHECK_FUNC(usleep, AC_DEFINE([ITIMERVAL], [], [no usleep]), AC_DEFINE([USLEEP], [], [usleep is defined in the system]))
+AC_DEFINE([TIMES], [1], [times])
+AC_DEFINE([USLEEP], [1], [usleep])
+
+#AC_CHECK_HEADERS([stdarg.h], [], [AC_CHECK_HEADERS([varargs.h], AC_DEFINE([USE_VARARGS], [], [system does not have stdarg.h and have the old varargs.h]), []), [])
+
+AC_MSG_CHECKING([void pointer available])
+AC_COMPILE_IFELSE(
+	AC_LANG_PROGRAM([[]],[[void* x;]]),
+	AC_MSG_RESULT([yes]),
+	AC_DEFINE([NO_VOID_PTR], [], [C compiler does not support (void *)])
+	AC_MSG_RESULT([no])
+)
+
+AC_MSG_CHECKING([string concat available])
+AC_COMPILE_IFELSE(
+	AC_LANG_PROGRAM([[]],[[char *p = "This is" "one string";]]),
+	AC_MSG_RESULT([yes]),
+	AC_DEFINE([NO_CONCAT_STR], [], [C compiler does not support string concat])
+	AC_MSG_RESULT([no])
+)
+
+AC_CHECK_LIB([m], [sin])
+AC_CHECK_LIB([Xm], [XmGetSecondaryResourceData])
+AC_CHECK_LIB([Xt], [XtAddActions])
+AC_CHECK_LIB([Xext], [DPMSCapable])
+
+AC_PATH_XTRA
+
+AC_DEFINE([LINUX386], [1], [linux system])
+AC_DEFINE([__UNIX__], [1], [unix compatable system])
+AC_DEFINE([__X11__], [1], [use X11])
+AC_DEFINE([GRAPDRVS], [1], [any combination of of 'xgldrvs', 'xgladap', 'x11drvs', etc])
+
+
+AC_SUBST(IRIT_LIBS, "\
+	$(pwd)/src/grap_lib/libIritGrap.la	\
+	$(pwd)/src/prsr_lib/libIritPrsr.la	\
+	$(pwd)/src/cagd_lib/libIritCagd.la	\
+	$(pwd)/src/bool_lib/libIritBool.la	\
+	$(pwd)/src/geom_lib/libIritGeom.la	\
+	$(pwd)/src/mdl_lib/libIritMdl.la	\
+	$(pwd)/src/misc_lib/libIritMisc.la	\
+	$(pwd)/src/mvar_lib/libIritMvar.la	\
+	$(pwd)/src/symb_lib/libIritSymb.la	\
+	$(pwd)/src/rndr_lib/libIritRndr.la	\
+	$(pwd)/src/trim_lib/libIritTrim.la	\
+	$(pwd)/src/triv_lib/libIritTriv.la 	\
+	$(pwd)/src/trng_lib/libIritTrng.la	\
+	$(pwd)/src/user_lib/libIritUser.la	\
+	$(pwd)/src/xtra_lib/libIritXtra.la	\
+	$(pwd)/src/ext_lib/libIritExt.la	\
+	$(pwd)/src/irit/libIritIntp.la")
+
+AC_SUBST(GRAPOGLLIBS, "")
+AC_SUBST(IRIT_MORE_LIBS, "")
+AC_SUBST(GRAPX11LIBS, "-lX11")
+AC_SUBST(GRAPXMTLIBS, "-lXm -lXt -lXext -lX11")
+AC_SUBST(GRAPDRVS, "nuldrvs x11drvs xmtdrvs")
+
+AC_OUTPUT([
+	Makefile
+	src/Makefile
+	src/grap_lib/Makefile
+	src/prsr_lib/Makefile
+	src/cagd_lib/Makefile
+	src/bool_lib/Makefile
+	src/geom_lib/Makefile
+	src/mdl_lib/Makefile
+	src/misc_lib/Makefile
+	src/mvar_lib/Makefile
+	src/symb_lib/Makefile
+	src/rndr_lib/Makefile
+	src/trim_lib/Makefile
+	src/triv_lib/Makefile
+	src/trng_lib/Makefile
+	src/user_lib/Makefile
+	src/xtra_lib/Makefile
+	src/aisoshad/Makefile
+	src/filters/Makefile
+	src/grapdrvs/Makefile
+	src/ihidden/Makefile
+	src/illustrt/Makefile
+	src/irender/Makefile
+	src/poly3d-h/Makefile
+	src/ext_lib/Makefile
+	src/irit/Makefile
+	src/include/Makefile
+])

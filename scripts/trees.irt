@@ -1,0 +1,188 @@
+#
+# A virtual tree generator.
+#
+#				Gershon Elber, June 1994.
+#
+
+ri = iritstate( "RandomInit", 1964 );  # Seed-initiate the randomizer,
+free( ri );
+
+save_mat = view_mat;
+
+#
+# Factor of width reduction as we traverse the tree from its root to its
+# leaves, WFactor, and length reduction factor, LFactor.
+WFactor = 0.7;
+LFactor = 0.8;
+
+#
+# Relative factor of branch rotation.
+RFactor = 1.5;
+
+#
+# Colors of tree branches and leaves.
+BRGB = "144,164,96";
+LRGB = "10,255,10";
+BColor = 8;
+LColor = green;
+
+#
+# A function to compute a unit vector perpendicular to the given vector.
+#
+PerpVector = function( V ):V1:
+    V1 = vector( coord( V, 1 ),
+		 coord( V, 2 ),
+		 coord( V, 0 ) ):
+    return = normalize( V1 ^ V );
+
+#
+# Functions to change direction of V using a perpendicular to V.
+#
+RotateVector = function( V, Amount ):V1:
+    V1 = normalize( PerpVector( V ) ^ V ) * sqrt( V * V ):
+    if ( Amount > 0,
+	 return = V + V1 * random( 0, Amount ),
+	 return = V + V1 * random( Amount, 0 ) );
+RotateVector2 = function( V, Amount ):V1:V2:
+    V1 = normalize( PerpVector( V ) ):
+    V2 = normalize( V1 ^ V ) * sqrt( V * V ):
+    if ( Amount > 0,
+	 return = V + V1 * random( 0, Amount ) + V2 * random( 0, Amount ),
+	 return = V + V1 * random( Amount, 0 ) + V2 * random( Amount, 0 ) );
+
+#
+# This function should define a branch from P1 to P2 with an approximated
+# radius of R.
+#
+TreeBranch = function(Pt1, Pt2, R):
+    return = SwpSclSrf( circle( vector( 0, 0, 0 ), 1 ),
+			coerce(Pt1, E3) + coerce(Pt2, E3),
+			ctlpt(E2, 0, R) + ctlpt(E2, 1, R * WFactor),
+			off,
+			1.0);
+
+#
+# A recursive constructor of the tree2. Gets position of root of tree,
+# Direction of branch, Size of branch, Level of Branches, and recursion Level.
+#
+VirtTree2 = function(): return = 0; # Dummy function for recursive def.
+VirtTree2 = function( Pos, Dir, Size, BLevel, Level ) : NewPos:Tr1:Tr2:Tr:
+#   printf("%pf, %vf, %f, %f\n", list( Pos, Dir, Size, Level ) ):
+    return = nil():
+    NewPos = Pos + Dir:
+    if ( Level > 0,
+         Tr = treeBranch( Pos, NewPos, Size ):
+         if ( Level >= BLevel,
+	      color( Tr, BColor ):
+	      attrib( Tr, "ptexture", "trunk.rle" ):
+	      attrib( Tr, "rgb", BRGB ),
+	      color( Tr, LColor ):
+	      attrib( Tr, "rgb", LRGB ):
+	      attrib( Tr, "ptexture", "leaves.rle" ) ):
+	 snoc( Tr, return ) ):
+    if ( Level > 1,
+	 Tr1 = VirtTree2( NewPos,
+		          rotateVector( Dir, RFactor ) * LFactor,
+			  Size * WFactor,
+			  BLevel,
+			  Level - 1 ):
+	 Tr2 = VirtTree2( NewPos,
+		          rotateVector( Dir, -RFactor ) * LFactor,
+			  Size * WFactor,
+			  BLevel,
+			  Level - 1 ):
+         return = return + Tr1 + Tr2 );
+#
+# A recursive constructor of the tree3. Gets position of root of tree,
+# Direction of branch, Size of branch,, Level of Branches and recursion Level.
+#
+VirtTree3 = function(): return = 0; # Dummy function for recursive def.
+VirtTree3 = function( Pos, Dir, Size, BLevel, Level ) : NewPos:Tr1:Tr2:Tr3:Tr:
+#   printf("%pf, %vf, %f, %f, %f\n", list( Pos, Dir, Size, BLevel, Level ) ):
+    return = nil():
+    NewPos = Pos + Dir:
+    if ( Level > 0,
+         Tr = treeBranch( Pos, NewPos, Size ):
+         if ( Level >= BLevel,
+	      color( Tr, BColor ):
+	      attrib( Tr, "ptexture", "trunk.rle" ):
+	      attrib( Tr, "rgb", BRGB ),
+	      color( Tr, LColor ):
+	      attrib( Tr, "rgb", LRGB ):
+	      attrib( Tr, "ptexture", "leaves.rle" ) ):
+	 snoc( Tr, return ) ):
+    if ( Level > 1,
+	 Tr1 = VirtTree3( NewPos,
+		          rotateVector2( Dir, RFactor ) * LFactor,
+			  Size * WFactor,
+			  BLevel,
+			  Level - 1 ):
+	 Tr2 = VirtTree3( NewPos,
+		          rotateVector2( Dir, RFactor * random( -1, 1 ) ) * LFactor,
+			  Size * WFactor,
+			  BLevel,
+			  Level - 1 ):
+	 Tr3 = VirtTree3( NewPos,
+		          rotateVector2( Dir, -RFactor ) * LFactor,
+			  Size * WFactor,
+			  BLevel,
+			  Level - 1 ):
+         return = return + Tr1 + Tr2 + Tr3 );
+
+view_mat = rotx( -90 ) * roty( 135 ) * rotx( -30 )
+	* scale( vector( 0.2, 0.2, 0.2 ) )
+	* trans( vector( 0, -0.5, 0 ) );
+
+tree1 = VirtTree2( point( 0, 0, 0 ), vector( 0, 0, 1 ), 0.3, 4, 7);
+interact( list( view_mat, tree1 ) );
+free( Tree1 );
+
+tree2 = VirtTree3( point( 0, 0, 0 ), vector( 0, 0, 1 ), 0.5, 3, 5);
+interact( tree2 );
+free( Tree2 );
+
+forest3 = function( n, m, BLevel, Level ):i:j:
+    return = nil():
+    for ( i = 0, 1, n,
+	for ( j = 0, 1, m,
+	    snoc( VirtTree3( point( i * 5, j * 5, 0 ), vector( 0, 0, 1 ),
+			     0.3, BLevel, Level ),
+		  return ) ) );
+
+base = ruledsrf( ctlpt( E2, -20, -20 ) + ctlpt( E2, -20,  40 ),
+		 ctlpt( E2,  40, -20 ) + ctlpt( E2,  40,  40 ) );
+attrib( base, "rgb", "244,164,96" );
+attrib( base, "ptexture", "ground.rle" );
+viewobj( base );
+save( "base", base );
+
+frst = forest3( 1, 1, 2, 4 );
+view( list( frst, base ), on );
+
+#
+# Be prepared, this one is quite large.
+#
+# frst = forest3( 4, 4, 3, 5 );
+# viewstate( "PolyAprx", 0 );
+# viewstate( "PolyAprx", 0 );
+# viewstate( "PolyAprx", 0 );
+# viewstate( "NumIsos", 0 );
+# viewstate( "NumIsos", 0 );
+# viewstate( "NumIsos", 0 );
+# view( list( frst, base ), on );
+
+save( "forrest.ibd", frst );
+
+#############################################################################
+
+view_mat = save_mat;
+
+free( WFactor );
+free( LFactor );
+free( RFactor );
+free( BRGB );
+free( LRGB );
+free( BColor );
+free( LColor );
+free( frst );
+free( base );

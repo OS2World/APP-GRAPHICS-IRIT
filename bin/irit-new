@@ -1,0 +1,4 @@
+#!/bin/csh -f
+
+zip -r -t $1 irit-new * -x */*.o */*.a */*.so */so_locations scripts/*.dat scripts/*.bdt bin/* docs/irit.tex docs/irit.doc docs/irithlp
+

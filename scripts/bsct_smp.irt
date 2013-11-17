@@ -1,0 +1,938 @@
+#
+# Test of bisectors of CSG primitives.
+#
+#		Gershon Elber, August 1998.
+#
+
+# Faster product using Bezier decomposition.
+IProd = iritstate( "BspProdMethod", 0 );
+PSrfs = iritstate( "PrimType", 1 );
+
+save_mat = view_mat;
+view_mat = rx( 5 ) * view_mat * sc( 0.6 );
+viewobj( view_mat );
+
+DispWidth = 1;
+
+spr = sphereSrf( 1.0 );
+color( spr, red );
+
+
+#############################################################################
+
+Alpha = 10;
+crv = circle( vector( 0.0, 0.0, 0.0 ), sin( Alpha * Pi / 180 ) )
+					      * tz( cos( Alpha * Pi / 180 ) );
+adwidth( crv, DispWidth );
+color( crv, cyan );
+
+Pt = normalize( point( 0.5, 0, 1 ) );
+adwidth( Pt, DispWidth );
+color( Pt, green );
+
+Bisect1 = SprBisect( list( Pt, Crv ), 512.0 );
+adwidth( Bisect1, DispWidth );
+color( Bisect1, white );
+
+interact( list( axes, Spr, Crv, Pt, Bisect1 ) );
+
+#
+# Build a spherical curve by selecting p0 = t^2, p1 = -2t, p2 = 1, in:
+# (w, x, y, z) = (p0^2 + p1^2 + p2^2, 2 p0 p1, 2 p0 p2, p1^2 + p2^2 - p0^2)
+#
+Crv = coerce( cpower( list( ctlpt( p3,  1,  0,  0,  1 ),
+		            ctlpt( p3,  0,  0,  0,  0 ),
+		            ctlpt( p3,  4,  0,  2,  4 ),
+		            ctlpt( p3,  0, -4,  0,  0 ),
+		            ctlpt( p3,  1,  0,  0, -1 ) ) ), bezier_type );
+color( crv, cyan );
+
+Pt = normalize( point( 0.0, 0.5, 1 ) );
+adwidth( Pt, DispWidth );
+color( Pt, green );
+
+Bisect2 = SprBisect( list( Pt, Crv ), 512.0 );
+Bisect2 = cregion( Bisect2,
+		   nth( pdomain( Bisect2 ), 1 ) + 1,
+		   nth( pdomain( Bisect2 ), 2 ) - 1 );
+adwidth( Bisect2, DispWidth );
+color( Bisect2, white );
+
+interact( list( axes, Spr, Crv, Pt, Bisect2 ) );
+
+free( Alpha );
+free( crv );
+free( Pt );
+
+#############################################################################
+
+Alpha = 90;
+crv1 = circle( vector( 0.0, 0.0, 0.0 ), sin( Alpha * Pi / 180 ) )
+					      * tz( cos( Alpha * Pi / 180 ) );
+adwidth( crv1, DispWidth );
+color( crv1, cyan );
+
+Alpha = 10;
+crv2 = circle( vector( 0.0, 0.0, 0.0 ), sin( Alpha * Pi / 180 ) )
+			      * tz( cos( Alpha * Pi / 180 ) ) * rx( 50 );
+adwidth( crv2, DispWidth );
+color( crv2, green );
+
+Bisect3 = SprBisect( list( Crv1, Crv2 ), 30.0 );
+adwidth( Bisect3, DispWidth );
+color( Bisect3, white );
+
+interact( list( axes, Spr, Crv1, Crv2, Bisect3 ) );
+
+free( Alpha );
+free( crv1 );
+free( crv2 );
+
+Alpha = 20;
+crv1 = circle( vector( 0.0, 0.0, 0.0 ), sin( Alpha * Pi / 180 ) )
+					      * tz( cos( Alpha * Pi / 180 ) );
+adwidth( crv1, DispWidth );
+color( crv1, cyan );
+
+Alpha = 80;
+crv2 = circle( vector( 0.0, 0.0, 0.0 ), sin( Alpha * Pi / 180 ) )
+			      * tz( cos( Alpha * Pi / 180 ) ) * rx( 50 );
+adwidth( crv2, DispWidth );
+color( crv2, green );
+
+Bisect4 = SprBisect( list( Crv1, Crv2 ), 30.0 );
+adwidth( Bisect4, DispWidth );
+color( Bisect4, white );
+
+interact( list( axes, Spr, Crv1, Crv2, Bisect4 ) );
+
+save( "bsct1smp", list( Bisect1, Bisect2, Bisect3, Bisect4 ) );
+
+free( Alpha );
+free( crv1 );
+free( crv2 );
+
+#############################################################################
+#
+# Bisector of plane and point.
+#
+
+XYPlane = ruledSrf( ctlpt( e2, -1, -1 ) + ctlpt( e2, -1,  1 ),
+		    ctlpt( e2,  1, -1 ) + ctlpt( e2,  1,  1 ) );
+color( XYPlane, cyan );
+
+Pt = point( 0, 0, 1 );
+color( Pt, green );
+adwidth( Pt, DispWidth ):
+
+Bisect1 = BsctPlnPt( Pt, 1 );
+adwidth( Bisect1, DispWidth );
+color( Bisect1, white );
+
+interact( list( axes, XYPlane, Pt, Bisect1 ) );
+
+free( XYPlane );
+free( Pt );
+
+############################################################################# 
+#
+# Bisector of Cone and point.
+#
+
+Angle = 20;
+Rad = tan( Angle * Pi / 180 );  # Spanning angle of 20 degree.
+Con = Cone( vector( 0.0, 0.0, 0.0 ), vector( 0.0, 0.0, 1.0 ), Rad, 0 );
+color( Con, cyan );
+
+Pt = point( 0, 0, 0 );
+color( Pt, green );
+adwidth( Pt, DispWidth );
+
+Bisect2 = sregion( BsctConPt( point( 0, 0, 1 ), vector( 0, 0, -1 ),
+			      Angle, Pt, 1 ),
+		   row, 0.0, 0.99 );
+adwidth( Bisect2, DispWidth );
+color( Bisect2, white );
+
+interact( list( axes, Con, Pt, Bisect2 ) );
+
+Pt = point( 1, 0, 1 );
+color( Pt, green );
+adwidth( Pt, DispWidth );
+
+BisectAux = sregion( BsctConPt( point( 0, 0, 1 ), vector( 0, 0, -1 ),
+			        Angle, Pt, 1 ),
+		     row, 0.0, 0.99 );
+Bisect3 = list( sregion( BisectAux, col,   0.0, 0.99 ),
+	        sregion( BisectAux, col,  1.01, 2.99 ),
+	        sregion( BisectAux, col,  3.01, 4.0 ) );
+adwidth( Bisect3, DispWidth );
+color( Bisect3, white );
+
+interact( list( axes, Con, Pt, Bisect3 ) );
+
+free( Pt );
+free( Con );
+
+############################################################################# 
+#
+# Bisector of Cylinder and point.
+#
+
+Cyl = Cylin( vector( 0.0, 0.0, -0.5 ), vector( 0.0, 0.0, 1.0 ), 0.2, 0 );
+color( Cyl, cyan );
+
+Pt = point( 1, 0, 0.0 );
+color( Pt, green );
+adwidth( Pt, DispWidth ):
+
+BisectAux = BsctCylPt( point( 0, 0, 0.5 ), vector( 0, 0, 1 ), 0.2, Pt, 1 );
+Bisect4 = list( sregion( BisectAux, col, 0.001, 0.85 ),
+	        sregion( BisectAux, col, 0.9,   3.01 ),
+	        sregion( BisectAux, col, 3.15,  3.999 ) );
+adwidth( Bisect4, DispWidth );
+color( Bisect4, white );
+free( BisectAux );
+
+interact( list( axes, Cyl, Pt, Bisect4 ) );
+
+Pt = point( 0.1, 0, 0.2 );
+color( Pt, green );
+adwidth( Pt, DispWidth ):
+
+BisectAux = BsctCylPt( point( 0, 0, 0.5 ), vector( 0, 0, 1 ), 0.2, Pt, 1 );
+Bisect5 = list( sregion( BisectAux, col, 0.0,    0.4999 ),
+	        sregion( BisectAux, col, 0.5001, 3.4999 ),
+	        sregion( BisectAux, col, 3.5001, 4.0 ) );
+adwidth( Bisect5, DispWidth );
+color( Bisect5, white );
+free( BisectAux );
+
+interact( list( axes, Cyl, Pt, Bisect5 ) );
+
+free( Pt );
+free( Cyl );
+
+############################################################################# 
+#
+# Bisector of a sphere and point.
+#
+
+Spr = SphereSrf( 0.7 );
+color( Spr, green );
+
+Pt = point( 0, 0, 0.5 );
+color( Pt, cyan );
+adwidth( Pt, DispWidth ):
+
+Bisect6 = sregion( BsctSprPt( point( 0, 0, 0 ), 0.7, Pt ), row, 0.001, 1.999 );
+adwidth( Bisect6, DispWidth );
+color( Bisect6, white );
+
+interact( list( axes, Spr, Pt, Bisect6 ) );
+
+Pt = point( 0, 0, 1 );
+color( Pt, cyan );
+adwidth( Pt, DispWidth ):
+
+Bisect7 = list( sregion( BsctSprPt( point( 0, 0, 0 ), 0.7, Pt ),
+			 row, 0.001, 1.47 ),
+		sregion( BsctSprPt( point( 0, 0, 0 ), 0.7, Pt ),
+			 row, 1.51, 1.999 ) );
+		
+adwidth( Bisect7, DispWidth );
+color( Bisect7, white );
+
+interact( list( axes, Spr, Pt, Bisect7 ) );
+
+free( Spr );
+free( Pt );
+
+############################################################################# 
+#
+# Bisector of a torus and point.
+#
+
+Trs = torus( vector( 0.0, 0.0, 0.0 ), vector( 0.0, 0.0, 1.0 ), 0.7, 0.2 );
+color( Trs, green );
+
+Pt = point( 0, 0, 0 );
+color( Pt, cyan );
+adwidth( Pt, DispWidth );
+
+Bisect8 = BsctTrsPt( point( 0.0, 0.0, 0.0 ), vector( 0.0, 0.0, 1.0 ), 0.7, 0.2,
+		     Pt );
+adwidth( Bisect8, DispWidth );
+color( Bisect8, white );
+
+interact( list( axes, Trs, Pt, Bisect8 ) );
+
+Trs = torus( vector( 0.0, 0.0, 0.0 ), vector( 0.0, 0.0, 1.0 ), 0.7, 0.7 );
+color( Trs, green );
+
+Pt = point( 0, 0.35, 0 );
+color( Pt, cyan );
+adwidth( Pt, DispWidth );
+
+Bisect9 = BsctTrsPt( point( 0.0, 0.0, 0.0 ), vector( 0.0, 0.0, 1.0 ), 0.7, 0.7,
+		     Pt );
+adwidth( Bisect9, DispWidth );
+color( Bisect9, white );
+
+interact( list( axes, Trs, Pt, Bisect9 ) );
+
+save( "bsct2smp", list( Bisect1 * tx( -8 ),
+		        Bisect2 * tx( -6 ),
+		        Bisect3 * tx( -4 ),
+		        Bisect4 * tx( -2 ),
+		        Bisect5 * tx( 0 ),
+		        Bisect6 * tx( 2 ),
+		        Bisect7 * tx( 4 ),
+		        Bisect8 * tx( 6 ),
+			Bisect9 * tx( 8 ) ) );
+
+free( Trs );
+free( Pt );
+
+#############################################################################
+#
+# Bisector of plane and line.
+#
+
+XYPlane = ruledSrf( ctlpt( e2, -1, -1 ) + ctlpt( e2, -1,  1 ),
+		    ctlpt( e2,  1, -1 ) + ctlpt( e2,  1,  1 ) );
+color( XYPlane, green );
+
+Vec = vector( 0, 0, 1 );
+color( Vec, cyan );
+adwidth( Vec, DispWidth );
+
+Bisect1 = BsctPlnLn( Vec, 1 );
+adwidth( Bisect1, DispWidth );
+color( Bisect1, white );
+
+interact( list( axes, XYPlane, Vec, Bisect1 ) );
+
+Vec = vector( 1, 0, 1 );
+color( Vec, cyan );
+adwidth( Vec, DispWidth );
+
+Bisect2 = BsctPlnLn( Vec, 1 );
+adwidth( Bisect2, DispWidth );
+color( Bisect2, white );
+
+interact( list( axes, XYPlane, Vec, Bisect2 ) );
+
+free( Vec );
+
+############################################################################# 
+#
+# Bisector of Cone and Line through its apex.
+#
+
+Con = ConeSrf( 1.0, 1.0 ) * tz( -1.0 ) * rx( 180 );
+color( Con, green );
+
+Vec = vector( 0, 0, 1 );
+color( Vec, cyan );
+adwidth( Vec, DispWidth );
+
+Bisect3 = BsctConLn( vector( 0, 0, 1 ), 45, Vec, 1 );
+adwidth( Bisect3, DispWidth );
+color( Bisect3, white );
+
+interact( list( axes, Con, Vec, Bisect3 ) );
+
+Vec = vector( 1, 0, 0 );
+color( Vec, cyan );
+adwidth( Vec, DispWidth );
+
+BisectAux = BsctConLn( vector( 0, 0, 1 ), 45, Vec, 1 );
+Bisect4 = list( sregion( BisectAux, col, 0.0,    0.4999 ),
+	        sregion( BisectAux, col, 0.5001, 3.4999 ),
+	        sregion( BisectAux, col, 3.5001, 4.0 ) );
+adwidth( Bisect4, DispWidth );
+color( Bisect4, white );
+free( BisectAux );
+
+interact( list( axes, Con, Vec, Bisect4 ) );
+
+free( Vec );
+free( Con );
+
+############################################################################# 
+#
+# Bisector of a sphere and line.
+#
+Spr = SphereSrf( 0.7 ) * tx( 2.0 );
+color( Spr, green );
+
+ZLine = ctlpt( e3, 0, 0, -1.2 ) + ctlpt( e3, 0, 0, 1.2 );
+color( ZLine, cyan );
+adwidth( ZLine, DispWidth );
+
+BisectAux = BsctSprLn( point( 2, 0, 0 ), 0.7, 1 );
+Bisect5 = list( sregion( BisectAux, col, 0.001,  0.75 ),
+	        sregion( BisectAux, col, 3.25,   3.999 ),
+	        sregion( BisectAux, col, 0.77,   3.23 ) );
+adwidth( Bisect5, DispWidth );
+color( Bisect5, white );
+free( BisectAux );
+
+interact( list( axes, Spr, ZLine, Bisect5 ) );
+
+Spr = SphereSrf( 0.7 );
+color( Spr, green );
+
+Bisect6 = BsctSprLn( point( -0.2, -0.3, 0 ), 0.7, 1 ) * tx( 0.2 ) * ty( 0.3 );
+adwidth( Bisect6, DispWidth );
+color( Bisect6, white );
+
+interact( list( axes, Spr, ZLine * tx( 0.2 ) * ty( 0.3 ), Bisect6 ) );
+
+save( "bsct3smp", list( Bisect1 * tx( -4 ),
+		        Bisect2 * tx( -2 ),
+		        Bisect3 * tx( 0 ),
+		        Bisect4 * tx( 2 ),
+		        Bisect5 * tx( 4 ),
+			Bisect6 * tx( 6 ) ) );
+
+free( Spr );
+free( ZLine );
+
+############################################################################# 
+#
+# Bisector of a sphere and the XY plane.
+#
+Spr = SphereSrf( 0.7 ) * tz( 1.5 );
+color( Spr, green );
+
+XYPlane = ruledSrf( ctlpt( e2, -2, -2 ) + ctlpt( e2, -2, 2 ),
+		    ctlpt( e2,  2, -2 ) + ctlpt( e2,  2, 2 ) );
+color( XYPlane, cyan );
+adwidth( XYPlane, DispWidth );
+
+Bisect1 = BsctSprPl( point( 0, 0, 1.5 ), 0.7, 0.5 );
+adwidth( Bisect1, DispWidth );
+color( Bisect1, white );
+
+interact( list( axes, Spr, XYPlane, Bisect1 ) );
+
+Spr = SphereSrf( 0.7 ) * trans( vector( 0.5, 0.5, 0.5 ) );
+color( Spr, green );
+
+Bisect2 = BsctSprPl( point( 0.5, 0.5, 0.5 ), 0.7, 0.65 );
+adwidth( Bisect2, DispWidth );
+color( Bisect2, white );
+
+interact( list( axes, Spr, XYPlane, Bisect2 ) );
+
+free( Spr );
+
+############################################################################# 
+#
+# Bisector of a Cylinder and the XY plane.
+#
+Cyl = Cylin( vector( 0, 0, -1 ), vector( 0, 0, 2 ), 0.2, 0 );
+color( Cyl, green );
+
+XYPlane = ruledSrf( ctlpt( e2, -2, -2 ) + ctlpt( e2, -2, 2 ),
+		    ctlpt( e2,  2, -2 ) + ctlpt( e2,  2, 2 ) );
+color( XYPlane, cyan );
+adwidth( XYPlane, DispWidth );
+
+Bisect3 = BsctCylPl( point( 0, 0, -1 ), vector( 0, 0, 1 ), 0.2, 1 );
+adwidth( Bisect3, DispWidth );
+color( Bisect3, white );
+
+interact( list( axes, Cyl, XYPlane, Bisect3 ) );
+
+Cyl = Cylin( vector( 0, 0, -1 ), vector( 0.5, 0.5, 2 ), 0.2, 0 );
+color( Cyl, green );
+
+Bisect4 = BsctCylPl( point( 0, 0, -1 ), vector( 0.5, 0.5, 2 ), 0.2, 1 );
+adwidth( Bisect4, DispWidth );
+color( Bisect4, white );
+
+interact( list( axes, Cyl, XYPlane, Bisect4 ) );
+
+free( Cyl );
+
+############################################################################# 
+#
+# Bisector of a Cone and the XY plane.
+#
+
+XYPlane = ruledSrf( ctlpt( e2, -2, -2 ) + ctlpt( e2, -2, 2 ),
+		    ctlpt( e2,  2, -2 ) + ctlpt( e2,  2, 2 ) );
+color( XYPlane, cyan );
+adwidth( XYPlane, DispWidth );
+
+Angle = 30;
+Rad = tan( Angle * Pi / 180 );  # Spanning angle of 30 degree.
+Dir = coerce( normalize( vector( 0, 0, -1 ) ), vector_type );
+Apex = vector( 0.25, 0.25, -0.25 );
+
+Con = Cone( Apex - Dir, Dir, Rad, 0 );
+color( Con, green );
+
+Bisect5 = BsctConPl( coerce( Apex, point_type ), -Dir, Angle, 1 );
+adwidth( Bisect5, DispWidth );
+color( Bisect5, white );
+
+interact( list( axes, Con, XYPlane, Bisect5 ) );
+
+Angle = 15;
+Rad = tan( Angle * Pi / 180 );  # Spanning angle of 15 degree.
+Dir = coerce( normalize( vector( 0.4, 0.3, -1 ) ), vector_type );
+Apex = vector( 0., 0., 0.25 );
+
+Con = Cone( Apex - Dir, Dir, Rad, 0 );
+color( Con, green );
+
+Bisect6 = BsctConPl( coerce( Apex, point_type ), -Dir, Angle, 1 );
+adwidth( Bisect6, DispWidth );
+color( Bisect6, white );
+
+interact( list( axes, Con, XYPlane, Bisect6 ) );
+
+save( "bsct4smp", list( Bisect1 * tx( -4 ),
+		        Bisect2 * tx( -2 ),
+		        Bisect3 * tx( 0 ),
+		        Bisect4 * tx( 2 ),
+		        Bisect5 * tx( 4 ),
+			Bisect6 * tx( 6 ) ) );
+
+free( Con );
+free( Rad );
+free( Angle );
+free( Dir );
+free( Apex );
+
+############################################################################# 
+#
+# Bisector of two Cones.
+#
+
+Angle1 = 55;
+Rad1 = tan( Angle1 * Pi / 180 );
+Dir1 = normalize( vector( 0.0, 0.0, 1.0 ) );
+Cn1 = Cone( Dir1, -Dir1, Rad1, 0 );
+color( Cn1, cyan );
+
+Angle2 = 20;
+Rad2 = tan( Angle2 * Pi / 180 );
+Dir2 = normalize( vector( 0.0, 0.5, 1.0 ) );
+Cn2 = Cone( Dir2 * 1.7, -Dir2 * 1.7, Rad2 * 1.7, 0 );
+color( Cn2, yellow );
+
+Bisect1 = sregion( BsctConCon( Dir1, Angle1, Dir2, -Angle2, 1.3 ),
+		   row, 0.0, 0.99 );
+adwidth( Bisect1, DispWidth );
+color( Bisect1, white );
+
+interact( list( axes, Cn1, Cn2, Bisect1 ) );
+
+Angle1 = 55;
+Rad1 = tan( Angle1 * Pi / 180 );
+Dir1 = normalize( vector( -1.0, -1.0, 2.0 ) );
+Cn1 = Cone( Dir1, -Dir1, Rad1, 0 );
+color( Cn1, cyan );
+
+Angle2 = 25;
+Rad2 = tan( Angle2 * Pi / 180 );
+Dir2 = normalize( vector( 1.0, 1.0, 2.0 ) );
+Cn2 = Cone( Dir2 * 1.57, -Dir2 * 1.57, Rad2 * 1.57, 0 );
+color( Cn2, yellow );
+
+BisectAux = BsctConCon( Dir1, Angle1, Dir2, Angle2, 1.57 );
+
+Bisect2 = list( sregion( BisectAux, col,   0.0, 1.323 ),
+		sregion( BisectAux, col, 1.325, 3.801 ),
+		sregion( BisectAux, col, 3.803, 4.0 ) );
+adwidth( Bisect2, DispWidth );
+color( Bisect2, white );
+
+interact( list( axes, Cn1, Cn2, Bisect2 ) );
+
+
+save( "bsct5smp", list( Bisect1 * tx( -2 ),
+		        Bisect2 * tx( 2 ) ) );
+
+free( Cn1 );
+free( Rad1 );
+free( Dir1 );
+free( Angle1 );
+free( Cn2 );
+free( Rad2 );
+free( Dir2 );
+free( Angle2 );
+
+############################################################################# 
+#
+# Bisector of Cone and sphere.
+#
+
+Angle = 30;
+Rad = tan( Angle * Pi / 180 );
+Con = Cone( vector( 0.0, 0.0, 1.0 ), vector( 0.0, 0.0, -1.0 ), Rad, 0 );
+color( Con, cyan );
+
+Spr = SphereSrf( 0.499 ) * tz( 1.0 );
+color( Spr, green );
+
+Bisect1 = sregion( BsctConSpr( point( 0, 0, 0 ), vector( 0, 0, 1 ),
+			      Angle, point( 0, 0, 1 ), 0.499, 1.9 ),
+		   row, 0.0, 0.99 );
+adwidth( Bisect1, DispWidth );
+color( Bisect1, white );
+
+interact( list( axes, Con, Spr, Bisect1 ) );
+
+Spr = SphereSrf( 0.3 ) * tz( 0.5 ) * tx( 0.4 );
+color( Spr, green );
+
+Bisect2 = sregion( BsctConSpr( point( 0, 0, 0 ), vector( 0, 0, 1 ),
+			     Angle, point( 0.4, 0, 0.5 ), 0.3, 1.9 ),
+		  row, 0.0, 0.99 );
+adwidth( Bisect2, DispWidth );
+color( Bisect2, white );
+
+interact( list( axes, Con, Spr, Bisect2 ) );
+
+save( "bsct6smp", list( Bisect1 * tx( -2 ),
+		        Bisect2 * tx( 2 ) ) );
+
+free( Spr );
+free( Con );
+free( Rad );
+free( Angle );
+
+############################################################################# 
+#
+# Bisector of Cylinder and sphere.
+#
+
+Cyl = Cylin( vector( 0.0, 0.0, -1.5 ), vector( 0.0, 0.0, 3.0 ), 0.2, 0 );
+color( Cyl, cyan );
+
+Spr = SphereSrf( 0.7 );
+color( Spr, green );
+
+Bisect1 = BsctCylSpr( point( 0, 0, 1.5 ), vector( 0, 0, 3 ), 0.2,
+		      point( 0, 0, 0 ), 0.7, 3 );
+adwidth( Bisect1, DispWidth );
+color( Bisect1, white );
+
+interact( list( axes, Cyl, Spr, Bisect1 ) );
+
+Cyl = Cylin( vector( 0.0, 0.0, -1.5 ), vector( 0.0, 0.0, 3.0 ), 1.0, 0 );
+color( Cyl, cyan );
+
+Spr = SphereSrf( 0.5 ) * tx( 1.5 );
+color( Spr, green );
+
+BisectAux = BsctCylSpr( point( 0, 0, 1.5 ), vector( 0, 0, 3 ), 1.0,
+		        point( 1.5, 0, 0 ), -0.5, 3 );
+Bisect2 = list( sregion( BisectAux, col, 0.001, 0.7 ),
+	        sregion( BisectAux, col, 0.8,   3.2 ),
+	        sregion( BisectAux, col, 3.3,   3.999 ) );
+free( BisectAux );
+adwidth( Bisect2, DispWidth );
+color( Bisect2, white );
+
+interact( list( axes, Cyl, Spr, Bisect2 ) );
+
+save( "bsct7smp", list( Bisect1 * tx( -2 ),
+		        Bisect2 * tx( 2 ) ) );
+
+free( Spr );
+free( Cyl );
+
+############################################################################# 
+#
+# Bisector of a sphere and sphere.
+#
+
+Spr1 = SphereSrf( 0.7 );
+color( Spr1, green );
+
+Spr2 = SphereSrf( 0.2 ) * tx( 1 );
+color( Spr2, cyan );
+
+BisectAux = BsctSprSpr( point( 0, 0, 0 ), 0.7, point( 1, 0, 0 ), 0.2 );
+Bisect1 = list( sregion( BisectAux, row, 0.0, 1.32 ),
+	        sregion( BisectAux, row, 1.36, 2.0 ) );
+free( BisectAux );
+adwidth( Bisect1, DispWidth );
+color( Bisect1, white );
+
+interact( list( axes, Spr1, Spr2, Bisect1 ) );
+
+Spr2 = SphereSrf( 0.3 ) * ty( 0.6 );
+color( Spr2, cyan );
+
+Bisect2 = sregion( BsctSprSpr( point( 0, 0, 0 ), 0.7,
+			       point( 0, 0.6, 0 ), -0.3 ),
+		   row, 0.001, 1.999 );
+adwidth( Bisect2, DispWidth );
+color( Bisect2, white );
+
+interact( list( axes, Spr1, Spr2, Bisect2 ) );
+
+save( "bsct8smp", list( Bisect1 * tx( -2 ),
+		        Bisect2 * tx( 2 ) ) );
+
+free( Spr1 );
+free( Spr2 );
+
+############################################################################# 
+#
+# Bisector of a torus and sphere.
+#
+
+Trs = torus( vector( 0.0, 0.0, 0.0 ), vector( 0.0, 0.0, 1.0 ), 0.7, 0.2 );
+color( Trs, green );
+
+Spr = SphereSrf( 1.0 );
+color( Spr, cyan );
+
+Bisect1 = BsctTrsSpr( point( 0.0, 0.0, 0.0 ), vector( 0.0, 0.0, 1.0 ),
+		      0.7, 0.2, point( 0.0, 0.0, 0.0 ), 1.0 );
+adwidth( Bisect1, DispWidth );
+color( Bisect1, white );
+
+interact( list( axes, Trs, Spr, Bisect1 ) );
+
+Trs = torus( vector( 0.0, 0.0, 0.0 ), vector( 0.0, 0.0, 1.0 ), 0.7, 0.7 );
+color( Trs, green );
+
+Spr = SphereSrf( 0.699 ) * tx( 0.7 );
+color( Spr, cyan );
+
+Bisect2 = BsctTrsSpr( point( 0.0, 0.0, 0.0 ), vector( 0.0, 0.0, 1.0 ),
+		      0.7, 0.7, point( 0.7, 0.0, 0.0 ), 0.7 );
+adwidth( Bisect2, DispWidth );
+color( Bisect2, white );
+
+interact( list( axes, Trs, Spr, Bisect2 ) );
+
+save( "bsct9smp", list( Bisect1 * tx( -2 ),
+		        Bisect2 * tx( 2 ) ) );
+
+free( Trs );
+free( Spr );
+
+############################################################################# 
+#
+# Bisector of two Cones in general position.
+#
+
+Ang1 = 45;
+Cntr1 = vector( 1, 1, -2.2 );
+Dir1 = vector( 0, 0, 2 );
+Apx1 = Cntr1 + Dir1;
+Rad1 = sqrt( Dir1 * Dir1 ) * tan( Ang1 * Pi / 180 );
+Cone1 = Cone( Cntr1, Dir1, Rad1, 0 );
+color( Cone1, cyan );
+
+Ang2 = 45;
+Cntr2 = vector( -1, -2.2, 0 );
+Dir2 = vector( 0, 2, 0 );
+Apx2 = Cntr2 + Dir2;
+Rad2 = sqrt( Dir2 * Dir2 ) * tan( Ang2 * Pi / 180 );
+Cone2 = Cone( Cntr2, Dir2, Rad2, 0 );
+color( Cone2, yellow );
+
+Bisect1Aux = BsctConCn2( coerce( Apx1, point_type ), Dir1, Ang1,
+			 coerce( Apx2, point_type ), Dir2, Ang2 );
+
+Bisect1 = list( sregion( sregion( Bisect1Aux, row, 0.0, 0.12 ),
+			 col, 0.396, 0.85 ),
+		sregion( sregion( Bisect1Aux, row, 0.78, 1.0 ),
+			 col, 0.396, 0.85 ) );
+adwidth( Bisect1, DispWidth );
+color( Bisect1, white );
+
+interact( list( axes, Cone1, Cone2, Bisect1 ) );
+
+Ang1 = 15;
+Cntr1 = vector( 1, 1, -2.2 );
+Dir1 = vector( 0, 0, 4 );
+Apx1 = Cntr1 + Dir1;
+Rad1 = sqrt( Dir1 * Dir1 ) * tan( Ang1 * Pi / 180 );
+Cone1 = Cone( Cntr1, Dir1, Rad1, 0 );
+color( Cone1, cyan );
+
+Ang2 = 25;
+Cntr2 = vector( -1, -2.2, 0 );
+Dir2 = vector( 0, 4, 0 );
+Apx2 = Cntr2 + Dir2;
+Rad2 = sqrt( Dir2 * Dir2 ) * tan( Ang2 * Pi / 180 );
+Cone2 = Cone( Cntr2, Dir2, Rad2, 0 );
+color( Cone2, yellow );
+
+Bisect1Aux = BsctConCn2( coerce( Apx1, point_type ), Dir1, Ang1,
+			 coerce( Apx2, point_type ), Dir2, Ang2 );
+
+Bisect1 = list( sregion( sregion( Bisect1Aux, row, 0.0, 0.13 ),
+			 col, 0.396, 0.85 ),
+		sregion( sregion( Bisect1Aux, row, 0.82, 1.0 ),
+			 col, 0.396, 0.85 ) );
+adwidth( Bisect1, DispWidth );
+color( Bisect1, white );
+
+interact( list( axes, Cone1, Cone2, Bisect1 ) );
+
+save( "bsct10sm", list( Cone1, Cone2, Bisect1 ) );
+
+############################################################################# 
+#
+# Bisector of two Cylinders in general position.
+#
+
+Rad1 = 0.3;
+Dir1 = vector( 0, 0, 4 );
+Pos1 = point( -1, 0, -2 );
+Cyl1 = Cylin( coerce( Pos1, vector_type ), Dir1, Rad1, 0 );
+color( Cyl1, cyan );
+
+Rad2 = 0.8;
+Dir2 = vector( 0, 4, 0 );
+Pos2 = point( 1, -2, 0 );
+Cyl2 = Cylin( coerce( Pos2, vector_type ), Dir2, Rad2, 0 );
+color( Cyl2, yellow );
+
+Bisect1Aux = BsctCylCyl( Pos1, Dir1, Rad1, Pos2, Dir2, Rad2 );
+
+Bisect1 = list( sregion( sregion( Bisect1Aux, row, 0.0, 0.25 ),
+			 col, 0.3, 0.7 ),
+		sregion( sregion( Bisect1Aux, row, 0.75, 1.0 ),
+			 col, 0.3, 0.7 ) );
+adwidth( Bisect1, DispWidth );
+color( Bisect1, white );
+
+interact( list( axes, Cyl1, Cyl2, Bisect1 ) );
+
+
+Rad1 = 0.2;
+Dir1 = vector( 0, 0, -4 );
+Pos1 = point( -1, 0, 2 );
+Cyl1 = Cylin( coerce( Pos1, vector_type ), Dir1, Rad1, 0 );
+color( Cyl1, cyan );
+
+Rad2 = 0.4;
+Dir2 = vector( 0, -4, -4 );
+Pos2 = point( 1, 2, 2 );
+Cyl2 = Cylin( coerce( Pos2, vector_type ), Dir2, Rad2, 0 );
+color( Cyl2, yellow );
+
+Bisect1Aux = BsctCylCyl( Pos1, Dir1, Rad1, Pos2, Dir2, Rad2 );
+
+Bisect1 = list( sregion( sregion( Bisect1Aux, row, 0.0, 0.25 ),
+			 col, 0.29, 0.71 ),
+		sregion( sregion( Bisect1Aux, row, 0.75, 1.0 ),
+			 col, 0.29, 0.71 ) );
+adwidth( Bisect1, DispWidth );
+color( Bisect1, white );
+
+interact( list( axes, Cyl1, Cyl2, Bisect1 ) );
+
+save( "bsct11sm", list( Cyl1, Cyl2, Bisect1 ) );
+
+############################################################################# 
+#
+# Bisector of a Cylinder and a Cone, both in general position.
+#
+
+Ang1 = 45;
+Cntr1 = vector( -1, -2.2, 0 );
+Dir1 = vector( 0, 2, 0 );
+Apx1 = Cntr1 + Dir1;
+Rad1 = sqrt( Dir1 * Dir1 ) * tan( Ang1 * Pi / 180 );
+Cone1 = Cone( Cntr1, Dir1, Rad1, 0 );
+color( Cone1, yellow );
+
+Rad2 = 0.3;
+Dir2 = vector( 0, 0, 4 );
+Pos2 = point( 1, 0, -2 );
+Cyl2 = Cylin( coerce( Pos2, vector_type ), Dir2, Rad2, 0 );
+color( Cyl2, cyan );
+
+Bisect1Aux = BsctConCyl( coerce( Apx1, point_type ), Dir1, Ang1,
+			 Pos2, Dir2, Rad2 );
+
+Bisect1 = list( sregion( sregion( Bisect1Aux, row, 0.0, 0.23 ),
+			 col, 0.25, 0.75 ),
+		sregion( sregion( Bisect1Aux, row, 0.8, 1.0 ),
+			 col, 0.25, 0.75 ) );
+adwidth( Bisect1, DispWidth );
+color( Bisect1, white );
+
+interact( list( axes, Cone1, Cyl2, Bisect1 ) );
+
+Ang1 = 25;
+Cntr1 = vector( -1, -2.2, 0 );
+Dir1 = vector( 0, 4, 0 );
+Apx1 = Cntr1 + Dir1;
+Rad1 = sqrt( Dir1 * Dir1 ) * tan( Ang1 * Pi / 180 );
+Cone1 = Cone( Cntr1, Dir1, Rad1, 0 );
+color( Cone1, yellow );
+
+Rad2 = 0.6;
+Dir2 = vector( 0, 2, 4 );
+Pos2 = point( 2, 0, -2 );
+Cyl2 = Cylin( coerce( Pos2, vector_type ), Dir2, Rad2, 0 );
+color( Cyl2, cyan );
+
+Bisect1Aux = BsctConCyl( coerce( Apx1, point_type ), Dir1, Ang1,
+			 Pos2, Dir2, Rad2 );
+
+Bisect1 = list( sregion( sregion( Bisect1Aux, row, 0.0, 0.23 ),
+			 col, 0.25, 0.75 ),
+		sregion( sregion( Bisect1Aux, row, 0.8, 1.0 ),
+			 col, 0.25, 0.75 ) );
+adwidth( Bisect1, DispWidth );
+color( Bisect1, white );
+
+interact( list( axes, Cone1, Cyl2, Bisect1 ) );
+
+save( "bsct12sm", list( Cone1, Cyl2, Bisect1 ) );
+
+free( Bisect1Aux );
+free( Ang1 );
+free( Ang2 );
+free( Cntr1 );
+free( Cntr2 );
+free( Dir1 );
+free( Dir2 );
+free( Apx1 );
+free( Apx2 );
+free( Rad1 );
+free( Rad2 );
+free( Pos1 );
+free( Pos2 );
+free( Cone1 );
+free( Cone2 );
+free( Cyl1 );
+free( Cyl2 );
+
+#############################################################################
+
+free( DispWidth );
+free( XYPlane );
+free( bisect1 );
+free( bisect2 );
+free( bisect3 );
+free( bisect4 );
+free( bisect5 );
+free( bisect6 );
+free( bisect7 );
+free( bisect8 );
+free( bisect9 );
+
+view_mat = save_mat;
+PSrfs = iritstate( "PrimType", PSrfs );
+free( PSrfs );
+IProd = iritstate( "BspProdMethod", IProd );
+free( IProd );

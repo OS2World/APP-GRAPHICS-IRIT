@@ -1,0 +1,87 @@
+#
+# Constructs a tesselation of a sphere using 6 cube-like faces.
+#
+
+OldFrmt = iritstate( "FloatFrmt", "%-.4g" );
+
+#############################################################################
+
+GenSprUVVals = function( x, y ):
+    return = (atan( x ) / (pi / 2) + 0.5) ^ " " ^ (atan( y ) / (pi / 2) + 0.5);
+
+GenSprTriangle = function( x1, y1, x2, y2, x3, y3 ): Pt1: Pt2: Pt3: n:
+    Pt1 = normalize( point( x1, y1, 1 ) ):
+    Pt2 = normalize( point( x2, y2, 1 ) ):
+    Pt3 = normalize( point( x3, y3, 1 ) ):
+    attrib( Pt1, "uvvals", GenSprUVVals( x1, y1 ) ):
+    attrib( Pt2, "uvvals", GenSprUVVals( x2, y2 ) ):
+    attrib( Pt3, "uvvals", GenSprUVVals( x3, y3 ) ):
+    return = poly( list( Pt1, Pt2, Pt3 ), false ):
+    n = pnormal( return, 0, coerce( -Pt1, vector_type ) ):
+    n = pnormal( return, 1, coerce( -Pt2, vector_type ) ):
+    n = pnormal( return, 2, coerce( -Pt3, vector_type ) );
+
+GenSprRactangle = function( x1, y1, x2, y2 ):
+    return = GenSprTriangle( x1, y1, x2, y2, x2, y1 ) ^
+	     GenSprTriangle( x1, y1, x1, y2, x2, y2 );
+
+#############################################################################
+#
+# Create the top part
+#
+
+Res = 10;
+Step = 2 / Res;
+
+TopPolys = nil():
+for ( x = -1, Step, 1 - Step / 2,
+    for ( y = -1, Step, 1 - Step / 2,
+	if ( thisobj("TopPolys") == list_type,
+	    TopPolys = GenSprRactangle( x, y, x + Step, y + Step ),
+	    TopPolys =
+		mergePoly( list( TopPolys,
+			         GenSprRactangle( x, y,
+						  x + Step, y + Step ) ) ) ) ) );
+color( TopPolys, red );
+
+#############################################################################
+#
+# Create all the rest of the faces.
+#
+
+BotPolys = TopPolys * rx( 180 );
+RgtPolys = TopPolys * rx(  90 );
+BckPolys = RgtPolys * rz(  90 );
+LftPolys = RgtPolys * rz( 270 );
+FrnPolys = RgtPolys * rz( 180 );
+
+attrib( TopPolys, "ptexture", "top_spr.gif" );
+attrib( BotPolys, "ptexture", "top_spr.gif" );
+attrib( RgtPolys, "ptexture", "top_spr.gif" );
+attrib( BckPolys, "ptexture", "top_spr.gif" );
+attrib( LftPolys, "ptexture", "top_spr.gif" );
+attrib( FrnPolys, "ptexture", "top_spr.gif" );
+
+SprPolys = list( TopPolys, BotPolys, RgtPolys, BckPolys, LftPolys, FrnPolys );
+
+interact( SprPolys );
+
+save( "spr_poly", SprPolys );
+
+#############################################################################
+
+OldFrmt = iritstate( "FloatFrmt", OldFrmt );
+free( OldFrmt );
+
+free( TopPolys );
+free( BotPolys );
+free( RgtPolys );
+free( BckPolys );
+free( LftPolys );
+free( FrnPolys );
+free( SprPolys );
+free( Step );
+free( Res );
+free( x );
+free( y );
+

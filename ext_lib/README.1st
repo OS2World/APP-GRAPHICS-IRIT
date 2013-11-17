@@ -1,0 +1,61 @@
+This library non-core, almost extra, code and also serves as example
+to add functionality into the IRIT package.  This library comes wth a
+simple C function with the sole purpose of showing one how to link C
+functions to the IRIT interpreter.
+
+Steps (do "grep -i examplefunc */*.c */*.h" from the IRIT root
+directory to find all these locations):
+
+1. Create and place your C function in ext_lib, update the makefile if
+   it is in a new c file, in ext_lib and also update ext_lib.h in the
+   include directory on the new function (assumed called
+   'IritExampleFunction').
+
+2. Selects a unique ID for the new function and update irit/inptprsl.h
+   and add an entry as follows:
+
+   * NumValueFuncType - for functions that returns a numberic value (IrtRType).
+   * ObjValueFuncType - for functions that return IPObjectStructs'.
+   * GenValueFuncType - for functions returning nothing (void).
+
+.  For 'IritExampleFunction', we have an entry of
+
+    IP_EXAMPLEFUNC.
+   
+3. Based on this returned object type of the created function, add an entry
+   in the tables of irit/inptevl0.c as follows:
+
+   * NumFuncTable - for functions that returns a numberic value (IrtRType).
+   * ObjFuncTable - for functions that return IPObjectStructs'.
+   * GenFuncTable - for functions returning nothing (void) as 
+     'IritExampleFunction' is.
+
+   For 'IritExampleFunction' (that returns nothing) the line is:
+
+    { IPNP(EXAMPLEFUNC), IPNP2(IritExampleFunction), 2, { NUMERIC_EXPR, VECTOR_EXPR } }
+
+   The first entry sets the name of the function in IRIT interpreter
+   space (and also prepends the 'IP_' prefix), the second binds the C
+   space function, the third is the number of parameters and the
+   fourth is a list of the types of expected parameters.
+
+4. Rebuild ext_lib and then irit, only to try it out:
+
+[C:\]irit
+                Irit - the not only polygonal solid modeller
+(C) Copyright 1989-2008 Gershon Elber, Technion, Windows Ver. 10D, Jul 26 2009
+                         Written by Gershon Elber
+iritinit >
+Irit> ExampleFunc(1,1);
+ExampleFunc(1,1);
+Eval Error: Parameter type mismatch - Func EXAMPLEFUNC, parameter 2
+Irit> ExampleFunc(1,vector(1,2,31));
+ExampleFunc(1,vector(1,2,31));
+IritExampleFunction: R = 1.000000, V= [1.000000  2.000000  31.000000]
+Irit>
+
+
+
+
+
+

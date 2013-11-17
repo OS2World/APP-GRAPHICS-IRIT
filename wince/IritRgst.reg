@@ -1,0 +1,35 @@
+REGEDIT4
+
+[HKEY_CLASSES_ROOT\.ITD]
+@="wntgdrvs.exe"
+
+[HKEY_CLASSES_ROOT\.IBD]
+@="wntgdrvs.exe"
+
+[HKEY_CLASSES_ROOT\WNTGDRVS.EXE]
+
+[HKEY_CLASSES_ROOT\WNTGDRVS.EXE\DefaultIcon]
+@="\"wntgdrvs.exe\""
+
+[HKEY_CLASSES_ROOT\WNTGDRVS.EXE\shell]
+
+[HKEY_CLASSES_ROOT\WNTGDRVS.EXE\shell\open]
+
+[HKEY_CLASSES_ROOT\WNTGDRVS.EXE\shell\open\command]
+@="\"wntgdrvs.exe\" \"%1\""
+
+[HKEY_CLASSES_ROOT\.IRT]
+@="irit.exe"
+
+[HKEY_CLASSES_ROOT\IRIT.EXE]
+
+[HKEY_CLASSES_ROOT\IRIT.EXE\DefaultIcon]
+@="\"wntgdrvs.exe\""
+
+[HKEY_CLASSES_ROOT\IRIT.EXE\shell]
+
+[HKEY_CLASSES_ROOT\IRIT.EXE\shell\open]
+
+[HKEY_CLASSES_ROOT\IRIT.EXE\shell\open\command]
+@="\"irit.exe\" \"%1\""
+

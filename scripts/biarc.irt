@@ -1,0 +1,178 @@
+#
+# Same examples of G^1 cont. bi-arc approximation of freeform curves.
+#
+#					Gershon Elber, June 2003
+#
+
+#######################################################
+
+IsOdd = function( x ):
+    return = x - 2 * floor( x / 2 );
+
+DrawBiArcs = procedure( Crv, Tol, MaxAngle ): Arcs: i:
+    Arcs = CBiArcs( Crv, Tol, MaxAngle ) * tz( 0.01 ):
+    for ( i = 1, 1, sizeof( Arcs ),
+	if ( IsOdd( i ),
+	    color( nref( Arcs, i ), yellow ),
+	    color( nref( Arcs, i ), magenta ) ) ):
+    printf( "%d arcs were used in this approximation\\n",
+	    list( sizeof( Arcs ) ) ):
+    color( Crv, cyan ):
+    interact( list( axes, Crv, Arcs ) );
+
+viewstate( "PllnAprx", on );
+viewstate( "PllnAprx", on );
+
+#######################################################
+
+C1 = cregion( circle( vector( 0, 0, 0 ), 1 ), 0, 1 );
+
+DrawBiArcs( C1, 0.1, 180 );
+
+DrawBiArcs( C1, 1e-6, 180 );
+
+DrawBiArcs( C1, 1e-6, 10 );
+
+#######################################################
+
+C1 = cbspline( 3,
+    list( ctlpt( E2, 1, 0 ),
+          ctlpt( E2, 1, 1 ),
+          ctlpt( E2, 0, 1 ) ),
+    list( kv_open ) );
+
+DrawBiArcs( C1, 0.5, 180 );
+
+DrawBiArcs( C1, 0.2, 180 );
+
+DrawBiArcs( C1, 0.1, 180 );
+
+DrawBiArcs( C1, 0.001, 180 );
+
+DrawBiArcs( C1, 0.5, 10 );
+
+#######################################################
+
+C1 = cbspline( 3,
+    list( ctlpt( E3, 0.124, -0.231, 0 ),
+          ctlpt( E2, -0.165, 0.68 ),
+          ctlpt( E2, -0.417, 0.309 ),
+          ctlpt( E2, -0.272, -0.533 ),
+          ctlpt( E2, 0.636, -0.164 ),
+          ctlpt( E2, 0.528, 0.398 ),
+          ctlpt( E2, 0.173, 0.68 ) ),
+    list( kv_periodic ) );
+C1 = coerce( C1, kv_open );
+
+DrawBiArcs( C1, 0.25, 180 );
+
+DrawBiArcs( C1, 0.25, 45 );
+
+DrawBiArcs( C1, 0.25, 20 );
+
+DrawBiArcs( C1, 0.1, 180 );
+
+DrawBiArcs( C1, 0.01, 180 );
+
+#######################################################
+
+C1 = cbspline( 4,
+    list( ctlpt( E3, -0.287, -0.286, 0 ),
+          ctlpt( E2, 0.0272, -0.425 ),
+          ctlpt( E2, 0.265, -0.0839 ),
+          ctlpt( E2, 0.607, -0.165 ),
+          ctlpt( E2, 0.832, -0.205 ),
+          ctlpt( E2, 0.737, 0.042 ),
+          ctlpt( E2, 0.357, 0.103 ),
+          ctlpt( E2, 0.508, 0.298 ),
+          ctlpt( E2, 0.814, 0.649 ),
+          ctlpt( E2, 0.692, 0.775 ),
+          ctlpt( E2, 0.411, 0.391 ),
+          ctlpt( E2, 0.301, 0.315 ),
+          ctlpt( E2, 0.625, 0.945 ),
+          ctlpt( E2, 0.49, 1.03 ),
+          ctlpt( E2, 0.369, 0.829 ),
+          ctlpt( E2, 0.185, 0.384 ),
+          ctlpt( E2, 0.194, 0.518 ),
+          ctlpt( E2, 0.243, 1.09 ),
+          ctlpt( E2, 0.0653, 1.13 ),
+          ctlpt( E2, 0.0644, 0.381 ),
+          ctlpt( E2, 0.00925, 0.496 ),
+          ctlpt( E2, -0.0113, 0.943 ),
+          ctlpt( E2, -0.202, 0.954 ),
+          ctlpt( E2, -0.147, 0.644 ),
+          ctlpt( E2, -0.162, 0.208 ),
+          ctlpt( E2, -0.337, -0.156 ) ),
+    list( kv_periodic ) );
+C1 = coerce( C1, kv_open );
+
+DrawBiArcs( C1, 0.25, 180 );
+
+DrawBiArcs( C1, 0.1, 180 );
+
+DrawBiArcs( C1, 0.01, 180 );
+
+save( "biarc1", list( C1, CBiArcs( C1, 0.1, 180 ) ) );
+
+#######################################################
+
+C1 = cbspline( 3,
+    list( ctlpt( E3, -0.04, 0.332, 0 ),
+          ctlpt( E2, -0.044, 0.229 ),
+          ctlpt( E2, -0.085, 0.229 ),
+          ctlpt( E2, -0.165, 0.68 ),
+          ctlpt( E2, -0.219, 0.68 ),
+          ctlpt( E2, -0.112, 0.202 ),
+          ctlpt( E2, -0.224, 0.166 ),
+          ctlpt( E2, -0.358, 0.383 ),
+          ctlpt( E2, -0.467, 0.48 ),
+          ctlpt( E2, -0.512, 0.431 ),
+          ctlpt( E2, -0.417, 0.309 ),
+          ctlpt( E2, -0.583, 0.363 ),
+          ctlpt( E2, -0.556, -0.028 ),
+          ctlpt( E2, 0.004, -0.398 ),
+          ctlpt( E2, 0.564, -0.028 ),
+          ctlpt( E2, 0.59, 0.363 ),
+          ctlpt( E2, 0.425, 0.309 ),
+          ctlpt( E2, 0.519, 0.431 ),
+          ctlpt( E2, 0.474, 0.48 ),
+          ctlpt( E2, 0.366, 0.383 ),
+          ctlpt( E2, 0.232, 0.166 ),
+          ctlpt( E2, 0.119, 0.202 ),
+          ctlpt( E2, 0.227, 0.68 ),
+          ctlpt( E2, 0.173, 0.68 ),
+          ctlpt( E2, 0.092, 0.229 ),
+          ctlpt( E2, 0.052, 0.229 ),
+          ctlpt( E2, 0.047, 0.332 ) ),
+    list( kv_periodic ) );
+C1 = coerce( C1, kv_open );
+
+DrawBiArcs( C1, 0.25, 180 );
+
+DrawBiArcs( C1, 0.1, 180 );
+
+DrawBiArcs( C1, 0.01, 180 );
+
+save( "biarc2", list( C1, CBiArcs( C1, 0.01, 180 ) ) );
+
+#######################################################
+
+C1 = cregion( circle( vector( 0, 0, 0 ), 1 ), 0, 1 ) * sc( 0.25 );
+C1 = ( C1 + C1 * rz( 90 ) * tx( -0.5 ) ) * tx( 0.25 ) * ty( 0.5 );
+C1 = C1 + C1 * rz( 180 ) +
+     ctlpt( e2, 0.5, 0.5 );
+
+DrawBiArcs( C1, 0.25, 180 );
+
+DrawBiArcs( C1, 0.1, 180 );
+
+DrawBiArcs( C1, 1e-6, 180 );
+
+save( "biarc3", list( C1, CBiArcs( C1, 0.01, 180 ) ) );
+
+#######################################################
+
+viewstate( "PllnAprx", off );
+viewstate( "PllnAprx", off );
+
+free( C1 );

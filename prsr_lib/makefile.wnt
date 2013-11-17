@@ -1,0 +1,67 @@
+#
+# This is the make file for the prsr. lib subdirectory.
+#
+#				Gershon Elber, June 1993
+#
+
+# Get the destination directories:
+include ..\makeflag.wnt
+
+OBJS =  allocate.$(IRIT_OBJ_PF) \
+	attribut.$(IRIT_OBJ_PF) \
+	coerce.$(IRIT_OBJ_PF) \
+	cnv2irit.$(IRIT_OBJ_PF) \
+	ff_cnvrt.$(IRIT_OBJ_PF) \
+	igs_irit.$(IRIT_OBJ_PF) \
+	ip_cnvrt.$(IRIT_OBJ_PF) \
+	ip_procs.$(IRIT_OBJ_PF) \
+	irit_dxf.$(IRIT_OBJ_PF) \
+	irit_igs.$(IRIT_OBJ_PF) \
+	irit_obj.$(IRIT_OBJ_PF) \
+	irit_stl.$(IRIT_OBJ_PF) \
+	irit_cnc.$(IRIT_OBJ_PF) \
+	iritwcnc.$(IRIT_OBJ_PF) \
+	iritprs1.$(IRIT_OBJ_PF) \
+	iritprs2.$(IRIT_OBJ_PF) \
+	iritprsb.$(IRIT_OBJ_PF) \
+	iritprsc.$(IRIT_OBJ_PF) \
+	iritprsd.$(IRIT_OBJ_PF) \
+	iritvrml.$(IRIT_OBJ_PF) \
+	linklist.$(IRIT_OBJ_PF) \
+	obj_dpnd.$(IRIT_OBJ_PF) \
+	objirlst.$(IRIT_OBJ_PF) \
+	obj_irit.$(IRIT_OBJ_PF) \
+	prsrgeom.$(IRIT_OBJ_PF) \
+	prsr_err.$(IRIT_OBJ_PF) \
+	prsr_ftl.$(IRIT_OBJ_PF) \
+	sock_aux.$(IRIT_OBJ_PF) \
+	sockets.$(IRIT_OBJ_PF) \
+	stl_irit.$(IRIT_OBJ_PF)
+
+RW_OBJS = cagdread.$(IRIT_OBJ_PF) \
+	cagd_wrt.$(IRIT_OBJ_PF) \
+	bsp_read.$(IRIT_OBJ_PF) \
+	bsp_wrt.$(IRIT_OBJ_PF) \
+	bzr_read.$(IRIT_OBJ_PF) \
+	bzr_wrt.$(IRIT_OBJ_PF) \
+	mdl_read.$(IRIT_OBJ_PF) \
+	mdl_wrt.$(IRIT_OBJ_PF) \
+	mvarread.$(IRIT_OBJ_PF) \
+	mvar_wrt.$(IRIT_OBJ_PF) \
+	trivread.$(IRIT_OBJ_PF) \
+	triv_wrt.$(IRIT_OBJ_PF) \
+	trimread.$(IRIT_OBJ_PF) \
+	trim_wrt.$(IRIT_OBJ_PF) \
+	trngread.$(IRIT_OBJ_PF) \
+	trng_wrt.$(IRIT_OBJ_PF)
+
+$(PRSR_LIB): $(OBJS) $(RW_OBJS)
+	-del $(PRSR_LIB)
+	$(IRITLIB) -out:$(PRSR_LIB) $(OBJS) $(RW_OBJS)
+
+$(IRIT_LIB_DIR)\$(PRSR_LIB): $(PRSR_LIB)
+	copy $(PRSR_LIB) $(IRIT_LIB_DIR)
+
+install: $(IRIT_LIB_DIR)\$(PRSR_LIB)
+
+# Dependencies starts here - do not touch, generated automatically.

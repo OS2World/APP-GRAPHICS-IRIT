@@ -1,0 +1,107 @@
+#
+# Arc length approximation reparametrizations,  Gershon Elber, Dec. 2002.
+#
+
+asqrt = function( x ):
+    if ( x < 0,
+	x = 0 ):
+    return = sqrt( x );
+
+PrintSpeedChanges = procedure( Str, Crv ): SpeedSqr: dc:
+    dc = cderive( Crv ):
+    SpeedSqr = bbox( symbDProd( dc, dc ) ):
+    printf( "%s [%f %f]\\n",
+	    list( Str,
+		  asqrt( nth( SpeedSqr, 1 ) ),
+	          asqrt( nth( SpeedSqr, 2 ) ) ) );
+
+view_mat1 = rx( 0 );
+viewobj( view_mat1 );
+
+# Faster product using Bezier decomposition.
+Ip = iritstate( "BspProdMethod", 0 );
+
+#############################################################################
+
+c = cbezier( list( ctlpt( E2, 0, 0 ),
+		   ctlpt( E2, 0, 1 ),
+		   ctlpt( E2, 10, 1 ) ) ) * sc( 0.15 ) * tx( -0.8 );
+adwidth( c, 4 );
+PrintSpeedChanges( "Speed bounds of original curve: ", c );
+
+c2 = carclen( c, 0.0001, 3 );
+color( c2, red );
+adwidth( c2, 2 );
+PrintSpeedChanges( "Speed bounds of arc length approx curve: ", c2 );
+
+c2 = carclen( c, 0.00001, 3 );
+color( c2, red );
+adwidth( c2, 2 );
+PrintSpeedChanges( "Speed bounds of arc length approx curve: ", c2 );
+
+save( "arc1len", list( c, c2 ) );
+
+interact( list( c, c2 ) );
+
+#############################################################################
+
+c = cbspline( 4,
+    list( ctlpt( E3, 2.074, 5.757, 0. ),
+          ctlpt( E2, 0.128, 4.94 ),
+          ctlpt( E2, 1.602, 1.068 ),
+          ctlpt( E2, 2.679, 1.495 ),
+          ctlpt( E2, 2.913, 0.734 ),
+          ctlpt( E2, 2.317, 0.175 ),
+          ctlpt( E2, 2.41, -0.289 ),
+          ctlpt( E2, 2.563, -0.255 ),
+          ctlpt( E2, 2.799, 0.219 ),
+          ctlpt( E2, 2.741, 0.421 ),
+          ctlpt( E2, 3.019, 0.482 ),
+          ctlpt( E2, 3.14, 0.414 ),
+          ctlpt( E2, 3.161, 0.12 ),
+          ctlpt( E2, 3.051, -0.078 ),
+          ctlpt( E2, 3.04, -0.238 ),
+          ctlpt( E2, 3.028, -0.416 ),
+          ctlpt( E2, 3.218, -0.452 ),
+          ctlpt( E2, 3.418, -0.31 ),
+          ctlpt( E2, 3.626, -0.126 ),
+          ctlpt( E2, 3.77, 0.027 ),
+          ctlpt( E2, 4.305, 0.086 ),
+          ctlpt( E2, 5.569, -0.845 ),
+          ctlpt( E2, 6.914, -2.508 ),
+          ctlpt( E2, 11.147, -1.629 ),
+          ctlpt( E2, 8.565, -0.453 ),
+          ctlpt( E2, 4.533, 1.283 ),
+          ctlpt( E2, 8.031, 2.972 ),
+          ctlpt( E2, 9.304, 4.314 ),
+          ctlpt( E2, 8.252, 6.532 ),
+          ctlpt( E2, 5.942, 5.176 ),
+          ctlpt( E2, 5.483, 1.597 ),
+          ctlpt( E2, 3.427, 2.095 ) ),
+    list( kv_periodic ) ) * sc( 0.1 ) * tx( -0.5 ) * ty( -0.2 );
+adwidth( c, 4 );
+
+PrintSpeedChanges( "Speed bounds of original curve: ", coerce( c, kv_open ) );
+
+c2 = carclen( coerce( c, kv_open ), 5e-5, 3 );
+color( c2, red );
+adwidth( c2, 2 );
+PrintSpeedChanges( "Speed bounds of arc length approx curve: ", c2 );
+
+c2 = carclen( coerce( c, kv_open ), 2e-5, 3 );
+color( c2, red );
+adwidth( c2, 2 );
+PrintSpeedChanges( "Speed bounds of arc length approx curve: ", c2 );
+
+save( "arc2len", list( c, c2 ) );
+
+interact( list( c, c2 ) );
+
+#############################################################################
+
+Ip = iritstate( "BspProdMethod", Ip );
+free( Ip );
+
+free( view_mat1 );
+free( c );
+free( c2 );

@@ -1,0 +1,279 @@
+#
+# Some routines to test the multi variate library.
+#
+# We mainly compare against the similar tools for curves/surfaces/trivariates.
+#
+#			Gershon Elber, July 1997.
+#
+
+PrintTest = procedure( Title, Res1, Res2 ):
+    printf( "%9s test - %d\\n", list( Title, Res1 == Res2 ) ):
+    if ( Res1 != Res2, pause() );
+
+# Faster product using Bezier decomposition.
+IProd = iritstate( "BspProdMethod", 0 );
+EchoSrc = iritState( "EchoSource", false );
+DLevel = iritState( "DumpLevel", 256 + 1 );
+
+c1 = cbezier( list( ctlpt( E3, -1,  0.5, 2 ),
+		    ctlpt( E3,  0,  0,   2 ),
+		    ctlpt( E3,  1, -1,   2 ),
+		    ctlpt( E3,  1,  1,   2 ) ) );
+attrib( c1, "width", 0.02 );
+attrib( c1, "color", 14 );
+
+c2 = pcircle( vector( 1, 2, 3 ), 1.25 );
+c2 = creparam( c2, 0, 1 );
+attrib( c2, "width", 0.02 );
+attrib( c2, "color", 15 );
+
+s1 = sbezier(
+	list( list( ctlpt( E3, 0, 0, 0 ),
+	            ctlpt( E3, 0.25, 1, 0.5 ),
+	            ctlpt( E3, 0.5, 0.25, 1 ) ),
+	      list( ctlpt( E3, 0.5, -1, 0 ),
+	            ctlpt( E3, 0.75, 0.25, 0.5 ),
+	            ctlpt( E3, 1, -0.5, 1 ) ),
+	      list( ctlpt( E3, 1, 0, 0 ),
+	            ctlpt( E3, 1.25, 1, 0.5 ),
+	            ctlpt( E3, 1.3, 0.25, 1 ) ) ) );
+attrib( s1, "color", 7);
+attrib( s1, "rgb", "244,164,96");
+
+s2 = sphereSrf( 1.25 );
+#s2 = sregion( sregion( sphereSrf( 1.25 ), row, 0, 2 ), col, 0, 4 );
+s2 = sreparam( sreparam( s2, row, 0, 1 ), col, 0, 1 );
+attrib( s2, "color", 7);
+attrib( s2, "rgb", "164,244,96");
+
+t1 = tbezier(
+	list( list( list( ctlpt( E3, -0.69, 0.31, -0.6 ),
+	                  ctlpt( E3, -0.68, 0.35, -0.39 ),
+	                  ctlpt( E3, -0.67, 0.31, -0.18 ) ),
+	            list( ctlpt( E3, -0.66, 0.63, -0.65 ),
+	                  ctlpt( E3, -0.75, 0.67, -0.23 ),
+	                  ctlpt( E3, -0.64, 0.63, -0.11 ) ),
+	            list( ctlpt( E3, -0.63, 0.84, -0.65 ),
+	                  ctlpt( E3, -0.62, 0.96, -0.36 ),
+	                  ctlpt( E3, -0.61, 0.88, -0.17 ) ) ),
+	      list( list( ctlpt( E3, -0.39, 0.31, -0.65 ),
+	                  ctlpt( E3, -0.37, 0.32, -0.43 ),
+	                  ctlpt( E3, -0.35, 0.33, -0.11 ) ),
+	            list( ctlpt( E3, -0.33, 0.62, -0.6 ),
+	                  ctlpt( E3, -0.31, 0.64, -0.28 ),
+	                  ctlpt( E3, -0.38, 0.66, -0.06 ) ),
+	            list( ctlpt( E3, -0.36, 0.93, -0.81 ),
+	                  ctlpt( E3, -0.34, 0.85, -0.43 ),
+	                  ctlpt( E3, -0.32, 0.97, -0.15 ) ) ),
+	      list( list( ctlpt( E3, -0.02, 0.21, -0.56 ),
+	                  ctlpt( E3, -0.04, 0.37, -0.27 ),
+	                  ctlpt( E3, -0.06, 0.22, -0.18 ) ),
+	            list( ctlpt( E3, -0.08, 0.61, -0.76 ),
+	                  ctlpt( E3, -0.01, 0.62, -0.25 ),
+	                  ctlpt( E3, -0.03, 0.63, -0.14 ) ),
+	            list( ctlpt( E3, -0.05, 0.99, -0.73 ),
+	                  ctlpt( E3, -0.07, 0.98, -0.43 ),
+	                  ctlpt( E3, -0.09, 0.97, -0.13 ) ) ) ) );
+attrib( t1, "color", 4);
+attrib( t1, "rgb", "244,164,96");
+
+t2 = trefine( trefine( t1, row, false, list( 0.3, 0.6 ) ),
+	      col, false, list( 0.5 ) );
+attrib( t2, "color", 7);
+attrib( t2, "rgb", "244,164,96");
+
+mc1 = coerce( c1, multivar_type );
+mc2 = coerce( c2, multivar_type );
+ms1 = coerce( s1, multivar_type );
+ms2 = coerce( s2, multivar_type );
+mt1 = coerce( t1, multivar_type );
+mt2 = coerce( t2, multivar_type );
+
+PrintTest( "CRAISE", craise( c1, 5 ),
+	             coerce( mraise( mc1, 0, 5 ), curve_type ) );
+PrintTest( "CRAISE", craise( c2, 5 ),
+		     coerce( mraise( mc2, 0, 5 ), curve_type ) );
+
+PrintTest( "CRAISE", craise( c1, 8 ),
+		     coerce( mraise( mc1, 0, 8 ), curve_type ) );
+PrintTest( "CRAISE", craise( c2, 8 ),
+		     coerce( mraise( mc2, 0, 8 ), curve_type ) );
+
+PrintTest( "SRAISE", sraise( s1, col, 5 ),
+		     coerce( mraise( ms1, 0, 5 ), surface_type ) );
+PrintTest( "SRAISE", sraise( s1, row, 5 ),
+		     coerce( mraise( ms1, 1, 5 ), surface_type ) );
+
+PrintTest( "SRAISE", sraise( s2, col, 7 ),
+		     coerce( mraise( ms2, 0, 7 ), surface_type ) );
+PrintTest( "SRAISE", sraise( s2, row, 7 ),
+		     coerce( mraise( ms2, 1, 7 ), surface_type ) );
+
+PrintTest( "TSRAISE", traise( t1, col, 7 ),
+		      coerce( mraise( mt1, 0, 7 ), trivar_type ) );
+PrintTest( "TSRAISE", traise( t1, row, 11 ),
+		      coerce( mraise( mt1, 1, 11 ), trivar_type ) );
+PrintTest( "TSRAISE", traise( t1, depth, 5 ),
+		      coerce( mraise( mt1, 2, 5 ), trivar_type ) );
+
+PrintTest( "TSRAISE", traise( t2, col, 7 ),
+		      coerce( mraise( mt2, 0, 7 ), trivar_type ) );
+PrintTest( "TSRAISE", traise( t2, row, 11 ),
+		      coerce( mraise( mt2, 1, 11 ), trivar_type ) );
+PrintTest( "TSRAISE", traise( t2, depth, 5 ),
+		      coerce( mraise( mt2, 2, 5 ), trivar_type ) );
+
+PrintTest( "SMERGE", smerge( s1, s1, col, true ),
+		     coerce( mmerge( ms1, ms1, 0, false ), surface_type ) );
+PrintTest( "SMERGE", smerge( s1, s1, row, true ),
+		     coerce( mmerge( ms1, ms1, 1, false ), surface_type ) );
+PrintTest( "SMERGE", smerge( s2, s2, col, true ),
+		     coerce( mmerge( ms2, ms2, 0, false ), surface_type ) );
+PrintTest( "SMERGE", smerge( s2, s2, row, true ),
+		     coerce( mmerge( ms2, ms2, 1, false ), surface_type ) );
+
+dir = 0;
+m = mdivide( mc1, dir, 0.5 );
+m1 = nth( m, 1 );
+m2 = nth( m, 2 );
+PrintTest( "MDIVIDE", mmerge( m1, m2, dir, false ),
+    mreparam( mrefine( mc1, dir, false, list( 0.5, 0.5, 0.5 ) ), dir, 0, 2 ) );
+
+dir = 0;
+m = mdivide( ms1, dir, 0.5 );
+m1 = nth( m, 1 );
+m2 = nth( m, 2 );
+PrintTest( "MDIVIDE", mmerge( m1, m2, dir, false ),
+         mreparam( mrefine( ms1, dir, false, list( 0.5, 0.5 ) ), dir, 0, 2 ) );
+
+dir = 1;
+m = mdivide( ms1, dir, 0.5 );
+m1 = nth( m, 1 );
+m2 = nth( m, 2 );
+PrintTest( "MDIVIDE", mmerge( m1, m2, dir, false ),
+         mreparam( mrefine( ms1, dir, false, list( 0.5, 0.5 ) ), dir, 0, 2 ) );
+
+dir = 0;
+m = mdivide( mt1, dir, 0.5 );
+m1 = nth( m, 1 );
+m2 = nth( m, 2 );
+PrintTest( "MDIVIDE", mmerge( m1, m2, dir, false ),
+         mreparam( mrefine( mt1, dir, false, list( 0.5, 0.5 ) ), dir, 0, 2 ) );
+
+dir = 1;
+m = mdivide( mt1, dir, 0.5 );
+m1 = nth( m, 1 );
+m2 = nth( m, 2 );
+PrintTest( "MDIVIDE", mmerge( m1, m2, dir, false ),
+         mreparam( mrefine( mt1, dir, false, list( 0.5, 0.5 ) ), dir, 0, 2 ) );
+
+dir = 2;
+m = mdivide( mt2, dir, 0.5 );
+m1 = nth( m, 1 );
+m2 = nth( m, 2 );
+PrintTest( "MDIVIDE", mmerge( m1, m2, dir, false ),
+         mreparam( mrefine( mt2, dir, false, list( 0.5, 0.5 ) ), dir, 0, 1 ) );
+
+PrintTest( "FFMERGE", ffmerge( ffsplit( mc1 ), E3 ), mc1 );
+PrintTest( "FFMERGE", ffmerge( ffsplit( ms1 ), E3 ), ms1 );
+PrintTest( "FFMERGE", ffmerge( ffsplit( mt1 ), E3 ), mt1 );
+PrintTest( "FFMERGE", ffmerge( ffsplit( mt2 ), E3 ), mt2 );
+
+PrintTest( "SymbDiff", SymbDiff( c1,  c1 ),
+		       coerce( SymbDiff( mc1, mc1 ), curve_type ) );
+PrintTest( "SymbDiff", SymbDiff( c2,  c2 ),
+		       coerce( SymbDiff( mc2, mc2 ), curve_type ) );
+PrintTest( "SymbDiff", SymbDiff( c1,  c2 ),
+		       coerce( SymbDiff( mc1, mc2 ), curve_type ) );
+
+PrintTest( "SymbSum", SymbSum( c1, c1 ),
+		      coerce( SymbSum( mc1, mc1 ), curve_type ) );
+PrintTest( "SymbSum", SymbSum( c2, c2 ),
+		      coerce( SymbSum( mc2, mc2 ), curve_type ) );
+PrintTest( "SymbSum", SymbSum( c1, c2 ),
+		      coerce( SymbSum( mc1, mc2 ), curve_type ) );
+
+
+PrintTest( "SymbDiff", SymbDiff( s1,  s1 ),
+		       coerce( SymbDiff( ms1, ms1 ), surface_type ) );
+PrintTest( "SymbDiff", SymbDiff( s2,  s2 ),
+		       coerce( SymbDiff( ms2, ms2 ), surface_type ) );
+PrintTest( "SymbDiff", SymbDiff( s1,  s2 ),
+		       coerce( SymbDiff( ms1, ms2 ), surface_type ) );
+
+PrintTest( "SymbProd", SymbProd( s1,  s1 ),
+		       coerce( SymbProd( ms1, ms1 ), surface_type ) );
+PrintTest( "SymbProd", SymbProd( s2,  s2 ),
+		       coerce( SymbProd( ms2, ms2 ), surface_type ) );
+PrintTest( "SymbProd", SymbProd( s1,  s2 ),
+		       coerce( SymbProd( ms1, ms2 ), surface_type ) );
+
+PrintTest( "SymbProd", SymbProd( c1,  c1 ),
+		       coerce( SymbProd( mc1, mc1 ), curve_type ) );
+PrintTest( "SymbProd", SymbProd( c2,  c2 ),
+		       coerce( SymbProd( mc2, mc2 ), curve_type ) );
+PrintTest( "SymbProd", SymbProd( c1,  c2 ),
+		       coerce( SymbProd( mc1, mc2 ), curve_type ) );
+
+save( "multivr2",
+      list( mraise( mc2, 0, 5 ),
+	    mraise( ms2, 4, 5 ),
+	    mraise( mt1, 2, 5 ),
+	    mraise( mt2, 3, 6 ),
+	    mmerge( ms1, ms1, 0, false ),
+	    SymbDiff( mc2, mc2 ),
+	    SymbDiff( ms1, ms2 ),
+	    SymbProd( ms1, ms2 ),
+	    SymbProd( ms1, ms1 ) ) );
+
+#
+# Examine MZERO
+# 
+s1 = Bivariate2Bezier( "x^2 + y^2 - 1", 2, 2 );
+s1 = coerce( sregion( sregion( s1, col, -3, 3 ), row, -3, 3 ), multivar_type );
+s2 = Bivariate2Bezier( "(x + 1)^2 + y^2 - 1", 2, 2 );
+s2 = coerce( sregion( sregion( s2, col, -3, 3 ), row, -3, 3 ), multivar_type );
+
+Sol = mzero( list( s1, s2 ), 0.01, 1e-6 );
+color( Sol, red );
+m = rotx( -90 ) * roty( -90 ) * sz( 0.1 );
+interact( list( coerce( coerce( s1, surface_type ), e3 ) * m,
+	        coerce( coerce( s2, surface_type ), e3 ) * m,
+	        coerce( coerce( s2, surface_type ), e3 ) * m * sz( 0 ),
+	        Sol ) );
+
+Sol = mzero( list( s1 ), 0.01, 1e-6 );
+color( Sol, red );
+m = rotx( -90 ) * roty( -90 ) * sz( 0.1 );
+interact( list( coerce( coerce( s1, surface_type ), e3 ) * m,
+	        coerce( coerce( s2, surface_type ), e3 ) * m * sz( 0 ),
+	        Sol ) );
+
+#
+# Restore state
+#
+free( m2 );
+free( m1 );
+free( m );
+free( Dir );
+free( mt1 );
+free( mt2 );
+free( ms1 );
+free( ms2 );
+free( mc1 );
+free( mc2 );
+free( t1 );
+free( t2 );
+free( s1 );
+free( s2 );
+free( c1 );
+free( c2 );
+free( Sol );
+
+dummy = iritstate( "BspProdMethod", IProd );
+free( IProd );
+dummy = iritState( "EchoSource", EchoSrc );
+free( EchoSrc );
+dummy = iritState( "DumpLevel", DLevel );
+free( DLevel );
+

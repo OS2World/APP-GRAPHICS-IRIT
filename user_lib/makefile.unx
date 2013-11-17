@@ -1,0 +1,47 @@
+#
+# This is the make file for the user_lib library.
+#
+#				Gershon Elber, Aug 1990
+#
+
+include ../makeflag.unx
+
+OBJS =  belts.o$(IRIT_OBJ_PF) \
+	crvtranl.o$(IRIT_OBJ_PF) \
+	crv_arng.o$(IRIT_OBJ_PF) \
+	ddm_text.o$(IRIT_OBJ_PF) \
+	dtr3d2im.o$(IRIT_OBJ_PF) \
+	dtr3d3im.o$(IRIT_OBJ_PF) \
+	ff_krnl.o$(IRIT_OBJ_PF) \
+	geomcovr.o$(IRIT_OBJ_PF) \
+	imgshd3d.o$(IRIT_OBJ_PF) \
+	hrmt_crv.o$(IRIT_OBJ_PF) \
+	nc_tpath.o$(IRIT_OBJ_PF) \
+	register.o$(IRIT_OBJ_PF) \
+	scalimag.o$(IRIT_OBJ_PF) \
+	rldmatch.o$(IRIT_OBJ_PF) \
+	srfcrvtr.o$(IRIT_OBJ_PF) \
+	srfpgeom.o$(IRIT_OBJ_PF) \
+        srf_mrch.o$(IRIT_OBJ_PF) \
+	srf_cntr.o$(IRIT_OBJ_PF) \
+	srf_ssi.o$(IRIT_OBJ_PF) \
+	textwarp.o$(IRIT_OBJ_PF) \
+	tv0jacob.o$(IRIT_OBJ_PF) \
+	user_ftl.o$(IRIT_OBJ_PF) \
+	user_err.o$(IRIT_OBJ_PF) \
+	userpick.o$(IRIT_OBJ_PF) \
+	usrcnvrt.o$(IRIT_OBJ_PF) \
+	visible.o$(IRIT_OBJ_PF) \
+	zcollide.o$(IRIT_OBJ_PF)
+
+all:	libIritUser$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+
+libIritUser$(IRIT_LIB_PF).$(IRIT_LIB_SFX): $(OBJS)
+	rm -f libIritUser$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+	$(IRIT_LIB_MAKE) libIritUser$(IRIT_LIB_PF).$(IRIT_LIB_SFX) *.o$(IRIT_OBJ_PF)
+	-$(IRIT_LIB_RAN) libIritUser$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+
+install: libIritUser$(IRIT_LIB_PF).$(IRIT_LIB_SFX)
+	mv -f libIritUser$(IRIT_LIB_PF).$(IRIT_LIB_SFX) $(IRIT_LIB_DIR)
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

@@ -1,0 +1,220 @@
+
+#
+# Makefile for the iritfltr subdirectory (IRIT solid modeller).
+#
+
+include ..\makeflag.os2
+
+
+IRIT2DXF_OBJS = irit2dxf.o
+IRIT2HGL_OBJS = irit2hgl.o
+IRIT2IGS_OBJS  = irit2igs.o
+IRIT2IV_OBJS  = irit2iv.o
+IRIT2NFF_OBJS = irit2nff.o
+IRIT2OBJ_OBJS = irit2obj.o
+IRIT2OFF_OBJS = irit2off.o
+IRIT2PLG_OBJS = irit2plg.o
+IRIT2POV_OBJS = irit2pov.o
+IRIT2PS_OBJS  = irit2ps.o
+IRIT2RAY_OBJS = irit2ray.o
+IRIT2SCN_OBJS = irit2scn.o
+IRIT2STL_OBJS = irit2stl.o
+IRIT2WRL_OBJS = irit2wrl.o
+IRIT2XFG_OBJS = irit2xfg.o
+
+3DS2IRIT_OBJS = 3ds2irit.o
+DAT2IRIT_OBJS = dat2irit.o
+DXF2IRIT_OBJS = dxf2irit.o
+IGS2IRIT_OBJS = igs2irit.o
+OBJ2IRIT_OBJS = obj2irit.o
+OFF2IRIT_OBJS = off2irit.o
+STL2IRIT_OBJS = stl2irit.o
+DAT2BIN_OBJS = dat2bin.o
+SKELETN1_OBJS = skeletn1.o
+
+
+all:	irit2dxf.exe irit2hgl.exe irit2igs.exe irit2iv.exe irit2nff.exe \
+	irit2obj.exe irit2off.exe irit2plg.exe irit2pov.exe irit2ps.exe \
+	irit2ray.exe irit2scn.exe irit2stl.exe irit2wrl.exe irit2xfg.exe \
+	3ds2irit.exe dat2bin.exe dat2irit.exe dxf2irit.exe igs2irit.exe \
+	obj2irit.exe off2irit.exe skeletn1.exe stl2irit.exe 
+
+
+irit2dxf.exe:	$(IRIT2DXF_OBJS)
+
+irit2hgl.exe:	$(IRIT2HGL_OBJS)
+
+irit2iv.exe:	$(IRIT2IV_OBJS)
+ 
+irit2igs.exe:	$(IRIT2IGS_OBJS)
+ 
+irit2nff.exe:	$(IRIT2NFF_OBJS)
+
+irit2obj.exe:	$(IRIT2OBJ_OBJS)
+
+irit2off.exe:	$(IRIT2OFF_OBJS)
+
+irit2plg.exe:	$(IRIT2PLG_OBJS)
+
+irit2pov.exe:	$(IRIT2POV_OBJS)
+
+irit2ps.exe:	$(IRIT2PS_OBJS)
+
+irit2ray.exe:	$(IRIT2RAY_OBJS)
+
+irit2scn.exe:	$(IRIT2SCN_OBJS)
+
+irit2stl.exe:	$(IRIT2STL_OBJS)
+
+irit2wrl.exe:	$(IRIT2WRL_OBJS)
+
+irit2xfg.exe:	$(IRIT2XFG_OBJS)
+
+
+
+3ds2irit.exe:	$(3DS2IRIT_OBJS)
+
+dat2bin.exe:	$(DAT2BIN_OBJS)
+
+dat2irit.exe:	$(DAT2IRIT_OBJS)
+
+dxf2irit.exe:	$(DXF2IRIT_OBJS)
+
+igs2irit.exe:	$(IGS2IRIT_OBJS)
+
+obj2irit.exe:	$(OBJ2IRIT_OBJS)
+
+off2irit.exe:	$(OFF2IRIT_OBJS)
+
+skeletn1.exe:	$(SKELETN1_OBJS)
+
+stl2irit.exe:	$(STL2IRIT_OBJS)
+
+install: all
+	$(CP) *.exe $(IRIT_BIN_DIR)
+	$(RM) *.exe 
+
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.
+
+3ds2irit.o: ../include/irit_sm.h ../include/iritprsr.h ../include/cagd_lib.h
+3ds2irit.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+3ds2irit.o: ../include/trim_lib.h ../include/triv_lib.h ../include/trng_lib.h
+3ds2irit.o: ../include/mdl_lib.h ../include/mvar_lib.h ../include/allocate.h
+3ds2irit.o: ../include/obj_dpnd.h ../include/attribut.h ../include/geom_lib.h
+dat2bin.o: ../include/irit_sm.h ../include/iritprsr.h ../include/cagd_lib.h
+dat2bin.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+dat2bin.o: ../include/trim_lib.h ../include/triv_lib.h ../include/trng_lib.h
+dat2bin.o: ../include/mdl_lib.h ../include/mvar_lib.h ../include/attribut.h
+dat2bin.o: ../include/allocate.h ../include/obj_dpnd.h ../include/iritgrap.h
+dat2bin.o: ../include/geom_lib.h ../include/ip_cnvrt.h
+dat2irit.o: ../include/irit_sm.h ../include/iritprsr.h ../include/cagd_lib.h
+dat2irit.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+dat2irit.o: ../include/trim_lib.h ../include/triv_lib.h ../include/trng_lib.h
+dat2irit.o: ../include/mdl_lib.h ../include/mvar_lib.h ../include/allocate.h
+dat2irit.o: ../include/obj_dpnd.h ../include/attribut.h
+dxf2irit.o: ../include/irit_sm.h ../include/iritprsr.h ../include/cagd_lib.h
+dxf2irit.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+dxf2irit.o: ../include/trim_lib.h ../include/triv_lib.h ../include/trng_lib.h
+dxf2irit.o: ../include/mdl_lib.h ../include/mvar_lib.h ../include/allocate.h
+dxf2irit.o: ../include/obj_dpnd.h ../include/attribut.h ../include/geom_lib.h
+igs2irit.o: ../include/irit_sm.h ../include/iritprsr.h ../include/cagd_lib.h
+igs2irit.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+igs2irit.o: ../include/trim_lib.h ../include/triv_lib.h ../include/trng_lib.h
+igs2irit.o: ../include/mdl_lib.h ../include/mvar_lib.h ../include/allocate.h
+igs2irit.o: ../include/obj_dpnd.h ../include/attribut.h ../include/ip_cnvrt.h
+igs2irit.o: ../include/iritgrap.h ../include/geom_lib.h
+irit2dxf.o: ../include/irit_sm.h ../include/iritprsr.h ../include/cagd_lib.h
+irit2dxf.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+irit2dxf.o: ../include/trim_lib.h ../include/triv_lib.h ../include/trng_lib.h
+irit2dxf.o: ../include/mdl_lib.h ../include/mvar_lib.h ../include/allocate.h
+irit2dxf.o: ../include/obj_dpnd.h ../include/attribut.h ../include/iritgrap.h
+irit2dxf.o: ../include/geom_lib.h ../include/ip_cnvrt.h
+irit2hgl.o: ../include/irit_sm.h ../include/iritprsr.h ../include/cagd_lib.h
+irit2hgl.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+irit2hgl.o: ../include/trim_lib.h ../include/triv_lib.h ../include/trng_lib.h
+irit2hgl.o: ../include/mdl_lib.h ../include/mvar_lib.h ../include/allocate.h
+irit2hgl.o: ../include/obj_dpnd.h ../include/attribut.h ../include/iritgrap.h
+irit2hgl.o: ../include/geom_lib.h ../include/ip_cnvrt.h
+irit2igs.o: ../include/irit_sm.h ../include/iritprsr.h ../include/cagd_lib.h
+irit2igs.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+irit2igs.o: ../include/trim_lib.h ../include/triv_lib.h ../include/trng_lib.h
+irit2igs.o: ../include/mdl_lib.h ../include/mvar_lib.h ../include/allocate.h
+irit2igs.o: ../include/obj_dpnd.h ../include/attribut.h ../include/iritgrap.h
+irit2igs.o: ../include/geom_lib.h ../include/ip_cnvrt.h
+irit2iv.o: ../include/irit_sm.h ../include/iritprsr.h ../include/cagd_lib.h
+irit2iv.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+irit2iv.o: ../include/trim_lib.h ../include/triv_lib.h ../include/trng_lib.h
+irit2iv.o: ../include/mdl_lib.h ../include/mvar_lib.h ../include/allocate.h
+irit2iv.o: ../include/obj_dpnd.h ../include/attribut.h ../include/iritgrap.h
+irit2iv.o: ../include/geom_lib.h ../include/ip_cnvrt.h
+irit2nff.o: ../include/irit_sm.h ../include/iritprsr.h ../include/cagd_lib.h
+irit2nff.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+irit2nff.o: ../include/trim_lib.h ../include/triv_lib.h ../include/trng_lib.h
+irit2nff.o: ../include/mdl_lib.h ../include/mvar_lib.h ../include/allocate.h
+irit2nff.o: ../include/obj_dpnd.h ../include/attribut.h ../include/iritgrap.h
+irit2nff.o: ../include/geom_lib.h ../include/ip_cnvrt.h
+irit2off.o: ../include/irit_sm.h ../include/iritprsr.h ../include/cagd_lib.h
+irit2off.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+irit2off.o: ../include/trim_lib.h ../include/triv_lib.h ../include/trng_lib.h
+irit2off.o: ../include/mdl_lib.h ../include/mvar_lib.h ../include/allocate.h
+irit2off.o: ../include/obj_dpnd.h ../include/attribut.h ../include/iritgrap.h
+irit2off.o: ../include/geom_lib.h ../include/ip_cnvrt.h
+irit2plg.o: ../include/irit_sm.h ../include/iritprsr.h ../include/cagd_lib.h
+irit2plg.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+irit2plg.o: ../include/trim_lib.h ../include/triv_lib.h ../include/trng_lib.h
+irit2plg.o: ../include/mdl_lib.h ../include/mvar_lib.h ../include/allocate.h
+irit2plg.o: ../include/obj_dpnd.h ../include/attribut.h ../include/iritgrap.h
+irit2plg.o: ../include/geom_lib.h ../include/ip_cnvrt.h
+irit2pov.o: ../include/irit_sm.h ../include/iritprsr.h ../include/cagd_lib.h
+irit2pov.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+irit2pov.o: ../include/trim_lib.h ../include/triv_lib.h ../include/trng_lib.h
+irit2pov.o: ../include/mdl_lib.h ../include/mvar_lib.h ../include/allocate.h
+irit2pov.o: ../include/obj_dpnd.h ../include/attribut.h ../include/iritgrap.h
+irit2pov.o: ../include/geom_lib.h ../include/ip_cnvrt.h
+irit2ps.o: ../include/irit_sm.h ../include/iritprsr.h ../include/cagd_lib.h
+irit2ps.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+irit2ps.o: ../include/trim_lib.h ../include/triv_lib.h ../include/trng_lib.h
+irit2ps.o: ../include/mdl_lib.h ../include/mvar_lib.h ../include/allocate.h
+irit2ps.o: ../include/obj_dpnd.h ../include/attribut.h ../include/iritgrap.h
+irit2ps.o: ../include/geom_lib.h ../include/ip_cnvrt.h
+irit2ray.o: ../include/irit_sm.h ../include/iritprsr.h ../include/cagd_lib.h
+irit2ray.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+irit2ray.o: ../include/trim_lib.h ../include/triv_lib.h ../include/trng_lib.h
+irit2ray.o: ../include/mdl_lib.h ../include/mvar_lib.h ../include/allocate.h
+irit2ray.o: ../include/obj_dpnd.h ../include/attribut.h ../include/iritgrap.h
+irit2ray.o: ../include/geom_lib.h ../include/ip_cnvrt.h
+irit2scn.o: ../include/irit_sm.h ../include/iritprsr.h ../include/cagd_lib.h
+irit2scn.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+irit2scn.o: ../include/trim_lib.h ../include/triv_lib.h ../include/trng_lib.h
+irit2scn.o: ../include/mdl_lib.h ../include/mvar_lib.h ../include/allocate.h
+irit2scn.o: ../include/obj_dpnd.h ../include/attribut.h ../include/iritgrap.h
+irit2scn.o: ../include/geom_lib.h ../include/ip_cnvrt.h
+irit2wrl.o: ../include/irit_sm.h ../include/iritprsr.h ../include/cagd_lib.h
+irit2wrl.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+irit2wrl.o: ../include/trim_lib.h ../include/triv_lib.h ../include/trng_lib.h
+irit2wrl.o: ../include/mdl_lib.h ../include/mvar_lib.h ../include/allocate.h
+irit2wrl.o: ../include/obj_dpnd.h ../include/attribut.h ../include/iritgrap.h
+irit2wrl.o: ../include/geom_lib.h ../include/ip_cnvrt.h
+irit2xfg.o: ../include/irit_sm.h ../include/iritprsr.h ../include/cagd_lib.h
+irit2xfg.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+irit2xfg.o: ../include/trim_lib.h ../include/triv_lib.h ../include/trng_lib.h
+irit2xfg.o: ../include/mdl_lib.h ../include/mvar_lib.h ../include/allocate.h
+irit2xfg.o: ../include/obj_dpnd.h ../include/attribut.h ../include/iritgrap.h
+irit2xfg.o: ../include/geom_lib.h ../include/ip_cnvrt.h
+obj2irit.o: ../include/irit_sm.h ../include/iritprsr.h ../include/cagd_lib.h
+obj2irit.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+obj2irit.o: ../include/trim_lib.h ../include/triv_lib.h ../include/trng_lib.h
+obj2irit.o: ../include/mdl_lib.h ../include/mvar_lib.h ../include/allocate.h
+obj2irit.o: ../include/obj_dpnd.h ../include/attribut.h ../include/geom_lib.h
+off2irit.o: ../include/irit_sm.h ../include/iritprsr.h ../include/cagd_lib.h
+off2irit.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+off2irit.o: ../include/trim_lib.h ../include/triv_lib.h ../include/trng_lib.h
+off2irit.o: ../include/mdl_lib.h ../include/mvar_lib.h ../include/allocate.h
+off2irit.o: ../include/obj_dpnd.h ../include/attribut.h ../include/geom_lib.h
+skeletn1.o: ../include/irit_sm.h ../include/iritprsr.h ../include/cagd_lib.h
+skeletn1.o: ../include/miscattr.h ../include/misc_lib.h ../include/symb_lib.h
+skeletn1.o: ../include/trim_lib.h ../include/triv_lib.h ../include/trng_lib.h
+skeletn1.o: ../include/mdl_lib.h ../include/mvar_lib.h ../include/attribut.h
+skeletn1.o: ../include/allocate.h ../include/obj_dpnd.h ../include/iritgrap.h
+skeletn1.o: ../include/geom_lib.h ../include/ip_cnvrt.h

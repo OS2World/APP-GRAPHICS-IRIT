@@ -1,0 +1,319 @@
+#
+# Some simple examples of NC GCode generation.  Gershon Elber, Mar. 07
+#
+
+#############################################################################
+#
+# 2D pocketing: rounded pockets
+#
+
+BaseCrv = cbspline( 3,
+      list( ctlpt( E2, 0.0,  0.0 ),
+	    ctlpt( E2, 0.0,  1.0 ),
+	    ctlpt( E2, 1.0,  0.5 ),
+	    ctlpt( E2, 1.0,  1.5 ),
+	    ctlpt( E2, 0.0,  1.0 ),
+	    ctlpt( E2, 0.0,  2.0 ) ),
+      list( kv_float ) ) * ty( -0.5 );
+
+Crv = ( BaseCrv +
+        BaseCrv * ty( 1 ) +
+        BaseCrv * ty( 2 ) +
+        BaseCrv * ty( 3 ) ) * sc( 0.4 ) * ty( -0.75 );
+color( Crv, red );
+
+TPath = NCPcktPath( Crv, -0.05, -0.06, 0.02, 0.05, 0, true );
+attrib( TPath, "NCRetractZLevel", 1.0 );
+attrib( TPath, "NCMaxXYBridgeGap", 0.05 );
+
+interact( list( Crv, TPath ) );
+
+#################################
+
+Crv = BaseCrv +
+      BaseCrv * ty( 1 ) +
+      BaseCrv * ty( 2 ) +
+      BaseCrv * ty( 3 ) +
+      cbspline( 3,
+	        list( ctlpt( E2,  0.0,  4.0 ),
+		      ctlpt( E2,  0.0,  4.25 ),
+		      ctlpt( E2, -0.4,  4.25 ),
+		      ctlpt( E2, -0.4,  2.0 ),
+		      ctlpt( E2, -0.4, -0.25 ),
+		      ctlpt( E2,  0.0, -0.25 ),
+		      ctlpt( E2,  0.0,  0.0 ) ),
+		list( kv_open ) );
+Crv = -Crv;
+color( Crv, magenta );
+
+TPath = NCPcktPath( Crv, 0.125, 0.15, 0.05, 0.5, 0, true );
+attrib( TPath, "NCRetractZLevel", 1.0 );
+attrib( TPath, "NCMaxXYBridgeGap", 0.1 );
+
+Pl = CnvrtCrvToPolygon( Crv, 500, false );
+color( Pl, red );
+
+TPath2 = NCPcktPath( Pl, 0.08, 0.09, 0.025, 15, 0, true );
+attrib( TPath2, "NCRetractZLevel", 1.0 );
+attrib( TPath2, "NCMaxXYBridgeGap", 0.05 );
+
+All = list( list( Crv, TPath ) * tx( -1 ),
+	    list( Pl, TPath2 ) * tx( 1 ) ) * sc( 0.35 ) * ty( -0.75 );
+
+interact( All );
+
+#################################
+
+save( "nc_pckt1.itd", All );
+save( "nc_pckt1.nc", TPath );
+
+interact( load("nc_pckt1.nc" ) );
+
+free( Pl );
+free( Crv );
+free( BaseCrv );
+
+#############################################################################
+#
+# 2D pocketing: rounded pockets
+#
+
+Pocket2 = cbspline( 4,
+    list( ctlpt( E2, 0.065, 0.582 ),
+          ctlpt( E2, 0.672, 0.546 ),
+          ctlpt( E2, 0.901, 0.213 ),
+          ctlpt( E2, 0.735, -0.371 ),
+          ctlpt( E2, 0.267, -0.645 ),
+          ctlpt( E2, -0.33, -0.542 ),
+          ctlpt( E2, -0.137, -0.106 ),
+          ctlpt( E2, 0.29, -0.133 ),
+          ctlpt( E2, 0.555, -0.088 ),
+          ctlpt( E2, 0.569, 0.182 ),
+          ctlpt( E2, -0.029, 0.29 ) ),
+    list( kv_periodic ) );
+Pocket2 = coerce( Pocket2, kv_open );
+color( Pocket2, red );
+
+TPath = NCPcktPath( Pocket2, 0.1, 0.125, 0.01, 0.1, 0, true );
+attrib( TPath, "NCRetractZLevel", 0.5 );
+attrib( TPath, "NCMaxXYBridgeGap", 0.05 );
+attrib( TPath, "NCCommentChar", "!" );
+
+Pl = CnvrtCrvToPolygon( Pocket2, 200, false );
+color( Pl, red );
+
+TPath2 = NCPcktPath( Pl, 0.05, 0.07, 0.05, 0.5, 0, true );
+attrib( TPath2, "NCRetractZLevel", 1.0 );
+attrib( TPath2, "NCMaxXYBridgeGap", 0.01 );
+
+All = list( list( Pocket2, TPath ) * tx( -0.75 ),
+	    list( Pl, TPath2 ) * tx( 0.25 ) ) * sc( 0.75 );
+
+interact( All );
+
+save( "nc_pckt2.itd", All );
+save( "nc_pckt2.nc", TPath );
+
+interact( load("nc_pckt2.nc" ) );
+
+free( Pl );
+free( Pocket2 );
+
+#############################################################################
+#
+# 2D pocketing: rounded pockets
+#
+
+Pocket3 = cbspline( 4,
+    list( ctlpt( E2, -0.6, 0.775 ),
+          ctlpt( E2, -0.5, 0.775 ),
+          ctlpt( E2, -0.191, 0.308 ),
+          ctlpt( E2, 0.438, 0.69 ),
+          ctlpt( E2, 0.78, 0.564 ),
+          ctlpt( E2, 0.676, 0.083 ),
+          ctlpt( E2, 0.281, -0.047 ),
+          ctlpt( E2, -0.137, -0.371 ),
+          ctlpt( E2, 0.204, -0.569 ),
+          ctlpt( E2, 0.549, -0.596 ),
+          ctlpt( E2, 0.436, -0.928 ),
+          ctlpt( E2, -0.029, -0.708 ),
+          ctlpt( E2, -0.294, -0.524 ),
+          ctlpt( E2, -0.245, -0.164 ),
+          ctlpt( E2, 0.083, 0.07 ),
+          ctlpt( E2, -0.326, 0.079 ),
+          ctlpt( E2, -0.5, 0.128 ),
+          ctlpt( E2, -0.6, 0.128 ) ),
+    list( kv_open ) );
+color( Pocket3, red );
+
+TPath = NCPcktPath( Pocket3, 0.1, 0.11, 0.05, 0.5, 0, true );
+attrib( TPath, "NCRetractZLevel", 0.5 );
+attrib( TPath, "NCMaxXYBridgeGap", 0.1 );
+attrib( TPath, "NCFeedRate", 10.0 );
+attrib( TPath, "NCCommentChar", ";" );
+
+Pl = CnvrtCrvToPolygon( Pocket3, 200, false );
+color( Pl, red );
+
+TPath2 = NCPcktPath( Pl, 0.05, 0.07, 0.025, 0.25, 0, true );
+attrib( TPath2, "NCRetractZLevel", 1.0 );
+attrib( TPath2, "NCMaxXYBridgeGap", 0.05 );
+attrib( TPath2, "NCMaxZBridgeGap", 1 );
+
+All = list( list( Pocket3, TPath ) * tx( -0.7 ),
+	    list( Pl, TPath2 ) * tx( 0.65 ) ) * sc( 0.6 );
+
+interact( All );
+
+save( "nc_pckt3.itd", list( Pocket3, TPath ) );
+save( "nc_pckt3.nc", TPath );
+
+interact( load("nc_pckt3.nc" ) );
+
+free( Pl );
+free( Pocket3 );
+
+#############################################################################
+#
+# 2D pocketing: rounded pockets with holes
+#
+
+Pocket4a = cbspline( 4,
+    list( ctlpt( E2, 0.065, 0.582 ),
+          ctlpt( E2, 0.672, 0.546 ),
+          ctlpt( E2, 0.901, 0.213 ),
+          ctlpt( E2, 0.735, -0.371 ),
+          ctlpt( E2, 0.267, -0.645 ),
+          ctlpt( E2, -0.33, -0.542 ),
+          ctlpt( E2, -0.137, -0.106 ),
+          ctlpt( E2, 0.29, -0.133 ),
+          ctlpt( E2, 0.555, -0.088 ),
+          ctlpt( E2, 0.569, 0.182 ),
+          ctlpt( E2, -0.029, 0.29 ) ),
+    list( kv_periodic ) ) * tx( -0.2 );
+Pocket4b = circle( vector( 0, 0, 0 ), 1 );
+Pocket4c = -circle( vector( -0.55, 0.15, 0 ), 0.2 );
+
+Pocket4 = list( Pocket4a, pocket4b, pocket4c );
+Pocket4 = coerce( Pocket4, kv_open );
+color( Pocket4, red );
+
+TPath = NCPcktPath( pocket4, -0.08, -0.1, 0.05, 0.5, 0, true );
+attrib( TPath, "NCRetractZLevel", 1.0 );
+attrib( TPath, "NCMaxXYBridgeGap", 0.2 );
+
+# Polygons with holes -first must be outer loop.
+Pocket4Pl = mergepoly( list( CnvrtCrvToPolygon( Pocket4b, 150, false ),
+	                     CnvrtCrvToPolygon( Pocket4a, 150, false ),
+		             CnvrtCrvToPolygon( Pocket4c, 150, false ) ) );
+color( Pocket4Pl, red );
+
+TPath2 = NCPcktPath( Pocket4Pl, -0.1, -0.11, 0.015, 0.15, 0, true );
+attrib( TPath2, "NCRetractZLevel", 1.0 );
+attrib( TPath2, "NCMaxXYBridgeGap", 0.05 );
+
+All = list( list( Pocket4, TPath ) * tx( -1.05 ),
+	    list( Pocket4Pl, TPath2 ) * tx( 1.05 ) ) * sc( 0.45 );
+
+interact( All );
+
+save( "nc_pckt4.itd", list( Pocket4, TPath ) );
+save( "nc_pckt4.nc", TPath );
+
+interact( load("nc_pckt4.nc" ) );
+
+free( Pocket4Pl );
+free( Pocket4 );
+free( Pocket4a );
+free( Pocket4b );
+free( Pocket4c );
+
+#############################################################################
+#
+# 2D pocketing: CNC
+#
+
+include("cnc_ltrs.irt");
+color( Cnc, red );
+
+view( list( axes, cnc ), 1 );
+
+TPath = list( NCPcktPath( cnc * rz( 90 ), 0.003, 0.005, 0.01, 0.1, 0, true ) ) * rz( -90 );
+attrib( TPath, "NCRetractZLevel", 0.5 );
+attrib( TPath, "NCMaxXYBridgeGap", 0.05 );
+
+interact( list( axes, TPath ) );
+
+save( "nc_pckt5.itd", list( Cnc, TPath ) );
+save( "nc_pckt5.nc", TPath );
+
+interact( load("nc_pckt5.nc" ) );
+
+free( Cnc );
+
+#############################################################################
+#
+# 3D contouring: A Sphere
+#
+# Add points to control the bounding box in XY.
+# These points have no other effect.
+#
+Sp = list( sphereSrf( 5 ) * rx( 90 ),
+	   point( -6, -6, 0 ),
+	   point( 6, 6, 0 ) );
+color( Sp, red );
+
+Ofst = 0.25;
+BaseLevel = -Ofst;
+TPathSpace = 0.2;
+
+NCPath = NCCntrPath( Sp, Ofst, BaseLevel, TPathSpace, 0 );
+attrib( NCPath, "NCRetractZLevel", 10.0);
+attrib( NCPath, "NCMaxXYBridgeGap", 0.5);
+
+interact( list( axes * Sc( 6 ), Sp, NCPath ) * sc( 0.16 ) );
+
+save( "nc_spher.nc", NCPath );
+
+free( Sp );
+
+#############################################################################
+#
+# 3D contouring: Half a Utah teapot.
+#
+include("teapot");
+Tea = load( "teapot" );
+free( Body );
+free( Spout );
+free( Handle );
+free( Cap );
+color( Tea, red );
+
+Ofst = 0.25;
+BaseLevel = -Ofst;
+TPathSpace = 0.05;
+
+NCPath = NCCntrPath( Tea, Ofst, BaseLevel, TPathSpace, 0 );
+attrib( NCPath, "NCRetractZLevel", 3.5);
+attrib( NCPath, "NCMaxXYBridgeGap", 1);
+
+interact( list( axes * Sc( 6 ), Tea, NCPath ) * sc( 0.16 ) );
+
+save( "nc_tpot.nc", NCPath);
+
+# Check stl saving as well...
+save( "nc_tpot.stl", tea );
+
+free( Tea );
+
+#############################################################################
+
+free( NCPath );
+free( TPath );
+free( TPath2 );
+free( All );
+
+free( Ofst );
+free( BaseLevel );
+free( TPathSpace );
+

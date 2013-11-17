@@ -1,0 +1,169 @@
+#
+# A few simple examples of booleans over models.
+#
+
+OldBFF = iritstate( "BoolFreeform", vector( 0.01, 1e-8, 0.01 ) );
+OldPrim = iritstate( "PrimType", 2 ); # Make model-type primitives.
+
+#############################################################################
+
+s1 = Sphere( vector( 0, 0, 0 ), 0.8 ):
+c1 = coerce( cone2Srf( 2, 0.5, 0.1 ) * tz( 0.55 ), model_type ) *
+     coerce( planeSrf( -0.3, -0.3, 0.3, 0.3 ) * tz( 2.4 ), model_type ):
+c2 = coerce( cone2Srf( 2, 0.5, 0.0 ) * tz( 0.55 ), model_type ) *
+     ( coerce( planeSrf( -2, -2, 2, 2 ) * tz( 0.8 ), model_type )
+						    * ry( -45 ) ) * rx( 110 ):
+c3 = coerce( cone2Srf( 2, 0.5, 0.2 ) * tz( 0.55 ), model_type ) *
+     ( coerce( planeSrf( -1, -1, 1, 1 ) * tz( 1 ), model_type )
+					* ry( -15 ) ) * rx( 110 ) * rz( 120 ):
+c4 = coerce( cone2Srf( 0.5, 0.5, 0.0 ) * tz( 0.55 ), model_type ) *
+     coerce( planeSrf( -0.5, -0.5, 0.5, 0.5 ) * tz( 1.0 ), model_type )
+						   * rx( 110 ) * rz( 240 );
+
+All = s1 + c1 + c2 + c3 + c4;
+
+interact( All );
+
+save( "mdl1bol1", All );
+
+#################################
+
+# C1 = Con2( vector( 0.0, 0.0, 0.5 ), vector( 0.0, 0.0, 0.5 ), 0.5, 0.15, 3 );
+c1 = coerce( cone2Srf( 0.5, 0.5, 0.15 ), model_type ) * tz( 0.5 );
+c2 = c1 * rx( 110 );
+c3 = c1 * rx( 110 ) * rz( 120 );
+c4 = c1 * rx( 110 ) * rz( 240 );
+
+All = s1 - c1 - c2 - c3 - c4;
+
+interact( All );
+
+save( "mdl1bol2", All );
+
+#################################
+
+r = cbspline( 4,
+    list( ctlpt( E2,      0.284734375,         0.856125 ),
+          ctlpt( E2,      0.286359375,        0.7631875 ),
+          ctlpt( E2,      0.287984375,          0.67025 ),
+          ctlpt( E2,           0.3885,        0.8579375 ),
+          ctlpt( E2,        0.4976875,       0.85984375 ),
+          ctlpt( E2,        0.5473125,      0.860703125 ),
+          ctlpt( E2,      0.580328125,      0.831046875 ),
+          ctlpt( E2,       0.61334375,      0.801390625 ),
+          ctlpt( E2,       0.61403125,        0.7616875 ),
+          ctlpt( E2,      0.614640625,           0.7265 ),
+          ctlpt( E2,      0.591609375,     0.7017265625 ),
+          ctlpt( E2,      0.568578125,      0.676953125 ),
+          ctlpt( E2,       0.53609375,         0.676375 ),
+          ctlpt( E2,      0.504515625,      0.675828125 ),
+          ctlpt( E2,       0.46471875,     0.7062734375 ),
+          ctlpt( E2,      0.424921875,       0.73671875 ),
+          ctlpt( E2,       0.40596875,      0.736390625 ),
+          ctlpt( E2,      0.389734375,      0.736109375 ),
+          ctlpt( E2,       0.37109375,      0.717734375 ),
+          ctlpt( E2,      0.331140625,       0.68003125 ),
+          ctlpt( E2,      0.289296875,      0.594453125 ),
+          ctlpt( E2,          0.29275,      0.396390625 ),
+          ctlpt( E2,      0.296203125,      0.198328125 ),
+          ctlpt( E2,       0.29740625,          0.12975 ),
+          ctlpt( E2,       0.31515625,      0.094859375 ),
+          ctlpt( E2,        0.3273125,      0.070703125 ),
+          ctlpt( E2,     0.3573828125,     0.0549765625 ),
+          ctlpt( E2,      0.387453125,          0.03925 ),
+          ctlpt( E2,      0.443390625,      0.040234375 ),
+          ctlpt( E2,      0.443671875,     0.0239921875 ),
+          ctlpt( E2,      0.443953125,          0.00775 ),
+          ctlpt( E2,     0.2323515625,     0.0040546875 ),
+          ctlpt( E2,          0.02075,      0.000359375 ),
+          ctlpt( E2,       0.02046875,     0.0166015625 ),
+          ctlpt( E2,        0.0201875,       0.03284375 ),
+          ctlpt( E2,      0.083359375,      0.033953125 ),
+          ctlpt( E2,        0.1136875,       0.05434375 ),
+          ctlpt( E2,      0.135984375,      0.069171875 ),
+          ctlpt( E2,       0.14446875,       0.10090625 ),
+          ctlpt( E2,      0.148703125,      0.116328125 ),
+          ctlpt( E2,      0.147453125,      0.188515625 ),
+          ctlpt( E2,       0.14465625,     0.3486796875 ),
+          ctlpt( E2,      0.141859375,       0.50884375 ),
+          ctlpt( E2,       0.13934375,       0.65321875 ),
+          ctlpt( E2,            0.133,      0.680640625 ),
+          ctlpt( E2,       0.12665625,        0.7080625 ),
+          ctlpt( E2,      0.110640625,      0.720421875 ),
+          ctlpt( E2,         0.094625,       0.73278125 ),
+          ctlpt( E2,      0.071171875,         0.732375 ),
+          ctlpt( E2,      0.043203125,         0.731875 ),
+          ctlpt( E2,      0.008234375,       0.71771875 ),
+          ctlpt( E2,     0.0034453125,     0.7338828125 ),
+          ctlpt( E2,      -0.00134375,      0.750046875 ),
+          ctlpt( E2,          0.12275,     0.8027578125 ),
+          ctlpt( E2,       0.24684375,       0.85546875 ),
+          ctlpt( E2,     0.2657890625,      0.855796875 ),
+          ctlpt( E2,      0.284734375,         0.856125 ) ),
+    list( kv_periodic ) ) * tx( 0.5 ) * rx( 90 );
+
+s1 = coerce( surfrev( -coerce( r, kv_open ) ) * rz( 180 ), model_type );
+
+s2 = coerce( CylinSrf( 2, 1 ) * tx( 1 ) * tz( -0.5 ), model_type );
+
+iritstate( "BoolFreeform", vector( 0.001, 1e-8, 0.01 ) );
+
+All = s1 * s2;
+
+interact( All );
+
+save( "mdl1bol3", All );
+
+#############################################################################
+
+s1 = coerce( SphereSrf( 1.0 ) * rz( 180 ) * tx( 0.5 ), model_type );
+s2 = s1 * rz( 120 );
+s3 = s1 * rz( 240 );
+
+All = s1 * s2 * s3;
+
+interact( All );
+
+save( "mdl1bol4", All );
+
+#############################################################################
+
+c1 = coerce( CylinSrf( 4, 1 ) * tz( -2 ), model_type );
+c2 = c1 * ry( 90 ) * sc( 0.9 );
+c3 = c1 * rx( 90 ) * sc( 0.8 );
+
+All = c1 * c2 * c3;
+
+interact( All );
+
+save( "mdl1bol5", All );
+
+#############################################################################
+
+c1 = coerce( CylinSrf( 4, 1 ) * tz( -2 ), model_type );
+c2 = c1 * ry( 90 ) * sc( 0.999 );
+c3 = c1 * rx( 90 ) * sc( 0.998 );
+
+All = c1 * c2 * c3;
+
+interact( All );
+
+save( "mdl1bol6", All );
+
+#############################################################################
+
+OldBFF = iritstate( "BoolFreeform", OldBFF );
+OldPrim = iritstate( "PrimType", OldPrim );
+
+free( OldBFF );
+free( OldPrim );
+
+free( s1 );
+free( s2 );
+free( s3 );
+free( c1 );
+free( c2 );
+free( c3 );
+free( c4 );
+free( r );
+free( All );

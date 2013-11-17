@@ -1,0 +1,260 @@
+#
+# Surface - point/line/curve closest/farthest location/intersection.
+#
+#					Gershon Elber, Jan 2004.
+#
+
+UVPos2Pt = function( Srf, Pt, MinDist ): UVPt: Edge: E3Pt: E3Nrml: NEdge:
+    Pt = coerce( Pt, point_type ):
+    UVPt = SrfPtDst( Srf, Pt, MinDist, 0.001, 1e-10 ):
+    E3Pt = seval( Srf, coord( UVPt, 0 ), coord( UVPt, 1 ) ):
+    E3Nrml = snormal( Srf, coord( UVPt, 0 ), coord( UVPt, 1 ) ):
+    Edge = coerce( Pt, E3 ) + E3Pt:
+    NEdge = E3Pt + coerce( coerce( E3Pt, point_type ) - E3Nrml, E3 ):
+    color( E3Pt, magenta ):
+    adwidth( E3Pt, 3 ):
+    color( Pt, yellow ):
+    color( Edge, cyan ):
+    color( NEdge, green ):
+    return = list( E3Pt, Pt, Edge, NEdge );
+
+UVPos2Ln = function( Srf, LnPt, LnDir, MinDist ):
+    UVPt: Edge: E3Pt: Line: E3Nrml: NEdge:
+    UVPt = SrfLnDst( Srf, LnPt, LnDir, MinDist, 0.001, 1e-10 ):
+    E3Pt = seval( Srf, coord( UVPt, 0 ), coord( UVPt, 1 ) ):
+    E3Nrml = snormal( Srf, coord( UVPt, 0 ), coord( UVPt, 1 ) ):
+    Edge = coerce( PtPtLn( coerce( E3Pt, point_type ), LnPt, LnDir ), E3 )
+           + E3Pt:
+    NEdge = E3Pt + coerce( coerce( E3Pt, point_type ) - E3Nrml, E3 ):
+    color( E3Pt, magenta ):
+    adwidth( E3Pt, 3 ):
+    color( Edge, cyan ):
+    color( NEdge, green ):
+    Line = coerce( LnPt + LnDir * sc( 2 ), E3 ) +
+	   coerce( LnPt - LnDir * sc( 2 ), E3 ):
+    color( Line, yellow ):
+    return = list( Line, E3Pt, Edge, NEdge );
+
+#
+# Surface point distance.
+#
+
+crv = cbspline( 3,
+    list( ctlpt( E2, 1.68, -1.37 ),
+          ctlpt( E2, 1.34, 1.41 ),
+          ctlpt( E2, 0.629, -0.453 ),
+          ctlpt( E2, -0.5, 2 ),
+          ctlpt( E2, -0.759, -1.14 ) ),
+    list( kv_open ) );
+
+Srf1 = sFromCrvs( list( crv,
+		        crv * tz( 0.4 ) * ty( 1.5 ),
+		        crv * tz( 1.0 ) * ty( 0.0 ),
+		        crv * tz( 1.6 ) * ty( 1.6 ),
+		        crv * tz( 2.0 ) * ty( 0.0 ) ),
+		  3, KV_OPEN ) * sc( 0.3 ) * ty( -0.2 );
+color( Srf1, green );
+attrib( Srf1, "width", 0.02 );
+
+All1 = list( Srf1,
+	     UVPos2Pt( Srf1, point( -0.1, 0.5, 0.1 ), true ),
+	     UVPos2Pt( Srf1, point(  0.3, 0.4, 0.1 ), true ),
+	     UVPos2Pt( Srf1, point(  0.3, 0.4, 0.4 ), true ),
+	     UVPos2Pt( Srf1, point( -0.1, 0.5, 0.4 ), true ) );
+interact( All1 );
+
+All2 = list( Srf1,
+	     UVPos2Pt( Srf1, point( -0.1, 0.5, 0.1 ), false ),
+	     UVPos2Pt( Srf1, point(  0.3, 0.4, 0.1 ), false ),
+	     UVPos2Pt( Srf1, point(  0.3, 0.4, 0.4 ), false ),
+	     UVPos2Pt( Srf1, point( -0.1, 0.5, 0.4 ), false ) );
+interact( All2 );
+
+save( "srf1dist", list( All1, All2 ) );
+
+
+All1 = list( Srf1,
+	     UVPos2Pt( Srf1, point(  0.2, -0.1,  0.8 ), true ),
+	     UVPos2Pt( Srf1, point(  0.1,  0.0, -0.1 ), true ),
+	     UVPos2Pt( Srf1, point( -0.2, -0.4,  0.4 ), true ),
+	     UVPos2Pt( Srf1, point(  0.6,  0.2,  0.3 ), true ) );
+interact( All1 );
+
+All2 = list( Srf1,
+	     UVPos2Pt( Srf1, point(  0.2, -0.1,  0.8 ), false ),
+	     UVPos2Pt( Srf1, point(  0.1,  0.0, -0.1 ), false ),
+	     UVPos2Pt( Srf1, point( -0.2, -0.4,  0.4 ), false ),
+	     UVPos2Pt( Srf1, point(  0.6,  0.2,  0.3 ), false ) );
+interact( All2 );
+
+save( "srf2dist", list( All1, All2 ) );
+
+
+All1 = list( Srf1, 
+	     UVPos2Pt( Srf1, seval( Srf1, 0.2, 0.3 ), true ),
+	     UVPos2Pt( Srf1, seval( Srf1, 0.3, 0.1 ), true ),
+	     UVPos2Pt( Srf1, seval( Srf1, 0.4, 0.2 ), true ),
+	     UVPos2Pt( Srf1, seval( Srf1, 0.5, 0.8 ), true ),
+	     UVPos2Pt( Srf1, seval( Srf1, 0.8, 0.9 ), true ),
+	     UVPos2Pt( Srf1, seval( Srf1, 0.1, 0.1 ), true ),
+	     UVPos2Pt( Srf1, seval( Srf1, 0.9, 0.9 ), true ),
+	     UVPos2Pt( Srf1, seval( Srf1, 0.01, 0.99 ), true ) );
+interact( All1 );
+
+save( "srf3dist", All1 );
+
+#############################################################################
+
+crv = cbspline( 4,
+    list( ctlpt( E2, 1.7, -1.7 ),
+          ctlpt( E2, 1.3, 1.4 ),
+          ctlpt( E2, 0.6, -0.4 ),
+          ctlpt( E2, -0.5, 2 ),
+          ctlpt( E2, -0.8, -1.4 ) ),
+    list( kv_open ) );
+
+Srf2 = sFromCrvs( list( crv,
+		        crv * tz( 0.4 ) * ty( 1.5 ),
+		        crv * tz( 1.0 ) * ty( 0.0 ),
+		        crv * tz( 1.6 ) * ty( 1.6 ),
+		        crv * tz( 2.0 ) * ty( 0.0 ) ),
+		  4, KV_OPEN ) * sc( 0.3 ) * ty( -0.2 );
+color( Srf2, green );
+attrib( Srf2, "width", 0.02 );
+
+All1 = list( Srf2,
+	     UVPos2Pt( Srf2, point( -0.1, 0.5, 0.1 ), true ),
+	     UVPos2Pt( Srf2, point(  0.3, 0.4, 0.1 ), true ),
+	     UVPos2Pt( Srf2, point(  0.3, 0.4, 0.4 ), true ),
+	     UVPos2Pt( Srf2, point( -0.1, 0.5, 0.4 ), true ) );
+interact( All1 );
+
+All2 = list( Srf2,
+	     UVPos2Pt( Srf2, point( -0.1, 0.5, 0.1 ), false ),
+	     UVPos2Pt( Srf2, point(  0.3, 0.4, 0.1 ), false ),
+	     UVPos2Pt( Srf2, point(  0.3, 0.4, 0.4 ), false ),
+	     UVPos2Pt( Srf2, point( -0.1, 0.5, 0.4 ), false ) );
+interact( All2 );
+
+save( "srf4dist", list( All1, All2 ) );
+
+
+All1 = list( Srf2,
+	     UVPos2Pt( Srf2, point(  0.2, -0.1,  0.8 ), true ),
+	     UVPos2Pt( Srf2, point(  0.1,  0.0, -0.1 ), true ),
+	     UVPos2Pt( Srf2, point( -0.2, -0.4,  0.4 ), true ),
+	     UVPos2Pt( Srf2, point(  0.6,  0.2,  0.3 ), true ) );
+interact( All1 );
+
+All2 = list( Srf2,
+	     UVPos2Pt( Srf2, point(  0.2, -0.1,  0.8 ), false ),
+	     UVPos2Pt( Srf2, point(  0.1,  0.0, -0.1 ), false ),
+	     UVPos2Pt( Srf2, point( -0.2, -0.4,  0.4 ), false ),
+	     UVPos2Pt( Srf2, point(  0.6,  0.2,  0.3 ), false ) );
+interact( All2 );
+
+save( "srf5dist", list( All1, All2 ) );
+
+All1 = list( Srf2, 
+	     UVPos2Pt( Srf2, seval( Srf2, 0.2, 0.3 ), true ),
+	     UVPos2Pt( Srf2, seval( Srf2, 0.3, 0.1 ), true ),
+	     UVPos2Pt( Srf2, seval( Srf2, 0.4, 0.2 ), true ),
+	     UVPos2Pt( Srf2, seval( Srf2, 0.5, 0.8 ), true ),
+	     UVPos2Pt( Srf2, seval( Srf2, 0.8, 0.9 ), true ),
+	     UVPos2Pt( Srf2, seval( Srf2, 0.1, 0.1 ), true ),
+	     UVPos2Pt( Srf2, seval( Srf2, 0.9, 0.9 ), true ),
+	     UVPos2Pt( Srf2, seval( Srf2, 0.01, 0.99 ), true ) );
+interact( All1 );
+
+save( "srf6dist", All1 );
+
+#############################################################################
+
+All1 = list( Srf2,
+	     UVPos2Ln( Srf2, point( -0.1, 0.5, 0.1 ),
+			     vector( 1, 0, 0 ), true ),
+	     UVPos2Ln( Srf2, point(  0.3, 0.4, 0.1 ),
+			     vector( 1, 0, 0 ), true ),
+	     UVPos2Ln( Srf2, point(  0.3, 0.4, 0.4 ),
+			     vector( 1, 0, 0 ), true ),
+	     UVPos2Ln( Srf2, point( -0.1, 0.5, 0.4 ),
+			     vector( 1, 0, 0 ), true ),
+	     UVPos2Ln( Srf2, point(  0.1, 0.5, 0.24 ),
+			     vector( 1, 0.1, 0 ), true ),
+	     UVPos2Ln( Srf2, point(  0.1, 0.5, 0.24 ),
+			     vector( 1, 0.2, 0 ), true ),
+	     UVPos2Ln( Srf2, point(  0.1, 0.5, 0.24 ),
+			     vector( 1, 0.3, 0 ), true ),
+	     UVPos2Ln( Srf2, point(  0.1, 0.5, 0.24 ),
+			     vector( 1, 0.4, 0 ), true ) );
+interact( All1 );
+
+All2 = list( Srf2,
+	     UVPos2Ln( Srf2, point( -0.1, 0.5, 0.1 ),
+			     vector( 1, 0, 0 ), false ),
+	     UVPos2Ln( Srf2, point(  0.3, 0.4, 0.1 ),
+			     vector( 1, 0, 0 ), false ),
+	     UVPos2Ln( Srf2, point(  0.3, 0.4, 0.4 ),
+			     vector( 1, 0, 0 ), false ),
+	     UVPos2Ln( Srf2, point( -0.1, 0.5, 0.4 ),
+			     vector( 1, 0, 0 ), false ),
+	     UVPos2Ln( Srf2, point(  0.1, 0.5, 0.24 ),
+			     vector( 1, 0.1, 0 ), false ),
+	     UVPos2Ln( Srf2, point(  0.1, 0.5, 0.24 ),
+			     vector( 1, 0.2, 0 ), false ),
+	     UVPos2Ln( Srf2, point(  0.1, 0.5, 0.24 ),
+			     vector( 1, 0.3, 0 ), false ),
+	     UVPos2Ln( Srf2, point(  0.1, 0.5, 0.24 ),
+			     vector( 1, 0.4, 0 ), false ) );
+interact( All2 );
+
+save( "srf7dist", list( All1, All2 ) );
+
+
+All1 = list( Srf2,
+	     UVPos2Ln( Srf2, point( -0.7, 0.5, 0.1 ),
+			     vector( 0.5, 1, 0.3 ), true ),
+	     UVPos2Ln( Srf2, point(  0.3, 0.4, 0.1 ),
+			     vector( 1, 1, 1 ), true ),
+	     UVPos2Ln( Srf2, point(  0.3, 0.4, 0.4 ),
+			     vector( 1, -1, 2 ), true ),
+	     UVPos2Ln( Srf2, point( -0.1, 0.5, 0.4 ),
+			     vector( 1, 3, 2 ), true ),
+	     UVPos2Ln( Srf2, point(  0.1, 0.5, 0.24 ),
+			     vector( 1, -2, 0 ), true ),
+	     UVPos2Ln( Srf2, point(  0.1, 0.5, 0.24 ),
+			     vector( 1, 2, 5 ), true ),
+	     UVPos2Ln( Srf2, point(  0.1, 0.5, 0.24 ),
+			     vector( 2, 0, 2 ), true ),
+	     UVPos2Ln( Srf2, point(  0.1, 0.5, 0.24 ),
+			     vector( 1, 4, 2 ), true ) );
+interact( All1 );
+
+All2 = list( Srf2,
+	     UVPos2Ln( Srf2, point( -0.7, 0.5, 0.1 ),
+			     vector( 0.5, 1, 0.3 ), false ),
+	     UVPos2Ln( Srf2, point(  0.3, 0.4, 0.1 ),
+			     vector( 1, 1, 1 ), false ),
+	     UVPos2Ln( Srf2, point(  0.3, 0.4, 0.4 ),
+			     vector( 1, -1, 2 ), false ),
+	     UVPos2Ln( Srf2, point( -0.1, 0.5, 0.4 ),
+			     vector( 1, 3, 2 ), false ),
+	     UVPos2Ln( Srf2, point(  0.1, 0.5, 0.24 ),
+			     vector( 1, -2, 0 ), false ),
+	     UVPos2Ln( Srf2, point(  0.1, 0.5, 0.24 ),
+			     vector( 1, 2, 5 ), false ),
+	     UVPos2Ln( Srf2, point(  0.1, 0.5, 0.24 ),
+			     vector( 2, 0, 2 ), false ),
+	     UVPos2Ln( Srf2, point(  0.1, 0.5, 0.24 ),
+			     vector( 1, 4, 2 ), false ) );
+interact( All2 );
+
+save( "srf8dist", list( All1, All2 ) );
+
+#############################################################################
+
+free( crv );
+free( Srf1 );
+free( Srf2 );
+free( All1 );
+free( All2 );

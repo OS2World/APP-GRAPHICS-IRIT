@@ -1,0 +1,136 @@
+#
+# A simple simulation of page flipping.
+#
+#				Gershon Elber, March 1994.
+#
+
+Page1 = ruledSrf( ctlpt( E2, 0.0, 0.0 ) + ctlpt( E2, 1.0, 0.0 ),
+		  ctlpt( E2, 0.0, 1.5 ) + ctlpt( E2, 1.0, 1.5 ) );
+Page1 = sraise( sraise( Page1, ROW, 4 ), COL, 4 );
+color( Page1, green );
+viewobj( Page1 );
+
+Page2 = seditpt( coerce( Page1, E3 ), ctlpt( E3, 0.9, 1.35, 0.5 ), 3, 3 );
+color( Page2, red );
+viewobj( Page2 );
+
+Page3 = srefine( Page2, COL, false, list( 0.3, 0.6 ) );
+Page3 = seditpt( coerce( Page3, E3 ), ctlpt( E3, 0.6, 1.5, 0.4 ), 5, 3 );
+Page3 = seditpt( coerce( Page3, E3 ), ctlpt( E3, 0.6, 1.0, 0.4 ), 5, 2 );
+Page3 = seditpt( coerce( Page3, E3 ), ctlpt( E3, 0.6, 0.5, 0.4 ), 5, 1 );
+Page3 = seditpt( coerce( Page3, E3 ), ctlpt( E3, 0.6, 0.0, 0.4 ), 5, 0 );
+color( Page3, cyan );
+viewobj( Page3 );
+
+Page4 = srefine( Page2, COL, false, list( 0.3 ) );
+Page4 = seditpt( coerce( Page4, E3 ), ctlpt( E3, 0.0, 1.5, 0.4 ), 4, 3 );
+Page4 = seditpt( coerce( Page4, E3 ), ctlpt( E3, 0.0, 1.0, 0.4 ), 4, 2 );
+Page4 = seditpt( coerce( Page4, E3 ), ctlpt( E3, 0.0, 0.5, 0.4 ), 4, 1 );
+Page4 = seditpt( coerce( Page4, E3 ), ctlpt( E3, 0.0, 0.0, 0.4 ), 4, 0 );
+Page4 = seditpt( coerce( Page4, E3 ), ctlpt( E3, 0.5, 1.5, 0.4 ), 3, 3 );
+Page4 = seditpt( coerce( Page4, E3 ), ctlpt( E3, 0.5, 1.0, 0.4 ), 3, 2 );
+Page4 = seditpt( coerce( Page4, E3 ), ctlpt( E3, 0.5, 0.5, 0.4 ), 3, 1 );
+Page4 = seditpt( coerce( Page4, E3 ), ctlpt( E3, 0.5, 0.0, 0.4 ), 3, 0 );
+color( Page4, magenta );
+viewobj( Page4 );
+
+Page5 = srefine( Page2, COL, false, list( 0.3 ) );
+Page5 = seditpt( coerce( Page5, E3 ), ctlpt( E3, -0.5, 1.5, 0.1 ), 4, 3 );
+Page5 = seditpt( coerce( Page5, E3 ), ctlpt( E3, -0.5, 1.0, 0.1 ), 4, 2 );
+Page5 = seditpt( coerce( Page5, E3 ), ctlpt( E3, -0.5, 0.5, 0.1 ), 4, 1 );
+Page5 = seditpt( coerce( Page5, E3 ), ctlpt( E3, -0.5, 0.0, 0.1 ), 4, 0 );
+Page5 = seditpt( coerce( Page5, E3 ), ctlpt( E3, -0.2, 1.5, 0.1 ), 3, 3 );
+Page5 = seditpt( coerce( Page5, E3 ), ctlpt( E3, -0.2, 1.0, 0.1 ), 3, 2 );
+Page5 = seditpt( coerce( Page5, E3 ), ctlpt( E3, -0.2, 0.5, 0.1 ), 3, 1 );
+Page5 = seditpt( coerce( Page5, E3 ), ctlpt( E3, -0.2, 0.0, 0.1 ), 3, 0 );
+Page5 = seditpt( coerce( Page5, E3 ), ctlpt( E3, 0.2, 1.5, 0.4 ), 2, 3 );
+Page5 = seditpt( coerce( Page5, E3 ), ctlpt( E3, 0.2, 1.0, 0.4 ), 2, 2 );
+Page5 = seditpt( coerce( Page5, E3 ), ctlpt( E3, 0.2, 0.5, 0.4 ), 2, 1 );
+Page5 = seditpt( coerce( Page5, E3 ), ctlpt( E3, 0.2, 0.0, 0.4 ), 2, 0 );
+Page5 = seditpt( coerce( Page5, E3 ), ctlpt( E3, 0.2, 1.5, 0.0 ), 1, 3 );
+Page5 = seditpt( coerce( Page5, E3 ), ctlpt( E3, 0.2, 1.0, 0.0 ), 1, 2 );
+Page5 = seditpt( coerce( Page5, E3 ), ctlpt( E3, 0.2, 0.5, 0.0 ), 1, 1 );
+Page5 = seditpt( coerce( Page5, E3 ), ctlpt( E3, 0.2, 0.0, 0.0 ), 1, 0 );
+color( Page5, yellow );
+viewobj( Page5 );
+
+
+Page6 = Page1 * ry( 180 );
+color( Page6, white );
+viewobj( Page6 );
+
+
+Pages = list( Page1, Page2, Page3, Page4, Page5, Page6 );
+view( Pages, 1 );
+free( Pages );
+
+SrfMorphList = nil();
+
+MorphPage = procedure( Srf1, Srf2, Step ):i:
+    ffcompat( Srf1, Srf2 ):
+    for ( i = 0, Step, 1.0,
+        snoc( smorph( Srf1, Srf2, i ), SrfMorphList )
+    );
+
+MorphPage( Page1, Page2, 0.1 );
+MorphPage( Page2, Page3, 0.1 );
+MorphPage( Page3, Page4, 0.1 );
+MorphPage( Page4, Page5, 0.1 );
+MorphPage( Page5, Page6, 0.1 );
+
+for( i = 1, 1, sizeof( SrfMorphList ),
+     view( nth( SrfMorphList, i ), 1 ) );
+free( SrfMorphList );
+
+Tv1 = TFromSrfs( list( Page1, Page2, Page3, Page4, Page5, Page6 ),
+		 3, kv_open );
+interact(Tv1);
+wmin = nth( pdomain( Tv1 ), 5 );
+wmax = nth( pdomain( Tv1 ), 6 );
+for( i = 0, 1, 100,
+     view( strivar( Tv1, depth, (wmin * (100 - i) + wmax * i) / 100 ), 1 ) );
+
+Tv1 = TFromSrfs( list( Page1, Page2, Page3, Page4, Page5, Page6 ),
+		 4, kv_open );
+interact(Tv1);
+wmin = nth( pdomain( Tv1 ), 5 );
+wmax = nth( pdomain( Tv1 ), 6 );
+for( i = 0, 1, 100,
+     view( strivar( Tv1, depth, (wmin * (100 - i) + wmax * i) / 100 ), 1 ) );
+
+Tv1 = TFromSrfs( list( Page1, Page2, Page3, Page4, Page5, Page6 ),
+		 5, kv_open );
+interact(Tv1);
+wmin = nth( pdomain( Tv1 ), 5 );
+wmax = nth( pdomain( Tv1 ), 6 );
+for( i = 0, 1, 100,
+     view( strivar( Tv1, depth, (wmin * (100 - i) + wmax * i) / 100 ), 1 ) );
+
+Tv1 = TFromSrfs( list( Page1, Page2, Page3, Page4, Page5, Page6 ),
+		 6, kv_open );
+interact(Tv1);
+wmin = nth( pdomain( Tv1 ), 5 );
+wmax = nth( pdomain( Tv1 ), 6 );
+for( i = 0, 1, 100,
+     view( strivar( Tv1, depth, (wmin * (100 - i) + wmax * i) / 100 ), 1 ) );
+
+for( i = 0, 1, 11,
+     save( "page" + i,
+	   strivar( Tv1, depth, (wmin * (11 - i) + wmax * i) / 11 ) ) );
+
+# for( i = 0, 1, 11,
+#     save( "pageo" + i,
+#	   offset( strivar( Tv1, depth, (wmin * (11 - i) + wmax * i) / 11 ),
+#		   0.003, 0.0003, false ) ) );
+
+free( Page1 );
+free( Page2 );
+free( Page3 );
+free( Page4 );
+free( Page5 );
+free( Page6 );
+
+free( i );
+free( Tv1 );
+free( wmin );
+free( wmax );

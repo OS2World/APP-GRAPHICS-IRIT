@@ -1,0 +1,153 @@
+#
+# A cube from a chain of 27 smaller cubes forming a 3 by 3 by 3 set.
+#
+#					Gershon Elber, May 1998
+#
+
+ri = iritstate( "RandomInit", 1964 );  # Seed-initiate the randomizer,
+free( ri );
+
+Size = 0.25;
+
+v1  = vector( 0.0,      0.0,      0.0 );
+v2  = vector( Size * 3, 0.0,      0.0 );
+v3  = vector( Size * 3, Size * 3, 0.0 );
+v4  = vector( 0.0,      Size * 3, 0.0 );
+PlAux = poly( list( v1, v2, v3, v4, v1 ), true );
+free( v1 );
+free( v2 );
+free( v3 );
+free( v4 );
+
+CubeBBox = list( PlAux, PlAux * tz( Size * 3 ),
+		 PlAux * rx( 90 ), PlAux * rx( 90 ) * ty( Size * 3 ),
+		 PlAux * ry( -90 ), PlAux * ry( -90 ) * tx( Size * 3 ) );
+attrib( CubeBBox, "rgb", "255, 255, 255" );
+free( PlAux );
+
+CubeAt = function( x, y, z ):
+    return = box( vector( x - Size / 2, y - Size / 2, z - Size / 2 ),
+		  Size, Size, Size ):
+    attrib( return, "rgb",
+	    random( 64, 255 ) + "," +
+	    random( 64, 255 ) + "," +
+	    random( 64, 255 ) );
+
+Stage1 = list( CubeAt( 0, 0, 0 ),
+	       CubeAt( 0, -Size, 0 ),
+	       CubeAt( 0, -2 * Size, 0 ) );
+rot_x = creparam( cbezier( list( ctlpt( E1,  0 ),
+			         ctlpt( E1,  90 ) ) ),
+		  0, 1 );
+attrib( Stage1, "animation", list( rot_x ) );
+free( rot_x );
+
+Stage2 = list( CubeAt( 0, 0, 0 ),
+	       CubeAt( Size, 0, 0 ),
+	       Stage1 * trans( vector( 2 * Size, 0, 0 ) ) );
+rot_y = creparam( cbezier( list( ctlpt( E1,  0 ),
+			         ctlpt( E1,  90 ) ) ),
+		  1, 2 );
+attrib( Stage2, "animation", list( rot_y ) );
+free( rot_y );
+free( Stage1 );
+
+Stage3 = list( CubeAt( 0, 0, 0 ),
+	       CubeAt( 0, Size, 0 ),
+	       Stage2 * trans( vector( 0, 2 * Size, 0 ) ) );
+rot_z = creparam( cbezier( list( ctlpt( E1,  0 ),
+			         ctlpt( E1,  -90 ) ) ),
+		  2, 3 );
+attrib( Stage3, "animation", list( rot_z ) );
+free( rot_z );
+free( Stage2 );
+
+Stage4 = list( CubeAt( 0, 0, 0 ),
+	       CubeAt( 0, 0, Size ),
+	       Stage3 * trans( vector( 0, 0, 2 * Size ) ) );
+rot_y = creparam( cbezier( list( ctlpt( E1,  0 ),
+			         ctlpt( E1,  90 ) ) ),
+		  3, 4 );
+attrib( Stage4, "animation", list( rot_y ) );
+free( rot_y );
+free( Stage3 );
+
+Stage5 = list( CubeAt( 0, 0, 0 ),
+	       CubeAt( 0, -Size, 0 ),
+	       CubeAt( 0, -Size, -Size ),
+	       Stage4 * trans( vector( 0, -2 * Size, -Size ) ) );
+rot_x = creparam( cbezier( list( ctlpt( E1,  0 ),
+			         ctlpt( E1,  180 ) ) ),
+		  4, 5 );
+attrib( Stage5, "animation", list( rot_x ) );
+free( rot_x );
+free( Stage4 );
+
+Stage6 = list( CubeAt( 0, 0, 0 ),
+	       CubeAt( -Size, 0, 0),
+	       Stage5 * trans( vector( -2 * Size, 0, 0 ) ) );
+rot_y = creparam( cbezier( list( ctlpt( E1,  0 ),
+			         ctlpt( E1,  -180 ) ) ),
+		  5, 6 );
+attrib( Stage6, "animation", list( rot_y ) );
+free( rot_y );
+free( Stage5 );
+
+Stage7 = list( CubeAt( 0, 0, 0 ),
+	       CubeAt( 0, Size, 0),
+	       Stage6 * trans( vector( 0, 2 * Size, 0 ) ) );
+rot_z = creparam( cbezier( list( ctlpt( E1,  0 ),
+			         ctlpt( E1,  90 ) ) ),
+		  6, 7 );
+attrib( Stage7, "animation", list( rot_z ) );
+free( rot_z );
+free( Stage6 );
+
+Stage8 = list( CubeAt( 0, 0, 0 ),
+	       Stage7 * trans( vector( 0, 0, Size ) ) );
+rot_x = creparam( cbezier( list( ctlpt( E1,  0 ),
+			         ctlpt( E1,  -90 ) ) ),
+		  7, 8 );
+attrib( Stage8, "animation", list( rot_x ) );
+free( rot_x );
+free( Stage7 );
+
+Stage9 = list( CubeAt( 0, 0, 0 ),
+	       CubeAt( 0, 0, -Size ),
+	       CubeAt( 0, 0, -2 * Size ),
+	       Stage8 * trans( vector( Size, 0, -2 * Size ) ) );
+rot_y = creparam( cbezier( list( ctlpt( E1,  0 ),
+			         ctlpt( E1,  90 ) ) ),
+		  8, 9 );
+attrib( Stage9, "animation", list( rot_y ) );
+free( rot_y );
+free( Stage8 );
+
+Stage10 = list( CubeAt( 0, 0, 0 ),
+	        CubeAt( -Size, 0, 0 ),
+	        CubeAt( -Size, 0, Size ),
+	        CubeAt( -Size, 0, 2 * Size ),
+	        Stage9 * trans( vector( -Size, -Size, 2 * Size ) ) );
+rot_y = creparam( cbezier( list( ctlpt( E1,  0 ),
+			         ctlpt( E1,  -90 ) ) ),
+		  9, 10 );
+attrib( Stage10, "animation", list( rot_y ) );
+free( rot_y );
+free( Stage9 );
+
+Stage11 = list( CubeAt( 0, 0, 0 ),
+	        CubeAt( Size, 0, 0 ),
+	        CubeAt( 2 * Size, 0, 0 ),
+	        Stage10 * trans( vector( 2 * Size, -Size, 0 ) ) );
+
+All = list( CubeBBox,
+	    Stage11 * trans( vector( 0.5 * Size, 2.5 * Size, 0.5 * Size ) ) );
+view( All, 1 );
+free( Stage10 );
+free( Stage11 );
+
+save( "puz3cube", all );
+
+free( All );
+free( Size );
+free( CubeBBox );

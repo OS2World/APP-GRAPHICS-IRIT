@@ -1,0 +1,25 @@
+#
+# This is the make file for the trng_lib library.
+#
+#				Gershon Elber, June 1993
+#
+
+# Get the destination directories:
+include ..\makeflag.wce
+
+OBJS =  trng_aux.$(IRIT_OBJ_PF) trng_dbg.$(IRIT_OBJ_PF) trng_err.$(IRIT_OBJ_PF) \
+	trng_ftl.$(IRIT_OBJ_PF) trng_gen.$(IRIT_OBJ_PF) \
+	trngcoer.$(IRIT_OBJ_PF) trngmesh.$(IRIT_OBJ_PF) \
+	trng_iso.$(IRIT_OBJ_PF) trng2ply.$(IRIT_OBJ_PF) trngeval.$(IRIT_OBJ_PF) \
+	trng_der.$(IRIT_OBJ_PF) trng_grg.$(IRIT_OBJ_PF)
+
+$(TRNG_LIB): $(OBJS)
+	-del $(TRNG_LIB)
+	$(IRITLIB) -out:$(TRNG_LIB) *.$(IRIT_OBJ_PF)
+
+$(IRIT_LIB_DIR)\$(TRNG_LIB): $(TRNG_LIB)
+	copy $(TRNG_LIB) $(IRIT_LIB_DIR)
+
+install: $(IRIT_LIB_DIR)\$(TRNG_LIB)
+
+# Dependencies starts here - do not touch, generated automatically.
