@@ -1,0 +1,203 @@
+#
+# Few examples of computing the art gallery solution of planar curves.
+#
+#				Gershon Elber, November 2004
+#
+
+View_mat1 = rx( 0 );
+viewobj( view_mat1 );
+free( view_mat1 );
+
+#
+# The symbolic computation below is faster this way.
+#
+IProd = iritstate( "BspProdMethod", off );
+
+UnitSquare = ctlpt( e2, 0, 0 ) +
+	     ctlpt( e2, 0, 1 ) +
+	     ctlpt( e2, 1, 1 ) +
+	     ctlpt( e2, 1, 0 ) +
+	     ctlpt( e2, 0, 0 );
+color( UnitSquare, magenta );
+adwidth( UnitSquare, 2 );
+awidth( UnitSquare, 0.015 );
+attrib( UnitSquare, "rgb", "255,128,255" );
+
+apxEq = function( x, y ):
+    return = ( abs( x - y ) < 1e-6 );
+
+MergeVerticalTwoCrvs = function( c1, c2 ): x:
+    x = coord( coord( c1, 1 ), 1 ):
+    if ( apxEq( coord( coord( c1, 1 ), 2 ), 1.0 ) *
+	 apxEq( coord( coord( c2, 0 ), 2 ), 0.0 ),
+	return = ctlpt( E2, x, coord( coord( c1, 0 ), 2 ) - 1.0 ) +
+		 ctlpt( E2, x, coord( coord( c2, 1 ), 2 ) ),
+	if ( apxEq( coord( coord( c2, 1 ), 2 ), 1.0 ) *
+	     apxEq( coord( coord( c1, 0 ), 2 ), 0.0 ),
+	    return = ctlpt( E2, x, coord( coord( c2, 0 ), 2 ) - 1.0 ) +
+		     ctlpt( E2, x, coord( coord( c1, 1 ), 2 ) ),
+	    return = c1 * tx( 0 ) ) );
+
+MergeVerticalBndryCrvs = function( Crvs ): i: j: c1: c1a: c2: Used:
+    Crvs = Crvs * tx( 0 ):
+    return = nil():
+    for ( i = 1, 1, sizeof( Crvs ),
+	c1 = nth( Crvs, i ):
+	Used = GetAttr( c1, "used" ):
+	if ( thisobj("Used") != numeric_type,
+	    for ( j = i + 1, 1, sizeof( Crvs ),
+	        c2 = nth( Crvs, j ):
+		Used = GetAttr( c2, "used" ):
+	        if ( thisobj("Used") != numeric_type,
+		    c1a = MergeVerticalTwoCrvs( c1, c2 ):
+		    if ( c1a != c1,
+			attrib( nref( Crvs, j ), "used", true ) ):
+		    c1 = c1a ) ):
+	    snoc( c1 * tx( 0 ), return ) ) );
+
+CnvrtCrvs2Domains = function( Crvs, Theta ): i: Dm:
+    return = nil():
+    for ( i = 1, 1, sizeof( Crvs ),
+        Dm = pdomain( nth( Crvs, i ) ):
+	snoc( ctlpt( E2, Theta, nth( Dm, 1 ) ) +
+	      ctlpt( E2, Theta, nth( Dm, 2 ) ),
+	      return ) );
+
+CnvrtCrvs2Ranges = function( Crvs, Idx, Merge ): i: Rng: Dm: Pt1: Pt2:
+    return = nil():
+    if ( Merge,
+	Crvs = MergeVerticalBndryCrvs( Crvs ) ):
+    for ( i = 1, 1, sizeof( Crvs ),
+        Dm = nth( Crvs, i ):
+	Pt1 = ceval( Dm, 0 ):
+	Pt2 = ceval( Dm, 1 ):
+	Rng = list( coord( Pt1, 2 ) ) + list( coord( Pt2, 2 ) ):
+        attrib( Rng, "Index", Idx ):
+	snoc( Rng,
+	      return ) );
+
+BuildVisibilityMap = function( c, Step, HighlightAngle ):
+    i: Dir: Crvs: CrvDmn: HighCrvDmn:
+    return = nil():
+    for ( i = 0, Step, 360,
+        Dir = point( cos( i * pi / 180 ), sin( i * pi / 180 ), 0 ):
+	Crvs = cvisible( c, Dir, 1e-5 ):
+	CrvDmn = CnvrtCrvs2Domains( Crvs, i ):
+        if ( HighlightAngle == i,
+	    attrib( CrvDmn, "width", 0.01 ):
+	    attrib( CrvDmn, "gray", 0.0 ):
+	    attrib( CrvDmn, "rgb", "255, 255, 128" ):
+	    adwidth( CrvDmn, 3 ):
+            HighCrvDmn = CrvDmn * sx( 1 / 360 ):
+	    attrib( Crvs, "width", 0.03 ):
+	    adwidth( Crvs, 3 ):
+	    attrib( Crvs, "rgb", "255, 255, 128" ):
+	    snoc( Crvs, return ),
+	    attrib( CrvDmn, "width", 0.01 ):
+	    attrib( CrvDmn, "gray", 0.5 ):
+	    attrib( CrvDmn, "rgb", "128, 128, 255" ):
+	    snoc( CrvDmn * sx( 1 / 360 ), return ) ) ):
+    return = return + list( HighCrvDmn );
+
+BuildOffsetVisibilityMap = function( c, Step, Ofst ):
+    t: Pt: Crvs: co: TMin: TMax: CrvDmn:
+    return = nil():
+    co = offset( coerce( c, E2 ), Ofst, 1e-6, true ):
+    TMin = nth( pdomain( co ), 1 ):
+    TMax = nth( pdomain( co ), 2 ):
+    for ( t = TMin, Step, TMax,
+        Pt = coerce( ceval( co, t ), point_type ) * tz( 1 ):
+	Crvs = cvisible( c, Pt, 1e-5 ):
+	CrvDmn = CnvrtCrvs2Domains( Crvs, t ):
+	attrib( CrvDmn, "width", 0.01 ):
+	attrib( CrvDmn, "gray", 0.5 ):
+	attrib( CrvDmn, "rgb", "128, 128, 255" ):
+	snoc( CrvDmn, return ) );
+
+ComputeViews = function( c, Dms, FName ): Ranges: Cvrs: Cvr: i: 
+    Ranges = nil():
+    for ( i = 1, 1, sizeof( Dms ),
+        snoc( CnvrtCrvs2Ranges( nth( Dms, i ), i, true ), Ranges ) ):
+    printf( "%d Views are considered\\n", list( sizeof( Dms ) ) ):
+    return = setcover( Ranges, 0.001 );
+
+OffsetCrvList = function( CLst, Ofst ): i:
+    return = nil():
+    for ( i = 1, 1, sizeof( CLst ),
+	snoc( offset( coerce( nth( CLst, i ), e2 ), Ofst, 1e-6, true ),
+	      return ) );
+
+#############################################################################
+
+Step = 0.005;
+Ofst = -1e-4;
+c = cbspline( 4,
+    list( ctlpt( E3, -0.519, -0.204, 0. ),
+          ctlpt( E2, -0.17, -0.198 ),
+          ctlpt( E2, -0.11, -0.416 ),
+          ctlpt( E2, 0.722, 0.012 ),
+          ctlpt( E2, 0.245, 0.462 ),
+          ctlpt( E2, 0.479, 0.09 ),
+          ctlpt( E2, 0.354, -0.078 ),
+          ctlpt( E2, -0.016, -0.07 ),
+          ctlpt( E2, 0.053, 0.299 ),
+          ctlpt( E2, -0.125, 0.329 ),
+          ctlpt( E2, -0.047, -0.07 ),
+          ctlpt( E2, -0.333, -0.149 ),
+          ctlpt( E2, -0.536, 0.092 ),
+          ctlpt( E2, -0.231, 0.395 ),
+          ctlpt( E2, -0.62, 0.245 ) ),
+    list( kv_periodic ) );
+c = coerce( c, kv_open );
+attrib( c, "rgb", "0,255,128" );
+attrib( c, "gray", 0.65 );
+awidth( c, 0.012 );
+
+Dms = BuildOffsetVisibilityMap( c, Step, Ofst );
+
+Views = ComputeViews( c, Dms, "" );
+
+ViewPtCurves = nil();
+ViewParams = nil();
+for ( i = 1, 1, sizeof( Views ),
+    t = (nth( Views, i ) + 1) * Step:
+    snoc( nth( Dms, (nth( Views, i ) + 1) ),
+	  ViewParams ):
+    Pt = coerce( ceval( c, t ), point_type ):
+    snoc( Pt, ViewPtCurves ) );
+
+attrprop( ViewParams, "rgb", "255,150,150" );
+attrprop( ViewPtCurves, "width", 0.02 );
+attrprop( ViewPtCurves, "color", red );
+
+attrib( Dms, "gray", 0.8 );
+attrib( Dms, "rgb", "128, 128, 255" );
+
+All = list( list( c, ViewPtCurves ) * tx( -0.3 ),
+      list( Dms, ViewParams * tz( 0.2 ),
+	    UnitSquare ) * tx( 0.3 ) * ty( -0.5 ) )
+	* sc( 0.8 ) * tx( -0.2 );
+
+view( All, 1 );
+
+save( "cvisible.itd.gz", All );
+
+#############################################################################
+
+IProd = iritstate( "BspProdMethod", IProd );
+
+free( UnitSquare );
+free( c );
+free( Dms );
+free( Views );
+free( ViewPtCurves );
+free( ViewParams );
+free( i );
+free( t );
+free( Pt );
+free( All );
+free( Ofst );
+free( Step );
+free( IProd );
+
+

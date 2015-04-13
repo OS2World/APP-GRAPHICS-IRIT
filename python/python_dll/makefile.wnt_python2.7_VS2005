@@ -1,0 +1,113 @@
+
+#
+# Makefile for the IRIT solid modeler.
+#
+#
+# This makefile is for Windows.
+#
+
+# Set this variable to the root of the python installation:
+PYTHON_DIR = c:\util\Python27
+
+# Set this variable to the root of the swig installation:
+SWIG_DIR = c:\util\SWIGWin-1.3.29
+
+# Set these variables to the root of the IRIT installation:
+include c:\irit\irit\makeflag.wnt
+IRIT_DIR = c:\irit\irit\windowsVC2005
+IRIT_LIB_DIR = $(IRIT_DIR)\lib
+IRIT_LIBS = -libpath:$(IRIT_LIB_DIR) \
+	$(EXT_LIB) $(GRAP_LIB) $(USER_LIB) $(RNDR_LIB) \
+	$(BOOL_LIB) $(PRSR_LIB) $(MDL_LIB) $(MVAR_LIB) \
+	$(TRIM_LIB) $(TRIV_LIB) $(TRNG_LIB) $(SYMB_LIB) \
+	$(CAGD_LIB) $(GEOM_LIB) $(MISC_LIB) $(XTRA_LIB) \
+	$(IRIT_URT_LIB) $(IRIT_GIF_LIB) $(IRIT_PNG_LIB) $(IRIT_MAGELLAN_LIB) \
+	$(IRIT_GZIP_LIB) $(IRIT_OGL_CG_LIB) $(IRIT_OGL_GLUT_LIB) $(IRIT_SW_DBG_LIB)
+
+!IF "$(CFG)" == "Release" || "$(CFG)" == "Rel"
+#
+# **** RELEASE ****
+#
+IRIT_CFG=Release
+!ELSE
+#
+# **** DEBUG ****
+#
+IRIT_CFG=Debug
+IRIT_EXE_PF=
+!ENDIF
+
+#
+# Uncomment to compile with the irit{D}.dll single united library.
+#
+IRIT_LIBS = -libpath:$(IRIT_LIB_DIR) irit$(IRIT_LIB_PF).lib
+
+IRIT_MORE_FLAGS = -I$(IRIT_DIR)\..\irit -I$(PYTHON_DIR)\include
+
+IRIT_OBJS = \
+  	$(IRIT_DIR)\irit\$(IRIT_CFG)\bsc_geom.obj \
+	$(IRIT_DIR)\irit\$(IRIT_CFG)\dosintr.obj \
+	$(IRIT_DIR)\irit\$(IRIT_CFG)\freefrm1.obj \
+	$(IRIT_DIR)\irit\$(IRIT_CFG)\freefrm2.obj \
+	$(IRIT_DIR)\irit\$(IRIT_CFG)\freefrm3.obj \
+	$(IRIT_DIR)\irit\$(IRIT_CFG)\freefrm4.obj \
+	$(IRIT_DIR)\irit\$(IRIT_CFG)\freefrm5.obj \
+	$(IRIT_DIR)\irit\$(IRIT_CFG)\freefrm6.obj \
+	$(IRIT_DIR)\irit\$(IRIT_CFG)\freefrm7.obj \
+	$(IRIT_DIR)\irit\$(IRIT_CFG)\freefrm8.obj \
+	$(IRIT_DIR)\irit\$(IRIT_CFG)\inptevl0.obj \
+	$(IRIT_DIR)\irit\$(IRIT_CFG)\inptevl1.obj \
+	$(IRIT_DIR)\irit\$(IRIT_CFG)\inptevl2.obj \
+	$(IRIT_DIR)\irit\$(IRIT_CFG)\inptevl3.obj \
+	$(IRIT_DIR)\irit\$(IRIT_CFG)\inptevl4.obj \
+	$(IRIT_DIR)\irit\$(IRIT_CFG)\inptgetc.obj \
+	$(IRIT_DIR)\irit\$(IRIT_CFG)\inptprsr.obj \
+	$(IRIT_DIR)\irit\$(IRIT_CFG)\irit_db.obj \
+	$(IRIT_DIR)\irit\$(IRIT_CFG)\irit_io.obj \
+	$(IRIT_DIR)\irit\$(IRIT_CFG)\objects1.obj \
+	$(IRIT_DIR)\irit\$(IRIT_CFG)\objects2.obj \
+	$(IRIT_DIR)\irit\$(IRIT_CFG)\overload.obj \
+	$(IRIT_DIR)\irit\$(IRIT_CFG)\support.obj
+
+#############################################################################
+# Swig activation:
+#############################################################################
+
+iritpy_interface.c:	irit_wrap.c
+
+irit_wrap.c:	irit.i
+	$(SWIG_DIR)\swig -python irit.i
+
+irit.i:	irit_to_swig1.in irit_to_swig2.in $(IRIT_OBJS) iritswig$(IRIT_EXE_PF).exe
+	iritswig$(IRIT_EXE_PF).exe
+
+iritswig$(IRIT_EXE_PF).exe: $(IRIT_OBJS) iritswig.$(IRIT_OBJ_PF)
+	$(IRITCONLINK) -out:iritswig$(IRIT_EXE_PF).exe iritswig.$(IRIT_OBJ_PF) $(IRIT_OBJS) $(IRIT_LIBS) $(W32CONMTLIBS)
+
+#############################################################################
+# Python dll making:
+#############################################################################
+
+LCL_OBJS = \
+	python_link.$(IRIT_OBJ_PF) \
+	iritpy_interface.$(IRIT_OBJ_PF) \
+	irit_wrap.$(IRIT_OBJ_PF)
+
+_irit$(IRIT_EXE_PF).pyd: $(LCL_OBJS) $(IRIT_OBJS)
+	$(IRITCONLINK) -out:_irit$(IRIT_EXE_PF).pyd -dll \
+		-libpath:$(IRIT_DIR)\lib \
+		-libpath:$(PYTHON_DIR)\libs \
+		$(IRIT_OBJS) $(LCL_OBJS) $(IRIT_LIBS) $(W32CONMTLIBS)
+
+Install:	_irit$(IRIT_EXE_PF).pyd
+	copy _irit$(IRIT_EXE_PF).pyd $(PYTHON_DIR)\lib\site-packages
+	copy irit.py $(PYTHON_DIR)\lib\site-packages
+
+#############################################################################
+
+clean:
+	-del *.obj *.Dobj *.pdb *.ncb *.exe *.manifest *.exp *.lib \
+	iritpy_interface.* irit_wrap.c irit.i irit.py *.pyc *pyd irit_wrap.c
+
+# Dependencies starts here - do not touch, generated automatically.
+

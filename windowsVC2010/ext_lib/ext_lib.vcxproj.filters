@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{cafe9dd1-efae-4557-9f90-b7188fd15bd7}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{2526bacd-fa46-47e3-b71f-637bf5b56c6d}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{12b6188a-e004-4d22-acee-fa0fc4878676}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\ext_lib\explfunc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ext_lib\crv2rect.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\ext_lib\makefile.ami" />
+    <None Include="..\..\ext_lib\makefile.os2" />
+    <None Include="..\..\ext_lib\makefile.sas" />
+    <None Include="..\..\ext_lib\makefile.unx" />
+    <None Include="..\..\ext_lib\makefile.wce" />
+    <None Include="..\..\ext_lib\makefile.wnt" />
+  </ItemGroup>
+</Project>

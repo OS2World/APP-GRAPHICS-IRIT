@@ -1,0 +1,4584 @@
+#
+# Figures of IRIT documentation - generated using IRIT...
+#
+
+EuclidPtsToSprs = function( Pts, Rad ): i: Pt:
+    return = nil():
+    for ( i = 1, 1, sizeof( Pts ),
+	Pt = nth( Pts, i ):
+	snoc( sphere( coerce( Pt, vector_type ), Rad ), return ) );
+
+EuclidPts2ToSprs = function( Pts, Rad ): i: Pt:
+    return = nil():
+    for ( i = 0, 1, sizeof( Pts ) - 1,
+	Pt = coord( Pts, i ):
+	snoc( sphere( coerce( Pt, vector_type ), Rad ), return ) );
+
+ParamPtsToSprs = function( Crv, Pts, Rad ): i: Pt:
+    return = nil():
+    for ( i = 1, 1, sizeof( Pts ),
+	Pt = ceval( Crv, nth( Pts, i ) ):
+	snoc( sphere( coerce( Pt, vector_type ), Rad ), return ) );
+
+ExtractE3Pts = function( UVXYZPts ): UVXYZPt: i:
+    return = nil():
+    printf("Found %d points\\n", list( sizeof( UVXYZPts ) ) ):
+    for ( i = 1, 1, sizeof( UVXYZPts ),
+	UVXYZPt = nth( UVXYZPts, i ):
+	snoc( ctlpt( E3, coord( UVXYZPt, 3 ),
+			 coord( UVXYZPt, 4 ),
+			 coord( UVXYZPt, 5 ) ), return ) );
+
+GetRandRGB = function():
+    return = random( 5, 205 ) + "," +
+	     random( 5, 205 ) + "," +
+	     random( 5, 255 );
+
+Scale2UnitSize = function( Obj ): b:
+    b = bbox( Obj ):
+    return = Obj * tx( -nth( b, 1 ) ) * sx( 1 / ( nth( b, 2 ) - nth( b, 1 ) ) )
+		 * ty( -nth( b, 3 ) ) * sy( 1 / ( nth( b, 4 ) - nth( b, 3 ) ) );
+UnifScale2UnitSize = function( Obj ): b: Scl:
+    b = bbox( Obj ):
+    Scl = max( 1 / ( nth( b, 2 ) - nth( b, 1 ) ),
+	       1 / ( nth( b, 4 ) - nth( b, 3 ) ) ):
+    return = Obj * tx( -nth( b, 1 ) )
+		 * ty( -nth( b, 3 ) )
+	         * sc( Scl );
+
+include("../../irit/iritinit"); # Just in case...
+save_mat_docs = view_mat;
+save_res = resolution;
+
+#system("\rm *dat.Z *ps");
+
+view_mat0 = rotx( 0 );
+save("view0mat.itd.gz", list( view_mat0 ) );
+
+view_mat1 = save_mat_docs * roty( 5 ) * rotx( 10 )
+	   * scale( vector( 0.35, 0.35, 0.35 ) );
+save("view1mat.itd.gz", list( view_mat1 ) );
+
+view_mat2 = save_mat_docs * roty( 5 ) * rotx( 10 )
+	   * scale( vector( 0.8, 0.8, 0.8 ) );
+save("view2mat.itd.gz", list( view_mat2 ) );
+
+view_mat3 = save_mat_docs * rx( -30 ) * ry( 5 )
+	   * scale( vector( 0.3, 0.3, 0.3 ) );
+save("view3mat.itd.gz", list( view_mat3 ) );
+
+view_mat4 = save_mat_docs * roty( 10 ) * rotx( -10 ) * rz( 5 )
+	   * scale( vector( 0.4, 0.4, 0.4 ) );
+save("view4mat.itd.gz", list( view_mat4 ) );
+
+attrib( axes, "rgb", "128,0,128" );
+
+#############################################################################
+
+c1 = circle( vector( 0.0, 0.0, 0.0 ), 0.7 );
+c2 = ctlpt( E3, -0.2, -0.5, -1.5 ) + ctlpt( E3, 0.2, 0.5, 1.5 );
+attrib( c1, "rgb", "255,10,10" );
+awidth( c1, 0.03 );
+attrib( c2, "rgb", "0,0,220" );
+awidth( c2, 0.03 );
+
+as1 = algsum( c1, c2 );
+attrib( as1, "rgb", "0,120,0" );
+awidth( as1, 0.01 );
+
+All = list( as1, c1, c2 ) * sc( 0.8 );
+view( All, on );
+save( "algsum1.itd.gz", All );
+
+c2 = cbspline( 3,
+	       list( ctlpt( E3, 0.0, 0.0, 0.0 ),
+		     ctlpt( E3, 0.0, 0.0, 0.7 ),
+		     ctlpt( E3, 0.0, 1.5, 1.0 ),
+		     ctlpt( E3, 0.0, 0.0, 1.3 ),
+		     ctlpt( E3, 0.0, 0.0, 2.0 ) ),
+	       list( KV_OPEN ) );
+attrib( c2, "rgb", "0,0,220" );
+awidth( c2, 0.03 );
+
+as2 = algsum( c1, c2 );
+attrib( as2, "rgb", "0, 120, 0" );
+awidth( as2, 0.01 );
+
+All = list( as2, c1, c2 ) * sc( 0.75 ) * rx( 30 ) * ry( 120 ) * rz( 30 ) * tx( -0.64 ) * ty( -0.34 );
+
+view( All, on );
+save( "algsum2.itd.gz", All );
+
+All1 = list( as2 ) * sc( 2.35 ) * rx( 30 ) * ry( 120 ) * rz( 30 ) * tz( 1.2 ) * ty( 1.5 );
+
+view( list( All1, view_mat3 ), on );
+save( "halgsum.itd.gz", All1 );
+
+free( c1 );
+free( c2 );
+free( as1 );
+free( as2 );
+free( All );
+free( All1 );
+
+#############################################################################
+
+XY = list( ctlpt( E2, -1.1,  0.0 ) + ctlpt( E2,  1.1,  0.0 ),
+	   ctlpt( E2,  0.0, -1.1 ) + ctlpt( E2,  0.0,  1.1 ) );
+attrib( XY, "width", 0.01 );
+attrib( XY, "rgb", "70,0,120" );
+Arc1 = ARC( vector( 1.0, 0.0, 0.0 ),
+            vector( 1.0, 1.0, 0.0 ),
+            vector( 0.0, 1.0, 0.0 ) );
+attrib( Arc1, "width", 0.02 );
+attrib( Arc1, "rgb", "0,80,0" );
+All = list( Arc1, XY ) * sc( 0.9 );
+view( All, on );
+save( "arc1cnst.itd.gz", All );
+
+Arc2 = ARC360( vector( 0.0, 0.0, 0.0 ), 1.0, 75, 355 );
+attrib( Arc2, "width", 0.02 );
+attrib( Arc2, "rgb", "0,80,0" );
+All = list( Arc2, XY ) * sc( 0.95 );
+view( All, on );
+save( "arc2cnst.itd.gz", All );
+
+free( Arc1 );
+free( Arc2 );
+free( XY );
+
+#############################################################################
+
+ColorCirc = function( Crc, CW ):
+    if ( Cw, color( Crc, green ),
+	     color( Crc, red ) ):
+    return = Crc;
+
+DrawCircs = function( Pls ): i: v:
+    return = nil():
+    for ( i = 0, 1, sizeof( Pls ) - 1,
+	v = coord( Pls, i ):
+	snoc( ColorCirc( circle( vector( coord( v, 0 ), coord( v, 1 ), -1.0 ),
+				 coord( v, 2 ) ),
+			 coord( v, 2 ) > 0.0 ),
+	      return ) );
+
+DrawCircsBelt = function( Pls, BeltThickness, CreateBoundingArcs, ReturnCrvs ):
+    return = list( BeltCurve( Pls, BeltThickness,
+				        CreateBoundingArcs, ReturnCrvs ),
+	           DrawCircs( Pls ) );
+
+Pls = poly( list( vector( 0, 0,   0.6 ),
+	          vector( 1, 3,  -0.24 ),
+	          vector( 3, 3,  -0.24 ),
+	          vector( 3, 1,   0.4 ),
+		  vector( 3, -1,  0.3 ),
+		  vector( 1, -1,  0.3 ) ),
+	    true ):
+b6 = DrawCircsBelt( Pls, 0.1, false, true ) * sc( 0.36 ) * tx( -0.45 ) * ty( -0.34 );
+view( b6, on );
+
+save( "beltcurve.itd.gz", b6 );
+
+free( b6 );
+free( Pls );
+
+#############################################################################
+
+UnitSquare = ctlpt( e2, 0, 0 ) +
+	     ctlpt( e2, 0, 1 ) +
+	     ctlpt( e2, 1, 1 ) +
+	     ctlpt( e2, 1, 0 ) +
+	     ctlpt( e2, 0, 0 );
+attrib( UnitSquare, "rgb", "50, 10, 50" );
+adwidth( UnitSquare, 3 );
+awidth( UnitSquare, 0.013 );
+attrib( UnitSquare, "gray", 0.25 );
+
+Crv = cbspline( 3,
+    list( ctlpt( E3, 0.334, 0.751, 0. ),
+          ctlpt( E2, -0.097, 0.486 ),
+          ctlpt( E2, -0.656, 0.605 ),
+          ctlpt( E2, -0.384, -0.475 ),
+          ctlpt( E2, 0.027, 0.306 ),
+          ctlpt( E2, 0.575, -0.431 ),
+          ctlpt( E2, 0.699, 0.196 ) ),
+    list( kv_periodic ) );
+attrib( Crv, "rgb", "10, 10, 100" );
+awidth( Crv, 0.012 );
+adwidth( Crv, 2 );
+
+ComputeAngleMap = function( Crv, Angle ): DE: ppl:
+    DE = cAngleMap( Crv, 30, Angle, 300 ):
+    attrib( DE, "rgb", "50, 50, 10" ):
+    awidth( DE, 0.003 ):
+    ppl = cAngleMap( Crv, 30, Angle, false ):
+    attrib( ppl, "rgb", "200, 100, 200" ):
+    awidth( ppl, 0.012 ):
+    return = list( list( ppl, DE ) * rotx( -90 ) * roty( -90 ), UnitSquare );
+
+All1 = ComputeAngleMap( Crv, 30 );
+All2 = ComputeAngleMap( Crv, 60 );
+All3 = ComputeAngleMap( Crv, 90 );
+
+All = list( Crv * tx( -1.2 ) * ty( 0.35 ),
+	    All1 * tx( -0.4 ),
+	    All2 * tx( 0.7 ),
+	    All3 * tx( 1.8 ) ) * sc( 0.4 ) * tx( -0.2 );
+
+view( All, 1 );
+
+save( "canglemap.itd.gz", All );
+
+free( UnitSquare );
+free( Crv );
+free( All );
+free( All1 );
+free( All2 );
+free( All3 );
+
+#############################################################################
+Crv = cbspline( 3,
+                list( ctlpt( E2, 0.7, 0.0 ),
+                      ctlpt( E2, 0.7, 0.06 ),
+                      ctlpt( E2, 0.1, 0.1 ),
+                      ctlpt( E2, 0.1, 0.6 ),
+                      ctlpt( E2, 0.6, 0.6 ),
+                      ctlpt( E2, 0.8, 0.8 ),
+                      ctlpt( E2, 0.8, 1.4 ),
+                      ctlpt( E2, 0.6, 1.6 ) ),
+                list( KV_OPEN ) );
+attrib( Crv, "width", 0.01 );
+attrib( Crv, "rgb", "0,80,0" );
+
+OffCrv1 = AOFFSET( Crv, -0.4, 0.01, TRUE, FALSE );
+OffCrv2 = AOFFSET( Crv, -0.4, 0.01, FALSE, FALSE );
+attrib( OffCrv1, "width", 0.015 );
+attrib( OffCrv2, "width", 0.015 );
+attrib( OffCrv1, "rgb", "80,0,80" );
+attrib( OffCrv2, "rgb", "80,0,80" );
+All = list( list( Crv, OffCrv1 ) * trans( vector(  0.0,  1.0, 0.0 ) ),
+	    list( Crv, OffCrv2 ) * trans( vector(  0.0, -1.0, 0.0 ) ) )
+			  * rotz( 90 ) * sc( 0.45 )
+			  * trans( vector( 0.3, -0.12, 0.0 ) );
+view( All, on );
+save( "caoffset.itd.gz", All );
+free( Crv );
+free( OffCrv1 );
+free( OffCrv2 );
+
+#############################################################################
+c1 = ctlpt( e3, 0, 0, 0 ) + ctlpt( e3, 0, 1, 0 );
+c2 = ctlpt( e3, 1, 0, 0 ) + ctlpt( e3, 1, 1, 0 );
+d1 = ctlpt( e3,  1, 0,  1 ) + ctlpt( e3,  1, 0,  0.1 );
+d2 = ctlpt( e3,  1, 0, -0.1 ) + ctlpt( e3,  1, 0, -1 );
+
+s1 = hermite( c1, c2, d1, d2 );
+attrib( s1, "rgb", "0,110,140" );
+
+cSec = cbspline( 3,
+		 list( ctlpt( e2, -1,    0 ),
+		       ctlpt( e2, -1,    0 ),
+		       ctlpt( e2, -0.14, 0.26 ),
+		       ctlpt( e2, -0.65, 0.51 ),
+		       ctlpt( e2,  0,    0.76 ),
+		       ctlpt( e2,  0.65, 0.51 ),
+		       ctlpt( e2,  0.14, 0.26 ),
+		       ctlpt( e2,  1,    0 ),
+		       ctlpt( e2,  1,    0 ) ),
+		list( kv_open ) );
+n = ctlpt( e3, 0, 0, 1 ) + ctlpt( e3, 0, 0, 1 );
+
+s2 = blhermite( c1, c2, d1, d2, cSec, n );
+attrib( s2, "rgb", "180,140,100" );
+
+All = list( s1, s2 ) * sc( 1.7 ) * tz( 0.8 ) * tx( 0.12 );
+awidth( All, 0.015 );
+
+view( list( All, view_mat2 ), on );
+save( "bl_hrmt.itd.gz", All );
+
+free( c1 );
+free( c2 );
+free( d1 );
+free( d2 );
+free( s1 );
+free( cSec );
+free( n );
+
+#############################################################################
+cSec = cbspline( 3,
+		 list( ctlpt( e2, -1,    0 ),
+		       ctlpt( e2, -1,    0 ),
+		       ctlpt( e2, -0.5,  0.2 ),
+		       ctlpt( e2, -0.7,  0.3 ),
+		       ctlpt( e2,  0,    0.5 ),
+		       ctlpt( e2,  0.7,  0.3 ),
+		       ctlpt( e2,  0.5,  0.2 ),
+		       ctlpt( e2,  1,    0 ),
+		       ctlpt( e2,  1,    0 ) ),
+		 list( kv_open ) );
+
+s = -surfPRev( cregion( pcircle( vector( 0, 0, 0 ), 1 ),
+                        0, 2 ) * rx( 90 ) );
+attrib( s, "rgb", "0,110,140" );
+
+s1 = -BLSHERMITE( s, ctlpt( E2, 0, 1 ) + ctlpt( E2, 4, 1 ),
+                  cSec, 1, 0.2, 0.5 );
+attrib( s1, "rgb", "140,180,100" );
+
+s2 = -BLSHERMITE( s, ctlpt( E2, 0, 1.5 ) + ctlpt( E2, 4, 1.5 ),
+                  cSec, 0.1, 0.2, 0.5 );
+attrib( s2, "rgb", "190,140,100" );
+
+s3 = -BLSHERMITE( s, ctlpt( E2, 0, 0.3 ) + ctlpt( E2, 4, 0.3 ),
+                  cSec, 1.5, 0.2, 0.5 );
+attrib( s3, "rgb", "140,140,100" );
+
+All = list( s, s1, s2, s3 ) * sc( 0.9 ) * rx( 30 ) * tz( -0.1 );
+awidth( All, 0.015 );
+
+view( list( All, view_mat2 ), on );
+save( "bls_hrmt.itd.gz", All );
+free( s );
+free( s1 );
+free( s2 );
+free( s3 );
+free( cSec );
+
+
+#############################################################################
+Circ = circle( vector( 0.0, 0.0, 0.0 ), 1.0 )
+				* scale( vector( 0.7, 0.7, 0.7 ) );
+attrib( Circ, "width", 0.02 );
+attrib( Circ, "rgb", "0,140,140" );
+Srf = BOOLONE( Circ );
+attrib( Srf, "width", 0.005 );
+attrib( Srf, "rgb", "140,140,0" );
+view( list( Srf, Circ ), on );
+save( "boolone.itd.gz", list( Srf, Circ ) );
+
+Cbzr1 = cbezier( list( ctlpt( E3, 0.1, 0.1, 0.1 ),
+                       ctlpt( E3, 0.0, 0.5, 1.0 ),
+                       ctlpt( E3, 0.4, 1.0, 0.4 ) ) );
+Cbzr2 = cbezier( list( ctlpt( E3, 1.0, 0.2, 0.2 ),
+                       ctlpt( E3, 1.0, 0.5, -1.0 ),
+                       ctlpt( E3, 1.0, 1.0, 0.3 ) ) );
+Cbsp3 = cbspline( 4,
+                  list( ctlpt( E3, 0.1,  0.1, 0.1 ),
+                        ctlpt( E3, 0.25, 0.0, -1.0 ),
+                        ctlpt( E3, 0.5,  0.0, 2.0 ),
+                        ctlpt( E3, 0.75, 0.0, -1.0 ),
+                        ctlpt( E3, 1.0,  0.2, 0.2 ) ),
+                  list( KV_OPEN ) );
+Cbsp4 = cbspline( 4,
+                  list( ctlpt( E3, 0.4,  1.0, 0.4 ),
+                        ctlpt( E3, 0.25, 1.0, 1.0 ),
+                        ctlpt( E3, 0.5,  1.0, -2.0 ),
+                        ctlpt( E3, 0.75, 1.0, 1.0 ),
+                        ctlpt( E3, 1.0,  1.0, 0.3 ) ),
+                  list( KV_OPEN ) );
+attrib( Cbzr1, "width", 0.02 );
+attrib( Cbzr2, "width", 0.02 );
+attrib( Cbsp3, "width", 0.02 );
+attrib( Cbsp4, "width", 0.02 );
+
+attrib( Cbzr1, "rgb", "120,90,190" );
+attrib( Cbzr2, "rgb", "200,100,20" );
+attrib( Cbsp3, "rgb", "110,70,0" );
+attrib( Cbsp4, "rgb", "50,150,30" );
+
+Srf = BOOLSUM( Cbzr1, Cbzr2, Cbsp3, Cbsp4 );
+attrib( Srf, "rgb", "0,155,130" );
+attrib( Srf, "width", 0.005 );
+
+All = list( Srf, Cbzr1, Cbzr2, Cbsp3, Cbsp4 )
+  * sc( 1.5 ) * rotx( 160 ) * roty( 20 ) * trans( vector( -0.8, 0.8, 0.0 ) );
+view( All, on );
+save( "boolsum.itd.gz", All );
+free( Cbzr1 );
+free( Cbzr2 );
+free( Cbsp3 );
+free( Cbsp4 );
+free( Srf );
+free( Circ );
+
+#############################################################################
+Prims = iritstate( "PrimType", 1 );
+Trs = torus( vector( 0.0, 0.0, 0.0 ), vector( 0.0, 0.0, 1.0 ), 0.7, 0.7 );
+TrsIsos = GetIsoCurves( Trs, 12, 12 );
+attrib( TrsIsos, "rgb", "0,0,230" );
+awidth( TrsIsos, 0.02 );
+attrib( TrsIsos, "gray", 0.25 );
+
+Spr = SphereSrf( 0.699 ) * tx( 0.7 );
+SprIsos = GetIsoCurves( Spr, 12, 12 );
+awidth( SprIsos, 0.02 );
+attrib( SprIsos, "gray", 0.5 );
+attrib( SprIsos, "rgb", "100,199,0" );
+
+Bisect = BsctTrsSpr( point( 0.0, 0.0, 0.0 ), vector( 0.0, 0.0, 1.0 ),
+		     0.7, 0.7, point( 0.7, 0.0, 0.0 ), 0.7 );
+adwidth( Bisect, 2 );
+attrib( Bisect, "rgb", "200,50,50" );
+
+BisectIsos1 = GetIsoCurves( sregion( Bisect, row, 0, 2.35 ), 32, 0 );
+BisectIsos2 = GetIsoCurves( sregion( Bisect, row, 2.35, 3.65 ), 32, 0 );
+BisectIsos3 = GetIsoCurves( sregion( Bisect, row, 3.65, 4.0 ), 32, 0 );
+BisectIsos4 = GetIsoCurves( Bisect, 0, 32 );
+BisectIsos = list( BisectIsos1, BisectIsos2, BisectIsos3, BisectIsos4 );
+awidth( BisectIsos, 0.02 );
+attrib( BisectIsos, "rgb", "140,100,0" );
+
+All = list( TrsIsos, SprIsos, BisectIsos ) * sc( 0.85 );
+view( list( All, view_mat2 ), 1 );
+save( "BsctTrSp.itd.gz", All );
+
+#################################
+
+ZLine = ctlpt( e3, 0, 0, -1.2 ) + ctlpt( e3, 0, 0, 1.2 );
+awidth( ZLine, 0.03 );
+attrib( ZLine, "gray", 0.2 );
+attrib( ZLine, "rgb", "140,100,0" );
+
+Spr = SphereSrf( 0.7 ) * tx( 0.35 );
+SprIsos = GetIsoCurves( Spr, 12, 12 );
+awidth( SprIsos, 0.02 );
+attrib( SprIsos, "gray", 0.5 );
+attrib( SprIsos, "rgb", "140,0,100" );
+
+Bisect = BsctSprLn( point( 0.35, 0, 0 ), 0.7, 0.5 );
+BisectIsos = GetIsoCurves( Bisect, 16, 16 );
+awidth( BisectIsos, 0.02 );
+attrib( BisectIsos, "rgb", "0,100,50" );
+
+All = list( SprIsos, ZLine, BisectIsos ) * rx( -105 ) * tx( 0.25 );
+
+view( list( All, view_mat2 ), 1 );
+
+save( "BsctSpLn.itd.gz", All );
+
+#################################
+
+free( ZLine );
+free( Trs );
+free( TrsIsos );
+free( Spr );
+free( SprIsos );
+free( Bisect );
+free( BisectIsos1 );
+free( BisectIsos2 );
+free( BisectIsos3 );
+free( BisectIsos4 );
+free( BisectIsos );
+
+iritstate( "PrimType", Prims );
+free( Prims );
+
+#############################################################################
+B = BOX( vector( 0, 0, 0 ), 1, 1, 1);
+attrib( B, "width", 0.02 );
+
+All = B * sc( 1.3 ) * rotx( -160 ) * roty( 20 )
+        * trans( vector( -0.3, 0.4, 0.0 ) );
+color( All, red );
+
+view( All, on );
+save( "prim_box.itd.gz", All );
+
+free( B );
+
+#############################################################################
+
+ri = iritstate( "RandomInit", 1964 );  # Seed-initiate the randomizer,
+
+GenRandomCrv = function( d, n, size ): CtlPts: CPt: i: kv:
+    CtlPts = nil():
+    for ( i = 1, 1, n,
+	snoc( ctlpt( E2, random( -size, size ), random( -size, size ) ),
+	      CtlPts ) ):
+    if ( random( 0, 1 ) > 0.3,
+	kv = kv_periodic,
+	kv = kv_open ):
+    return = cbspline( d,
+		       CtlPts * tx( random( -0.2, 0.2 ) ) * ty( random( -0.2, 0.2 ) ),
+		       list( kv ) ):
+    return = coerce( return, kv_open );
+
+RandomCrvs = function( NumCrvs, CrvDeg, CrvLen, size, DWidth ): i: l:
+    l = nil():
+    for ( i = 1, 1, NumCrvs,
+        snoc( GenRandomCrv( CrvDeg, CrvLen, size ), l ):
+	attrib( nref( l, i ), "gray", random( 0.3, 0.9 ) ) ):
+    for ( i = 1, 1, NumCrvs,
+	attrib( nref( l, i ), "rgb", GetRandRGB() ) ):
+    return = l:
+    color( return, red ):
+    awidth( return, 0.005 ):
+    adwidth( return, DWidth );
+
+Crvs = RandomCrvs( 11, 3, 3, 0.8, 2 );
+
+LinearLowEnv = carrangmnt( Crvs, 1e-12, 3, 0 );
+attrib( LinearLowEnv, "rgb", "15, 15, 100" );
+adwidth( LinearLowEnv, 5 );
+awidth( LinearLowEnv, 0.02 ):
+
+All = list( LinearLowEnv * tz( -0.2 ), Crvs );
+
+view( All, on );
+save( "carrangmnt.itd.gz", All );
+
+free( Crvs );
+free( All );
+
+#############################################################################
+
+EvalUVtoE3 = function( Srf, UVs, clr ): UV: i:
+    return = nil():
+    for ( i = 1, 1, sizeof( UVs ),
+	UV = nth( UVs, i ):
+	snoc( seval( Srf, coord( UV, 1 ), coord( UV, 2 ) ), return ) ):
+    color( return, clr );
+
+c1 = cbezier( list( ctlpt( E2, -0.8, -0.6 ),
+		    ctlpt( E2, -0.2, -0.1 ),
+		    ctlpt( E2,  0.2, -0.6 ),
+		    ctlpt( E2,  0.8, -0.6 ) ) );
+c2 = cbezier( list( ctlpt( E2, -0.8,  0.6 ),
+		    ctlpt( E2, -0.2, -0.1 ),
+		    ctlpt( E2,  0.2, -0.6 ),
+		    ctlpt( E2,  0.8,  0.6 ) ) );
+
+BisectSrf = cbisector2d( list( c1, c2 ), TRUE, 1, 20, true, false );
+BisectSrfE3 = coerce( BisectSrf, e3 ) * rotx( -90 ) * roty( -90 ) * sz( 0.01 );
+attrib( BisectSrfE3, "rgb", "200, 50, 50" );
+attrib( BisectSrfE3, "width", 0.005 );
+
+resolution = 60;
+Cntrs = contour( BisectSrfE3, plane( 0, 0, 1, 1e-8 ) );
+awidth( Cntrs, 0.007 );
+adwidth( Cntrs, 2 );
+attrib( Cntrs, "rgb", "15, 50, 15" );
+attrib( Cntrs, "width", 0.015 );
+attrib( Cntrs, "gray", 0.65 );
+
+UExtreme = EvalUVtoE3( BisectSrfE3, 
+		       ciextreme( BisectSrf, col, 0.01, -1e-9 ),
+		       blue );
+adwidth( UExtreme, 2 );
+
+VExtreme = EvalUVtoE3( BisectSrfE3,
+		       ciextreme( BisectSrf, row, 0.01, -1e-9 ),
+		       blue );
+adwidth( VExtreme, 2 );
+
+AllAux = list( VExtreme, UExtreme, Cntrs, BisectSrfE3 );
+
+All = list( AllAux * rz( 40 ) * rx( 70 ) * tx( -0.75 ),
+	    AllAux * sc( 1.3 ) * tx( 0.25 ) * ty( -0.25 ) * tz( 0.5 ) )
+	* sc( 0.6 );
+
+view( All, on );
+
+save( "ciextreme.itd.gz", All );
+
+free( All );
+free( AllAux );
+free( VExtreme );
+free( UExtreme );
+free( Cntrs );
+free( BisectSrfE3 );
+free( BisectSrf );
+free( c1 );
+free( c2 );
+
+#############################################################################
+s45 = sin(pi / 4);
+Arc90 = CBEZIER( list( ctlpt( P2, 1.0, 0.0, 1.0 ),
+                       ctlpt( P2, s45, s45, s45 ),
+                       ctlpt( P1, 1.0, 1.0 ) ) );
+HalfCirc = CBSPLINE( 3,
+                     list( ctlpt( P3,  1.0,  1.0,  0.0, 0.0 ),
+			   ctlpt( P3,  s45,  s45,  s45, 0.0 ),
+			   ctlpt( P3,  1.0,  0.0,  1.0, 0.0 ),
+                           ctlpt( P3,  s45, -s45,  s45, 0.0 ),
+                           ctlpt( P3,  1.0, -1.0,  0.0, 0.0 ) ),
+                     list( 0, 0, 0, 1, 1, 2, 2, 2 ) );
+attrib( Arc90, "width", 0.02 );
+attrib( HalfCirc, "width", 0.02 );
+
+All = list( Arc90 * trans( vector( -1.5, -1.0, 0.0 ) ),
+	    HalfCirc * trans( vector( 0.6, -1.0, 0.0 ) ) )
+	* sc( 0.6 ) * ty( 0.3 );
+color( All, red );
+
+view( All, on );
+save( "circular.itd.gz", All );
+free( Arc90 );
+free( HalfCirc );
+
+#############################################################################
+c = CBSPLINE( 4,
+              list( ctlpt( E2,  0.5,  0.5 ),
+                    ctlpt( E2, -0.5,  0.5 ),
+                    ctlpt( E2, -0.5, -0.5 ),
+                    ctlpt( E2,  0.5, -0.5 ) ),
+              list( KV_PERIODIC ) );
+attrib( c, "width", 0.01 );
+All = c * sc( 1.8 );
+color( All, red );
+
+view( All, on );
+save( "cperiod.itd.gz", All );
+free( c );
+
+#############################################################################
+
+DrawBiArcIsOdd = function( x ):
+    return = x - 2 * floor( x / 2 );
+
+DrawBiArcs = function( Crv, Tol, MaxAngle ): Arcs: i:
+    Arcs = CBiArcs( Crv, Tol, MaxAngle ) * tz( -0.01 ):
+    for ( i = 1, 1, sizeof( Arcs ),
+	if ( DrawBiArcIsOdd( i ),
+	    attrib( nref( Arcs, i ), "rgb", "0,0,150" ):
+            attrib( nref( Arcs, i ), "gray", 0.35 ),
+	    attrib( nref( Arcs, i ), "rgb", "150,0,0" ):
+            attrib( nref( Arcs, i ), "gray", 0.75 ) ) ):
+    attrib( Arcs, "width", 0.015 ):
+    color( Crv, magenta ):
+    attrib( Crv, "width", 0.007 ):
+    return = list( Arcs, Crv );
+
+C1 = cbspline( 4,
+    list( ctlpt( E3, -0.287, -0.286, 0 ),
+          ctlpt( E2, 0.0272, -0.425 ),
+          ctlpt( E2, 0.265, -0.0839 ),
+          ctlpt( E2, 0.607, -0.165 ),
+          ctlpt( E2, 0.832, -0.205 ),
+          ctlpt( E2, 0.737, 0.042 ),
+          ctlpt( E2, 0.357, 0.103 ),
+          ctlpt( E2, 0.508, 0.298 ),
+          ctlpt( E2, 0.814, 0.649 ),
+          ctlpt( E2, 0.692, 0.775 ),
+          ctlpt( E2, 0.411, 0.391 ),
+          ctlpt( E2, 0.301, 0.315 ),
+          ctlpt( E2, 0.625, 0.945 ),
+          ctlpt( E2, 0.49, 1.03 ),
+          ctlpt( E2, 0.369, 0.829 ),
+          ctlpt( E2, 0.185, 0.384 ),
+          ctlpt( E2, 0.194, 0.518 ),
+          ctlpt( E2, 0.243, 1.09 ),
+          ctlpt( E2, 0.0653, 1.13 ),
+          ctlpt( E2, 0.0644, 0.381 ),
+          ctlpt( E2, 0.00925, 0.496 ),
+          ctlpt( E2, -0.0113, 0.943 ),
+          ctlpt( E2, -0.202, 0.954 ),
+          ctlpt( E2, -0.147, 0.644 ),
+          ctlpt( E2, -0.162, 0.208 ),
+          ctlpt( E2, -0.337, -0.156 ) ),
+    list( kv_periodic ) );
+C1 = coerce( C1, kv_open );
+
+All = list( DrawBiArcs( C1, 0.25, 180 ) * tx( -0.6 ),
+	    DrawBiArcs( C1, 0.01, 180 ) * tx( 0.6 ) )
+	* sc( 0.8 ) * tx( -0.2 ) * ty( -0.3 );
+
+view( All, on );
+save( "cbiarcs.itd.gz", All );
+
+free( c1 );
+free( All );
+
+#############################################################################
+
+c1 = cbezier( list( ctlpt( E2, -0.5, -0.2 ),
+		    ctlpt( E2,  0.0, -0.2 ),
+		    ctlpt( E2,  0.6,  0.6 ) ) );
+c2 = cbezier( list( ctlpt( E2,  0.3, -0.7 ),
+		    ctlpt( E2, -0.2, -0.7 ),
+		    ctlpt( E2,  0.7,  0.6 ) ) );
+attrib( c1, "rgb", "140,0,0" );
+attrib( c1, "width", 0.007 );
+attrib( c2, "rgb", "140,0,0" );
+attrib( c2, "width", 0.007 );
+
+BisectCrvs = cbisector2d( list( c1, c2 ), false, 0, 12, true, false );
+attrib( BisectCrvs, "width", 0.012 );
+attrib( BisectCrvs, "gray", 0.5 );
+attrib( BisectCrvs, "rgb", "140,0,200" );
+
+All = list( c1, c2, BisectCrvs ) * sc( 0.54 ) * tx( -0.42 ) * ty( -0.1 );
+view( All, on );
+save( "cbisectc.itd.gz", All );
+
+c1 = creparam( pcircle( vector( 0.0, 0.0, 0.0 ), 1 ), 0, 1 );
+c2 = cbezier( list( ctlpt( E3, -0.2, 0.0,  1.0 ),
+		    ctlpt( E3,  0.2, 0.0, -1.0 ) ) );
+attrib( c1, "rgb", "140,0,0" );
+attrib( c1, "width", 0.007 );
+attrib( c2, "rgb", "140,0,0" );
+attrib( c2, "width", 0.007 );
+
+BisectSrf = cbisector3d( list( c1, c2 ), 1 );
+attrib( BisectSrf, "width", 0.012 );
+attrib( BisectSrf, "gray", 0.5 );
+attrib( BisectSrf, "rgb", "140,0,200" );
+
+All = list( c1, c2, BisectSrf ) * sc( 0.65 ) * rx( 60 ) * ry( 5 );
+view( All, on );
+save( "cbisects.itd.gz", All );
+free( c1 );
+free( c2 );
+free( BisectCrvs );
+
+#############################################################################
+crv1 = cbspline( 3,
+                 list( ctlpt( E2, 0, 0 ),
+                       ctlpt( E2, 0, 0.5 ),
+                       ctlpt( E2, 0.5, 0.7 ),
+                       ctlpt( E2, 1, 1 ) ),
+                 list( KV_OPEN ) );
+crv2 = cbspline( 3,
+                 list( ctlpt( E2, 1, 0 ),
+                       ctlpt( E2, 0.7, 0.25 ),
+                       ctlpt( E2, 0.3, 0.5 ),
+                       ctlpt( E2, 0, 1 ) ),
+                 list( KV_OPEN ) );
+attrib( crv1, "width", 0.01 );
+attrib( crv2, "width", 0.01 );
+attrib( crv1, "rgb", "140,0,0" );
+attrib( crv2, "rgb", "0,0,100" );
+
+inter_pts = CCINTER( crv1, crv2, 0.001, FALSE );
+inter_pt = list( ceval( crv1, coord( nth( inter_pts, 1 ), 0 ) ) );
+inter_sp = EuclidPtsToSprs( inter_pt, 0.02 );
+attrib( inter_sp, "rgb", "0,200,100" );
+
+All = list( crv1, crv2, inter_sp )
+	* sc( 1.6 ) * trans( vector( -0.75, -0.85, 0.0 ) );
+view( All, on );
+save( "cci.itd.gz", All );
+free( crv1 );
+free( crv2 );
+free( inter_pts );
+free( inter_pt );
+free( inter_sp );
+
+#############################################################################
+crv = cbezier( list( ctlpt( E2, -1.0,  0.5 ),
+                     ctlpt( E2, -0.5, -2.0 ),
+                     ctlpt( E2,  0.0,  1.0 ),
+                     ctlpt( E2,  1.0,  0.0 ) ) ) * rotz( 30 );
+attrib( crv, "width", 0.01 );
+attrib( crv, "rgb", "0,100,100" );
+
+crvtr = CCRVTR( crv, 0.001, 2 );
+pt_crvtr = nil();
+pt = nil();
+for ( i = 1, 1, sizeof( crvtr ),
+    ( pt = ceval( crv, nth( crvtr, i ) ) ):
+    snoc( pt, pt_crvtr )
+);
+
+sp_crvtr = EuclidPtsToSprs( pt_crvtr, 0.03 );
+attrib( sp_crvtr, "rgb", "200,0,0" );
+
+All = list( crv, sp_crvtr ) * sc( 0.9 ) * tx( 0.1 );
+view( All, on );
+save( "ccrvtr.itd.gz", All );
+free( crv );
+free( crvtr );
+free( pt_crvtr );
+free( sp_crvtr );
+free( pt );
+
+#############################################################################
+Circ = circle( vector( 0.0, 0.0, 0.0 ), 1.0 );
+attrib( Circ, "width", 0.01 );
+attrib( Circ, "rgb", "150,0,0" );
+
+Hodograph = CDERIVE( Circ );
+attrib( Hodograph, "width", 0.02 );
+attrib( Hodograph, "rgb", "0,0,200" );
+
+All = list( Circ, Hodograph ) * sc( 0.6 );
+view( All, on );
+save( "cderive.itd.gz", All );
+free( Circ );
+free( Hodograph );
+
+#############################################################################
+Crv = cbspline( 4,
+		list( ctlpt( E2, -0.9,  0.0 ),
+                      ctlpt( E2, -0.5, -1.1 ),
+                      ctlpt( E2,  0.0,  0.8 ),
+                      ctlpt( E2,  0.5, -1.1 ),
+                      ctlpt( E2,  0.9,  0.0 ) ),
+		list( KV_OPEN ) );
+attrib( Crv, "width", 0.01 );
+attrib( Crv, "rgb", "199,0,0" );
+
+CrvLst = CDIVIDE( Crv, 0.65 );
+Crv1 = nth( CrvLst, 1 ) * trans( vector(-0.03, 0.5, 0.0 ) );
+Crv2 = nth( CrvLst, 2 ) * trans( vector( 0.03, 0.5, 0.0 ) );
+attrib( Crv1, "width", 0.02 );
+attrib( Crv2, "width", 0.02 );
+attrib( Crv1, "rgb", "0,0,150" );
+attrib( Crv2, "rgb", "0,100,100" );
+
+All = list( Crv, Crv1, Crv2 );
+
+view( All, on );
+save( "cdivide.itd.gz", All );
+free( Crv );
+free( CrvLst );
+free( Crv1 );
+free( Crv2 );
+
+#############################################################################
+
+c1 = cbezier( list( ctlpt( E2, -0.8, 0.0 ),
+		    ctlpt( E2, -0.2, 1.0 ),
+		    ctlpt( E2,  0.2, 0.0 ),
+		    ctlpt( E2,  0.8, 0.6 ) ) );
+color( c1, blue );
+attrib( c1, "width", 0.02 );
+
+s1 = cenvoff( c1, 0.5, 0.01 );
+color( s1, magenta );
+attrib( s1, "width", 0.007 );
+
+All = list( c1, s1 ) * sc( 0.75 ) * rx( -70 ) * ry( 5 ) * ty( -0.35 );
+
+view( All, on );
+save( "cenvoff.itd.gz", All );
+free( c1 );
+free( s1 );
+
+#############################################################################
+Crv = cbspline( 4,
+                list( ctlpt( E3, -1.0,  0.1,  0.2 ),
+                      ctlpt( E3, -0.1,  1.0,  0.1 ),
+                      ctlpt( E3,  0.1,  0.1,  1.0 ),
+                      ctlpt( E3,  1.0,  0.1,  0.1 ),
+                      ctlpt( E3,  0.1,  1.0,  0.2 ) ),
+                list( KV_OPEN ) );
+attrib( Crv, "width", 0.01 );
+attrib( Crv, "rgb", "100,0,0" );
+
+Cev = EVOLUTE( crv );
+attrib( Cev, "width", 0.02 );
+attrib( Cev, "rgb", "0,100,0" );
+
+All = list( crv, cev ) * rotx( -30 ) * roty( 0 ) * sc( 0.7 )
+		       * tx( 0.1 ) * ty( -0.3 );
+view( All, on );
+save( "cevolute.itd.gz", All );
+free( Crv );
+free( Cev );
+
+#############################################################################
+Crv = cbspline( 3,
+                list( ctlpt( E3, -0.3,  0.5,  0.0 ),
+                      ctlpt( E3, -0.0,  1.0,  0.0 ),
+                      ctlpt( E3, -1.0,  0.1,  0.0 ),
+                      ctlpt( E3,  1.0,  0.1,  0.0 ),
+                      ctlpt( E3,  0.1,  1.0,  0.0 ) ),
+                list( KV_OPEN ) );
+attrib( Crv, "width", 0.01 );
+extremes = cextremes( crv, 0.0001, 1 );
+pt_extremes = nil();
+pt = nil();
+for ( i = 1, 1, sizeof( extremes ),
+    ( pt = ceval( crv, nth( extremes, i ) ) ):
+    snoc( pt, pt_extremes )
+);
+sp_extremes = EuclidPtsToSprs( pt_extremes, 0.02 );
+attrib( sp_extremes, "rgb", "0,100,0" );
+
+All = list( Crv, sp_extremes ) * sc( 1.5 ) * ty( -0.8 ) * tx( 0.1 );
+color( All, red );
+
+view( All, on );
+save( "cextreme.itd.gz", All );
+free( Crv );
+free( extremes );
+free( pt_extremes );
+free( sp_extremes );
+free( pt );
+
+#############################################################################
+Crv = cbspline( 4,
+                list( ctlpt( E3, -1.0,  0.1,  0.0 ),
+                      ctlpt( E3, -0.5,  1.0,  0.0 ),
+                      ctlpt( E3,  0.7, -1.0,  0.0 ),
+                      ctlpt( E3,  1.0,  1.0,  0.0 ),
+                      ctlpt( E3,  1.0,  0.0,  0.0 ) ),
+                list( KV_OPEN ) );
+attrib( Crv, "width", 0.01 );
+
+inflect = CINFLECT( crv, 0.001, 2 );
+pt_inflect = nil();
+pt = nil();
+for ( i = 1, 1, sizeof( inflect ),
+       pt = ceval( crv, nth( inflect, i ) ):
+       snoc( pt, pt_inflect )
+    );
+
+sp_inflect = EuclidPtsToSprs( pt_inflect, 0.03 );
+attrib( sp_inflect, "rgb", "0,100,0" );
+
+All = list( Crv, sp_inflect ) * sc( 0.9 ) * ty( -0.15 );
+color( All, red );
+
+view( All, on );
+save( "cinflect.itd.gz", All );
+free( Crv );
+free( inflect );
+free( pt_inflect );
+free( sp_inflect );
+free( pt );
+
+#############################################################################
+resolution = 4;
+
+pl = nil();
+for ( x = 0, 1, 100,
+      snoc(point(cos(x / 5), sin(x / 5), x / 50 - 1), pl)
+    );
+c = CINTERP( pl, 3, 21, PARAM_UNIFORM, false );
+attrib( c, "width", 0.01 );
+attrib( c, "rgb", "222,0,222" );
+
+spl = EuclidPtsToSprs( pl, 0.03 );
+attrib( spl, "rgb", "0,100,0" );
+
+All = list( c, spl, axes * trans( vector( -1.5, 0, -1.5 ) ) )
+	* roty( 45 ) * rotx( 30 ) * sc( 0.5 )
+	* trans( vector( 0.23, -0.13, 0 ) );
+view( All, on );
+
+save( "cinterp.itd.gz", All );
+free( pl );
+free( c );
+resolution = save_res;
+
+#############################################################################
+Pts1 = nil();
+Pts2 = nil();
+for ( i = 0, 1, 7,
+    R = 0.2 + fmod( i, 2 ) / 2:
+    Pt = ctlpt( E2, R * cos( i * 2 * pi / 8 ), R * sin( i * 2 * pi / 8 ) ):
+    snoc( Pt, Pts1 ):
+    snoc( coerce( Pt, point_type ),  Pts2 ) );
+PCrv = cbspline( 4, Pts1, list( KV_PERIODIC ) );
+attrib( PCrv, "rgb", "200,0,200" );
+attrib( PCrv, "width", 0.007 );
+Crv = coerce( PCrv, KV_OPEN );
+
+CtlPoly = cbspline( 2, Pts1, list( KV_PERIODIC ) );
+attrib( CtlPoly, "width", 0.004 );
+attrib( CtlPoly, "rgb", "0,100,100" );
+
+CHCrv = CNVXHULL( Crv, 14 ) * tz( -0.01 );
+attrib( CHCrv, "width", 0.01 );
+attrib( CHCrv, "gray", 0.5 );
+attrib( CHCrv, "rgb", "200,0,0" );
+
+CHPts = CNVXHULL( poly( Pts2, 0 ), 0 );
+attrib( CHPts, "width", 0.015 );
+attrib( CHPts, "gray", 0.5 );
+attrib( CHPts, "rgb", "0,0,100" );
+
+SpPts1 = EuclidPtsToSprs( Pts1, 0.02 );
+SpPts2 = EuclidPtsToSprs( Pts2, 0.02 );
+attrib( SpPts1, "rgb", "0,200,200" );
+attrib( SpPts2, "rgb", "0,200,200" );
+
+
+All = list( list( CHPts, SpPts2 ) * tx( -0.5 ),
+	    list( CHCrv, SpPts1, PCrv, CtlPoly ) * tx( 0.6 ) ) * sc( 0.8 );
+view( All, on );
+save( "cnvxhull.itd.gz", All );
+free( Pts1 );
+free( Pts2 );
+free( PCrv );
+free( Crv );
+free( CtlPoly );
+free( CHCrv );
+free( CHPts );
+
+#############################################################################
+
+DisplayPtsCrcTan2Crvs = function( Pts, R, c1, c2 ):
+    i: Pt: Prms: PtC1: PtC2: Circ:
+    return  = nil():
+    Circ = circle( vector( 0, 0, 0 ), R ):
+    for ( i = 1, 1, sizeof( Pts ),
+        Pt = coord( Pts, i ):
+        Prms = getAttr( Pt, "Params" ):
+        PtC1 = ceval( c1, coord( Prms, 0 ) ):
+        PtC2 = ceval( c2, coord( Prms, 1 ) ):
+        snoc( list( coerce( Pt, E2 ) + PtC1,
+		    coerce( Pt, E2 ) + PtC2,
+	            Circ * trans( coerce( Pt, vector_type ) ) ),
+	      return ) );
+
+c1 = cbspline( 4,
+    list( ctlpt( E3, -0.132, 0.302, 0 ),
+          ctlpt( E2, -0.704, 0.843 ),
+          ctlpt( E2, -0.433, 1.03 ),
+          ctlpt( E2, -0.101, 1.07 ),
+          ctlpt( E2, -0.758, 1.2 ),
+          ctlpt( E2, -0.794, -1.01 ),
+          ctlpt( E2, -1.18, 1.06 ),
+          ctlpt( E2, -1.11, -0.00834 ),
+          ctlpt( E2, -1.05, -0.405 ),
+          ctlpt( E2, -0.681, -0.619 ),
+          ctlpt( E2, -0.12, -0.163 ),
+          ctlpt( E2, 0.476, -0.374 ),
+          ctlpt( E2, 0.738, -0.282 ),
+          ctlpt( E2, 0.961, 0.0287 ),
+          ctlpt( E2, 0.965, 0.407 ),
+          ctlpt( E2, 0.202, 0.298 ) ),
+    list( kv_periodic ) );
+c1 = coerce( c1, kv_open );
+attrib( c1, "rgb", "10, 140, 10" );
+attrib( c1, "gray", 0.65 );
+attrib( c1, "width", 0.005 );
+
+c2 = cbspline( 3,
+    list( ctlpt( E3, -0.0448, 0.808, 0 ),
+          ctlpt( E2, -0.193, 0.201 ),
+          ctlpt( E2, -0.867, 0.179 ),
+          ctlpt( E2, -0.151, -0.309 ),
+          ctlpt( E2, -0.517, -0.666 ),
+          ctlpt( E2, 0.00856, -0.84 ),
+          ctlpt( E2, 0.327, -0.704 ),
+          ctlpt( E2, 0.147, -0.109 ),
+          ctlpt( E2, 0.33, -0.0551 ),
+          ctlpt( E2, 0.486, 0.142 ),
+          ctlpt( E2, 0.393, 0.623 ) ),
+    list( kv_periodic ) );
+c2 = coerce( c2, kv_open );
+color( c2, blue );
+attrib( c2, "gray", 0.35 );
+attrib( c2, "width", 0.005 );
+
+R = 0.1;
+Pts = Crc2CrvTan( c1, c2, R, 1e-3 );
+PtsDsp = DisplayPtsCrcTan2Crvs( Pts, R, c1, c2 ) * tz( -0.01 );
+attrib( PtsDsp, "width", 0.01 );
+attrib( PtsDsp, "rgb", "200,100,100" );
+
+All = list( c1, c2, PtsDsp ) * sc( 0.9 ) * tx( 0.1 ) * ty( -0.1 );
+
+view( All, on );
+save( "crc2crvtan.itd.gz", All );
+
+free( c1 );
+free( c2 );
+free( R );
+free( Pts );
+free( PtsDsp );
+free( All );
+
+#############################################################################
+Pts = nil();
+for ( i = 0, 1, 8,
+    R = ( -0.2 + fmod( i, 2 ) ) * (1 + i / 20):
+    Pt = ctlpt( E2, R * cos( i * 2 * pi / 8 ), R * sin( i * 2 * pi / 8 ) ):
+    snoc( Pt, Pts ) );
+Crv = cbspline( 4, Pts, list( KV_OPEN ) );
+attrib( Crv, "width", 0.01 );
+attrib( Crv, "gray", 0.5 );
+attrib( Crv, "rgb", "200,0,0" );
+
+Tans = nil();
+Pt = point( 2, 0, 0 );
+CrvPtTns = CrvPtTan( Crv, Pt, 0.01 );
+for ( i = 1, 1, sizeof( CrvPtTns ),
+	snoc( ceval( Crv, nth( CrvPtTns, i ) ) + coerce( Pt, e3 ), Tans )
+    );
+attrib( Tans, "width", 0.003 );
+attrib( Tans, "rgb", "10, 140, 10" );
+
+SpPt = EuclidPtsToSprs( list( Pt ), 0.03 );
+attrib( SpPt, "rgb", "0,0,222" );
+
+All = list( Crv, Tans, SpPt ) * sc( 0.75 ) * tx( -0.6 );
+
+view( All, on );
+save( "crvpttan.itd.gz", All );
+
+#############################################################################
+Pts = nil();
+for ( i = 0, 1, 8,
+    R = ( -0.2 + fmod( i, 2 ) ) * (1 + i / 20):
+    Pt = ctlpt( E2, R * cos( i * 2 * pi / 8 ), R * sin( i * 2 * pi / 8 ) ):
+    snoc( Pt, Pts ) );
+Crv = cbspline( 4, Pts, list( KV_OPEN ) );
+attrib( Crv, "width", 0.01 );
+attrib( Crv, "gray", 0.5 );
+attrib( Crv, "rgb", "200,0,0" );
+
+Tans = nil();
+Crv2Tns = Crv2Tans( Crv, 100 );
+for ( i = 1, 1, sizeof( Crv2Tns ),
+	pt = nth( Crv2Tns, i ):
+	snoc( ceval( Crv, coord( pt, 0 ) ) +
+              ceval( Crv, coord( pt, 1 ) ), Tans )
+    );
+attrib( Tans, "width", 0.003 );
+attrib( Tans, "rgb", "0,200,0" );
+
+All = list( Crv, Tans ) * sc( 2 );
+view( All, on );
+save( "crv2tans.itd.gz", All );
+free( Pts );
+free( Crv );
+free( Tans );
+free( Crv2Tns );
+
+#############################################################################
+srf = sbezier( list( list( ctlpt( E3, 0.0, 0.0, 0.0 ),
+                           ctlpt( E3, 0.0, 0.5, 1.0 ),
+                           ctlpt( E3, 0.0, 1.0, 0.0 ) ),
+                     list( ctlpt( E3, 0.5, 0.0, 1.0 ),
+                           ctlpt( E3, 0.5, 0.5, 0.0 ),
+                           ctlpt( E3, 0.5, 1.0, 1.0 ) ),
+                     list( ctlpt( E3, 1.0, 0.0, 1.0 ),
+                           ctlpt( E3, 1.0, 0.5, 0.0 ),
+                           ctlpt( E3, 1.0, 1.0, 1.0 ) ) ) );
+attrib( srf, "width", 0.007 );
+attrib( srf, "rgb", "200,10,100" );
+
+crv = coerce( circle( vector( 0.0, 0.0, 1.0 ), 0.4 ) *
+			      trans( vector( 0.5, 0.5, 0.0 ) ),
+	      p2 );
+attrib( crv, "width", 0.02 );
+attrib( crv, "rgb", "0,200,0" );
+
+comp_crv = COMPOSE( srf, crv );
+attrib( comp_crv, "width", 0.02 );
+attrib( comp_crv, "rgb", "35,200,0" );
+
+All = list( Srf, comp_crv, crv )
+	* rotx( -50 ) * roty( -40 ) * rotz( -30 )
+        * sc( 1.2 ) * trans( vector( -0.9, -0.4, 0.0 ) );
+view( All, on );
+save( "compose.itd.gz", All );
+free( srf );
+free( crv );
+free( comp_crv );
+
+#############################################################################
+Cone1 = CONE( vector( 0, 0, 0 ), vector( 1, 1, 1 ), 1, 3 );
+Cone2 = CON2( vector( 0, 0, -1 ), vector( 0, 0, 4 ), 2, 1, 1 )
+	* scale( vector( 0.5, 0.5, 0.5 ) ) * rotx( -60 ) * roty( 5 );
+attrib( Cone1, "width", 0.02 );
+attrib( Cone2, "width", 0.02 );
+color( Cone1, blue );
+attrib( Cone2, "rgb", "10, 140, 10" );
+
+All = list( Cone1 * trans( vector( -1.05, -0.4, 0.0 ) ),
+	    Cone2 * trans( vector(  0.95, -0.5, 0.0 ) ) )
+	* sc( 0.5 );
+color( All, blue );
+
+view( All, on );
+save( "cones.itd.gz", All );
+free( Cone1 );
+free( Cone2 );
+
+#############################################################################
+crv1 = cbezier( list( ctlpt( E2,  0.3,  0.0 ),
+                      ctlpt( E2,  0.0,  0.5 ),
+                      ctlpt( E2, -0.2,  0.0 ) ) );
+crv1a = crv1 * trans( vector( -0.4, 0.0, 0.0 ) );
+crv1b = crv1a * scale( vector( -1.0, 1.0, 1.0 ) );
+crvs = list( crv1a, crv1b );
+attrib( crvs, "width", 0.01 );
+color( crvs, magenta );
+
+cm1 = nil();
+for ( i = 1, 1, 5,
+    snoc( cmorph( crv1a, crv1b, 0, i / 6.0 ), cm1 )
+);
+attrib( cm1, "width", 0.005 );
+color( cm1, blue );
+All1 = list( crvs, cm1 );
+
+cm2aux = cmorph( crv1a, crv1b, 2, 0.01 ); # 121 curves
+cm2 = list( nth( cm2aux,  12 ),
+	    nth( cm2aux,  30 ),
+	    nth( cm2aux,  49 ),
+	    nth( cm2aux,  70 ),
+	    nth( cm2aux,   85 ) );
+attrib( cm2, "width", 0.005 );
+color( cm2, blue );
+All2 = list( crvs, cm2 );
+
+All = list( All1 * sc( 0.7 ) * tx( - 0.5 ), All2 * sc( 0.7 ) * tx( 0.5 ) );
+view( All, on );
+save( "cmorph.itd.gz", All );
+free( crv1 );
+free( crv1a );
+free( crv1b );
+free( crvs );
+free( cm1 );
+free( All1 );
+free( cm2aux);
+free( cm2 );
+free( All2 );
+
+#############################################################################
+
+Wolf = cbspline( 3,
+	list( ctlpt( E3, 0.0137625, 0.633593, 0 ),
+	      ctlpt( E3, 0.0340417, 0.666021, 0 ),
+	      ctlpt( E3, 0.021901, 0.536923, 0 ),
+	      ctlpt( E3, 0.0758621, 0.649562, 0 ),
+	      ctlpt( E3, 0.0675947, 0.537695, 0 ),
+	      ctlpt( E3, 0.068195, 0.502156, 0 ),
+	      ctlpt( E3, 0.240198, 0.240978, 0 ),
+	      ctlpt( E3, 0.262479, 0.124548, 0 ),
+	      ctlpt( E3, 0.294399, 0.0387525, 0 ),
+	      ctlpt( E3, 0.286561, -0.0985001, 0 ),
+	      ctlpt( E3, 0.273302, -0.21553, 0 ),
+	      ctlpt( E3, 0.213835, -0.302869, 0 ),
+	      ctlpt( E3, 0.27536, -0.33738, 0 ),
+	      ctlpt( E3, 0.377073, -0.345819, 0 ),
+	      ctlpt( E3, 0.513382, -0.29781, 0 ),
+	      ctlpt( E3, 0.53954, -0.343074, 0 ),
+	      ctlpt( E3, 0.45443, -0.415611, 0 ),
+	      ctlpt( E3, 0.35306, -0.427481, 0 ),
+	      ctlpt( E3, 0.246184, -0.414051, 0 ),
+	      ctlpt( E3, 0.184745, -0.384617, 0 ),
+	      ctlpt( E3, 0.129583, -0.426177, 0 ),
+	      ctlpt( E3, 0.125707, -0.497342, 0 ),
+	      ctlpt( E3, 0.157541, -0.578061, 0 ),
+	      ctlpt( E3, 0.060991, -0.574613, 0 ),
+	      ctlpt( E3, 0.0493789, -0.488474, 0 ),
+	      ctlpt( E3, 0.0375953, -0.392181, 0 ),
+	      ctlpt( E3, 0.0660852, -0.274894, 0 ),
+	      ctlpt( E3, 0.0588641, -0.148053, 0 ),
+	      ctlpt( E3, 0.0664454, 0.0044308, 0 ),
+	      ctlpt( E3, 0.00414836, 0.0846349, 0 ),
+	      ctlpt( E3, -0.0813043, 0.0324062, 0 ),
+	      ctlpt( E3, -0.162881, 0.0513423, 0 ),
+	      ctlpt( E3, -0.164081, 0.122421, 0 ),
+	      ctlpt( E3, -0.0979935, 0.118459, 0 ),
+	      ctlpt( E3, -0.0272575, 0.139968, 0 ),
+	      ctlpt( E3, 0.00725293, 0.201493, 0 ),
+	      ctlpt( E3, -0.0296588, 0.282126, 0 ),
+	      ctlpt( E3, -0.0307737, 0.348128, 0 ),
+	      ctlpt( E3, -0.0220775, 0.43461, 0 ),
+	      ctlpt( E3, -0.0824878, 0.403118, 0 ),
+	      ctlpt( E3, -0.184029, 0.401403, 0 ),
+	      ctlpt( E3, -0.219569, 0.400803, 0 ),
+	      ctlpt( E3, -0.25528, 0.410357, 0 ),
+	      ctlpt( E3, -0.2354, 0.436085, 0 ),
+	      ctlpt( E3, -0.118971, 0.458366, 0 ),
+	      ctlpt( E3, -0.246326, 0.481607, 0 ),
+	      ctlpt( E3, -0.267063, 0.50665, 0 ),
+	      ctlpt( E3, -0.171199, 0.543819, 0 ),
+	      ctlpt( E3, -0.1206, 0.55483, 0 ),
+	      ctlpt( E3, -0.0193159, 0.571777, 0 ),
+	      ctlpt( E3, 0.0109983, 0.629168, 0 ),
+	      ctlpt( E3, 0.0137625, 0.633593, 0 ) ),
+	 list( KV_OPEN ) );
+Turtle = cbspline( 3,
+	list( ctlpt( E3, 0.701296, 0.109924, 0 ),
+	      ctlpt( E3, 0.739662, 0.0742423, 0 ),
+	      ctlpt( E3, 0.67555, 0.0451864, 0 ),
+	      ctlpt( E3, 0.622799, 0.0253083, 0 ),
+	      ctlpt( E3, 0.528549, -0.0031255, 0 ),
+	      ctlpt( E3, 0.553875, -0.0996828, 0 ),
+	      ctlpt( E3, 0.578967, -0.170447, 0 ),
+	      ctlpt( E3, 0.475377, -0.184302, 0 ),
+	      ctlpt( E3, 0.481183, -0.129174, 0 ),
+	      ctlpt( E3, 0.446478, -0.038468, 0 ),
+	      ctlpt( E3, 0.321198, -0.0910543, 0 ),
+	      ctlpt( E3, 0.16753, -0.1139, 0 ),
+	      ctlpt( E3, -0.0164529, -0.111404, 0 ),
+	      ctlpt( E3, -0.143121, -0.0942071, 0 ),
+	      ctlpt( E3, -0.171761, -0.165513, 0 ),
+	      ctlpt( E3, -0.148612, -0.219148, 0 ),
+	      ctlpt( E3, -0.276828, -0.213848, 0 ),
+	      ctlpt( E3, -0.233285, -0.139603, 0 ),
+	      ctlpt( E3, -0.224534, -0.0789489, 0 ),
+	      ctlpt( E3, -0.277875, -0.0235942, 0 ),
+	      ctlpt( E3, -0.337456, -0.0147889, 0 ),
+	      ctlpt( E3, -0.379716, -0.00833056, 0 ),
+	      ctlpt( E3, -0.440339, -0.0108002, 0 ),
+	      ctlpt( E3, -0.511554, -0.0144118, 0 ),
+	      ctlpt( E3, -0.570627, -0.00900783, 0 ),
+	      ctlpt( E3, -0.642095, -0.00765952, 0 ),
+	      ctlpt( E3, -0.614006, 0.0181918, 0 ),
+	      ctlpt( E3, -0.660299, 0.020044, 0 ),
+	      ctlpt( E3, -0.686693, 0.044913, 0 ),
+	      ctlpt( E3, -0.65532, 0.0874954, 0 ),
+	      ctlpt( E3, -0.614725, 0.109882, 0 ),
+	      ctlpt( E3, -0.606253, 0.112428, 0 ),
+	      ctlpt( E3, -0.55563, 0.109351, 0 ),
+	      ctlpt( E3, -0.515803, 0.0693713, 0 ),
+	      ctlpt( E3, -0.401591, 0.0625973, 0 ),
+	      ctlpt( E3, -0.29319, 0.172388, 0 ),
+	      ctlpt( E3, -0.0928708, 0.271787, 0 ),
+	      ctlpt( E3, 0.144772, 0.29244, 0 ),
+	      ctlpt( E3, 0.369477, 0.252865, 0 ),
+	      ctlpt( E3, 0.494291, 0.14237, 0 ),
+	      ctlpt( E3, 0.570056, 0.0688663, 0 ),
+	      ctlpt( E3, 0.625387, 0.0802739, 0 ),
+	      ctlpt( E3, 0.701296, 0.109924, 0 ) ),
+	 list( KV_OPEN ) );
+color( Wolf, magenta );
+attrib( Wolf, "width", 0.007 );
+
+attrib( Turtle, "rgb", "10, 140, 10" );
+attrib( Turtle, "width", 0.007 );
+
+Turtle2 = ffmatch( Wolf, Turtle, 20, 100, 2, false, 2 );
+ffcompat( Wolf, Turtle2 );
+mm = nil();
+for ( i = 0, 1, 5,
+    snoc( cmorph( Wolf, Turtle2, 0, i / 5 ), mm )
+);
+
+All1 = list( nth( mm, 1 ) * tx( 0.7 ),
+	     nth( mm, 2 ) * tx( 1.5 ),
+	     nth( mm, 3 ) * tx( 2.4 ),
+	     nth( mm, 4 ) * tx( 3.4 ),
+	     nth( mm, 5 ) * tx( 4.6 ) );
+attrib( All1, "width", 0.004 );
+color( All1, blue );
+
+All = list( Wolf, All1, Turtle * tx( 6.1 ) )
+		* sc( 0.25 ) * tx( -0.8 ) * ty( -0.0 );
+view( All, on );
+save( "cmorph2.itd.gz", All );
+
+free( Wolf );
+free( Turtle );
+free( Turtle2 );
+free( mm );
+free( All1 );
+
+#############################################################################
+Animal = cbspline( 3,
+	list( ctlpt( E2, -0.595962, 0.0864362 ),
+	      ctlpt( E2, -0.568514, 0.0200271 ),
+	      ctlpt( E2, -0.441777, -0.0737656 ),
+	      ctlpt( E2, -0.270007, -0.0568941 ),
+	      ctlpt( E2, -0.121934, 0.000755916 ),
+	      ctlpt( E2, 0.036764, 0.0478527 ),
+	      ctlpt( E2, 0.204987, 0.0464348 ),
+	      ctlpt( E2, 0.377392, 0.0333501 ),
+	      ctlpt( E2, 0.531846, 0.0866489 ),
+	      ctlpt( E2, 0.616283, 0.241468 ),
+	      ctlpt( E2, 0.699134, 0.377015 ),
+	      ctlpt( E2, 0.778686, 0.517436 ),
+	      ctlpt( E2, 0.963123, 0.536075 ),
+	      ctlpt( E2, 0.990621, 0.357959 ),
+	      ctlpt( E2, 0.789682, 0.404197 ),
+	      ctlpt( E2, 0.769339, 0.200839 ),
+	      ctlpt( E2, 0.656245, 0.0942741 ),
+	      ctlpt( E2, 0.574709, -0.0322164 ),
+	      ctlpt( E2, 0.539827, -0.195691 ),
+	      ctlpt( E2, 0.532404, -0.372588 ),
+	      ctlpt( E2, 0.542739, -0.516865 ),
+	      ctlpt( E2, 0.471853, -0.736121 ),
+	      ctlpt( E2, 0.421893, -0.580767 ),
+	      ctlpt( E2, 0.429569, -0.426424 ),
+	      ctlpt( E2, 0.449716, -0.197989 ),
+	      ctlpt( E2, 0.350794, -0.222485 ),
+	      ctlpt( E2, 0.337066, -0.430322 ),
+	      ctlpt( E2, 0.356357, -0.604534 ),
+	      ctlpt( E2, 0.295381, -0.71917 ),
+	      ctlpt( E2, 0.276532, -0.47444 ),
+	      ctlpt( E2, 0.293408, -0.323639 ),
+	      ctlpt( E2, 0.267722, -0.163262 ),
+	      ctlpt( E2, 0.0607484, -0.181326 ),
+	      ctlpt( E2, -0.0694025, -0.236196 ),
+	      ctlpt( E2, -0.065581, -0.433478 ),
+	      ctlpt( E2, -0.057199, -0.596829 ),
+	      ctlpt( E2, -0.16308, -0.743576 ),
+	      ctlpt( E2, -0.176097, -0.510317 ),
+	      ctlpt( E2, -0.140701, -0.387083 ),
+	      ctlpt( E2, -0.117562, -0.164098 ),
+	      ctlpt( E2, -0.220942, -0.335686 ),
+	      ctlpt( E2, -0.203195, -0.495159 ),
+	      ctlpt( E2, -0.240217, -0.682391 ),
+	      ctlpt( E2, -0.271166, -0.466215 ),
+	      ctlpt( E2, -0.218763, -0.324742 ),
+	      ctlpt( E2, -0.212225, -0.137441 ),
+	      ctlpt( E2, -0.40272, -0.162737 ),
+	      ctlpt( E2, -0.534712, -0.0879198 ),
+	      ctlpt( E2, -0.608031, 0.0537921 ),
+	      ctlpt( E2, -0.598074, 0.134321 ) ),
+	 list( KV_PERIODIC ) );
+MRCrv = CMULTIRES( coerce( Animal, KV_OPEN ), false, true );
+
+sum = nth( MRCrv, 1 );
+MRCrvs = list( sum * tx( 3.0 ) );
+for ( ( i = 2 ), 1, sizeof( MRCrv ),
+    sum = symbsum( sum, nth( MRCrv, i ) ):
+    snoc( sum * tx( ( 3 - i ) * 1.5 ), MRCrvs )
+);
+
+All = MRCrvs * sc ( 0.18 ) * tx( 0.3 );
+attrib( All, "width", 0.007 );
+color( All, red );
+
+view( All, on );
+save( "cmultres.itd.gz", All );
+free( Animal );
+free( MRCrv );
+free( MRCrvs );
+free( sum );
+
+#############################################################################
+Crv = cbezier( list( ctlpt( E2, -0.7,  0.3 ),
+                     ctlpt( E2,  0.0,  1.0 ),
+                     ctlpt( E2,  0.7,  0.0 ) ) );
+CrvPl = GetCtlPolygon( Crv );
+
+Crv2 = CRAISE( Crv, 5 ) * tz( -0.01 );
+Crv2Pl = GetCtlPolygon( Crv2 );
+
+attrib( Crv, "width", 0.007 );
+attrib( Crv2, "width", 0.02 );
+
+attrib( Crv, "rgb", "0,222,0" );
+attrib( Crv2, "rgb", "0,0,222" );
+
+attrib( CrvPl, "width", 0.007 );
+attrib( Crv2Pl, "width", 0.02 );
+
+attrib( CrvPl, "rgb", "0,222,0" );
+attrib( Crv2Pl, "rgb", "0,0,222" );
+
+All = list( Crv, CrvPl, Crv2, Crv2Pl ) * sc( 1.35 ) * ty( -0.75 );
+view( All, on );
+save( "craise.itd.gz", All );
+free( Crv );
+free( Crv2 );
+free( CrvPl );
+free( Crv2Pl );
+
+#############################################################################
+Crv = cbezier( list( ctlpt( E2, -0.7,  0.3 ),
+                     ctlpt( E2,  0.0,  1.0 ),
+                     ctlpt( E2,  0.7,  0.0 ) ) );
+CrvPl = GetCtlPolygon( Crv );
+
+Crv2 = CREFINE( Crv, FALSE, list( 0.25, 0.5, 0.75 ) ) * tz( -0.01 );
+Crv2Pl = GetCtlPolygon( Crv2 );
+
+attrib( Crv, "width", 0.006 );
+attrib( Crv2, "width", 0.012 );
+
+attrib( Crv, "rgb", "0,222,0" );
+attrib( Crv2, "rgb", "0,0,222" );
+
+attrib( CrvPl, "width", 0.003 );
+attrib( Crv2Pl, "width", 0.006 );
+
+attrib( CrvPl, "rgb", "0,222,0" );
+attrib( Crv2Pl, "rgb", "0,0,222" );
+
+All = list( Crv, CrvPl, Crv2, Crv2Pl ) * ty( -0.5 );
+view( All, on );
+save( "crefine.itd.gz", All );
+free( Crv );
+free( Crv2 );
+free( CrvPl );
+free( Crv2Pl );
+
+#############################################################################
+Crv = cbezier( list( ctlpt( E2, -0.7,  0.3 ),
+                     ctlpt( E2,  0.0,  1.0 ),
+                     ctlpt( E2,  0.7,  0.0 ) ) );
+CrvPl = GetCtlPolygon( Crv );
+
+SubCrv = CREGION( Crv, 0.3, 0.6 );
+SubCrvPl = GetCtlPolygon( SubCrv );
+
+attrib( Crv, "width", 0.01 );
+attrib( SubCrv, "width", 0.02 );
+
+attrib( Crv, "rgb", "0,222,0" );
+attrib( SubCrv, "rgb", "0,0,222" );
+
+attrib( CrvPl, "width", 0.0075 );
+attrib( SubCrvPl, "width", 0.012 );
+
+attrib( CrvPl, "rgb", "0,222,0" );
+attrib( SubCrvPl, "rgb", "0,0,222" );
+
+All = list( Crv, CrvPl, SubCrv, SubCrvPl )
+	* sc( 1.25 ) * trans( vector( 0.0, -0.6, 0.0 ) );
+view( All, on );
+save( "cregion.itd.gz", All );
+free( Crv );
+free( SubCrv );
+free( CrvPl );
+free( SubCrvPl );
+
+#############################################################################
+Crv = cbspline( 3,
+		list( ctlpt( E2,  0.5, -1.0 ),
+		      ctlpt( E2, -1.5, -0.5 ),
+		      ctlpt( E2,  1.5,  0.0 ),
+		      ctlpt( E2, -0.5,  1.0 ) ),
+		list( KV_OPEN ) );
+attrib( Crv, "width", 0.02 );
+attrib( Crv, "rgb", "0,222,0" );
+
+Pnt = point( 0, 0, 0 );
+PntSp = EuclidPtsToSprs( list( Pnt ), 0.03 );
+
+Param1 = CRVPTDST( Crv, Pnt, FALSE, -0.0001 );
+Pt1lst = nil();
+Pt1Vecs = nil():
+for ( i = 1, 1, sizeof( Param1 ),
+	pt = coerce( ceval( crv, nth( Param1, i ) ), vector_type ):
+	snoc( coerce( Pnt, e3 ) + coerce( pt, e3 ),
+	      Pt1Vecs ):
+	snoc( pt, Pt1lst )
+    );
+Pt1Splst = EuclidPtsToSprs( Pt1lst, 0.03 );
+attrib( Pt1Vecs, "rgb", "0,0,222" );
+
+All1 = list( Crv, PntSp, Pt1Vecs, Pt1Splst ) * sc( 1.0 );
+view( All1, on );
+
+line_pt = point( -1, 1.2, 0 );
+line_vec = vector( 1, -1, 0 );
+line_pt2 = line_pt + ( line_vec * 2 );
+Line = poly( list( line_pt, line_pt2 ), true );
+attrib( Line, "rgb", "0,0,222" );
+attrib( line, "width", 0.01 );
+Param2 = CRVLNDST( Crv, line_pt, line_vec, FALSE, -0.001 );
+Pt2lst = nil();
+for ( i = 1, 1, sizeof( Param2 ),
+	pt = ceval( crv, nth( Param2, i ) ):
+	snoc( pt, Pt2lst )
+    );
+Pt2Splst = EuclidPtsToSprs( Pt2lst, 0.03 );
+
+All2 = list( Crv, Line, Pt2Splst ) * sc( 1.0 );
+view( All2, on );
+
+save( "crvptdst.itd.gz", All1 );
+save( "crvlndst.itd.gz", All2 );
+free( Crv );
+free( Pnt );
+free( PntSp );
+free( Param1 );
+free( Pt1lst );
+free( Pt1Splst );
+free( Pt1Vecs );
+free( All1 );
+free( line_pt );
+free( line_vec );
+free( line_pt2 );
+free( Line );
+free( Param2 );
+free( Pt2lst );
+free( Pt2Splst );
+free( All2 );
+
+#############################################################################
+All = cspiral( 5, 0.7, 500, 6 );
+awidth( All, 0.01 );
+
+view( All, on );
+save( "cspiral.itd.gz", All );
+
+free( All );
+
+#############################################################################
+c1 = cbspline( 3,
+	       list( ctlpt( E3, 0.0, 0.0, 0.0 ),
+		     ctlpt( E3, 1.0, 0.0, 0.0 ),
+		     ctlpt( E3, 1.0, 1.0, 0.0 ) ),
+	       list( KV_OPEN ) );
+c2 = cbspline( 3,
+	       list( ctlpt( E3, 0.0, 0.0, 1.0 ),
+		     ctlpt( E3, 1.0, 0.0, 1.0 ),
+		     ctlpt( E3, 1.0, 2.0, 1.0 ) ),
+	       list( KV_OPEN ) );
+c3 = cbspline( 3,
+	       list( ctlpt( E3, 0.0, 0.0, 1.5 ),
+		     ctlpt( E3, 2.0, 0.0, 1.5 ),
+		     ctlpt( E3, 1.0, 0.5, 1.5 ),
+		     ctlpt( E3, 1.0, 1.0, 1.5 ) ),
+	       list( KV_OPEN ) );
+c4 = cbspline( 3,
+	       list( ctlpt( E3, 0.0, 0.0, 2.5 ),
+		     ctlpt( E3, 1.0, 0.0, 2.5 ),
+		     ctlpt( E3, 1.0, 1.0, 2.5 ) ),
+	       list( KV_OPEN ) );
+s = sfromcrvs( list( c1, c2, c3, c4 ), 3, KV_OPEN );
+attrib( s, "width", 0.005 );
+attrib( s, "rgb", "0,222,0" );
+
+Crv = CSURFACE( s, COL, 0.45 );
+attrib( Crv, "width", 0.02 );
+attrib( Crv, "rgb", "0,0,100" );
+
+All = list( s, Crv ) * roty( 50 ) * rotx( 33 ) * sc( 0.7 )
+	* trans( vector( -0.9, -0.2, 0.0 ) );
+view( All, on );
+save( "csurface.itd.gz", All );
+free( c1 );
+free( c2 );
+free( c3 );
+free( c4 );
+free( s );
+free( Crv );
+
+#############################################################################
+spts = list( list( ctlpt( E3, 0.1, 0.0, 1.0 ),
+                   ctlpt( E3, 0.3, 1.0, 0.0 ),
+                   ctlpt( E3, 0.0, 2.0, 1.0 ) ),
+             list( ctlpt( E3, 1.1, 0.0, 0.0 ),
+                   ctlpt( E3, 1.3, 1.5, 2.0 ),
+                   ctlpt( E3, 1.0, 2.1, 0.0 ) ),
+             list( ctlpt( E3, 2.1, 0.0, 2.0 ),
+                   ctlpt( E3, 2.3, 1.0, 0.0 ),
+                   ctlpt( E3, 2.0, 2.0, 2.0 ) ),
+             list( ctlpt( E3, 3.1, 0.0, 0.0 ),
+                   ctlpt( E3, 3.3, 1.5, 2.0 ),
+                   ctlpt( E3, 3.0, 2.1, 0.0 ) ),
+             list( ctlpt( E3, 4.1, 0.0, 1.0 ),
+                   ctlpt( E3, 4.3, 1.0, 0.0 ),
+                   ctlpt( E3, 4.0, 2.0, 1.0 ) ) );
+sb2 = sbspline( 3, 3, spts, list( list( KV_OPEN ), list( KV_OPEN ) ) );
+
+tcrv1 = cbspline( 2,
+                  list( ctlpt( E2, 0.3, 0.3 ),
+                        ctlpt( E2, 0.7, 0.3 ),
+                        ctlpt( E2, 0.7, 0.7 ),
+                        ctlpt( E2, 0.3, 0.7 ),
+                        ctlpt( E2, 0.3, 0.3 ) ),
+                  list( KV_OPEN ) );
+tcrv2 = circle( vector( 0.5, 0.5, 0.0 ), 0.25 );
+tcrv3 = cbspline( 3,
+                  list( ctlpt( E2, 0.3, 0.3 ),
+                        ctlpt( E2, 0.7, 0.3 ),
+                        ctlpt( E2, 0.7, 0.7 ),
+                        ctlpt( E2, 0.3, 0.7 ) ),
+                  list( KV_PERIODIC ) );
+
+crvs = list( tcrv1 * sy( 0.3 ),
+	     tcrv2 * sy( 0.3 ) * ty( 0.3 ),
+	     tcrv3 * sy( 0.3 ) * ty( 0.6 ) );
+tsrf = trimsrf( sb2, crvs, false );
+attrib( tsrf, "rgb", "100,200,255" );
+
+CrvParam = CTRIMSRF( tsrf, true );
+CrvEuclid = CTRIMSRF( tsrf, false );
+attrib( CrvParam, "width", 0.007 );
+attrib( CrvEuclid, "width", 0.007 );
+attrib( CrvParam, "rgb", "0,0,200" );
+attrib( CrvEuclid, "rgb", "0,0,200" );
+
+Tr = rotz( 70 ) * rotx( 30 ) * sc( 0.25 );
+
+All = list( tsrf * Tr * trans( vector( -0.5, -0.5, 0.0 ) ),
+	    CrvEuclid * Tr * trans( vector( 0.15, -0.5, 0.0 ) ),
+	    Crvparam * sx( 0.3 ) * sy( 0.7 ) * trans( vector( 0.55, -0.5, 0.0 ) ) );
+view( All, on );
+save( "ctrimsrf.itd.gz", All );
+free( spts );
+free( sb2 );
+free( tcrv1 );
+free( tcrv2 );
+free( tcrv3 );
+free( crvs );
+free( tsrf );
+free( CrvParam );
+free( CrvEuclid );
+free( Tr );
+
+#############################################################################
+Cylinder1 = CYLIN( vector( 0, 0, 0 ), vector( 7, 0, 0 ), 10, 3 );
+attrib( Cylinder1, "width", 0.02 );
+color( Cylinder1, blue );
+
+All = list( Cylinder1 * sc( 0.08 ), axes * sc( 0.9 ) )
+	* rotz( 90 ) * roty( 3 ) * rotx( 20 )
+	* trans( vector( -0.0, -0.2, 0.0 ) );
+view( All, on );
+save( "cylinder.itd.gz", All );
+free( Cylinder1 );
+
+#############################################################################
+Crv = cbspline( 3,
+		list( ctlpt( E2,  0.5, -1.0 ),
+		      ctlpt( E2, -1.5, -0.5 ),
+		      ctlpt( E2,  1.5,  0.0 ),
+		      ctlpt( E2, -0.5,  1.0 ) ),
+		list( KV_OPEN ) );
+attrib( Crv, "width", 0.015 );
+attrib( Crv, "rgb", "0,0,100" );
+
+xzeros = CZEROS( Crv, 0.0001, 1 );
+pt_xzeros = nil();
+pt = nil();
+for ( i = 1, 1, sizeof( xzeros ),
+       pt = ceval( Crv, nth( xzeros, i ) ):
+       snoc( pt, pt_xzeros )
+    );
+ptSp_xzeros = EuclidPtsToSprs( pt_xzeros, 0.03 );
+
+xyaxis = list( ctlpt( E2, -1, 0 ) + ctlpt( E2, 1, 0 ),
+	       ctlpt( E2, 0, -1 ) + ctlpt( E2, 0, 1 ) );
+attrib( xyaxis, "rgb", "200,200,100" );
+
+All = list( Crv, xyaxis, ptSp_xzeros ) * sc( 0.9 );
+
+view( All, on );
+save( "czeros.itd.gz", All );
+free( Crv );
+free( xzeros );
+free( ptSp_xzeros );
+free( pt_xzeros );
+free( pt );
+free( xyaxis );
+
+#############################################################################
+
+C3 = cbspline( 3,
+    list( ctlpt( E3, -0.02, 0.289, 0 ),
+          ctlpt( E2, -0.668, 0.333 ),
+          ctlpt( E2, -0.192, 0.156 ),
+          ctlpt( E2, -0.252, -0.417 ),
+          ctlpt( E2, 0.0858, 0.0777 ),
+          ctlpt( E2, 0.194, -0.00113 ),
+          ctlpt( E2, 0.416, -0.298 ),
+          ctlpt( E2, 0.691, 0.175 ),
+          ctlpt( E2, 0.362, 0.228 ),
+          ctlpt( E2, 0.171, 0.265 ),
+          ctlpt( E2, 0.325, 0.502 ),
+          ctlpt( E2, 0.0699, 0.656 ),
+          ctlpt( E2, -0.137, 0.5 ) ),
+    list( kv_periodic ) );
+awidth( C3, 0.01 );
+attrib( C3, "gray", 0.5 );
+attrib( C3, "rgb", "100,100,0" );
+
+d = CrvDiamtr( C3, 0.1, -1e-6, 2 );
+Lns = nil();
+for ( i = 1, 1, sizeof( d ),
+    pt = nth( d, i ):
+    snoc( ceval( C3, coord( pt, 0 ) ) + ceval( C3, coord( pt, 1 ) ),
+	  Lns ) );
+awidth( Lns, 0.003 );
+color( Lns, red );
+
+MaxD = CrvDiamtr( C3, 0.1, -1e-6, 1 );
+MaxD = ceval( C3, coord( MaxD, 0 ) ) + ceval( C3, coord( MaxD, 1 ) ) * tz( 0.01 );
+attrib( MaxD, "rgb", "10, 140, 10" );
+adwidth( MaxD, 3 );
+awidth( MaxD, 0.01 );
+
+MinD = CrvDiamtr( C3, 0.1, -1e-6, 0 );
+MinD = ceval( C3, coord( MinD, 0 ) ) + ceval( C3, coord( MinD, 1 ) ) * tz( 0.01 );
+color( MinD, blue );
+adwidth( MinD, 3 );
+awidth( MinD, 0.01 );
+
+All = list( C3, Lns, MaxD, MinD ) * sc( 1.6 ) * ty( -0.3 ) * tx( -0.05 );
+
+view( All, 1 );
+
+save( "crv_diam.itd.gz", All );
+
+free( i );
+free( d );
+free( Pt );
+free( C3 );
+free( Lns );
+free( MaxD );
+free( MinD );
+
+#############################################################################
+
+c = cbspline( 5,
+    list( ctlpt( E3, -0.36, 0.267, 0 ),
+          ctlpt( E2, -1.54, 0.283 ),
+          ctlpt( E2, -0.876, -0.132 ),
+          ctlpt( E2, -0.855, -1.18 ),
+          ctlpt( E2, -0.0426, -0.367 ),
+          ctlpt( E2, 0.282, -0.603 ),
+          ctlpt( E2, 0.868, -1.03 ),
+          ctlpt( E2, 1.3, -0.0615 ),
+          ctlpt( E2, 0.786, 0.084 ),
+          ctlpt( E2, 0.437, 0.197 ),
+          ctlpt( E2, 0.675, 0.906 ),
+          ctlpt( E2, -0.0903, 1.37 ),
+          ctlpt( E2, -0.711, 0.9 ) ),
+    list( kv_periodic ) );
+awidth( c, 0.007 );
+attrib( c, "gray", 0.5 );
+color( c, red );
+
+d = duality( coerce( c, kv_open ) );
+color( d, blue );
+awidth( d, 0.004 );
+
+GenAxes = list( ctlpt( E3, -2, 0, 0 ) + ctlpt( E3, 1.8, 0.0, 0.0 ),
+		ctlpt( E3, 0, -2.2, 0 ) + ctlpt( E3, 0.0, 2.1, 0.0 ) );
+awidth( GenAxes, 0.001 );
+attrib( GenAxes, "rgb", "10, 140, 10" );
+
+view( list( c, d, GenAxes ) * sc( 0.34 ), 1 );
+
+save( "dual_crv.itd.gz", list( c, d, GenAxes ) * sc( 0.34 ) );
+free( c );
+free( d );
+
+##########################
+
+s = sphereSrf( 1.1 ) * sx( 2 ) * sy( 1.2 );
+awidth( s, 0.007 );
+attrib( s, "gray", 0.5 );
+color( s, red );
+
+d = duality( s );
+color( d, blue );
+awidth( d, 0.004 );
+
+GenAxes = list( ctlpt( E3, -2.5, 0, 0 )+ ctlpt( E3, 2.5, 0.0, 0.0 ),
+		ctlpt( E3, 0, -1.75, 0 )+ ctlpt( E3, 0.0, 1.75, 0.0 ),
+		ctlpt( E3, 0, 0, -1.5 )+ ctlpt( E3, 0.0, 0.0, 1.5 ) );
+awidth( GenAxes, 0.002 );
+attrib( GenAxes, "rgb", "10, 140, 10" );
+
+view( list( list( s, d, GenAxes ) * sc( 1.5 ), view_mat1 ), 1 );
+
+save( "dual_srf.itd.gz", list( s, d, GenAxes ) * sc( 1.5 ) );
+free( GenAxes );
+free( s );
+free( d );
+
+#############################################################################
+Cross = cbspline( 3,
+                  list( ctlpt( E2, -0.018, 0.001 ),
+                        ctlpt( E2,  0.018, 0.001 ),
+                        ctlpt( E2,  0.019, 0.002 ),
+                        ctlpt( E2,  0.018, 0.004 ),
+                        ctlpt( E2, -0.018, 0.004 ),
+                        ctlpt( E2, -0.019, 0.001 ) ),
+                  list( KV_OPEN ) );
+Cross = Cross + -Cross * scale( vector( 1, -1, 1 ) );
+Cross = Cross * scale( vector( 1.6, 1.6, 1.6 ) );
+attrib( Cross, "width", 0.015 );
+color( Cross, red );
+
+Napkin = EXTRUDE( Cross, vector( 0.02, 0.03, 0.2 ), 0 );
+attrib( Napkin, "width", 0.003 );
+color( Napkin, blue );
+
+All = list( Cross, Napkin ) * sc( 22 ) * tx( -0.2 ) * ty( -0.4 );
+view( All, on );
+save( "extrude.itd.gz", All );
+free( Cross );
+free( Napkin );
+
+#############################################################################
+
+resolution = 8;
+
+c1 = cbezier( list( ctlpt( E2, -1.0,  0.0 ),
+		    ctlpt( E2, -1.0,  0.1 ),
+		    ctlpt( E2, -0.9, -0.1 ),
+		    ctlpt( E2,  0.9,  0.0 ) ) );
+color( c1, magenta );
+attrib( c1, "width", 0.005 );
+
+pts = ffptdist( c1, false, 300 );
+e2pts = nil();
+for ( i = 1, 10, sizeof( pts ),
+	pt = ceval( c1, coord( nth( pts, i ), 0 ) ):
+	snoc( pt, e2pts )
+    );
+e2ptsSp = EuclidPtsToSprs( e2pts, 0.015 );
+
+All = list( e2ptsSp, c1 ) * sc( 0.95 ) * ty( -0.1 ) * tx( 0.05 );
+view( All, on );
+save( "ffptdst1.itd.gz", All );
+
+pts = ffptdist( c1, true, 300 );
+e2pts = nil();
+for ( i = 1, 10, sizeof( pts ),
+	pt = ceval( c1, coord( nth( pts, i ), 0 ) ):
+	snoc( pt, e2pts )
+    );
+e2ptsSp = EuclidPtsToSprs( e2pts, 0.015 );
+
+All = list( e2ptsSp, c1 ) * sc( 0.95 ) * ty( -0.1 ) * tx( 0.05 );
+view( All, 1 );
+save( "ffptdst2.itd.gz", All );
+free( c1 );
+free( pts );
+free( e2pts );
+free( e2ptsSp );
+
+resolution = save_res;
+
+#############################################################################
+GB = GBOX(vector(0.0, -0.35, 0.63), vector(0.5, 0.0, 0.5),
+                                    vector(-0.5, 0.0, 0.5),
+                                    vector(0.0, 0.7, 0.0));
+attrib( GB, "width", 0.02 );
+color( GB, blue );
+
+All = list( GB * sc( 0.95 ), axes * sc( 0.65 ) )
+	* rotx( -90 ) * roty( 40 ) * rotx( -30 )
+	* trans( vector( -0.0, -0.6, 0.0 ) );
+view( All, on );
+save( "gbox.itd.gz", All );
+free( GB );
+
+#############################################################################
+resolution = 4;
+
+s1 = sbezier(
+	list( list( ctlpt( E3, 0,  0,  0 ),
+	            ctlpt( E3, 2,  0,  0 ) ),
+	      list( ctlpt( E3, 0,  2,  0 ),
+	            ctlpt( E3, 2,  2,  0 ) ) ) ) * tx( -1 ) * ty( -1 );
+attrib( s1, "rgb", "10, 140, 10" );
+attrib( s1, "width", 0.005 );
+
+s2 = sbezier(
+	list( list( ctlpt( E3, 0,  0,  2 ),
+	            ctlpt( E3, 1,  0,  1 ),
+	            ctlpt( E3, 2,  0,  2 ) ),
+	      list( ctlpt( E3, 0,  1,  1 ),
+	            ctlpt( E3, 1,  1,  0 ),
+	            ctlpt( E3, 2,  1,  1 ) ),
+	      list( ctlpt( E3, 0,  2,  2 ),
+	            ctlpt( E3, 1,  2,  1 ),
+	            ctlpt( E3, 2,  2,  2 ) ) ) ) * tx( -1 ) * ty( -1 );
+color( s2, magenta );
+attrib( s2, "width", 0.005 );
+
+ms1 = coerce( s1, multivar_type );
+ms2 = coerce( s2, multivar_type );
+
+mb1 = mbisector( ms1, ms2, 3, 0.3, -1e-10 );
+b1 = sinterp( mb1, 3, 3, 4, 4, PARAM_UNIFORM );
+attrib( b1, "width", 0.015 );
+attrib( b1, "gray", 0.5 );
+color( b1, blue );
+
+mb2 = ExtractE3Pts( mb1 );
+attrib( mb2, "rgb", "255,10,10" );
+
+All = list( s1, s2, mb2, b1 ) * sc( 1.5 )
+	* ty( -0.1 ) * tx( -0.3 ) * tz( -1.6 );
+view( list( All, view_mat1 ), on );
+
+save( "mbisect1.itd.gz", All );
+
+##############
+
+c = cbezier( list( ctlpt( E3,  0,  0,  0 ),
+		   ctlpt( E3,  0,  0,  2 ) ) );
+color( c, magenta );
+attrib( c, "width", 0.015 );
+
+mc = coerce( c, multivar_type );
+
+mb1 = mbisector( mc, ms1, 3, 0.2, -1e-10 );
+b1 = sinterp( mb1, 3, 3, 8, 8, PARAM_UNIFORM );
+attrib( b1, "width", 0.015 );
+attrib( b1, "gray", 0.5 );
+color( b1, blue );
+
+mb2 = ExtractE3Pts( mb1 );
+attrib( mb2, "rgb", "255,10,10" );
+
+All = list( c, s1, mb2, b1 ) * sc( 1.7 ) * tz( -1.2 );
+view( All, on );
+
+save( "mbisect2.itd.gz", All );
+free( s1 );
+free( s2 );
+free( ms1);
+free( ms2 );
+free( mb1 );
+free( mb2 );
+free( c );
+free( mc );
+resolution = save_res;
+
+#############################################################################
+Vrtx1 = vector( -3, -2, -1 );
+Vrtx2 = vector( 3, -2, -1 );
+Vrtx3 = vector( 3, 2, -1 );
+Vrtx4 = vector( -3, 2, -1 );
+Poly1 = poly( list( Vrtx1, Vrtx2, Vrtx3, Vrtx4 ), false ); 
+
+Vrtx1 = vector( -3, 2, 1 );
+Vrtx2 = vector( 3, 2, 1 );
+Vrtx3 = vector( 3, -2, 1 );
+Vrtx4 = vector( -3, -2, 1 );
+Poly2 = poly( list( Vrtx1, Vrtx2, Vrtx3, Vrtx4 ), false );
+
+Vrtx1 = vector( -3, -2, 1 );
+Vrtx2 = vector( 3, -2, 1 );
+Vrtx3 = vector( 3, -2, -1 );
+Vrtx4 = vector( -3, -2, -1 );
+Poly3 = poly( list( Vrtx1, Vrtx2, Vrtx3, Vrtx4 ), false );
+
+PolyObj = MERGEPOLY( list( Poly1, Poly2, Poly3 ) );
+attrib( PolyObj, "width", 0.01 );
+
+All = PolyObj * scale( vector( 0.15, 0.15, 0.15 ) )
+	      * rotx( 70 ) * roty( 30 ) * rotx( 30 ) * rotz( -10 ) * sc( 1.6 );
+color( All, magenta );
+
+view( All, on );
+save( "mergpoly.itd.gz", All );
+
+free( Vrtx1 );
+free( Vrtx2 );
+free( Vrtx3 );
+free( Vrtx4 );
+free( Poly1 );
+free( Poly2 );
+free( Poly3 );
+free( PolyObj );
+
+#############################################################################
+
+GenRandomCrv = function( d, n, size ): CtlPts: CPt: i:
+    CtlPts = nil():
+    for ( i = 1, 1, n,
+	snoc( ctlpt( E2, random( -size, size ), random( -size, size ) ),
+	      CtlPts ) ):
+    return = cbspline( d,
+		       CtlPts * tx( random( -1, 1 ) ) * ty( random( -1, 1 ) ),
+		       list( kv_periodic ) ):
+    return = coerce( return, kv_open ):
+    attrib( return, "rgb", GetRandRGB() );
+
+RandomCrvs = function( NumCrvs, CrvDeg, CrvLen, size ): i: l:
+    l = nil():
+    for ( i = 1, 1, NumCrvs,
+        snoc( GenRandomCrv( CrvDeg, CrvLen, size ), l ) ):
+    return = l:
+    awidth( return, 0.007 ):
+    adwidth( return, 3 );
+
+testRun = function( NumCrvs, CrvDeg, CrvLen, size, Seed ): ri: c: msc:
+    ri = iritstate( "RandomInit", Seed ):
+    c = RandomCrvs( NumCrvs, CrvDeg, CrvLen, size ):
+    msc = mscirc( c, list( 0.5 / CrvLen, 1e-10 ) ):
+    awidth( msc, 0.02 ):
+    attrib( msc, "gray", 0.65 ):
+    return = list( msc, c );
+
+All1 = testRun( 16, 4, 4, 0.5, 1 );
+All2 = testRun( 18, 3, 4, 0.2, 1 );
+
+All = list( UnifScale2UnitSize( All1 ) * tx( -0.55 ),
+	    UnifScale2UnitSize( All2 ) * tx(  0.55 ) )
+    * tx( -0.5 ) * sc( 0.8 );
+
+view( All, on );
+
+save( "mscirc.itd.gz", All );
+
+free( All );
+free( All1 );
+free( All2 );
+
+#############################################################################
+Crv = cbspline( 3,
+                list( ctlpt( E2, 0.7, 0.0 ),
+                      ctlpt( E2, 0.7, 0.06 ),
+                      ctlpt( E2, 0.1, 0.1 ),
+                      ctlpt( E2, 0.1, 0.6 ),
+                      ctlpt( E2, 0.6, 0.6 ),
+                      ctlpt( E2, 0.8, 0.8 ),
+                      ctlpt( E2, 0.8, 1.4 ),
+                      ctlpt( E2, 0.6, 1.6 ) ),
+                list( KV_OPEN ) );
+attrib( Crv, "width", 0.01 );
+color( Crv, magenta );
+
+OffCrv = OFFSET( Crv, -0.4, 1.0, FALSE );
+attrib( OffCrv, "width", 0.02 );
+color( OffCrv, blue );
+
+All = list( Crv, OffCrv ) * rotz( 90 ) * sc( 0.9 )
+			  * trans( vector( 0.6, -0.25, 0.0 ) );
+view( All, on );
+save( "coffset.itd.gz", All );
+free( Crv );
+free( OffCrv );
+
+############################################################################
+
+Pt = point( 0.0, -0.65, 0 );
+PtSp = EuclidPtsToSprs( list( Pt ), 0.025 );
+
+Crv = cbezier( list( ctlpt( E2, -0.8, -0.6 ),
+		     ctlpt( E2, -0.3, -0.5 ),
+		     ctlpt( E2,  0.0,  0.6 ),
+		     ctlpt( E2,  0.8, -0.6 ) ) );
+color( Crv, magenta );
+
+Orth = orthotomc( crv, pt, 2 );
+attrib( Orth, "gray", 0.5 );
+color( Orth, blue );
+
+attrib( Orth, "width", 0.015 );
+attrib( crv, "width", 0.007 );
+
+All = list( Orth, crv, PtSp ) * sc( 0.8 ) * ty( 0.3 ) * tx( -0.1 );
+
+view( All, on );
+save( "orthotmc.itd.gz", All );
+
+free( Orth );
+free( crv );
+free( pt );
+free( PtSp );
+
+############################################################################
+
+gcross = cbspline( 3,
+                   list( ctlpt( E3, 0.3, 0.0, 0.0 ),
+                         ctlpt( E3, 0.1, 0.0, 0.1 ),
+                         ctlpt( E3, 0.1, 0.0, 0.4 ),
+                         ctlpt( E3, 0.5, 0.0, 0.5 ),
+                         ctlpt( E3, 0.6, 0.0, 0.8 ) ),
+                   list( KV_OPEN ) );
+resolution = 10;
+glass = surfprev( gcross );
+
+pglass = gpolygon( glass, false );
+color( pglass, magenta );
+
+dglass = PDECIMATE( pglass, true, 0.25 );
+attrib( dglass, "rgb", "10, 140, 10" );
+
+Tran = rx( -70 ) * ry( 5 );
+
+All = list( pglass * Tran * sc( 0.7 ) * tx( -0.4 ) * ty( -0.55 ),
+	    dglass * Tran * sc( 0.7 ) * tx( 0.5 ) * ty( -0.55 ) ) * ty( 0.2 );
+attrib( All, "width", 0.01 );
+
+view( All, on );
+save( "pdecimat.itd.gz", All );
+
+resolution = save_res;
+free( gcross );
+free( pglass );
+free( dglass );
+free( Tran );
+
+############################################################################
+
+gcross = cbspline( 3,
+                   list( ctlpt( E3, 0.3, 0.0, 0.0 ),
+                         ctlpt( E3, 0.1, 0.0, 0.1 ),
+                         ctlpt( E3, 0.1, 0.0, 0.4 ),
+                         ctlpt( E3, 0.5, 0.0, 0.5 ),
+                         ctlpt( E3, 0.6, 0.0, 0.8 ) ),
+                   list( KV_OPEN ) );
+glass = surfprev( gcross ) * tx( 0.5 ) * ty( 0.5 );
+awidth( glass, 0.005 );
+color( glass, red );
+
+resolution = 100;
+pSil = polarsil( glass, vector( 1, 0, 0 ), true );
+color( pSil, blue );
+attrib( pSil, "gray", 0.6 );
+awidth( pSil, 0.02 );
+adwidth( pSil, 2 );
+
+All = list( axes, glass, pSil ) * rz( 35 ) * rx( -80 )
+                                * tx( -0.15 ) * ty( -0.5 );
+view( All, 1 );
+
+save( "polarsil.itd.gz", All );
+
+free( glass );
+free( pSil );
+free( All );
+
+#############################################################################
+V1  = vector( 0.0, 0.0, 0.0 );
+V2  = vector( 0.3, 0.0, 0.0 );
+V3  = vector( 0.3, 0.0, 0.1 );
+V4  = vector( 0.2, 0.0, 0.1 );
+V5  = vector( 0.2, 0.0, 0.5 );
+V6  = vector( 0.3, 0.0, 0.5 );
+V7  = vector( 0.3, 0.0, 0.6 );
+V8  = vector( 0.0, 0.0, 0.6 );
+V9  = vector( 0.0, 0.0, 0.5 );
+V10 = vector( 0.1, 0.0, 0.5 );
+V11 = vector( 0.1, 0.0, 0.1 );
+V12 = vector( 0.0, 0.0, 0.1 );
+I = POLY( list( V1, V2, V3, V4, V5, V6, V7, V8, V9, V10, V11, V12 ),
+          FALSE ) * rotx( 90 );
+attrib( I, "width", 0.01 );
+
+All = I * sc( 2 ) * tx( -0.2 ) * ty( 0.5 );
+
+view( All, on );
+
+save( "poly.itd.gz", All );
+free( V1 );
+free( V2 );
+free( V3 );
+free( V4 );
+free( V5 );
+free( V6 );
+free( V7 );
+free( V8 );
+free( V9 );
+free( V10 );
+free( V11 );
+free( V12 );
+free( I );
+
+#############################################################################
+
+cross = cbspline( 3,
+                  list( ctlpt( E3, 0.7, 0.0, 0. ),
+                        ctlpt( E3, 0.7, 0.0, 0.06 ),
+                        ctlpt( E3, 0.1, 0.0, 0.1 ),
+                        ctlpt( E3, 0.1, 0.0, 0.6 ),
+                        ctlpt( E3, 0.6, 0.0, 0.6 ),
+                        ctlpt( E3, 0.8, 0.0, 0.8 ),
+                        ctlpt( E3, 0.8, 0.0, 1.4 ),
+                        ctlpt( E3, 0.6, 0.0, 1.6 ) ),
+                  list( KV_OPEN ) );
+wglass = surfrev( cross );
+color( wglass, blue );
+
+wglass2 = wglass * sc( 2.6 ) * tz( -1.9 );
+attrib( wglass2, "rgb", "10, 10, 200" );
+view( list( wglass2, view_mat1 ), 1 );
+save( "wglass.itd.gz", wglass2 );
+free( wglass2 );
+
+attrib( wglass, "width", 0.012 );
+wgl_ruled = PRISA( wglass, 6, -0.1, COL, vector( 0, 0.25, 0.0 ), false );
+attrib( wgl_ruled, "width", 0.01 );
+wgl_prisa = PRISA( wglass, 30, 0.1, COL, vector( 0, 0.25, 0.0 ), false );
+attrib( wgl_prisa, "width", 0.001 );
+
+attrib( wgl_ruled, "rgb", "10, 140, 10" );
+color( wgl_prisa, magenta );
+
+attrib( wgl_ruled, "width", 0.004 );
+attrib( wgl_prisa, "width", 0.003 );
+
+All = list( wglass * scale( vector( 0.5, 0.5, 0.5 ) )
+		   * rotx( -90 ) * roty( 40 ) * rotx( 20 )
+		   * trans( vector( -0.7, -0.3, 0.0 ) ),
+	    wgl_ruled * scale( vector( 0.5, 0.5, 0.5 ) )
+		      * rotx( -90 ) * roty( 40 ) * rotx( 20 )
+		      * trans( vector( 0.13, -0.3, 0.0 ) ),
+	    wgl_prisa * scale( vector( 0.1, 0.1, 0.1 ) ) 
+		      * trans( vector( 0.8, -0.4, 0.0 ) ) ) * sc( 0.8 );
+
+view( All, on );
+save( "prisa.itd.gz", All );
+free( cross );
+free( wglass );
+free( wgl_ruled );
+free( wgl_prisa );
+
+#############################################################################
+
+SrfText1 = ruledSrf( ctlpt( E2, 0, 0 ) + ctlpt( E2, 0, 1 ),
+		     ctlpt( E2, 1, 0 ) + ctlpt( E2, 1, 1 ) );
+SrfText1 = sRaise( sRaise( SrfText1, row, 3 ), col, 3 );
+SrfText1 = sRefine( SrfText1, row, false, list( 0.25, 0.5, 0.75 ) );
+SrfText1 = sRefine( SrfText1, col, false, list( 0.25, 0.5, 0.75 ) );
+SrfText1 = coerce( SrfText1, E3 );
+
+# Make a spike out of the four interior points.
+SrfText1 = sEditPt( SrfText1, ctlpt( E3, 0.5, 0.5, 1 ), 2, 2 );
+SrfText1 = sEditPt( SrfText1, ctlpt( E3, 0.5, 0.5, 1 ), 2, 3 );
+SrfText1 = sEditPt( SrfText1, ctlpt( E3, 0.5, 0.5, 1 ), 3, 2 );
+SrfText1 = sEditPt( SrfText1, ctlpt( E3, 0.5, 0.5, 1 ), 3, 3 );
+
+Trs = torusSrf( 1, 0.2 );
+
+resolution = 6;
+TrsTxt = SDDMMap( Trs, gpolygon( -SrfText1 * sz( 0.25 ), on ),
+		  6, 8, on ) * sc( 2 );
+resolution = save_res;
+
+view( list( axes, TrsTxt, view_mat1 ), 1 );
+
+color( SrfText1, blue );
+color( Trs, red );
+color( TrsTxt, magenta );
+
+save( "sbump1.itd.gz", SrfText1 );
+save( "sbump2.itd.gz", Trs );
+save( "sbump3.itd.gz", TrsTxt );
+
+#############################################################################
+
+gcross = cbspline( 3,
+		   list( ctlpt( E3, 0.3, 0.0, 0.0 ),
+		         ctlpt( E3, 0.3, 0.0, 0.05 ),
+		         ctlpt( E3, 0.1, 0.0, 0.05 ),
+		         ctlpt( E3, 0.1, 0.0, 0.4 ),
+		         ctlpt( E3, 0.5, 0.0, 0.4 ),
+		         ctlpt( E3, 0.6, 0.0, 0.8 ) ),
+		   list( 0, 0, 0, 1, 2, 3, 4, 4, 4 ) );
+glass = surfprev( gcross );
+attrib( glass, "rgb", "10, 120, 120" );
+attrib( glass, "width", 0.005 );
+attrib( glass, "transp", 0.5 );
+
+nglass = snrmlsrf( glass ) * vector( 1, 1, 1 );
+
+resolution = 12;
+sils = contour( nglass, plane( 1, 0, 0, 0 ), glass );
+resolution = save_res;
+
+color( sils, red );
+attrib( sils, "width", 0.02 );
+
+All = list( list( glass, sils )	* save_mat_docs
+		* sc( 0.7 ) * trans( vector( -0.5, -0.35, 0.0 ) ) ,
+	    list( glass, sils )	* rx( 30 ) * ry( -80 ) * rz( -120 )
+		* sc( 0.8 ) * trans( vector(  0.5, -0.35, 0.0 ) ) );
+view( All, on );
+save( "silhouet.itd.gz", All );
+
+free( gcross );
+free( glass );
+free( nglass );
+free( sils );
+
+#############################################################################
+
+RayTrapTris = function( Crvs, SubEps, NumEps ): Pts: i: j: Pt: Points:
+    Pts = raytraps( Crvs, true, SubEps, NumEps, true ):
+    return = nil():
+    for ( i = 1, 1, sizeof( Pts ),
+        Pt = coord( Pts, i ):
+        Points = nil():
+        for ( j = 1, 1, sizeof( Crvs ),
+	    snoc( ceval( nth( Crvs, j ), coord( Pt, j ) ), Points ) ):
+        snoc( poly( Points, false ), return ) );
+
+Crv1 = pcircle( vector( -0.75, -0.75, 0 ), 0.5 );
+Crv2 = Crv1 * sc( 1.5 ) * tx( 2 );
+Crv3 = Crv1 * sc( 0.5 ) * tx( 0.2 ) * ty( 0.6 );
+Crvs = list( Crv1, Crv2, Crv3 );
+attrib( Crvs, "width", 0.012 );
+attrib( Crvs, "gray", 0.5 );
+attrib( Crvs, "rgb", "255,0,0" );
+
+Tris = RayTrapTris( Crvs, 0.1, -1e-6 );
+attrib( Tris, "width", 0.005 );
+attrib( Tris, "rgb", "0,0,222" );
+
+All = list( Crvs, Tris ) * sc( 0.6 ) * ty( 0.4 ) * tx( -0.1 );
+view( All, on );
+
+save( "raytrap.itd.gz", All );
+free( Crv1 );
+free( Crv2 );
+free( Crv3 );
+free( Crvs );
+free( Tris );
+
+#############################################################################
+
+c1 = cbezier( list( ctlpt( E3, -1.0,  -1.0, -1.0 ),
+	            ctlpt( E3, -0.5,   8.0, -1.0 ),
+		    ctlpt( E3,  0.0, -15.0, -1.0 ),
+		    ctlpt( E3,  0.5,   8.0, -1.0 ),
+		    ctlpt( E3,  1.0,  -1.0, -1.0 ) ) );
+
+c2 = c1 * sc( 0.7 ) * tz( 1.7 );
+
+r1 = ruledSrf( c1, c2 );
+awidth( r1, 0.007 );
+attrib( r1, "rgb", "10, 140, 10" );
+
+c1 = pcircle( vector( 0, 0, 0 ), 0.3 ) * tz( 2 );
+
+c2 = c1 * sc( 0.5 ) * tz ( -3 );
+
+r2 = ruledSrf( c1, c2 ) * ry( 90 );
+awidth( r2, 0.007 );
+color( r2, magenta );
+
+c = rrinter( cMesh( r1, row, 0 ),
+	     cMesh( r1, row, 1 ),
+	     cMesh( r2, row, 0 ),
+	     cMesh( r2, row, 1 ),
+	     25, false );
+attrib( c, "rgb", "10, 130, 130" );
+adwidth( c, 3 );
+awidth( c, 0.02 );
+attrib( c, "gray", 0.5 );
+c = nth( c, 1 );
+color( c, blue );
+awidth( c, 0.015 );
+
+All = list( r1, r2, c ) * sc( 0.5 ) * rotx( 20 ) * roty( 30 );
+view( All, true );
+
+save( "rrinter1.itd.gz", All );
+
+zeroSetSrf = rrinter( cMesh( r1, row, 0 ),
+		      cMesh( r1, row, 1 ),
+		      cMesh( r2, row, 0 ),
+		      cMesh( r2, row, 1 ),
+		      25, true );
+zeroSetSrfE3 = coerce( zeroSetSrf, e3 )
+				* rotx( -90 ) * roty( -90 ) * sz( 0.02 );
+awidth( zeroSetSrfE3, 0.007 );
+color( zeroSetSrfE3, blue );
+
+zeroSet = contour( zeroSetSrfE3, plane( 0, 0, 1, 0.00001 ) );
+attrib( zeroSet, "rgb", "10, 130, 130" );
+adwidth( zeroSet, 3 );
+awidth( zeroSet, 0.02 );
+
+GenAxes = list( ctlpt( E3, 0, 0, 0 )+ ctlpt( E3, 0.0, 0.0, 0.4 ),
+		ctlpt( E3, 0, 0, 0 )+ ctlpt( E3, 0.0, 1.1, 0.0 ),
+		ctlpt( E3, 0, 0, 0 )+ ctlpt( E3, 1.1, 0.0, 0.0 ) );
+awidth( GenAxes, 0.005 );
+attrib( GenAxes, "rgb", "10, 140, 10" );
+
+All = list( GenAxes, zeroSetSrfE3, zeroSet )
+			* sc( 1.2 ) * rotz( -45 ) * rotx( -70 ) * tx( -0.8 );
+view( All, true );
+
+save( "rrinter2.itd.gz", All );
+
+free( c );
+free( c1 );
+free( c2 );
+free( r1 );
+free( r2 );
+free( GenAxes );
+free( zeroSetSrfE3 );
+free( zeroSetSrf );
+free( zeroSet );
+
+#############################################################################
+
+GenAxes = list( ctlpt( E3, 0, 0, 0 )+ ctlpt( E3, 0.0, 0.0, 0.4 ),
+		ctlpt( E3, 0, 0, 0 )+ ctlpt( E3, 0.0, 1.1, 0.0 ),
+		ctlpt( E3, 0, 0, 0 )+ ctlpt( E3, 1.1, 0.0, 0.0 ) );
+awidth( GenAxes, 0.005 );
+attrib( GenAxes, "rgb", "10, 140, 10" );
+
+s1 = cylinSrf( 4, 1 ) * tz( -2 );
+color( s1, magenta );
+awidth( s1, 0.005 );
+c1 = cbezier( list( ctlpt( E3, 0.0, 0.0, -1.0 ),
+		    ctlpt( E3, 0.0, 0.0,  1.0 ) ) );
+r1 = cbezier( list( ctlpt( E1, 1.0 ) ) );
+
+s2 = cylinSrf( 4, 1 ) * tz( -2 ) * rx( 90 ) * tx( 0.5 );
+attrib( s2, "rgb", "10, 140, 10" );
+awidth( s2, 0.005 );
+c2 = cbezier( list( ctlpt( E3, 0.5, -1.0, 0.0 ),
+		    ctlpt( E3, 0.5,  1.0, 0.0 ) ) );
+r2 = cbezier( list( ctlpt( E1, 1.0 ) ) );
+
+ZeroSetSrf = coerce( gginter( c1, r1, c2, r2, 10, true ), e3 )
+						* rotx( -90 ) * roty( -90 );
+awidth( ZeroSetSrf, 0.005 );
+color( ZeroSetSrf, blue );
+
+resolution = 100;
+ZeroSet = contour( ZeroSetSrf, plane( 0, 0, 1, 0 ) );
+awidth( ZeroSet, 0.01 );
+attrib( ZeroSet, "gray", 0.5 );
+color( ZeroSet, red );
+
+All = list( ZeroSetSrf * sz( 0.1 ), GenAxes, ZeroSet )
+	* rz( 10 ) * rx( 3.4 ) * sc( 3.5 ) * tz( 0.9 ) * ty( -0.8 );
+view( list( All, view_mat1 ), 1 );
+
+save("rngrng1.itd.gz", All );
+
+c = nth( gginter( c1, r1, c2, r2, 100, false ), 1 );
+awidth( c, 0.01 );
+attrib( c, "gray", 0.5 );
+color( c, blue );
+
+All = list( s1, s2, c ) * sc( 1.2 ) * tx( -0.3 ) * ty( 0.3 );
+view( All, 1 );
+save("rngrng2.itd.gz", All );
+
+free( s1 );
+free( s2 );
+free( c1 );
+free( c2 );
+free( r1 );
+free( r2 );
+free( ZeroSetSrf );
+free( ZeroSet );
+
+#############################################################################
+
+resolution = 4;
+
+Skel2DColor = function( Prim1, Prim2, Prim3, Eps ):
+    i: E: EquaPt: Prms1: Prms2: Prms3: EquaPtSp:
+    EquaPt = Skel2dInt( Prim1, Prim2, Prim3, 100, Eps, 150,
+             list( 1e-3, -1e-10 ) ):
+    color( EquaPt, white ):
+    Prms1 = list( Prim1 ):
+    Prms2 = list( Prim2 ):
+    Prms3 = list( Prim3 ):
+    EquaPtSp = nil():
+    for ( i = 1, 1, sizeof( EquaPt ),
+        E = nth( EquaPt, i ):
+	snoc( sphere( coerce( E, vector_type ), 0.02 ),
+	      EquaPtSp ):
+	snoc( GetAttr( E, "Prim1Pos" ), Prms1 ):
+	snoc( coerce( GetAttr( E, "Prim1Pos" ), E3 ) +
+	      coerce( E, E3 ), Prms1 ):
+
+	snoc( GetAttr( E, "Prim2Pos" ), Prms2 ):
+	snoc( coerce( GetAttr( E, "Prim2Pos" ), E3 ) +
+	      coerce( E, E3 ), Prms2 ):
+
+	snoc( GetAttr( E, "Prim3Pos" ), Prms3 ):
+	snoc( coerce( GetAttr( E, "Prim3Pos" ), E3 ) +
+	      coerce( E, E3 ), Prms3 ) ):
+    attrib( Prms1, "rgb", "0,100,100" ):
+    attrib( Prms2, "rgb", "100,0,100" ):
+    attrib( Prms3, "rgb", "100,100,0" ):
+    attrib( Prms1, "gray", 0.35 ):
+    attrib( Prms2, "gray", 0.5 ):
+    attrib( Prms3, "gray", 0.65 ):
+    return = list( Prms1, Prms2, Prms3, EquaPtSp );
+
+Crv1 = pcircle( vector( -0.5,  0.6, 0.0 ), 0.3 );
+Crv2 = pcircle( vector( -0.4, -0.6, 0.0 ), 0.5 );
+Crv3 = pcircle( vector(  0.5,  0.2, 0.0 ), 0.4 );
+Crvs = list( Crv1, Crv2, Crv3 );
+attrib( Crvs, "width", 0.02 );
+color( Crvs, magenta );
+
+Pts = Skel2DColor( Crv1, Crv2, Crv3, 0.1 );
+adwidth( Pts, 0.005 );
+
+All = list( Crvs, Pts ) * sc( 0.8 ) * tx( 0.2 );
+view( All, true );
+
+save( "skel2dint.itd.gz", All );
+free( Crv1 );
+free( Crv2 );
+free( Crv3 );
+free( Crvs );
+free( Pts );
+
+resolution = save_res;
+
+#############################################################################
+
+pl = nil();
+pll = nil();
+for ( x = -3, 1, 3,
+      pl = nil():
+      for ( y = -3, 1, 3,
+	    snoc( point( x, y, sin( x * Pi / 2 ) * cos( y * Pi / 2 ) ),
+		  pl )
+	  ):
+      snoc( pl, pll ) );
+free( x );
+free( y );
+
+EggBase = sinterp( pll, 4, 4, 0, 0, PARAM_UNIFORM );
+color( EggBase, blue );
+attrib( EggBase, "width", 0.005 );
+free( pl );
+free( pll );
+
+Resolution = 15;
+Parab = sparabolc( EggBase, 1 );
+color( Parab, red );
+attrib( Parab, "width", 0.02 );
+
+All = list( EggBase, Parab ) * sc( 0.22 ) * rotz( -35 ) * rotx( -50 );
+view( All, true );
+
+save( "sparabl.itd.gz", All );
+
+free( Parab );
+free( EggBase );
+
+#############################################################################
+
+srf = sbspline( 4, 3,
+    list( list( ctlpt( E3, 0.8, 0, 0.4 ),
+                ctlpt( E3, 0.8, 0.441828, 0.4 ),
+                ctlpt( E3, 0.441828, 0.8, 0.4 ),
+                ctlpt( E3, 0.0, 0.8, 0.4 ),
+                ctlpt( E3, -0.441828, 0.8, 0.4 ),
+                ctlpt( E3, -0.8, 0.441828, 0.4 ),
+                ctlpt( E3, -0.8, 0.0, 0.4 ),
+                ctlpt( E3, -0.8, -0.441828, 0.4 ),
+                ctlpt( E3, -0.441828, -0.8, 0.4 ),
+                ctlpt( E3, 0.0, -0.8, 0.4 ),
+                ctlpt( E3, 0.441828, -0.8, 0.4 ),
+                ctlpt( E3, 0.8, -0.441828, 0.4 ),
+                ctlpt( E3, 0.8, 0, 0.4 ) ),
+          list( ctlpt( E1, 0.2 ),
+                ctlpt( E2, 0.2, 0.110457 ),
+                ctlpt( E2, 0.110457, 0.2 ),
+                ctlpt( E2, 0.0, 0.2 ),
+                ctlpt( E2, -0.110457, 0.2 ),
+                ctlpt( E2, -0.2, 0.110457 ),
+                ctlpt( E1, -0.2 ),
+                ctlpt( E2, -0.2, -0.110457 ),
+                ctlpt( E2, -0.110457, -0.2 ),
+                ctlpt( E2, 0.0, -0.2 ),
+                ctlpt( E2, 0.110457, -0.2 ),
+                ctlpt( E2, 0.2, -0.110457 ),
+                ctlpt( E1, 0.2 ) ),
+          list( ctlpt( E3, 0.8, 0, -0.4 ),
+                ctlpt( E3, 0.8, 0.441828, -0.4 ),
+                ctlpt( E3, 0.441828, 0.8, -0.4 ),
+                ctlpt( E3, 0.0, 0.8, -0.4 ),
+                ctlpt( E3, -0.441828, 0.8, -0.4 ),
+                ctlpt( E3, -0.8, 0.441828, -0.4 ),
+                ctlpt( E3, -0.8, 0.0, -0.4 ),
+                ctlpt( E3, -0.8, -0.441828, -0.4 ),
+                ctlpt( E3, -0.441828, -0.8, -0.4 ),
+                ctlpt( E3, 0.0, -0.8, -0.4 ),
+                ctlpt( E3, 0.441828, -0.8, -0.4 ),
+                ctlpt( E3, 0.8, -0.441828, -0.4 ),
+                ctlpt( E3, 0.8, 0, -0.4 ) ) ),
+    list( list( kv_disc_open ),
+          list( kv_open ) ) );
+color( Srf, magenta );
+
+rSrf = ruledfit( Srf, col, 0.0, 20 );
+color( rSrf, green );
+awidth( rSrf, 0.02 );
+
+All = list( Srf, rSrf ) * sc( 0.9 ) * rotz( 35 ) * rotx( -50 );
+
+view( All, 1 );
+
+save( "ruledfit.itd.gz", All );
+
+free( srf );
+free( rSrf );
+
+#############################################################################
+
+c1 = cbspline( 3,
+             list( ctlpt(E3, 1.7, 0.0, 0 ),
+                   ctlpt(E3, 0.7, 0.7, 0 ),
+                   ctlpt(E3, 1.7, 0.3, 0 ),
+                   ctlpt(E3, 1.5, 0.8, 0 ),
+                   ctlpt(E3, 1.6, 1.0, 0 ) ),
+        list( KV_OPEN ) );
+attrib( c1, "width", 0.015 );
+attrib( c1, "rgb", "10, 140, 10" );
+
+c2 = cbspline( 3,
+             list( ctlpt(E3, 0.7, 0.0, 0 ),
+                   ctlpt(E3,-0.7, 0.2, 0 ),
+                   ctlpt(E3, 0.7, 0.5, 0 ),
+                   ctlpt(E3,-0.7, 0.7, 0 ),
+                   ctlpt(E3, 0.7, 1.0, 0 ) ) ,
+        list( KV_OPEN ) );
+attrib( c2, "width", 0.015 );
+color( c2, blue );
+
+srf1 = ruledsrf( c1, c2 ) * tz( 0.01 );
+attrib( srf1, "width", 0.005 );
+color( srf1, magenta );
+All1 = list( c1, c2, srf1 );
+
+c2a = ffmatch( c1, c2, 50, 100, 2, false, 1 );
+srf2 = ruledsrf( c1, c2a ) * tz( 0.01 );
+attrib( srf2, "width", 0.005 );
+color( srf2, magenta );
+All2 = list( c1, c2, srf2 );
+
+All = list( All1 * tx( -1.75 ),
+	    All2 * tx( 0.25 ) ) * sc( 0.45 ) * ty( -0.25 );
+
+view( All, on );
+save( "ruledsrf.itd.gz", All );
+free( c1 );
+free( c2 );
+free( srf1 );
+free( All1 );
+free( c2a );
+free( srf2 );
+free( All2 );
+
+#############################################################################
+
+s1 = boolone( pcircle( vector( 0, 0, 0 ), 1 ) );
+s2 = boolone( pcircle( vector( 0, 0, 1 ), 0.5 ) );
+attrib( s1, "width", 0.015 );
+attrib( s2, "width", 0.015 );
+attrib( s1, "rgb", "10, 140, 10" );
+color( s2, blue );
+
+tv = RULEDTV( s1, s2 );
+attrib( tv, "width", 0.005 );
+
+All = list( s1, s2, tv ) * sc( 0.9 ) * rz( 10 ) * rx( -70 ) * ty( -0.35 );
+color( All, magenta );
+
+view( All, on );
+save( "ruledtv.itd.gz", All );
+free( s1 );
+free( s2 );
+free( tv );
+
+#############################################################################
+
+c = nil();
+for( i = 0, 1, 11,
+    snoc( point( cos( i * 2 * Pi / 12 ), sin( i * 2 * Pi / 12 ), 0 ), c ) );
+c = -cbspline( 3, c, list( kv_periodic ) ) * ry( 90 );
+
+c2 = cbspline( 3,
+    list( ctlpt( E3, 0, -0.279, -1.54 ),
+          ctlpt( E3, 0, -0.483, -0.896 ),
+          ctlpt( E3, 0, -0.762, -0.631 ),
+          ctlpt( E3, 0, -1.07, -0.0984 ),
+          ctlpt( E3, 0, -0.747, 0.761 ),
+          ctlpt( E3, 0, 0, 1 ),
+          ctlpt( E3, 0, 0.747, 0.761 ),
+          ctlpt( E3, 0, 1.07, -0.0984 ),
+          ctlpt( E3, 0, 0.762, -0.631 ),
+          ctlpt( E3, 0, 0.483, -0.896 ),
+          ctlpt( E3, 0, 0.279, -1.54 ),
+          ctlpt( E3, 0, 0, -1.78 ) ),
+    list( kv_periodic ) );
+
+Crvs = list( c * sc( 0.001 ) * trans( vector( 1.02, 0.0, 0.18 ) ),
+	     c * sc( 0.07 ) * sz( 0.4 ) * trans( vector( 1.02, 0.0, 0.18 ) ),
+	     c * sc( 0.18 ) * sz( 0.3 ) * trans( vector( 0.8, 0.0, 0.16 ) ),
+	     c * sc( 0.27 ) * sz( 0.5 ) * trans( vector( 0.6, 0.0, 0.16 ) ),
+	     c * sc( 0.43 ) * sz( 0.64 ) * trans( vector( 0.3, 0.0, 0.2 ) ),
+	     c * sc( 0.54 ) * sz( 0.7 ) * trans( vector( 0.0, 0.0, 0.23 ) ),
+	     c * sc( 0.52 ) * ry( 25 ) * sz( 0.76 ) * trans( vector( -0.34, 0.0, 0.26 ) ),
+	     c * sc( 0.41 ) * sz( 1.13 ) * ry( 50 ) * trans( vector( -0.6, 0.0, 0.32 ) ),
+	     c * sc( 0.3 ) * sz( 1.3 ) * ry( 65 ) * trans( vector( -0.7, 0.0, 0.42 ) ),
+	     c * sc( 0.16 ) * sz( 1.4 ) * ry( 75 ) * trans( vector( -0.71, 0.0, 0.5 ) ),
+	     c * sc( 0.16 ) * sz( 1.4 ) * ry( 75 ) * trans( vector( -0.72, 0.0, 0.53 ) ),
+	     c2 * sc( 0.2 ) * sz( 1.5 ) * ry( 75 ) * trans( vector( -0.8, 0.0, 0.6 ) ),
+	     c2 * sc( 0.2 ) * sz( 1.5 ) * ry( 75 ) * trans( vector( -0.82, 0.0, 0.66 ) ),
+	     c * sc( 0.2 ) * sz( 1.2 ) * ry( 75 ) * trans( vector( -0.79, 0.0, 0.8 ) ),
+	     c * sc( 0.15 ) * sz( 1.2 ) * ry( 75 ) * trans( vector( -0.82, 0.0, 0.95 ) ),
+	     c * sc( 0.05 ) * sz( 1.2 ) * ry( 75 ) * trans( vector( -0.82, 0.0, 1.02 ) ),
+	     c * sc( 0.001 ) * sz( 1.2 ) * ry( 75 ) * trans( vector( -0.82, 0.0, 1.02 ) )
+);
+
+color( crvs, green );
+awidth( crvs, 0.02 );
+attrib( crvs, "gray", 0.5 );
+
+Duck = sIntpCrvs( Crvs, 3, kv_open, param_uniform );
+
+All = list( Duck, Crvs ) * sc( 0.8 ) * rz( 35 ) * rx( -60 );
+
+view( All, 1 );
+
+save( "sintpcrvs.itd.gz", All );
+
+free( c );
+free( c2 );
+free( Crvs );
+free( Duck );
+
+#############################################################################
+BzrSrf = SBEZIER( list ( list( ctlpt( E3, 0.0, 0.0, 1.0 ),
+                               ctlpt( E3, 0.0, 1.0, 0.0 ),
+                               ctlpt( E3, 0.0, 2.0, 1.0 ) ),
+                         list( ctlpt( E3, 1.0, 0.0, 0.0 ),
+                               ctlpt( E3, 1.0, 1.0, 2.0 ),
+                               ctlpt( E3, 1.0, 2.0, 0.0 ) ),
+                         list( ctlpt( E3, 2.0, 0.0, 2.0 ),
+                               ctlpt( E3, 2.0, 1.0, 0.0 ),
+                               ctlpt( E3, 2.0, 2.0, 2.0 ) ),
+                         list( ctlpt( E3, 3.0, 0.0, 0.0 ),
+                               ctlpt( E3, 3.0, 1.0, 2.0 ),
+                               ctlpt( E3, 3.0, 2.0, 0.0 ) ),
+                         list( ctlpt( E3, 4.0, 0.0, 1.0 ),
+                               ctlpt( E3, 4.0, 1.0, 0.0 ),
+                               ctlpt( E3, 4.0, 2.0, 1.0 ) ) ) );
+color( BzrSrf, magenta );
+
+Mesh = list ( list( ctlpt( E3, 0.0, 0.0, 1.0 ),
+                    ctlpt( E3, 0.0, 1.0, 0.0 ),
+                    ctlpt( E3, 0.0, 2.0, 1.0 ) ),
+              list( ctlpt( E3, 1.0, 0.0, 0.0 ),
+                    ctlpt( E3, 1.0, 1.0, 2.0 ),
+                    ctlpt( E3, 1.0, 2.0, 0.0 ) ),
+              list( ctlpt( E3, 2.0, 0.0, 2.0 ),
+                    ctlpt( E3, 2.0, 1.0, 0.0 ),
+                    ctlpt( E3, 2.0, 2.0, 2.0 ) ),
+              list( ctlpt( E3, 3.0, 0.0, 0.0 ),
+                    ctlpt( E3, 3.0, 1.0, 2.0 ),
+                    ctlpt( E3, 3.0, 2.0, 0.0 ) ),
+              list( ctlpt( E3, 4.0, 0.0, 1.0 ),
+                    ctlpt( E3, 4.0, 1.0, 0.0 ),
+                    ctlpt( E3, 4.0, 2.0, 1.0 ) ) );
+BspSrf = SBSPLINE( 3, 3, Mesh, list( list( KV_OPEN ),
+                                     list( 3, 3, 3, 4, 5, 6, 6, 6 ) ) );
+attrib( BspSrf, "rgb", "10, 140, 10" );
+
+All = list( BzrSrf * scale( vector( 0.2, 0.2, 0.2 ) )
+		   * rotx( -90 ) * roty( 40 ) * rotx( -30 )
+		   * trans( vector( -0.5, -0.35, 0.0 ) ),
+	    BspSrf * scale( vector( 0.2, 0.2, 0.2 ) )
+		   * rotx( -90 ) * roty( 40 ) * rotx( -30 )
+		   * trans( vector( 0.4, -0.35, 0.0 ) ) )
+	* tx( -0.1 ) * ty( 0.3 );
+attrib( All, "width", 0.006 );
+
+view( All, on );
+save( "surface.itd.gz", All );
+free( BzrSrf );
+free( Mesh );
+free( BspSrf );
+
+#############################################################################
+
+pSphere = surfPRev( cregion( pcircle( vector( 0, 0, 0 ),
+				      1 ), 1, 3 ) * ry( 90 )
+ 		  ) * sc( 0.3 ) * tz( 1 );
+attrib( pSphere, "width", 0.01 );
+color( pSphere, red );
+
+Pln = ruledSrf( ctlpt( E3, -1, -1, 0 ) + ctlpt( E3, -1,  1, 0 ),
+		ctlpt( E3,  1, -1, 0 ) + ctlpt( E3,  1,  1, 0 ) );
+attrib( Pln, "width", 0.01 );
+color( Pln, magenta );
+
+Pts = sAccess( Pln, 0, pSphere, 0, 0.01, 1e-5 );
+
+sPts = nil();
+sPtsErr = nil();
+for ( i = 1, 1, sizeof( Pts ),
+    Pt = nth( Pts, i ):
+    Err = getAttr( Pt, "RngError"):
+    if ( Err > 1e-5,
+         snoc( seval( Pln, coord( Pt, 1 ), coord( Pt, 2 ) ), sPtsErr ),
+         snoc( seval( Pln, coord( Pt, 1 ), coord( Pt, 2 ) ), sPts ) ) );
+attrib( sPtsErr, "rgb", "10, 140, 10" );
+
+resolution = 4;
+sPtsSp = EuclidPtsToSprs( sPts, 0.015 );
+color( sPtsSp, blue );
+
+All = list( pSphere, Pln, sPtsSp, sPtsErr ) * sc( 1.7 ) * tz( -0.5 );
+view( list( All, view_mat4 ), on );
+save( "saccess.itd.gz", All );
+
+resolution = save_res;
+
+free( pSphere );
+free( Pln );
+free( sPts );
+free( sPtsSp );
+free( sPtsErr );
+
+#############################################################################
+s = ruledSrf( ctlpt( E3, -1.0, -1.0, 0.0 ) + ctlpt( E3,  1.0, -1.0, 0.0 ),
+	      ctlpt( E3, -1.0,  1.0, 0.0 ) + ctlpt( E3,  1.0,  1.0, 0.0 ) );
+color( s, magenta );
+
+pt = point( 0.0, 0.0, 1.0 );
+ptSp = EuclidPtsToSprs( list( pt ), 0.025 );
+color( ptSp, blue );
+
+bisect = sbisector( s, pt );
+attrib( bisect, "rgb", "10, 140, 10" );
+
+All = list( s, ptSp, bisect ) * sc( 1.5 ) * tz( -1 );
+attrib( All, "width", 0.01 );
+
+view( list( All, view_mat4 ), on );
+save( "sbisect.itd.gz", All );
+
+free( pt );
+free( s );
+free( bisect );
+
+#############################################################################
+cross = cbspline( 3,
+                  list( ctlpt( E2,  0.0,  0.0 ),
+                        ctlpt( E2,  0.8,  0.0 ),
+                        ctlpt( E2,  0.8,  0.2 ),
+                        ctlpt( E2,  0.07, 1.4 ),
+                        ctlpt( E2, -0.07, 1.4 ),
+                        ctlpt( E2, -0.8,  0.2 ),
+                        ctlpt( E2, -0.8,  0.0 ),
+                        ctlpt( E2,  0.0,  0.0 ) ),
+                  list( KV_OPEN ) );
+s = sFromCrvs( list( cross,
+                     cross * trans( vector( 0.5, 0, 1 ) ),
+                     cross * trans( vector( 0, 0, 2 ) ) ), 3, KV_OPEN );
+attrib( s, "width", 0.01 );
+color( s, red );
+
+UCrvtrZXY = scrvtr( s, E3, row );
+VCrvtrZXY = scrvtr( s, E3, col );
+UCrvtrXYZ = UCrvtrZXY * rotx( -90 ) * roty( -90 ) * scale( vector( 1, 1, 10 ) );
+VCrvtrXYZ = VCrvtrZXY * rotx( -90 ) * roty( -90 ) * scale( vector( 1, 1, 0.001 ) );
+ 
+CrvtrZXY = scrvtr( s, E3, off );
+CrvtrXYZ = CrvtrZXY * rotx( -90 ) * roty( -90 ) * scale( vector( 1, 1, 0.001 ) );
+
+color( UCrvtrXYZ, magenta );
+color( VCrvtrXYZ, blue );
+attrib( CrvtrXYZ, "rgb", "10, 140, 10" );
+
+All = list( s * scale( vector( 0.2, 0.2, 0.2 ) )
+	      * rotx( -90 ) * roty( 40 ) * rotx( -30 )
+	      * trans( vector( -0.75, -0.5, 0.0 ) ),
+	    UCrvtrXYZ
+	      * scale( vector( 0.5, 0.2, 0.1 ) )
+	      * rotx( -90 ) * roty( 40 ) * rotx( -30 )
+	      * trans( vector( -0.45, -0.35, 0.0 ) ),
+	    VCrvtrXYZ
+	      * scale( vector( 0.5, 0.2, 0.1 ) )
+	      * rotx( -90 ) * roty( 40 ) * rotx( -30 )
+	      * trans( vector( 0.05, -0.35, 0.0 ) ),
+	    CrvtrXYZ
+	      * scale( vector( 0.5, 0.2, 0.1 ) )
+	      * rotx( -90 ) * roty( 40 ) * rotx( -30 )
+	      * trans( vector( 0.53, -0.35, 0.0 ) ) ) * ty( -0.1 ) * rx( 55 );
+
+view( All, on );
+save( "scrvtr.itd.gz", All );
+free( cross );
+free( s );
+free( UCrvtrZXY );
+free( VCrvtrZXY );
+free( UCrvtrXYZ );
+free( VCrvtrXYZ );
+free( CrvtrZXY );
+free( CrvtrXYZ );
+
+#############################################################################
+BzrSrf = SBEZIER( list ( list( ctlpt( E3, 0.0, 0.0, 1.0 ),
+                               ctlpt( E3, 0.0, 1.0, 0.0 ),
+                               ctlpt( E3, 0.0, 2.0, 1.0 ) ),
+                         list( ctlpt( E3, 1.0, 0.0, 0.0 ),
+                               ctlpt( E3, 1.0, 1.0, 2.0 ),
+                               ctlpt( E3, 1.0, 2.0, 0.0 ) ),
+                         list( ctlpt( E3, 3.0, 0.0, 0.0 ),
+                               ctlpt( E3, 3.0, 1.0, 2.0 ),
+                               ctlpt( E3, 3.0, 2.0, 0.0 ) ),
+                         list( ctlpt( E3, 4.0, 0.0, 1.0 ),
+                               ctlpt( E3, 4.0, 1.0, 0.0 ),
+                               ctlpt( E3, 4.0, 2.0, 1.0 ) ) ) );
+color( BzrSrf, magenta );
+
+SrfLst = SDIVIDE( BzrSrf, ROW, 0.5 );
+Srf1 = nth( SrfLst, 1 );
+Srf2 = nth( SrfLst, 2 );
+attrib( Srf1, "rgb", "10, 140, 10" );
+color( Srf2, blue );
+
+All = list( BzrSrf * scale( vector( 0.3, 0.3, 0.3 ) )
+	           * trans( vector( 0.0, -0.35, 0.0 ) ),
+	    Srf1 * scale( vector( 0.3, 0.3, 0.3 ) )
+	         * trans( vector( -0.1, -0.35, 0.6 ) ),
+	    Srf2 * scale( vector( 0.3, 0.3, 0.3 ) )
+	         * trans( vector( 0.1, -0.35, 0.6 ) ) )
+	         * rotx( -90 ) * roty( 10 ) * rotx( -30 )
+		 * trans( vector( -0.5, -0.5, 0.0 ) );
+attrib( All, "width", 0.01 );
+
+view( All, on );
+save( "sdivide.itd.gz", All );
+free( BzrSrf );
+free( SrfLst );
+free( Srf1 );
+free( Srf2 );
+
+############################################################################
+gcross = cbspline( 3,
+                   list( ctlpt( E3, 0.3, 0.0, 0.0 ),
+                         ctlpt( E3, 0.1, 0.0, 0.1 ),
+                         ctlpt( E3, 0.1, 0.0, 0.4 ),
+                         ctlpt( E3, 0.5, 0.0, 0.5 ),
+                         ctlpt( E3, 0.6, 0.0, 0.8 ) ),
+                   list( KV_OPEN ) );
+glass = surfprev( gcross );
+color( glass, magenta );
+attrib( glass, "transp", 0.5 );
+save( "glass.itd.gz", glass );
+    
+gfocal = SFOCAL(glass, col);
+color( gfocal, blue );
+
+Tran = rx( -70 ) * ry( 5 );
+All = list( glass * Tran * sc( 0.75 ) * tx( -0.4 ) * ty( -0.55 ),
+	    gfocal * Tran * sc( 0.5 ) * tx( 0.5 ) * ty( -0.4 ) );
+attrib( All, "width", 0.01 );
+
+view(All, on );
+save( "sfocal.itd.gz", All );
+free( gcross );
+free( glass );
+free( gfocal );
+free( Tran );
+
+############################################################################
+Crv1 = cbspline( 3,
+                 list( ctlpt( E3, 0.0, 0.0, 0.0 ),
+                       ctlpt( E3, 1.0, 0.0, 0.0 ),
+                       ctlpt( E3, 1.0, 1.0, 0.0 ) ),
+                 list( KV_OPEN ) );
+Crv2 = Crv1 * trans( vector( 0.0, 0.0, 1.0 ) );
+Crv3 = Crv2 * trans( vector( 0.0, 1.0, 0.0 ) );
+attrib( Crv1, "width", 0.02 );
+attrib( Crv2, "width", 0.02 );
+attrib( Crv3, "width", 0.02 );
+color( Crv1, blue );
+color( Crv2, blue );
+color( Crv3, blue );
+
+Srf = SFROMCRVS( list( Crv1, Crv2, Crv3 ), 3, KV_OPEN );
+attrib( Srf, "width", 0.005 );
+color( Srf, magenta );
+attrib( Srf, "transp", 0.5 );
+
+All = list( Crv1, Crv2, Crv3, Srf )
+	* sc( 1.1 ) * rotx( -90 ) * roty( 40 ) * rotx( -30 )
+	* trans( vector( 0.1, -0.1, 0.0 ) );
+view( All, on );
+save( "sfromcrvs.itd.gz", All );
+free( Crv1 );
+free( Crv2 );
+free( Crv3 );
+free( Srf );
+
+#############################################################################
+
+resolution = 4;
+
+pl = nil();
+pll = nil();
+pllst = nil();
+for ( x = -5, 1, 5,
+      pl = nil():
+      for ( y = -5, 1, 5,
+            snoc( point( x, y, sin( x * Pi / 2 ) * cos( y * Pi / 2 ) ),
+                  pl ):
+            snoc( point( x, y, sin( x * Pi / 2 ) * cos( y * Pi / 2 ) ),
+                  pllst )
+      ):
+      snoc( pl, pll ) );
+s1 = sinterp( pll, 3, 3, 8, 8, PARAM_UNIFORM );
+s2 = sinterp( pll, 3, 3, 11, 11, PARAM_UNIFORM );
+color( s1, blue );
+attrib( s2, "rgb", "10, 140, 10" );
+
+pllSp = EuclidPtsToSprs( pllst, 0.125 );
+color( pllSp, magenta );
+
+All = list( list( s1, pllSp )
+		* scale( vector( 0.07, 0.07, 0.07 ) )
+		* rotx( -90 ) * roty( 40 ) * rotx( -30 )
+		* trans( vector( -0.5, -0.1, 0.0 ) ),
+	    list( s2, pllSp )
+		* scale( vector( 0.07, 0.07, 0.07 ) )
+		* rotx( -90 ) * roty( 40 ) * rotx( -30 )
+		* trans( vector( 0.5, -0.1, 0.0 ) ) );
+view( All, on );
+save( "sinterp.itd.gz", All );
+free( pl );
+free( pll );
+free( s1 );
+free( s2 );
+
+resolution = save_res;
+
+#############################################################################
+
+srf1 = hermite( cbezier( list( ctlpt( E3, 0.0, 0.0, 0.0 ),
+			       ctlpt( E3, 0.5, 0.2, 0.0 ),
+			       ctlpt( E3, 1.0, 0.0, 0.0 ) ) ),
+		cbezier( list( ctlpt( E3, 0.0, 1.0, 0.0 ),
+			       ctlpt( E3, 0.5, 0.8, 0.0 ),
+			       ctlpt( E3, 1.0, 1.0, 0.5 ) ) ),
+		cbezier( list( ctlpt( E3, 0.0, 2.0, 0.0 ),
+			       ctlpt( E3, 0.0, 2.0, 0.0 ),
+			       ctlpt( E3, 0.0, 2.0, 0.0 ) ) ),
+		cbezier( list( ctlpt( E3, 0.0, 2.0, 0.0 ),
+			       ctlpt( E3, 0.0, 2.0, 0.0 ),
+			       ctlpt( E3, 0.0, 2.0, 0.0 ) ) ) );
+attrib( srf1, "rgb", "10, 140, 10" );
+
+srf1MS = coerce( smean( srf1, false ), e3 )
+	* rotx( -90 ) * roty( -90 ) * sz( 0.01 );
+color( srf1MS, magenta );
+
+All = list( srf1 * rz( 150 ) * rx( 50 ) * tx( 0.03 ) * ty( -0.6 ),
+	    srf1MS * rz( 150 ) * rx( 50 ) * tx( 1.34 ) * ty( -0.6 ) )
+	* sc( 0.7 ) * rx( 90 ) * ty( -0.15 );
+attrib( All, "width", 0.01 );
+
+view( All, on );
+save( "smean.itd.gz", All );
+
+srf1GS = coerce( sgauss( srf1, false ), e3 ) * rotx( -90 ) * roty( -90 ) * sz( 0.01 );
+color( srf1GS, magenta );
+
+All = list( srf1 * rz( 150 ) * rx( 50 ) * tx( 0.03 ) * ty( -0.6 ),
+	    srf1GS * rz( 150 ) * rx( 50 ) * tx( 1.34 ) * ty( -0.6 ) )
+	* sc( 0.7 ) * rx( 90 ) * ty( -0.15 );
+attrib( All, "width", 0.01 );
+view( All, on );
+save( "sgauss.itd.gz", All );
+free( srf1 );
+free( srf1MS );
+free( srf1GS );
+
+#############################################################################
+
+bcross = cbspline( 3,
+		   list( ctlpt( E3,  0.0,  0.0, -0.71 ),
+		         ctlpt( E3,  0.2,  0.0, -0.72 ),
+		         ctlpt( E3,  0.25, 0.0, -0.7 ),
+		         ctlpt( E3,  0.25, 0.0, -0.1 ),
+		         ctlpt( E3,  0.2,  0.0, -0.05 ),
+		         ctlpt( E3,  0.15, 0.0,  0.0 ),
+		         ctlpt( E3,  0.1,  0.0,  0.6 ),
+			 ctlpt( E3,  0.11, 0.0,  0.61 ),
+			 ctlpt( E3,  0.12, 0.0,  0.61 ),
+			 ctlpt( E3,  0.12, 0.0,  0.65 ),
+			 ctlpt( E3,  0.09, 0.0,  0.65 ),
+			 ctlpt( E3,  0.07, 0.0,  0.64 ),
+			 ctlpt( E3,  0.10, 0.0, -0.05 ),
+			 ctlpt( E3,  0.21, 0.0, -0.1 ),
+			 ctlpt( E3,  0.21, 0.0, -0.64 ),
+			 ctlpt( E3,  0.18, 0.0, -0.67),
+			 ctlpt( E3,  0.0,  0.0, -0.66 ) ),
+		   list( KV_OPEN ) );
+Srf2 = surfrev( bcross );
+
+gcross = cbspline( 3,
+		   list( ctlpt( E3, 0.001, 0.0, 0.02 ),
+		  	 ctlpt( E3, 0.2,   0.0, 0.02 ),
+			 ctlpt( E3, 0.22,  0.0, 0. ),
+			 ctlpt( E3, 0.22,  0.0, 0.03 ),
+			 ctlpt( E3, 0.03,  0.0, 0.03 ),
+			 ctlpt( E3, 0.03,  0.0, 0.07 ),
+			 ctlpt( E3, 0.04,  0.0, 0.3 ),
+			 ctlpt( E3, 0.3,   0.0, 0.3 ),
+			 ctlpt( E3, 0.4,   0.0, 0.4 ),
+			 ctlpt( E3, 0.3,   0.0, 0.7 ),
+			 ctlpt( E3, 0.28,  0.0, 0.7 ),
+			 ctlpt( E3, 0.37,  0.0, 0.42 ),
+			 ctlpt( E3, 0.31,  0.0, 0.32 ),
+			 ctlpt( E3, 0.001, 0.0, 0.32 ) ),
+		list( KV_OPEN ) );
+Srf3 = surfrev( gcross * trans( vector( 0.0, 0.0, -0.45 ) ) *
+			 scale( vector( 1.6, 1.6, 1.6 ) ) );
+
+ffcompat( Srf2, Srf3 );
+
+Msrf1 = SMORPH( Srf2, Srf3, 0.0 );
+attrib( Msrf1, "width", 0.01 );
+Msrf2 = SMORPH( Srf2, Srf3, 0.2 );
+attrib( Msrf2, "width", 0.003 );
+Msrf3 = SMORPH( Srf2, Srf3, 0.4 );
+attrib( Msrf3, "width", 0.003 );
+Msrf4 = SMORPH( Srf2, Srf3, 0.6 );
+attrib( Msrf4, "width", 0.003 );
+Msrf5 = SMORPH( Srf2, Srf3, 0.8 );
+attrib( Msrf5, "width", 0.003 );
+Msrf6 = SMORPH( Srf2, Srf3, 1.0 );
+attrib( Msrf6, "width", 0.01 );
+
+All = list( Msrf1 * scale( vector( 0.25, 0.25, 0.25 ) )
+		  * rotx( -90 ) * roty( 40 ) * rotx( -30 )
+		  * trans( vector( -0.8, -0.5, 0.0 ) ),
+	    Msrf2 * scale( vector( 0.25, 0.25, 0.25 ) )
+		  * rotx( -90 ) * roty( 40 ) * rotx( -30 )
+		  * trans( vector( -0.5, -0.5, 0.0 ) ),
+	    Msrf3 * scale( vector( 0.25, 0.25, 0.25 ) )
+		  * rotx( -90 ) * roty( 40 ) * rotx( -30 )
+		  * trans( vector( -0.2, -0.5, 0.0 ) ),
+	    Msrf4 * scale( vector( 0.25, 0.25, 0.25 ) )
+		  * rotx( -90 ) * roty( 40 ) * rotx( -30 )
+		  * trans( vector(  0.1, -0.5, 0.0 ) ),
+	    Msrf5 * scale( vector( 0.25, 0.25, 0.25 ) )
+		  * rotx( -90 ) * roty( 40 ) * rotx( -30 )
+		  * trans( vector(  0.4, -0.5, 0.0 ) ),
+	    Msrf6 * scale( vector( 0.25, 0.25, 0.25 ) )
+		  * rotx( -90 ) * roty( 40 ) * rotx( -30 )
+		  * trans( vector(  0.7, -0.5, 0.0 ) ) ) * ty( 0.5 ) * rx( 60 );
+color( All, magenta );
+
+view( All, on );
+save( "smorph.itd.gz", All );
+free( bcross );
+free( Srf2 );
+free( gcross );
+free( Srf3 );
+free( Msrf1 );
+free( Msrf2 );
+free( Msrf3 );
+free( Msrf4 );
+free( Msrf5 );
+free( Msrf6 );
+
+#############################################################################
+
+s45 = sin( 45 * pi / 180 );
+halfcirc = cbspline( 3,
+		     list( ctlpt( P3, 1.0,  0.0, 0.0,  1.0 ),
+		           ctlpt( P3, s45, -s45, 0.0,  s45 ),
+		           ctlpt( P3, 1.0, -1.0, 0.0,  0.0 ),
+		           ctlpt( P3, s45, -s45, 0.0, -s45 ),
+			   ctlpt( P3, 1.0,  0.0, 0.0, -1.0 ) ),
+		     list( 0, 0, 0, 1, 1, 2, 2, 2 ) );
+Srf = surfrev( halfcirc );
+attrib( srf, "rgb", "10, 140, 10" );
+attrib( srf, "transp", 0.65 );
+
+NrmlSrf = SNRMLSRF( Srf ) * sc( 0.6 );
+color( NrmlSrf, blue );
+attrib( NrmlSrf, "transp", 0.75 );
+
+All = list( Srf * trans( vector( -0.5, 2.0, 0.0 ) ),
+	    NrmlSrf * trans( vector( 1.4, 0.0, 0.0 ) ) )
+	* rotx( -90 ) * roty( 40 ) * rotx( 30 )
+  	* sc( 0.35 ) * ty( -0.15 );
+attrib( All, "width", 0.007 );
+
+view( All, on );
+save( "snrmlsrf.itd.gz", All );
+free( s45 );
+free( halfcirc );
+free( Srf );
+free( NrmlSrf );
+
+#############################################################################
+
+Srf = ruledSrf( cbezier( list( ctlpt( E3, -0.5, -0.5, 0.5 ),
+			       ctlpt( E3,  0.0,  0.5, 0.0 ),
+                               ctlpt( E3,  0.5, -0.5, 0.0 ) ) ),
+                cbezier( list( ctlpt( E3, -0.5,  0.5, 0.0 ),
+			       ctlpt( E3,  0.0,  0.0, 0.0 ),
+                               ctlpt( E3,  0.5,  0.5, 0.5 ) ) ) );
+color( Srf, magenta );
+attrib( Srf, "transp", 0.6 );
+
+SubSrf = SREGION( Srf, ROW, 0.3, 0.6 );
+color( SubSrf, blue );
+attrib( SubSrf, "transp", 0.6 );
+
+All = list( Srf, SubSrf * trans( vector( 0.0, 0.0, 0.2 ) ) )
+	* rotx( -90 ) * roty( 20 ) * rotx( -10 ) * sc( 1.4 )
+	* trans( vector( 0.0, -0.25, 0.0 ) );
+attrib( All, "width", 0.01 );
+
+view( All, on );
+save( "sregion.itd.gz", All );
+free( Srf );
+free( SubSrf );
+
+#############################################################################
+
+c1 = cbspline( 3, 
+               list( ctlpt( E2, -1, -1 ),
+                     ctlpt( E2,  1, -1 ),
+                     ctlpt( E2,  1,  1 ),
+                     ctlpt( E2, -1,  1 ) ),
+               list( kv_periodic ) );
+c1 = coerce( c1, kv_open );
+
+c2 = c1 * sy( 0.5 );
+s = sFromCrvs( list( c2 * sc( 0.001 ),
+		     c2,
+		     c2 * tz( 1.0 ),
+		     c2 * sc( 0.5 ) * tz( 1.2 ),
+		     c1 * sc( 0.4 ) * tz( 1.5 ),
+		     c1 * sc( 0.2 ) * tz( 1.6 ) ),
+	       3, kv_open );
+color( s, magenta );
+
+BiTansAux = SRF2TANS( list( s, s ), 0, 0.125, -1e-6, 1e-1 );
+
+BiTans = nth( BiTansAux, 9 ):
+color( BiTans, red ):
+
+RulingLns = nil():
+Ruling = nil():
+for ( i = 1, 1, sizeof( BiTans ),
+ 	Pt = nth( BiTans, i ):
+	Pt1 = seval( s, coord( Pt, 1 ), coord( Pt, 2 ) ):
+	Pt2 = seval( s, coord( Pt, 3 ), coord( Pt, 4 ) ):
+	snoc( Pt1 + Pt2, RulingLns ):
+	snoc( Pt1 * tx( 0 ), Ruling ):
+	snoc( Pt2 * tx( 0 ), Ruling ) ):
+
+color( RulingLns, blue ):
+
+resolution = 4:
+
+RulingSp = EuclidPtsToSprs( Ruling, 0.02 ):
+attrib( RulingSp, "width", 0.007 ):
+attrib( RulingSp, "rgb", "10, 140, 10" ):
+
+All = list( RulingSp, RulingLns, s ) * sc( 2.6 ) * tz( -1.9 ):
+
+view( list( All, view_mat4 ),  on );
+save( "srf2tans.itd.gz", All );
+
+s1 = sFromCrvs( list( c2 * sc( 0.001 ),
+		      c2,
+		      c2 * tz( 1.0 ),
+		      c2 * sc( 0.001 ) * tz( 1.0 ) ),
+	        3, kv_open ) * sc( 0.1 );
+s2 = s1 * ry( 14 ) * tx( 0.6 ) * tz( 0.02 );
+s3 = s1 * rx( 12 ) * ty( 0.6 ) * tx( 0.3 ) * tz( 0.01 );
+color( s1, red );
+color( s2, red );
+color( s3, red );
+
+TriTans = Srf3Tans( list( s1, s2, s3 ) * sz( 1 ), 1, 0.5, -1e-6 );
+Edges = nil();
+for ( i = 1, 1, sizeof( TriTans ),
+    Pt = nth( TriTans, i ):
+    snoc( seval( s1, coord( Pt, 1 ), coord( Pt, 2 ) ) +
+	  seval( s2, coord( Pt, 3 ), coord( Pt, 4 ) ), Edges ):
+    snoc( seval( s1, coord( Pt, 1 ), coord( Pt, 2 ) ) +
+	  seval( s3, coord( Pt, 5 ), coord( Pt, 6 ) ), Edges ):
+    snoc( seval( s2, coord( Pt, 3 ), coord( Pt, 4 ) ) +
+	  seval( s3, coord( Pt, 5 ), coord( Pt, 6 ) ), Edges ) );
+
+attrib( Edges, "width", 0.007 );
+color( Edges, blue );
+
+All = list( Edges, s1, s2, s3 ) * sc( 5.5 ) * ty( -0.5 ) * tx( -1 );
+
+view( list( All, view_mat4 ), on );
+save( "srf3tans.itd.gz", All );
+
+free( c1 );
+free( c2 );
+free( s );
+free( Ruling );
+free( RulingSp );
+free( BiTansAux );
+free( BiTans );
+free( Edges );
+free( TriTans );
+free( Pt );
+free( i );
+
+resolution = save_res;
+
+#############################################################################
+
+TV1 = tbezier( list( list( list( ctlpt( E3, 0.1, 0.0, 0.8 ),
+                                 ctlpt( E3, 0.2, 0.1, 2.4 ) ),
+                           list( ctlpt( E3, 0.3, 2.2, 0.2 ),
+                                 ctlpt( E3, 0.4, 2.3, 2.0 ) ) ),
+                     list( list( ctlpt( E3, 2.4, 0.8, 0.1 ),
+                                 ctlpt( E3, 2.2, 0.7, 2.3 ) ),
+                           list( ctlpt( E3, 2.3, 2.6, 0.5 ),
+                                 ctlpt( E3, 2.1, 2.5, 2.7) ) ) ) );
+color( TV1, magenta );
+attrib( TV1, "transp", 0.6 );
+
+Srf = STRIVAR( TV1, col, 0.4 ); 
+attrib( Srf, "width", 0.015 );
+color( Srf, blue );
+
+Tr = rotz( 70 ) * rotx( 30 ) * roty( 20 ) * sc( 0.2 );
+
+All = list( TV1 * Tr * trans( vector( -0.6, -0.4, 0.0 ) ),
+	    list( Srf, TV1 ) * Tr * trans( vector( 0.0, -0.4, 0.0 ) ),
+	    Srf * Tr * trans( vector( 0.55, -0.4, 0.0 ) ) )
+	* sc( 1.1 ) * tx( 0.1 ) * ty( 0.3 ) * rx( 80 ) * ty( 0.45 );
+
+view( All, on );
+save( "strivar.itd.gz", All );
+free( TV1 );
+free( Srf );
+free( Tr );
+
+#############################################################################
+
+VTailAntn = SURFREV( ctlpt( E3, 0.001, 0.0, 1.0 ) +
+                     ctlpt( E3, 0.01,  0.0, 1.0 ) +
+                     ctlpt( E3, 0.01,  0.0, 0.8 ) +
+                     ctlpt( E3, 0.03,  0.0, 0.7 ) +
+                     ctlpt( E3, 0.03,  0.0, 0.3 ) +
+                     ctlpt( E3, 0.001, 0.0, 0.0 ) );
+color( VTailAntn, blue );
+
+All = VTailAntn	* sc( 2.5 ) * roty( 45 ) * rotx( -30 )
+	* trans( vector( -0.925, -0.37, 0.0 ) );
+attrib( All, "width", 0.01 );
+
+view( All, on );
+save( "surfrev.itd.gz", All );
+free( VTailAntn );
+
+#############################################################################
+
+ri = iritstate( "RandomInit", 1964 );  # Seed-initiate the randomizer,
+
+c1 = cbezier( list( ctlpt( E3, 1.0, 0.0,  0.5 ),
+                    ctlpt( E3, 1.1, 0.0,  0.0 ),
+                    ctlpt( E3, 1.0, 0.0, -0.5 ) ) );
+Simp = sregion( surfPRev( c1 ), col, 0.0, 1.0 ) * rz( 45 ) * rx( 90 );
+attrib( Simp, "rgb", "128, 0, 0" );
+awidth( Simp, 0.003 );
+Decomp = SVISIBLE( Simp, 20, 30 * pi / 180 );
+
+v = l = i = j = 1;
+SimDecomp = nil();
+Mod = 5;
+for ( i = 1, 1, sizeof( Decomp ),
+    o = nth( Decomp, i ):
+    awidth( o, 0.015 ):
+    adwidth( o, 3 ):
+    attrib( o, "rgb", ( random( 0, 200 ) ) + "," +
+		      ( random( 0, 200 ) ) + "," +
+		      ( random( 0, 200 ) ) ):
+    v = getattr( o, "ViewDir" ):
+    l = ( ctlpt( E3, 0, 0, 0 ) + coerce( v, e3 ) ) * sc( 1.5 ):
+    attrib( l, "rgb", "64, 128, 255" ):
+    j = floor( ( i - 1 ) / Mod ):
+    snoc( list( o, Simp, l, axes )
+                * view_mat * tx( ( i - 1 - j * Mod ) * 2 - 4 )
+                           * ty( -j * 2 ),
+          SimDecomp ) );
+
+SimDecomp = SimDecomp * sc( 0.2 ) * ty( 0.3 );
+
+view( SimDecomp, on );
+save( "svisible.itd.gz", SimDecomp );
+
+free( c1 );
+free( Simp );
+free( Decomp );
+free( SimDecomp );
+free( Mod );
+free( o );
+free( i );
+free( j );
+free( l );
+free( v );
+
+#############################################################################
+Cross = arc( vector( 0.2, 0.0, 0.0 ),
+             vector( 0.2, 0.2, 0.0 ),
+             vector( 0.0, 0.2, 0.0 ) ) +
+        arc( vector( 0.0, 0.4, 0.0 ),
+             vector( 0.1, 0.4, 0.0 ),
+             vector( 0.1, 0.5, 0.0 ) ) +
+        arc( vector( 0.8, 0.5, 0.0 ),
+             vector( 0.8, 0.3, 0.0 ),
+             vector( 1.0, 0.3, 0.0 ) ) +
+        arc( vector( 1.0, 0.1, 0.0 ),
+             vector( 0.9, 0.1, 0.0 ),
+             vector( 0.9, 0.0, 0.0 ) ) +
+        ctlpt( E2, 0.2, 0.0 );
+Axis = arc( vector( -1.0, 0.0, 0.0 ),
+            vector(  0.0, 0.0, 0.1 ),
+            vector(  1.0, 0.0, 0.0 ) );
+Axis = crefine( Axis, FALSE, list( 0.25, 0.5, 0.75 ) );
+Srf1 = SWEEPSRF( Cross, Axis, OFF );
+color( Srf1, magenta );
+
+Srf2 = SWEEPSRF( Cross, Axis, vector( 0.0, 1.0, 1.0 ) );
+attrib( Srf2, "rgb", "10, 140, 10" );
+
+Srf3 = SWEEPSRF( Cross, Axis,
+                 cbezier( list( ctlpt( E3,  1.0, 0.0, 0.0 ),
+                                ctlpt( E3,  0.0, 1.0, 0.0 ),
+                                ctlpt( E3, -1.0, 0.0, 0.0 ) ) ) );
+color( Srf3, blue );
+
+All = list( Srf1 * rotx( -90 ) * roty( 20 ) * rotx( -10 )
+		 * trans( vector(-3.6, -0.5, 0.0 ) ),
+	    Srf2 * rotx( -90 ) * roty( 20 ) * rotx( -10 )
+		 * trans( vector( 0.5, -0.5, 0.0 ) ),
+	    Srf3 * rotx( -90 ) * roty( 20 ) * rotx( -10 )
+		 * trans( vector( 3.9, -0.5, 0.0 ) ) )
+	* sc( 0.18 ) * tx( 0.08 ) * ty( 0.2 );
+attrib( All, "width", 0.01 );
+   
+view( All, on );
+save( "sweepsrf.itd.gz", All );
+free( Cross );
+free( Axis );
+free( Srf1 );
+free( Srf2 );
+free( Srf3 );
+
+#############################################################################
+
+Cross = arc( vector( -0.11, -0.01, 0.0 ),
+             vector( -0.1,  -0.1,  0.0 ),
+             vector( -0.1,  -0.11, 0.0 ) ) +
+        arc( vector(  0.1,  -0.11, 0.0 ),
+             vector(  0.1,  -0.1,  0.0 ),
+             vector(  0.11, -0.1,  0.0 ) ) +
+        arc( vector(  0.11,  0.1,  0.0 ),
+             vector(  0.1,   0.1,  0.0 ),
+             vector(  0.1,   0.11, 0.0 ) ) +
+        arc( vector( -0.1,   0.11, 0.0 ),
+             vector( -0.1,   0.1,  0.0 ),
+             vector( -0.11,  0.1,  0.0 ) ) +
+        ctlpt( E2, -0.11, -0.1 );
+scaleCrv = cbspline( 3,
+                     list( ctlpt( E2, 0.05, 1.0 ),
+                           ctlpt( E2, 0.1,  0.0 ),
+                           ctlpt( E2, 0.2,  2.0 ),
+                           ctlpt( E2, 0.3,  0.0 ),
+                           ctlpt( E2, 0.4,  2.0 ),
+                           ctlpt( E2, 0.5,  0.0 ),
+                           ctlpt( E2, 0.6,  2.0 ),
+                           ctlpt( E2, 0.7,  0.0 ),
+                           ctlpt( E2, 0.8,  2.0 ),
+                           ctlpt( E2, 0.85, 1.0 ) ),
+                     list( KV_OPEN ) );
+Axis = circle( vector( 0, 0, 0 ), 1 );
+Frame = circle( vector( 0, 0, 0 ), 1 )
+        * rotx( 90 ) * trans( vector( 1.5, 0.0, 0.0 ) );
+
+Srf1 = SWPSCLSRF( Cross, Axis, scaleCrv, off, 0 );
+color( Srf1, magenta );
+
+Srf2 = SWPSCLSRF( Cross, Axis, scaleCrv, off, 2 );
+attrib( Srf2, "rgb", "10, 140, 10" );
+
+Srf3 = SWPSCLSRF( Cross, Axis, 1.0, Frame, 0 );
+color( Srf3, blue );
+
+All = list( Srf1 * rotx( -90 ) * roty( 20 ) * rotx( -30 )
+		 * trans( vector(-2.6, -1.7, 0.0 ) ),
+	    Srf2 * rotx( -90 ) * roty( 20 ) * rotx( 30 )
+		 * trans( vector( 0.0, -1.7, 0.0 ) ),
+	    Srf3 * rotx( -90 ) * roty( 20 ) * rotx( 30 )
+		 * trans( vector( 2.6, -1.7, 0.0 ) ) )
+	* sc( 0.25 ) * ty( 0.4 );
+attrib( All, "width", 0.003 );
+   
+view( All, on );
+save( "swpsclsrf.itd.gz", All );
+free( Cross );
+free( scaleCrv );
+free( Axis );
+free( Frame );
+free( Srf1 );
+free( Srf2 );
+free( Srf3 );
+
+#############################################################################
+
+circ = circle( vector( 0.0, 0.0, 0.0 ), 1.5 ) * ry( 90 );
+arc1 = arc( vector( 0.0, 1.0, 0.0 ),
+	    vector( 0.0, 0.0, 0.0 ),
+	    vector( 1.0, 0.0, 0.0 ) );
+color( circ, magenta );
+attrib( arc1, "rgb", "10, 140, 10" );
+attrib( circ, "width", 0.03 );
+attrib( arc1, "width", 0.03 );
+
+as2 = SwungAsum( circ * ry( -90 ), arc1 );
+attrib( as2, "width", 0.01 );
+color( as2, blue );
+
+All = list( as2, circ, arc1 ) * sc( 0.6 ) * rz( -30 ) * rx( -60 );
+view( All, on );
+save( "swung1.itd.gz", All );
+
+arc1 = cregion( circle( vector( 0.0, 0.0, 0.0 ), 1.5 ), 0, 2 ) * rz( 90 );
+c2 = coerce( cbspline( 3,
+		       list( ctlpt( E2,  2.0,  0.0 ),
+			     ctlpt( E2,  0.4,  0.4 ),
+			     ctlpt( E2,  0.0,  2.0 ),
+			     ctlpt( E2, -0.4,  0.4 ),
+			     ctlpt( E2, -2.0,  0.0 ),
+			     ctlpt( E2, -0.4, -0.4 ),
+			     ctlpt( E2,  0.0, -2.0 ),
+			     ctlpt( E2,  0.4, -0.4 ) ),
+		       list( KV_PERIODIC ) ),
+	     KV_OPEN );
+color( arc1, magenta );
+attrib( c2, "rgb", "10, 140, 10" );
+attrib( arc1, "width", 0.03 );
+attrib( c2, "width", 0.03 );
+
+as2 = SwungAsum( arc1, c2 );
+attrib( as2, "width", 0.01 );
+color( as2, blue );
+
+All = list( as2, arc1, c2 ) * sc( 0.45 ) * rz( -30 ) * rx( -60 );
+view( All, on );
+save( "swung2.itd.gz", All );
+
+free( circ );
+free( c2 );
+free( arc1 );
+free( as2 );
+
+#############################################################################
+
+TV1 = TBEZIER( list( list( list( ctlpt( E3, 0.1, 0.1, 0.0 ),
+                                ctlpt( E3, 0.2, 0.5, 1.1 ),
+                                ctlpt( E3, 0.3, 0.1, 2.2 ) ),
+                          list( ctlpt( E3, 0.4, 1.3, 0.5 ),
+                                ctlpt( E3, 0.5, 1.7, 1.7 ),
+                                ctlpt( E3, 0.6, 1.3, 2.9 ) ),
+                          list( ctlpt( E3, 0.7, 2.4, 0.5 ),
+                                ctlpt( E3, 0.8, 2.6, 1.4 ),
+                                ctlpt( E3, 0.9, 2.8, 2.3 ) ) ),
+                    list( list( ctlpt( E3, 1.1, 0.1, 0.5 ),
+                                ctlpt( E3, 1.3, 0.2, 1.7 ),
+                                ctlpt( E3, 1.5, 0.3, 2.9 ) ),
+                          list( ctlpt( E3, 1.7, 1.2, 0.0 ),
+                                ctlpt( E3, 1.9, 1.4, 1.2 ),
+                                ctlpt( E3, 1.2, 1.6, 2.4 ) ),
+                          list( ctlpt( E3, 1.4, 2.3, 0.9 ),
+                                ctlpt( E3, 1.6, 2.5, 1.7 ),
+                                ctlpt( E3, 1.8, 2.7, 2.5 ) ) ) ) );
+
+TV2 = TBSPLINE( 2, 2, 2,
+               list( list( list( ctlpt( E3, 0.1, 0.1, 0.0 ),
+                                 ctlpt( E3, 0.2, 0.5, 1.1 ),
+                                 ctlpt( E3, 0.3, 0.1, 2.2 ) ),
+                           list( ctlpt( E3, 0.4, 1.3, 0.5 ),
+                                 ctlpt( E3, 0.5, 1.7, 1.7 ),
+                                 ctlpt( E3, 0.6, 1.3, 2.9 ) ),
+                           list( ctlpt( E3, 0.7, 2.4, 0.5 ),
+                                 ctlpt( E3, 0.8, 2.6, 1.4 ),
+                                 ctlpt( E3, 0.9, 2.8, 2.3 ) ) ),
+                     list( list( ctlpt( E3, 1.1, 0.1, 0.5 ),
+                                 ctlpt( E3, 1.3, 0.2, 1.7 ),
+                                 ctlpt( E3, 1.5, 0.3, 2.9 ) ),
+                           list( ctlpt( E3, 1.7, 1.2, 0.0 ),
+                                 ctlpt( E3, 1.9, 1.4, 1.2 ),
+                                 ctlpt( E3, 1.2, 1.6, 2.4 ) ),
+                           list( ctlpt( E3, 1.4, 2.3, 0.9 ),
+                                 ctlpt( E3, 1.6, 2.5, 1.7 ),
+                                 ctlpt( E3, 1.8, 2.7, 2.5 ) ) ) ),
+               list( list( KV_OPEN ),
+                     list( KV_OPEN ),
+                     list( KV_OPEN ) ) );
+attrib( TV1, "width", 0.012 );
+attrib( TV2, "width", 0.012 );
+color( TV1, blue );
+attrib( TV2, "rgb", "10, 140, 10" );
+
+Tr = rotx( 30 ) * roty( 30 ) * sc( 0.3 );
+
+All = list( TV1 * Tr * trans( vector( -0.95, -0.5, 0.0 ) ),
+	    TV2 * Tr * trans( vector( -0.1, -0.5, 0.0 ) ) ) * ty( 0.4 );
+attrib( All, "transp", 0.6 );
+
+view( All, on );
+save( "tbezier.itd.gz", All );
+free( TV1 );
+free( TV2 );
+free( Tr );
+
+#############################################################################
+c = pcircle( vector( 0, 0, 0 ), 1 );
+
+s = extrude( c, vector( 0, 0, 1 ), 0 );
+
+All = tBoolOne( s ) * rz( 20 ) * rx( -60 ) * sc( 0.8 ) * ty( -0.4 );
+
+view( All, 1 );
+
+save( "tboolone.itd.gz", All );
+
+#################################
+
+c = pcircle( vector( 0, 0, 0 ), 1 ) * rz( 45 ):
+
+sqr = cbspline( 2,
+		list( ctlpt( E2,  1,  1 ),
+		      ctlpt( E2, -1,  1 ),
+		      ctlpt( E2, -1, -1 ),
+		      ctlpt( E2,  1, -1 ),
+		      ctlpt( E2,  1,  1 ) ),
+		list( kv_open ) ):
+Sqr = crefine( Sqr, true, list( 0, 0, 0.25, 0.5, 0.75, 1, 1 ) ):
+
+s = sIntpCrvs( list( c * rx( -20 ),
+		     sqr * sc( 0.8 ) * tz( 1 ),
+		     c * sc( 0.5 ) * tz( 2 ),
+		     sqr * sx( 0.4 ) * rx( 20 ) * tz( 3 ) ),
+	       3, kv_open, param_centrip ):
+
+Cap1 = seditpt( boolone( c ),
+		      ctlpt( E3, 0.63181016677947, 0, -1 ) * rz( 45 ), 1, 1 ):
+Cap1 = seditpt( Cap1, ctlpt( E3, 0, 0.63181016677947, -1 ) * rz( 45 ), 2, 1 ):
+Cap1 = seditpt( Cap1, ctlpt( E3, 0, -0.63181016677947, -1 ) * rz( 45 ), 1, 2 ):
+Cap1 = seditpt( Cap1, ctlpt( E3, -0.63181016677947, 0, -1 ) * rz( 45 ), 2, 2 ):
+
+Cap2 = ruledSrf( ctlpt( E2,  1,  -1 ) + ctlpt( E2, -1,  -1 ),
+		 ctlpt( E2,  1,   1 ) + ctlpt( E2, -1,   1 ) ):
+Cap2 = seditpt( sraise( sraise( coerce( Cap2, e3 ), row, 3 ), col, 3 ),
+	        ctlpt( E3, 0, 0, 2 ), 1, 1 ):
+
+All = tBoolsum( sregion( s, col, 0, 1 ),
+	        sregion( s, col, 1, 2 ),
+	        sregion( s, col, 2, 3 ),
+	        sregion( s, col, 3, 4 ),
+		Cap1 * rx( -20 ),
+		Cap2 * sx( 0.4 ) * rx( 20 ) * tz( 3 ) )
+	* sc( 0.35 ) * rz( 60 ) * rx( -60 ) * ty( -0.3 ):
+
+view( All, 1 );
+
+save( "tboolsum.itd.gz", All );
+
+free( c );
+free( s );
+free( sqr );
+free( Cap1 );
+free( Cap2 );
+
+#############################################################################
+TV2 = tbspline( 3, 3, 2,
+                list( list( list( ctlpt( E3, 0.1, 0.1, 0.0 ),
+                                  ctlpt( E3, 0.2, 0.5, 1.1 ),
+                                  ctlpt( E3, 0.3, 0.1, 2.2 ) ),
+                            list( ctlpt( E3, 0.4, 1.3, 0.5 ),
+                                  ctlpt( E3, 0.5, 1.7, 1.7 ),
+                                  ctlpt( E3, 0.6, 1.3, 2.9 ) ),
+                            list( ctlpt( E3, 0.7, 2.4, 0.5 ),
+                                  ctlpt( E3, 0.8, 2.6, 1.4 ),
+                                  ctlpt( E3, 0.9, 2.8, 2.3 ) ) ),
+                      list( list( ctlpt( E3, 1.1, 0.1, 0.5 ),
+                                  ctlpt( E3, 1.3, 0.2, 1.7 ),
+                                  ctlpt( E3, 1.5, 0.3, 2.9 ) ),
+                            list( ctlpt( E3, 1.7, 1.2, 0.0 ),
+                                  ctlpt( E3, 1.9, 1.4, 1.2 ),
+                                  ctlpt( E3, 1.2, 1.6, 2.4 ) ),
+                            list( ctlpt( E3, 1.4, 2.3, 0.9 ),
+                                  ctlpt( E3, 1.6, 2.5, 1.7 ),
+                                  ctlpt( E3, 1.8, 2.7, 2.5 ) ) ),
+                      list( list( ctlpt( E3, 2.8, 0.1, 0.4 ),
+                                  ctlpt( E3, 2.6, 0.7, 1.3 ),
+                                  ctlpt( E3, 2.4, 0.2, 2.2 ) ),
+                            list( ctlpt( E3, 2.2, 1.1, 0.4 ),
+                                  ctlpt( E3, 2.9, 1.2, 1.5 ),
+                                  ctlpt( E3, 2.7, 1.3, 2.6 ) ),
+                            list( ctlpt( E3, 2.5, 2.9, 0.7 ),
+                                  ctlpt( E3, 2.3, 2.8, 1.7 ),
+                                  ctlpt( E3, 2.1, 2.7, 2.7 ) ) ) ),
+                list( list( KV_OPEN ),
+                      list( KV_OPEN ),
+                      list( KV_OPEN ) ) );
+attrib( TV2, "rgb", "10, 140, 10" );
+attrib( TV2, "width", 0.012 );
+
+TvDiv = TDIVIDE( Tv2, depth, 0.4 );
+Tv2a = nth( TvDiv, 1 ) * tx( -2.8 );
+Tv2b = nth( TvDiv, 2 ) * tx( 2.8 );
+color( Tv2a, blue );
+color( Tv2b, blue );
+attrib( Tv2a, "width", 0.012 );
+attrib( Tv2b, "width", 0.012 );
+
+All = list( TV2, Tv2a, Tv2b ) *
+      rotx( 35 ) * roty( 20 ) * sc( 0.22 )
+      * trans( vector( -0.4, -0.5, 0.0 ) ) * ty( 0.4 );
+attrib( All, "transp", 0.6 );
+
+view( All, on );
+save( "tdivide.itd.gz", All );
+free( TV2 );
+free( TvDiv );
+free( Tv2a );
+free( Tv2b );
+
+#############################################################################
+
+c = cbezier( list( ctlpt( e2, -1.5, -0.5 ),
+		   ctlpt( e2, -2,    0 ),
+		   ctlpt( e2, -1,    1 ),
+		   ctlpt( e2,  0,   -2 ),
+		   ctlpt( e2,  1,    0 ) ) );
+
+s = sreparam( ruledSrf( c, offset( c, -0.4, 0.02, off ) ), col, 0, 6 );
+color( s, red );
+awidth( s, 0.003 );
+
+t = textwarp( s, "Text Warping Toolkit", 0.08, 0.25, 0.75, 0 ) * tz( 0.01 );
+attrib( t, "rgb", "10, 140, 10" );
+adwidth( t, 2 );
+awidth( t, 0.007 );
+
+All = list( s, t ) * sc( 0.625 ) * tx( 0.325 );
+
+view( All, on );
+
+save( "textwarp.itd.gz", All );
+
+free( c );
+free( s );
+free( t );
+
+#############################################################################
+s1 = sbezier( list( list( ctlpt( E3, -0.5, -0.5, 0 ),
+			  ctlpt( E3, -0.5,  0.5, 0 ) ),
+		    list( ctlpt( E3,  0.5, -0.5, 0 ),
+			  ctlpt( E3,  0.5,  0.5, 0 ) ) ) ) * sc( 0.3 );
+Srfs = list( s1 * sc( 2.0 ),
+	     s1 * sx( 1.4 ) * ry( 45 ) * tz( 1.0 ),
+	     s1 * ry( 90 ) * trans( vector( 1.0, 0.0, 1.1 ) ),
+	     s1 * sx( 1.4 ) * ry( 135 ) * trans( vector( 2.0, 0.0, 1.0 ) ),
+	     s1 * sc( 2.0 ) * ry( 180 ) * trans( vector( 2.0, 0.0, 0.0 ) ) );
+color( Srfs, blue );
+attrib( Srfs, "width", 0.015 );
+
+ts = tfromsrfs( Srfs, 3, kv_open );
+attrib( ts, "width", 0.005 );
+attrib( ts, "transp", 0.5 );
+attrib( ts, "rgb", "10, 140, 10" );
+
+All = list( Srfs, ts ) * sc( 0.7 ) * tx( -0.69 ) * rx( -60 ) * ry( 20 )
+	* ty( -0.3 );
+view( All, on );
+save( "tfromsrf.itd.gz", All );
+free( s1 );
+free( Srfs );
+free( ts );
+
+#############################################################################
+Tv1 = tbezier( list( list( list( ctlpt( E3, 0.1, 0.0, 0.8 ),
+                                 ctlpt( E3, 0.2, 0.1, 2.4 ) ),
+                           list( ctlpt( E3, 0.3, 2.2, 0.2 ),
+                                 ctlpt( E3, 0.4, 2.3, 2.0 ) ) ),
+                     list( list( ctlpt( E3, 2.4, 0.8, 0.1 ),
+                                 ctlpt( E3, 2.2, 0.7, 2.3 ) ),
+                           list( ctlpt( E3, 2.3, 2.6, 0.5 ),
+                                 ctlpt( E3, 2.1, 2.5, 2.7) ) ) ) );
+attrib( Tv1, "rgb", "10, 140, 10" );
+attrib( Tv1, "width", 0.001 );
+
+Tv1r1 = TREGION( Tv1, row, 0.1, 0.2 );
+Tv1r2 = TREGION( Tv1, row, 0.4, 0.6 );
+Tv1r3 = TREGION( Tv1, row, 0.99, 1.0 );
+color( Tv1r1, blue );
+attrib( Tv1r1, "width", 0.012 );
+color( Tv1r2, blue );
+attrib( Tv1r2, "width", 0.012 );
+color( Tv1r3, blue );
+attrib( Tv1r3, "width", 0.012 );
+
+Tvs1 = list( Tv1, Tv1r1, Tv1r2, Tv1r3 );
+Tvs2 = list( Tv1r1, Tv1r2, Tv1r3 );
+
+Tr = rotx( 30 ) * roty( 30 ) * sc( 0.3 );
+
+All = list( Tvs1 * Tr * trans( vector( -1.1, -0.5, 0.0 ) ),
+            Tvs2 * Tr * trans( vector( -0.1, -0.5, 0.0 ) ) ) * ty( 0.3 );
+attrib( All, "transp", 0.6 );
+
+view( All, on );
+save( "tregion.itd.gz", All );
+free( Tv1 );
+free( Tv1r1 );
+free( Tv1r2 );
+free( Tv1r3 );
+free( Tvs1 );
+free( Tvs2 );
+free( Tr );
+
+#############################################################################
+ri = iritstate( "RandomInit", 1964 );  # Seed-initiate the randomizer,
+
+c0 = cbspline( 3,
+	       list( ctlpt( E2, -1,   3 ),
+		     ctlpt( E2, -0.8, 2 ),
+		     ctlpt( E2, -0.9, 1 ),
+		     ctlpt( E2, -0.3, 0 ),
+		     ctlpt( E2,  0.3, 0 ),
+		     ctlpt( E2,  0.7, 1.5 ),
+		     ctlpt( E2, -0.8,   2 ),
+		     ctlpt( E2,  1,   3 ) ),
+	       list( kv_open ) );
+awidth( c0, 0.02 );
+
+Toffs = nil();
+for ( i = -5, 1, 5,
+    if ( i != 0,
+	ofst = 0.12 * i:
+	ofstTrim = abs( ofst ) * 0.975:
+	co = aoffset( c0, ofst, 0.002, 0, 0 ):
+	toff = toffset( c0, co, list( 2, 0.01, ofstTrim, 1e-8 ) ):
+        attrib( toff, "rgb", ( random( 0, 128 ) ) + "," +
+		             ( random( 0, 64 ) ) + "," +
+		             ( random( 0, 223 ) ) ):
+	snoc( toff * tx( 0 ), Toffs ) ) );
+
+All = list( c0, Toffs ) * sc( 0.45 ) * tx( 0.1 ) * ty( -0.64 );
+
+view( All, 1 );
+
+save( "trim_off.itd.gz", All );
+
+free( c0 );
+free( co );
+free( ofst );
+free( i );
+free( Toffs );
+free( toff );
+
+#############################################################################
+
+spts = list( list( ctlpt( E3, 0.1, 0.0, 1.0 ),
+                   ctlpt( E3, 0.3, 1.0, 0.0 ),
+                   ctlpt( E3, 0.0, 2.0, 1.0 ) ),
+             list( ctlpt( E3, 1.1, 0.0, 0.0 ),
+                   ctlpt( E3, 1.3, 1.5, 2.0 ),
+                   ctlpt( E3, 1.0, 2.1, 0.0 ) ),
+             list( ctlpt( E3, 2.1, 0.0, 2.0 ),
+                   ctlpt( E3, 2.3, 1.0, 0.0 ),
+                   ctlpt( E3, 2.0, 2.0, 2.0 ) ),
+             list( ctlpt( E3, 3.1, 0.0, 0.0 ),
+                   ctlpt( E3, 3.3, 1.5, 2.0 ),
+                   ctlpt( E3, 3.0, 2.1, 0.0 ) ),
+             list( ctlpt( E3, 4.1, 0.0, 1.0 ),
+                   ctlpt( E3, 4.3, 1.0, 0.0 ),
+                   ctlpt( E3, 4.0, 2.0, 1.0 ) ) );
+sb = sbspline( 3, 3, spts, list( list( KV_OPEN ), list( KV_OPEN ) ) );
+color( sb, blue );
+attrib( sb, "width", 0.0024 );
+
+TCrv1 = cbspline( 2,
+                  list( ctlpt( E2, 0.3, 0.3 ),
+                        ctlpt( E2, 0.7, 0.3 ),
+                        ctlpt( E2, 0.7, 0.7 ),
+                        ctlpt( E2, 0.3, 0.7 ),
+                        ctlpt( E2, 0.3, 0.3 ) ),
+                  list( KV_OPEN ) );
+TCrv2 = circle( vector( 0.5, 0.5, 0.0 ), 0.25 );
+TCrv3 = cbspline( 3,
+                  list( ctlpt( E2, 0.3, 0.3 ),
+                        ctlpt( E2, 0.7, 0.3 ),
+                        ctlpt( E2, 0.7, 0.7 ),
+                        ctlpt( E2, 0.3, 0.7 ) ),
+                  list( KV_PERIODIC ) );
+
+TSrf1 = TRIMSRF( sb, TCrv1, false );
+TSrf2 = TRIMSRF( sb, TCrv1, true );
+TSrf3 = TRIMSRF( sb, list( TCrv1 * sy( 0.4 ),
+		 	   TCrv2 * sy( 0.4 ) * ty( 0.33 ),
+			   TCrv3 * sy( 0.4 ) * ty( 0.66 ) ),
+                  false );
+attrib( TSrf1, "rgb", "10, 140, 10" );
+attrib( TSrf1, "width", 0.01 );
+attrib( TSrf2, "rgb", "10, 140, 10" );
+attrib( TSrf2, "width", 0.01 );
+attrib( TSrf3, "rgb", "10, 140, 10" );
+attrib( TSrf3, "width", 0.01 );
+
+Tr = rotz( 90 ) * rotx( 30 ) * roty( 30 ) * sc( 0.25 );
+
+All = list( list( sb, TSrf1 ) * Tr * trans( vector( -0.6, -0.6, 0.0 ) ),
+	    list( sb, TSrf2 ) * Tr * trans( vector(  0.0, -0.6, 0.0 ) ),
+	    list( sb, TSrf3 ) * Tr * trans( vector(  0.6, -0.6, 0.0 ) ) )
+	* ty( 0.2 );
+
+view( All, on );
+save( "trimsrf.itd.gz", All );
+free( spts );
+free( sb );
+free( TCrv1 );
+free( TCrv2 );
+free( TCrv3 );
+free( TSrf1 );
+free( TSrf2 );
+free( TSrf3 );
+free( Tr );
+
+#############################################################################
+
+spts = list( list( ctlpt( E3, 0.1, 0.0, 1.0 ),
+                   ctlpt( E3, 0.3, 1.0, 0.0 ),
+                   ctlpt( E3, 0.0, 2.0, 1.0 ) ),
+             list( ctlpt( E3, 1.1, 0.0, 0.0 ),
+                   ctlpt( E3, 1.3, 1.5, 2.0 ),
+                   ctlpt( E3, 1.0, 2.1, 0.0 ) ),
+             list( ctlpt( E3, 2.1, 0.0, 2.0 ),
+                   ctlpt( E3, 2.3, 1.0, 0.0 ),
+                   ctlpt( E3, 2.0, 2.0, 2.0 ) ),
+             list( ctlpt( E3, 3.1, 0.0, 0.0 ),
+                   ctlpt( E3, 3.3, 1.5, 2.0 ),
+                   ctlpt( E3, 3.0, 2.1, 0.0 ) ),
+             list( ctlpt( E3, 4.1, 0.0, 1.0 ),
+                   ctlpt( E3, 4.3, 1.0, 0.0 ),
+                   ctlpt( E3, 4.0, 2.0, 1.0 ) ) );
+sb = sbspline( 3, 3, spts, list( list( KV_OPEN ), list( KV_OPEN ) ) );
+attrib( sb, "rgb", "10, 140, 10" );
+attrib( sb, "width", 0.005 );
+resolution = 20;
+
+tsrfs = TRMSRFS( sb,
+                 list( poly( list( point( 0.0, 0.2, 0.0 ),
+                                   point( 1.0, 0.4, 0.0 ) ), true ),
+                       cbezier( list( ctlpt( E2, 0.0, 0.5 ),
+                                      ctlpt( E2, 0.5, 0.6 ),
+                                      ctlpt( E2, 0.6, 1.0 ) ) ) ) );
+
+Tr = rotz( 0 ) * rotx( 30 ) * roty( 30 ) * sc( 0.25 ) * tx( -0.5 );
+
+All = list( nth( tsrfs, 1 ) * tx( -0.5 ) * Tr,
+            nth( tsrfs, 2 ) * tx(  0.0 ) * Tr,
+            nth( tsrfs, 3 ) * tx(  0.5 ) * Tr )
+	* sc( 1.54 ) * tx( -0.1 ) * ty( -0.1 );
+attrib( All, "width", 0.01 );
+color( All, blue );
+attrib( All, "transp", 0.6 );
+
+view( All, on );
+save( "trmsrfs.itd.gz", All );
+free( spts );
+free( sb );
+free( tsrfs );
+free( Tr );
+
+#############################################################################
+
+b = tsbezier( 3,
+	      list( ctlpt( E3, 0.0,  0.0,  0.4 ),
+                    ctlpt( E3, 0.3,  0.0,  0.3 ),
+                    ctlpt( E3, 0.7,  0.0,  0.8 ),
+
+                    ctlpt( E3, 0.2,  0.4,  1.0 ),
+                    ctlpt( E3, 0.4,  0.5,  1.0 ),
+
+                    ctlpt( E3, 0.5,  1.0,  0.7 ) ) )
+	* sc( 2.5 ) * rx( 70 ) * tx( -0.9 ) * ty( 1.35 );
+attrib( b, "rgb", "10, 140, 10" );
+attrib( b, "width", 0.012 );
+attrib( b, "transp", 0.5 );
+view( b, on );
+save( "tsbezier.itd.gz", b );
+free( b );
+
+#############################################################################
+
+save_res = resolution;
+resolution = 16;
+T = TORUS( vector( 0.0, 0.0, 0.0), vector( 0.0, 0.0, 1.0), 0.5, 0.2 );
+attrib( T, "width", 0.012 );
+resolution = save_res;
+color( T, blue );
+
+All = list( T * scale( vector( 0.75, 0.75, 0.75 ) ), axes * sc( 0.25 ) )
+	* rotx( -90 ) * roty( 40 ) * rotx( -30 )
+	* trans( vector( -0.0, -0.0, 0.0 ) ) * sc( 1.7 ) * rx( 60 );
+view( All, on );
+save( "torus.itd.gz", All );
+free( T );
+
+#############################################################################
+
+view( list( axes, boolone( circle( vector( 0, 1, 0 ), 0.4 ) * ry( 90 ) ) ), 1 );
+
+T = tvrev( boolone( circle( vector( 0, 1, 0 ), 0.4 ) * ry( 90 ) ) );
+attrib( T, "width", 0.012 );
+color( T, blue );
+
+All = T * rz( 40 ) * rx( -60 ) * sc( 0.6 );
+view( All, on );
+
+save( "tvrev.itd.gz", All );
+
+free( T );
+
+#############################################################################
+
+save_res = resolution;
+save_mat = view_mat;
+resolution = 20;
+B = box(vector(-1, -1, -0.25), 2, 1.2, 0.5);
+C = con2(vector(0, 0, -1.5), vector(0, 0, 3), 0.7, 0.3, 3);
+resolution = save_res;
+
+D = convex(B - C);
+E = convex(C - B);
+F = convex(B + C);
+G = convex(B * C);
+attrib( D, "width", 0.015 );
+attrib( E, "width", 0.015 );
+attrib( F, "width", 0.015 );
+attrib( G, "width", 0.015 );
+
+color( D, blue );
+color( E, red );
+color( F, magenta );
+attrib( G, "rgb", "10, 140, 10" );
+
+tr = rotx( -90 ) * roty( 40 ) * rotx( -30 );
+
+All = list( D * tr * trans( vector(  0.6,  0.5, 0.0 ) ),
+	    E * tr * trans( vector(  3.0,  0.0, 0.0 ) ),
+	    F * tr * trans( vector( -2.0,  0.0, 0.0 ) ),
+	    G * tr * trans( vector(  0.7, -1.0, 0.0 ) ) )
+	* scale( vector( 0.25, 0.25, 0.25 ) )
+	* trans( vector( -0.1, -0.3, 0.0 ) ) * ty( 0.3 );
+view( All, on );
+view_mat = rotx( 0 );
+save( "booleans.itd.gz", list( view_mat, All ) );
+view_mat = save_mat;
+
+free( B );
+free( C );
+free( D );
+free( E );
+free( F );
+free( G );
+free( tr );
+
+#############################################################################
+#
+# CSG examples
+#
+
+b1 = box(vector(-0.6, -0.3, 0.0), 1.2, 0.6, 0.6);
+c1 = cylin(vector(0.0, -0.25, 0.59), vector(0.0, 0.5, 0.0), 0.55, 3);
+s1 = convex(b1 + c1);
+
+b2 = box(vector(-0.4, -0.4, -0.1), 0.8, 0.8, 0.35);
+s2 = convex(s1 - b2);
+
+c2 = cylin(vector(0.0, -0.4, 0.595), vector(0.0, 0.8, 0.0), 0.3, 3);
+s3 = convex(s2 - c2);
+
+trans_mat = rotz( 40 ) * rotx( -70 ) * scale( vector( 0.3, 0.3, 0.3 ) );
+Obj = list( b1 * trans_mat * trans( vector( -0.7, -0.9, 0.0 ) ),
+	    c1 * trans_mat * trans( vector( -0.1, -0.9, 0.0 ) ),
+	    s1 * trans_mat * trans( vector( -0.4, -0.3, 0.0 ) ),
+	    b2 * trans_mat * trans( vector(  0.2, -0.3, 0.0 ) ),
+	    s2 * trans_mat * trans( vector( -0.1,  0.3, 0.0 ) ),
+	    c2 * trans_mat * trans( vector(  0.5,  0.3, 0.0 ) ),
+	    s3 * trans_mat * trans( vector(  0.2,  0.9, 0.0 ) ) );
+attrib( Obj, "width", 0.01 );
+color( Obj, blue );
+
+edge2d = function( x1, y1, x2, y2 ):
+    return = ctlpt( E2, x1, y1 ) + ctlpt( E2, x2, y2 );
+
+Lines = list( edge2d( -0.6, -0.65, -0.5, -0.4 ),
+	      edge2d( -0.2, -0.55, -0.3, -0.35 ),
+	      edge2d( -0.3, 0.05, -0.25, 0.2 ),
+	      edge2d(  0.1, -0.16, -0.05, 0.25 ),
+	      edge2d(  0.0, 0.65, 0.1, 0.8 ),
+	      edge2d(  0.4, 0.6, 0.3, 0.85 ) );
+attrib( Lines, "width", 0.01 );
+color( Lines, magenta );
+
+All = list( Lines, Obj ) * sc( 0.85 ) * ty( -0.13 ) * tx( 0.1 );
+
+view( All, on );
+save( "csg.itd.gz", All );
+free( b1 );
+free( c1 );
+free( s1 );
+free( b2 );
+free( s2 );
+free( c2 );
+free( s3 );
+free( trans_mat );
+free( Obj );
+free( Lines );
+
+#############################################################################
+#
+# Trivariate - COVERISO and MRCHCUBE
+#
+
+ThreeCyls = tbspline( 4, 4, 4,
+	list( list( list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ) ),
+	      list( list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ) ),
+	      list( list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 1 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 1 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ) ),
+	      list( list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ) ),
+	      list( list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 1 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ),
+	            list( ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ),
+	                  ctlpt( E1, 0 ) ) ) ),
+	list( list( 0, 0, 0, 0, 2, 4, 4, 4, 4 ),
+	      list( 0, 0, 0, 0, 2, 4, 4, 4, 4 ),
+	      list( 0, 0, 0, 0, 2, 4, 4, 4, 4 ) ) );
+attrib( ThreeCyls, "rgb", "10, 140, 10" );
+
+RefList = list( 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8,
+	        2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4, 3.6, 3.8 );
+
+ThreeCyls = trefine( trefine( trefine( ThreeCyls, row, false, RefList ),
+			      col, false, RefList ),
+		     depth, false, RefList );
+free( RefList );
+
+IsoVal = 0.12;
+
+Srf1 = mrchcube( list( ThreeCyls, 1, TRUE, TRUE ),
+		 point( 1, 1, 1 ), 1, IsoVal )
+		  * sc( 0.07) * tx( -1.4 ) * ty( -0.15 ) * rx( 40 ) * ry( 30 )
+		  * tx( 0.0 );
+color( Srf1, magenta );
+view( Srf1, 1 );
+save( "mrchcube.itd.gz", Srf1 );
+
+Cover1 = CoverIso( ThreeCyls, 500, 1, vector( 3, 10, 1.0 ), 0.2, IsoVal, vector( 0, 0, 1 ) )
+		  * sc( 0.075 ) * tx( -1.4 ) * ty( -0.15 ) * rx( 40 ) * ry( 30 );
+color( Cover1, blue );
+view( Cover1, 1 );
+save( "coveriso.itd.gz", Cover1 );
+free( ThreeCyls );
+free( IsoVal );
+free( Srf1 );
+free( Cover1 );
+
+#############################################################################
+#
+# Three cubes in robust Booleans
+#
+
+Crv1 = cbspline( 4,
+        list( ctlpt( E3,  0.5677, -0.6246, 0 ),
+              ctlpt( E3,  0.3509, -0.5846, 0 ),
+              ctlpt( E3,  0.0416, -0.5054, 0 ),
+              ctlpt( E3, -0.0508,  0.0277, 0 ),
+              ctlpt( E3,  0.8692,  0.2523, 0 ),
+              ctlpt( E3,  0.393  , 0.8592, 0 ) ),
+         list( kv_open ) );
+Srf1 = surfPRev( Crv1 * rx( 90 ) );
+awidth( Srf1, 0.015 );
+attrib( Srf1, "rgb", "10, 140, 10" );
+attrib( Srf1, "gray", 0.5 );
+
+Srf2 = Srf1 * tx( 3 ) * ty( 3 );
+Srf3 = Srf1 * tx( 6 );
+awidth( Srf3, 0.015 );
+color( Srf3, blue );
+attrib( Srf3, "gray", 0.5 );
+
+Tv1 = tfromsrfs( list( Srf1, Srf2, Srf3 ), 3, kv_open );
+awidth( Tv1, 0.001 );
+color( Tv1, magenta );
+
+Tv1ZeroJacobian = TvZrJacob( Tv1, 1, 1, 0 );
+awidth( Tv1ZeroJacobian, 0.005 );
+color( Tv1ZeroJacobian, red );
+
+All = list( Tv1ZeroJacobian, Srf1, Srf3 )
+	* sc( 0.65 ) * rz( -40 ) * ty( 2.3 ) * tz( 0.7 );
+
+view( list( view_mat4, All ), 1 );
+save( "tvzrjaco.itd.gz", All );
+free( Crv1 );
+free( Srf1 );
+free( Srf2 );
+free( Srf3 );
+free( Tv1 );
+free( Tv1ZeroJacobian );
+
+#############################################################################
+#
+# Three cubes in robust Booleans
+#
+
+length = 1;
+
+angle = 10;
+b1 = box( vector( -length / 2, -length / 2, -length / 2 ),
+          length, length, length );
+b2 = box( vector( 0, -length / 2, -length / 2 ),
+          length, length, length ) * rotx( angle );
+attrib( b1, "width", 0.01 );
+attrib( b2, "width", 0.01 );
+color( b1, magenta );
+attrib( b2, "rgb", "10, 140, 10" );
+b12a = b1 * b2;
+attrib( b12a, "width", 0.01 );
+color( b12a, blue );
+All = list( b1, b2, b12a ) * rx( 60 ) * ry( 30 ) * sc( 1 ) * rz( 90 )
+	* ty( -0.3 ) * rx( 45 );
+view( All, 1 );
+save( "cubes1.itd.gz", All );
+
+angle = 1;
+b1 = box( vector( -length / 2, -length / 2, -length / 2 ),
+          length, length, length );
+b2 = box( vector( 0, -length / 2, -length / 2 ),
+          length, length, length ) * rotx( angle );
+attrib( b1, "width", 0.01 );
+attrib( b2, "width", 0.01 );
+color( b1, magenta );
+attrib( b2, "rgb", "10, 140, 10" );
+b12b = b1 * b2;
+attrib( b12b, "width", 0.01 );
+color( b12b, blue );
+All = list( b1, b2, b12b ) * rx( 60 ) * ry( 30 ) * sc( 1 ) * rz( 90 )
+	* ty( -0.3 ) * rx( 45 );
+view( All, 1 );
+save( "cubes2.itd.gz", All );
+
+angle = 0.1;
+b1 = box( vector( -length / 2, -length / 2, -length / 2 ),
+          length, length, length );
+b2 = box( vector( 0, -length / 2, -length / 2 ),
+          length, length, length ) * rotx( angle );
+attrib( b1, "width", 0.01 );
+attrib( b2, "width", 0.01 );
+color( b1, magenta );
+attrib( b2, "rgb", "10, 140, 10" );
+b12c = b1 * b2;
+attrib( b12c, "width", 0.01 );
+color( b12c, blue );
+All = list( b1, b2, b12c ) * rx( 60 ) * ry( 30 ) * sc( 1 ) * rz( 90 )
+	* ty( -0.3 ) * rx( 45 );
+view( All, 1 );
+save( "cubes3.itd.gz", All );
+free( b1 );
+free( b2 );
+free( b12a );
+free( b12b );
+free( b12c );
+free( length );
+free( angle );
+
+#############################################################################
+#
+# Build this one which is not short...
+#
+
+include("art_glry"); # for the 'cvisible' function
+
+#############################################################################
+#
+# We are going to use these models for figures...
+#
+# We redefine pause so we will not puase...
+#
+
+pause = procedure():
+    printf("Press return to continue:", nil());
+
+include("../../scripts/solid1.irt");
+solid1 = nth( load("solid1.itd"), 2 );
+color( solid1, red );
+save( "solid1.itd", solid1 );
+free( solid1 );
+
+include("../../scripts/solid2h.irt");
+solid2h = load("solid2h.itd");
+color( solid2h, red );
+save( "solid2h.itd", solid2h );
+free( solid2h );
+
+include("../../scripts/molecule.irt");
+molecule = load("molecule.itd" );
+color( molecule, red );
+save( "molecule.itd", molecule );
+free( molecule );
+
+include("../../scripts/platonic.irt");
+icosahdr = load("icosahdr.itd" );
+color( icosahdr, red );
+save( "icosahdr.itd", icosahdr );
+free( icosahdr );
+dodechdr = load("dodechdr.itd" );
+color( dodechdr, red );
+save( "dodechdr.itd", dodechdr );
+free( dodechdr );
+
+#############################################################################
+#
+# Point coverage for solid1
+#
+Solid1 = load( "solid1.itd" ) * view_mat3;
+
+resolution = 4;
+
+Pts = CoverPt( Solid1, 3000, vector( 0, 0, -1 ) );
+
+PtsSp = EuclidPts2ToSprs( Pts, 0.01 );
+color( PtsSp, blue );
+
+All = list( Solid1, PtsSp ) * sc( 1.4 ) * tx( 0.14 );
+
+view( All, 1 );
+save( "coverpt1.itd.gz", All );
+
+Pts = CoverPt( Solid1, 1000, vector( 0, 0, 0 ) );
+
+PtsSp = EuclidPts2ToSprs( Pts, 0.01 );
+color( PtsSp, blue );
+
+All = list( Solid1, PtsSp ) * sc( 1.4 ) * tx( 0.14 );
+
+view( All, 1 );
+save( "coverpt2.itd.gz", All );
+
+free( Solid1 );
+free( Pts );
+free( PtsSp );
+
+resolution = save_res;
+
+#############################################################################
+
+pause = procedure():t:
+    printf("Press return to continue:", nil()):
+    t = getline(string_type);
+
+#############################################################################
+
+exit();

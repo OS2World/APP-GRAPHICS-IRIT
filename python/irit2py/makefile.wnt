@@ -1,0 +1,51 @@
+
+#
+# Makefile for the IRIT2py solid modeler.
+#
+#
+# This makefile is for Window NT.
+#
+
+IRIT_MORE_FLAGS = -I..\..\irit
+
+# Includes generic definitions.
+include ..\..\makeflag.wnt
+
+ORIG_IRIT = c:\irit\irit\irit
+ORIG_OBJS = \
+	$(ORIG_IRIT)/bsc_geom.$(IRIT_OBJ_PF) \
+	$(ORIG_IRIT)/ctrl-brk.$(IRIT_OBJ_PF) \
+	$(ORIG_IRIT)/dosintr.$(IRIT_OBJ_PF) \
+	$(ORIG_IRIT)/freefrm1.$(IRIT_OBJ_PF) \
+	$(ORIG_IRIT)/freefrm2.$(IRIT_OBJ_PF) \
+	$(ORIG_IRIT)/freefrm3.$(IRIT_OBJ_PF) \
+	$(ORIG_IRIT)/freefrm4.$(IRIT_OBJ_PF) \
+	$(ORIG_IRIT)/freefrm5.$(IRIT_OBJ_PF) \
+	$(ORIG_IRIT)/freefrm6.$(IRIT_OBJ_PF) \
+	$(ORIG_IRIT)/freefrm7.$(IRIT_OBJ_PF) \
+	$(ORIG_IRIT)/freefrm8.$(IRIT_OBJ_PF) \
+	$(ORIG_IRIT)/inptevl0.$(IRIT_OBJ_PF) \
+	$(ORIG_IRIT)/inptevl1.$(IRIT_OBJ_PF) \
+	$(ORIG_IRIT)/inptevl3.$(IRIT_OBJ_PF) \
+	$(ORIG_IRIT)/inptevl4.$(IRIT_OBJ_PF) \
+	$(ORIG_IRIT)/irit_db.$(IRIT_OBJ_PF) \
+	$(ORIG_IRIT)/objects1.$(IRIT_OBJ_PF) \
+	$(ORIG_IRIT)/objects2.$(IRIT_OBJ_PF) \
+	$(ORIG_IRIT)/overload.$(IRIT_OBJ_PF) \
+	$(ORIG_IRIT)/support.$(IRIT_OBJ_PF)
+
+OBJS = 	$(ORIG_OBJS) \
+	inptevl2.$(IRIT_OBJ_PF) \
+	inptgetc.$(IRIT_OBJ_PF) \
+	inptprsr.$(IRIT_OBJ_PF) \
+	irit.$(IRIT_OBJ_PF) \
+	irit_io.$(IRIT_OBJ_PF)
+
+irit2py$(IRIT_EXE_PF).exe: $(OBJS)
+	$(IRITCONLINK) -out:irit2py$(IRIT_EXE_PF).exe $(OBJS) $(IRIT_LIBS) $(W32CONMTLIBS)
+	$(IRITMANIFEST) -manifest $@.manifest -outputresource:$@;1
+
+clean:
+	del *.exe *.Dobj *.obj  *.exe.manifest *.pdb *.itd *.py
+
+# Dependencies starts here - do not touch, generated automatically.

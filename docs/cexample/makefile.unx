@@ -1,0 +1,46 @@
+#
+# This make file is for the cexamples of the docs directory for unix
+#
+#				Gershon Elber, June 1993
+
+include ../../makeflag.unx
+
+All:	polyarea$(IRIT_EXE_PF) polygons$(IRIT_EXE_PF) transfrm$(IRIT_EXE_PF) \
+	lst_sqrs$(IRIT_EXE_PF) msolve$(IRIT_EXE_PF) dist_map$(IRIT_EXE_PF) \
+	boolean$(IRIT_EXE_PF) imprtnc$(IRIT_EXE_PF) plnghbr$(IRIT_EXE_PF)
+
+OBJS1	= polyarea.o$(IRIT_OBJ_PF)
+polyarea$(IRIT_EXE_PF): $(OBJS1)
+	$(CC) $(CFLAGS) -o polyarea$(IRIT_EXE_PF) $(OBJS1) $(IRIT_LIBS) -lm $(IRIT_MORE_LIBS)
+
+OBJS2	= polygons.o$(IRIT_OBJ_PF)
+polygons$(IRIT_EXE_PF): $(OBJS2)
+	$(CC) $(CFLAGS) -o polygons$(IRIT_EXE_PF) $(OBJS2) $(IRIT_LIBS) -lm $(IRIT_MORE_LIBS)
+
+OBJS3	= transfrm.o$(IRIT_OBJ_PF)
+transfrm$(IRIT_EXE_PF): $(OBJS3)
+	$(CC) $(CFLAGS) -o transfrm$(IRIT_EXE_PF) $(OBJS3) $(IRIT_LIBS) -lm $(IRIT_MORE_LIBS)
+
+OBJS4	= lst_sqrs.o$(IRIT_OBJ_PF)
+lst_sqrs$(IRIT_EXE_PF): $(OBJS4)
+	$(CC) $(CFLAGS) -o lst_sqrs$(IRIT_EXE_PF) $(OBJS4) $(IRIT_LIBS) -lm $(IRIT_MORE_LIBS)
+
+OBJS5	= msolve.o$(IRIT_OBJ_PF)
+msolve$(IRIT_EXE_PF): $(OBJS5)
+	$(CC) $(CFLAGS) -o msolve$(IRIT_EXE_PF) $(OBJS5) $(IRIT_LIBS) -lm $(IRIT_MORE_LIBS)
+
+OBJS6	= dist_map.o$(IRIT_OBJ_PF)
+dist_map$(IRIT_EXE_PF): $(OBJS6)
+	$(CC) $(CFLAGS) -o dist_map$(IRIT_EXE_PF) $(OBJS6) $(IRIT_LIBS) -lm $(IRIT_MORE_LIBS)
+
+OBJS7	= boolean.o$(IRIT_OBJ_PF)
+boolean$(IRIT_EXE_PF): $(OBJS7)
+	$(CC) $(CFLAGS) -o boolean$(IRIT_EXE_PF) $(OBJS7) $(IRIT_LIBS) -lm $(IRIT_MORE_LIBS)
+
+OBJS8	= imprtnc.o$(IRIT_OBJ_PF)
+imprtnc$(IRIT_EXE_PF): $(OBJS8)
+	$(CC) $(CFLAGS) -o imprtnc$(IRIT_EXE_PF) $(OBJS8) $(IRIT_LIBS) -lm $(IRIT_MORE_LIBS)
+
+OBJS9	= pl_nghbr.o$(IRIT_OBJ_PF)
+plnghbr$(IRIT_EXE_PF): $(OBJS9)
+	$(CC) $(CFLAGS) -o plnghbr$(IRIT_EXE_PF) $(OBJS9) $(IRIT_LIBS) -lm $(IRIT_MORE_LIBS)

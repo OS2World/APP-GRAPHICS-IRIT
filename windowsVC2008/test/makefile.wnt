@@ -1,0 +1,14 @@
+#
+# This make file is for the cexamples of the docs directory for Windows NT
+#
+#				Gershon Elber, June 1993
+#
+
+include ..\..\makeflag.wnt
+
+All:	test$(IRITEXEPF).exe
+
+OBJS1	= test.$(IRITOBJ)
+test$(IRITEXEPF).exe: $(OBJS1)
+	$(IRITCONLINK) -out:test$(IRITEXEPF).exe $(OBJS1) $(LIBS) $(MORELIBS) $(W32CONLIBS)
+

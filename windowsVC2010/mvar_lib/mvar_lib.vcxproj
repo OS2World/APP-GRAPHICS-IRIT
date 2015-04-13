@@ -1,0 +1,169 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{AD302CBD-BFDB-431F-92BC-8668845C8479}</ProjectGuid>
+    <RootNamespace>mvar_lib</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+    <Import Project="..\IRIT_SM\GlobalRules.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+    <Import Project="..\IRIT_SM\GlobalRules.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(LibDir)</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(LibDir)</OutDir>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">iritMvarD</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">iritMvar</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_X86_=1;_DEBUG;DEBUG;DEBUG_IRIT_MALLOC;_LIB;__WINNT__;__OPENGL__;RANDOM_IRIT;WINNT_SETARGV;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Lib />
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>..\..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_X86_=1;NDEBUG;_LIB;__WINNT__;__OPENGL__;RANDOM_IRIT;WINNT_SETARGV;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <CompileAs>CompileAsC</CompileAs>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+    </ClCompile>
+    <Lib />
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\mvar_lib\contacts.c" />
+    <ClCompile Include="..\..\mvar_lib\crv_krnl.c" />
+    <ClCompile Include="..\..\mvar_lib\hasdrf2d.c" />
+    <ClCompile Include="..\..\mvar_lib\hasdrf3d.c" />
+    <ClCompile Include="..\..\mvar_lib\lnsrfdst.c" />
+    <ClCompile Include="..\..\mvar_lib\ms_circ.c" />
+    <ClCompile Include="..\..\mvar_lib\ms_sphr.c" />
+    <ClCompile Include="..\..\mvar_lib\mvarkant.c" />
+    <ClCompile Include="..\..\mvar_lib\mvarproj.c" />
+    <ClCompile Include="..\..\mvar_lib\mvar_int.c" />
+    <ClCompile Include="..\..\mvar_lib\mvar_vec.c" />
+    <ClCompile Include="..\..\mvar_lib\mvtrivar.c" />
+    <ClCompile Include="..\..\mvar_lib\mv_crvtr.c" />
+    <ClCompile Include="..\..\mvar_lib\mvaccess.c" />
+    <ClCompile Include="..\..\mvar_lib\mvar_aux.c" />
+    <ClCompile Include="..\..\mvar_lib\mvar_dbg.c" />
+    <ClCompile Include="..\..\mvar_lib\mvar_der.c" />
+    <ClCompile Include="..\..\mvar_lib\mvar_det.c" />
+    <ClCompile Include="..\..\mvar_lib\mvar_err.c" />
+    <ClCompile Include="..\..\mvar_lib\mvar_ftl.c" />
+    <ClCompile Include="..\..\mvar_lib\mvar_gen.c" />
+    <ClCompile Include="..\..\mvar_lib\mvar_pll.c" />
+    <ClCompile Include="..\..\mvar_lib\mvar_ref.c" />
+    <ClCompile Include="..\..\mvar_lib\mvar_rev.c" />
+    <ClCompile Include="..\..\mvar_lib\mvar_ssi.c" />
+    <ClCompile Include="..\..\mvar_lib\mvar_sub.c" />
+    <ClCompile Include="..\..\mvar_lib\mvar_sym.c" />
+    <ClCompile Include="..\..\mvar_lib\mvarcmpt.c" />
+    <ClCompile Include="..\..\mvar_lib\mvarcoer.c" />
+    <ClCompile Include="..\..\mvar_lib\mvardist.c" />
+    <ClCompile Include="..\..\mvar_lib\mvaredit.c" />
+    <ClCompile Include="..\..\mvar_lib\mvareval.c" />
+    <ClCompile Include="..\..\mvar_lib\mvarextr.c" />
+    <ClCompile Include="..\..\mvar_lib\mvarintr.c" />
+    <ClCompile Include="..\..\mvar_lib\mvarmrph.c" />
+    <ClCompile Include="..\..\mvar_lib\mvarpack.c" />
+    <ClCompile Include="..\..\mvar_lib\mvarpck2.c" />
+    <ClCompile Include="..\..\mvar_lib\mvarprim.c" />
+    <ClCompile Include="..\..\mvar_lib\mvarrais.c" />
+    <ClCompile Include="..\..\mvar_lib\mvarsils.c" />
+    <ClCompile Include="..\..\mvar_lib\mvartopo.c" />
+    <ClCompile Include="..\..\mvar_lib\mvarzero.c" />
+    <ClCompile Include="..\..\mvar_lib\mvarzreq.c" />
+    <ClCompile Include="..\..\mvar_lib\mvbiscon.c" />
+    <ClCompile Include="..\..\mvar_lib\mvbisect.c" />
+    <ClCompile Include="..\..\mvar_lib\mvbspsym.c" />
+    <ClCompile Include="..\..\mvar_lib\mvbzrpwr.c" />
+    <ClCompile Include="..\..\mvar_lib\mvbzrsym.c" />
+    <ClCompile Include="..\..\mvar_lib\mvcones.c" />
+    <ClCompile Include="..\..\mvar_lib\mvlowenv.c" />
+    <ClCompile Include="..\..\mvar_lib\mvsplmon.c" />
+    <ClCompile Include="..\..\mvar_lib\mvtangnt.c" />
+    <ClCompile Include="..\..\mvar_lib\mvtrmbis.c" />
+    <ClCompile Include="..\..\mvar_lib\mvtrmpcr.c" />
+    <ClCompile Include="..\..\mvar_lib\mvvorcel.c" />
+    <ClCompile Include="..\..\mvar_lib\mvvorcrv.c" />
+    <ClCompile Include="..\..\mvar_lib\offset2.c" />
+    <ClCompile Include="..\..\mvar_lib\offst2ni.c" />
+    <ClCompile Include="..\..\mvar_lib\ray-trap.c" />
+    <ClCompile Include="..\..\mvar_lib\raytrp3d.c" />
+    <ClCompile Include="..\..\mvar_lib\selfintr.c" />
+    <ClCompile Include="..\..\mvar_lib\skel2d.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\mvar_lib.h" />
+    <ClInclude Include="..\..\mvar_lib\mvar_loc.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\mvar_lib\makefile.ami" />
+    <None Include="..\..\mvar_lib\makefile.os2" />
+    <None Include="..\..\mvar_lib\makefile.sas" />
+    <None Include="..\..\mvar_lib\makefile.unx" />
+    <None Include="..\..\mvar_lib\makefile.wce" />
+    <None Include="..\..\mvar_lib\makefile.wnt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,61 @@
+#
+# This make file is for the cexamples of the docs directory for Windows NT
+#
+#				Gershon Elber, June 1993
+#
+
+include ..\..\makeflag.wnt
+
+All:	polyarea$(IRIT_EXE_PF).exe \
+	polygons$(IRIT_EXE_PF).exe \
+	transfrm$(IRIT_EXE_PF).exe \
+	lst_sqrs$(IRIT_EXE_PF).exe \
+	msolve$(IRIT_EXE_PF).exe \
+	dist_map$(IRIT_EXE_PF).exe \
+	boolean$(IRIT_EXE_PF).exe \
+	imprtnc$(IRIT_EXE_PF).exe \
+	plnghbr$(IRIT_EXE_PF).exe
+
+OBJS1	= polyarea.$(IRIT_OBJ_PF)
+polyarea$(IRIT_EXE_PF).exe: $(OBJS1)
+	$(IRITCONLINK) -out:polyarea$(IRIT_EXE_PF).exe $(OBJS1) $(IRIT_LIBS) $(IRIT_MORE_LIBS) $(W32CONLIBS)
+
+
+OBJS2	= polygons.$(IRIT_OBJ_PF)
+polygons$(IRIT_EXE_PF).exe: $(OBJS2)
+	$(IRITCONLINK) -out:polygons$(IRIT_EXE_PF).exe $(OBJS2) $(IRIT_LIBS) $(IRIT_MORE_LIBS) $(W32CONLIBS)
+
+
+OBJS3	= transfrm.$(IRIT_OBJ_PF)
+transfrm$(IRIT_EXE_PF).exe: $(OBJS3)
+	$(IRITCONLINK) -out:transfrm$(IRIT_EXE_PF).exe $(OBJS3) $(IRIT_LIBS) $(IRIT_MORE_LIBS) $(W32CONLIBS)
+
+
+OBJS4	= lst_sqrs.$(IRIT_OBJ_PF)
+lst_sqrs$(IRIT_EXE_PF).exe: $(OBJS4)
+	$(IRITCONLINK) -out:lst_sqrs$(IRIT_EXE_PF).exe $(OBJS4) $(IRIT_LIBS) $(IRIT_MORE_LIBS) $(W32CONLIBS)
+
+
+OBJS5	= msolve.$(IRIT_OBJ_PF)
+msolve$(IRIT_EXE_PF).exe: $(OBJS5)
+	$(IRITCONLINK) -out:msolve$(IRIT_EXE_PF).exe $(OBJS5) $(IRIT_LIBS) $(IRIT_MORE_LIBS) $(W32CONLIBS)
+
+
+OBJS6	= dist_map.$(IRIT_OBJ_PF)
+dist_map$(IRIT_EXE_PF).exe: $(OBJS6)
+	$(IRITCONLINK) -out:dist_map$(IRIT_EXE_PF).exe $(OBJS6) $(IRIT_LIBS) $(IRIT_MORE_LIBS) $(W32CONLIBS)
+
+
+OBJS7	= boolean.$(IRIT_OBJ_PF)
+boolean$(IRIT_EXE_PF).exe: $(OBJS7)
+	$(IRITCONLINK) -out:boolean$(IRIT_EXE_PF).exe $(OBJS7) $(IRIT_LIBS) $(IRIT_MORE_LIBS) $(W32CONLIBS)
+
+
+OBJS8	= imprtnc.$(IRIT_OBJ_PF)
+imprtnc$(IRIT_EXE_PF).exe: $(OBJS8)
+	$(IRITCONLINK) -out:imprtnc$(IRIT_EXE_PF).exe $(OBJS8) $(IRIT_LIBS) $(IRIT_MORE_LIBS) $(W32CONLIBS)
+
+
+OBJS9	= pl_nghbr.$(IRIT_OBJ_PF)
+plnghbr$(IRIT_EXE_PF).exe: $(OBJS9)
+	$(IRITCONLINK) -out:plnghbr$(IRIT_EXE_PF).exe $(OBJS9) $(IRIT_LIBS) $(IRIT_MORE_LIBS) $(W32CONLIBS)

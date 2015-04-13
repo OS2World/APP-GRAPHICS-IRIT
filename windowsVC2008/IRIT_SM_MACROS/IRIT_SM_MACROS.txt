@@ -1,0 +1,411 @@
+Imports EnvDTE
+Imports System.Diagnostics
+
+Public Module IRIT_SM_COMMENTS
+    Sub IritFileHeader()
+        Dim CommentWidth = 78
+        Dim Author = "Gershon Elber"
+        Dim Copyright = "(C) Gershon Elber, Technion, Israel Institute of Technology"
+        Dim ts = DTE.ActiveWindow.Selection()
+
+        ts.Insert("/" & New String("*", CommentWidth - 1) & vbNewLine)
+
+        Dim FName = ActiveDocument.Name
+        ts.Insert("* " & FName & " - " & New String(" ", CommentWidth - 6 - FName.Length) & "*" & vbNewLine)
+
+        ts.Insert("*" & New String("*", CommentWidth - 1) & vbNewLine)
+
+        ts.Insert("* " & Copyright & New String(" ", CommentWidth - 3 - Copyright.Length) & "*" & vbNewLine)
+
+        ts.Insert("*" & New String("*", CommentWidth - 1) & vbNewLine)
+
+        Dim DayFrmt = New System.Globalization.DateTimeFormatInfo
+        Dim Today = System.DateTime.Now
+        Dim AuthorSToday = "Written by " & Author & ", " & DayFrmt.GetMonthName(Today.Month) & ", " & Today.Year()
+        ts.Insert("* " & AuthorSToday & New String(" ", CommentWidth - 3 - AuthorSToday.Length) & "*" & vbNewLine)
+
+        ts.Insert(New String("*", CommentWidth - 1) & "/" & vbNewLine)
+    End Sub
+
+    Sub IritFuncHeader()
+        Dim CommentWidth = 78
+        Dim ClassDelimeter = "::" ' class delimeters
+        Dim ts = DTE.ActiveWindow.Selection()
+        Dim Header = Trim(ts.Text)
+        Dim Loc, Loc1, Loc2, Loc3
+
+        If Len(Header) = 0 Then
+            MsgBox("Select the function declaration first.")
+            Exit Sub
+        End If
+
+        If ActiveDocument.Language <> "C/C++" Then
+            MsgBox("Wrong file type - expecting C or C++ file")
+            Exit Sub
+        End If
+
+        Dim TPoint = ActiveDocument.Selection.TopPoint()
+        ActiveDocument.Selection.MoveToPoint(TPoint)
+        ActiveDocument.Selection.StartOfLine()
+        ActiveDocument.Selection.NewLine()
+        ActiveDocument.Selection.LineUp()
+
+        'Delete all \n symbols
+        Header = Replace(Header, vbNewLine, " ")
+
+        'Delete spaces unnecessary spaces
+        Dim new_header = ""
+        Dim spaces = 0
+        Dim i
+
+        'Remove duplicated spaces in header
+        For i = 1 To Len(Header)
+            Dim c = Mid(Header, i, 1)
+
+            If c = " " Or c = vbTab Then
+                If spaces = 0 Then
+                    new_header = new_header & " "
+                End If
+                spaces = 1
+            Else
+                new_header = new_header & c
+                spaces = 0
+            End If
+        Next
+        Header = new_header
+
+        'Delete all comments from function declaration
+        Loc = InStr(Header, "/*")
+        While Loc
+            Dim s1 = Left(Header, Loc - 1)
+            Dim s2 = Mid(Header, InStr(Header, "*/") + 2)
+            Header = s1 & s2
+            Loc = InStr(Header, "/*")
+        End While
+
+        Loc = InStr(Header, "(")
+        Dim f_title = Trim(Left(Header, Loc - 1))
+        Dim f_pars = Trim(Mid(Header, Loc + 1, InStr(Header, ")") - Loc - 1))
+
+        'Get the function return type.
+        Dim arrStr = Split(f_title, ClassDelimeter)
+        Dim UB = UBound(arrStr)
+
+        For i = 0 To UB
+            arrStr(i) = Trim(arrStr(i))
+        Next
+
+        Loc = InStrRev(arrStr(0), " ")
+        Loc1 = InStrRev(arrStr(0), "*")
+        Loc2 = InStrRev(arrStr(0), "&")
+        If Loc1 > Loc Then Loc = Loc1 ' pointer returned
+        If Loc2 > Loc Then Loc = Loc2 ' reference returned
+        Dim f_name = Trim(Mid(arrStr(0), Loc + 1))
+        Dim f_return = Trim(Left(arrStr(0), Loc))
+
+        'May be the function is static ?
+        Dim is_static = False
+        Dim last_symbol = "M"
+        Loc = InStr(f_return, " ")
+        If Loc > 0 Then
+            If Left(f_return, Loc - 1) = "static" Then
+                is_static = True
+                last_symbol = "*"
+                f_return = Mid(f_return, Loc + 1)
+            End If
+        Else
+            If f_return = "static" Then
+                is_static = True
+                last_symbol = "*"
+                f_return = ""
+            End If
+        End If
+
+        If Len(f_return) = 0 Then ' undefined return type
+            f_return = "NoValue"
+
+            If UB = 0 Then
+                MsgBox("Function should return a value.")
+                Exit Sub
+            End If
+
+            arrStr(UB) = Replace(arrStr(UB), " ", "")
+
+            'Only constructors and destructors do not return any value.
+            If (Not (arrStr(UB - 1) = arrStr(UB))) And (Not (arrStr(UB) = "~" & arrStr(UB - 1))) Then
+                MsgBox("Function should return a value.")
+                Exit Sub
+            End If
+        End If
+
+        For i = 1 To UBound(arrStr)
+            f_name = f_name & ClassDelimeter & Trim(arrStr(i))
+        Next
+
+        ts.Insert("/" + New String("*", CommentWidth - 1) & vbNewLine)
+        ts.Insert("* DESCRIPTION:" & New String(" ", CommentWidth - 15) & last_symbol & vbNewLine)
+        ts.Insert("*" & New String(" ", CommentWidth - 2) & last_symbol & vbNewLine)
+        ts.Insert("*" & New String(" ", CommentWidth - 2) & last_symbol & vbNewLine)
+        ts.Insert("*" & New String(" ", CommentWidth - 2) & "*" & vbNewLine)
+
+        'Get the function parameters.
+        ts.Insert("* PARAMETERS:" & New String(" ", CommentWidth - 14) & last_symbol & vbNewLine)
+        arrStr = Split(f_pars, ",")
+        Dim bTmpl = False ' template is the current parameter
+
+        ' Process parameters
+        Dim max_par_len = 0
+        For i = 0 To UBound(arrStr)
+            arrStr(i) = Trim(arrStr(i))
+            Loc = InStr(arrStr(i), "<")
+            If Loc Then bTmpl = True
+            If bTmpl Then
+                If Loc = 0 Then
+                    arrStr(i) = arrStr(i - 1) & "," & arrStr(i)
+                    Loc = InStr(arrStr(i), ">")
+                    If Loc Then ' template end
+                        bTmpl = False
+
+                        Loc1 = InStrRev(arrStr(i), " ") + 1
+                        Loc2 = InStrRev(arrStr(i), "*") + 1
+                        Loc3 = InStrRev(arrStr(i), "&") + 1
+                        Loc = Loc1
+                        If Loc2 > Loc Then Loc = Loc2
+                        If Loc3 > Loc Then Loc = Loc3
+                        Dim par_name = Mid(arrStr(i), Loc)
+                        arrStr(i) = par_name
+                        If Len(par_name) > max_par_len Then max_par_len = Len(par_name)
+                    End If
+                End If
+            Else
+                Loc1 = InStrRev(arrStr(i), " ") + 1
+                Loc2 = InStrRev(arrStr(i), "*") + 1
+                Loc3 = InStrRev(arrStr(i), "&") + 1
+                Loc = Loc1
+                If Loc2 > Loc Then Loc = Loc2
+                If Loc3 > Loc Then Loc = Loc3
+                Dim par_name = Mid(arrStr(i), Loc)
+                arrStr(i) = par_name
+                If Len(par_name) > max_par_len Then max_par_len = Len(par_name)
+            End If
+        Next
+
+        If (Not (f_return = "void")) And (Not (f_return = "NoValue")) Then
+            If Len(f_return) > max_par_len Then max_par_len = Len(f_return)
+        End If
+
+        ' Now output parameters
+        For i = 0 To UBound(arrStr)
+            Dim par_str = "*    " & arrStr(i) & ":" & New String(" ", max_par_len - Len(arrStr(i)) + 1) & "N.S.F.I."
+            Dim spc_str2 = New String(" ", CommentWidth - Len(par_str) - 1) & last_symbol & vbNewLine
+            ts.Insert(par_str & spc_str2)
+        Next
+
+        ts.Insert("*" & New String(" ", CommentWidth - 2) & "*" & vbNewLine)
+
+        ts.Insert("* RETURN VALUE:" & New String(" ", CommentWidth - 16) & last_symbol & vbNewLine)
+
+        Dim ret_str = "*    " & f_return
+        If (Not (f_return = "void")) And (Not (f_return = "NoValue")) Then
+            ret_str = ret_str & ":" & New String(" ", max_par_len - Len(f_return) + 1) & "N.S.F.I."
+        End If
+        Dim spc_str = New String(" ", CommentWidth - Len(ret_str) - 1) & last_symbol & vbNewLine
+        ts.Insert(ret_str & spc_str)
+
+        If Not is_static Then
+            ts.Insert("*" & New String(" ", CommentWidth - 2) & "*" & vbNewLine)
+            ts.Insert("* SEE ALSO:" & New String(" ", CommentWidth - 12) & last_symbol & vbNewLine)
+            ts.Insert("*" & New String(" ", CommentWidth - 2) & last_symbol & vbNewLine)
+            ts.Insert("*" & New String(" ", CommentWidth - 2) & "*" & vbNewLine)
+
+            ts.Insert("* KEYWORDS:" & New String(" ", CommentWidth - 12) & last_symbol & vbNewLine)
+            Dim f_name_str = "*    " & f_name
+            spc_str = New String(" ", CommentWidth - Len(f_name_str) - 1) & last_symbol & vbNewLine
+            ts.Insert(f_name_str & spc_str)
+        End If
+
+        ts.Insert(New String("*", CommentWidth - 1) & "/")
+    End Sub
+
+End Module
+
+-----------------------------------------------------------------------------
+
+Imports EnvDTE
+Imports System.Diagnostics
+
+Public Module IRIT_SM_DISPLAY
+    Sub IritDispOBJECTbyName()
+        Dim O As String = InputBox("Enter IRIT object variable name: ")
+        DTE.ExecuteCommand("Debug.EvaluateStatement IPDbgDisplayObject(" & O & ")")
+    End Sub
+    Sub IritDispOBJECTbySelection()
+        Dim ts As TextSelection = DTE.ActiveWindow.Selection()
+        Dim O As String = ts.Text
+        DTE.ExecuteCommand("Debug.EvaluateStatement IPDbgDisplayObject(" & O & ")")
+    End Sub
+
+    Sub IritDispPOLYbyName()
+        Dim O As String = InputBox("Enter IRIT poly variable name: ")
+        DTE.ExecuteCommand("Debug.EvaluateStatement IPDbgDisplayObject( IPGenPOLYObject( " & O & " ) )")
+    End Sub
+    Sub IritDispPOLYbySelection()
+        Dim ts As TextSelection = DTE.ActiveWindow.Selection()
+        Dim O As String = ts.Text
+        DTE.ExecuteCommand("Debug.EvaluateStatement IPDbgDisplayObject( IPGenPOLYObject( " & O & " ) )")
+    End Sub
+
+    Sub IritDispCURVEbyName()
+        Dim O As String = InputBox("Enter IRIT curve variable name: ")
+        DTE.ExecuteCommand("Debug.EvaluateStatement IPDbgDisplayObject( IPGenCRVObject( " & O & " ) )")
+    End Sub
+    Sub IritDispCURVEbySelection()
+        Dim ts As TextSelection = DTE.ActiveWindow.Selection()
+        Dim O As String = ts.Text
+        DTE.ExecuteCommand("Debug.EvaluateStatement IPDbgDisplayObject( IPGenCRVObject( " & O & " ) )")
+    End Sub
+
+    Sub IritDispSURFACEbyName()
+        Dim O As String = InputBox("Enter IRIT surface variable name: ")
+        DTE.ExecuteCommand("Debug.EvaluateStatement IPDbgDisplayObject( IPGenSRFObject( " & O & " ) )")
+    End Sub
+    Sub IritDispSURFACEbySelection()
+        Dim ts As TextSelection = DTE.ActiveWindow.Selection()
+        Dim O As String = ts.Text
+        DTE.ExecuteCommand("Debug.EvaluateStatement IPDbgDisplayObject( IPGenSRFObject( " & O & " ) )")
+    End Sub
+
+    Sub IritDispTRIMMEDSURFACEbyName()
+        Dim O As String = InputBox("Enter IRIT trimmed surface variable name: ")
+        DTE.ExecuteCommand("Debug.EvaluateStatement IPDbgDisplayObject( IPGenTRIMSRFObject( " & O & " ) )")
+    End Sub
+    Sub IritDispTRIMMEDSURFACEbySelection()
+        Dim ts As TextSelection = DTE.ActiveWindow.Selection()
+        Dim O As String = ts.Text
+        DTE.ExecuteCommand("Debug.EvaluateStatement IPDbgDisplayObject( IPGenTRIMSRFObject( " & O & " ) )")
+    End Sub
+
+    Sub IritDispTRIANGLESURFACEbyName()
+        Dim O As String = InputBox("Enter IRIT triangular surface variable name: ")
+        DTE.ExecuteCommand("Debug.EvaluateStatement IPDbgDisplayObject( IPGenTRISRFObject( " & O & " ) )")
+    End Sub
+    Sub IritDispTRIANGLESURFACEbySelection()
+        Dim ts As TextSelection = DTE.ActiveWindow.Selection()
+        Dim O As String = ts.Text
+        DTE.ExecuteCommand("Debug.EvaluateStatement IPDbgDisplayObject( IPGenTRISRFObject( " & O & " ) )")
+    End Sub
+
+    Sub IritDispTRIVARIATEbyName()
+        Dim O As String = InputBox("Enter IRIT trivar variable name: ")
+        DTE.ExecuteCommand("Debug.EvaluateStatement IPDbgDisplayObject( IPGenTRIVARObject( " & O & " ) )")
+    End Sub
+    Sub IritDispTRIVARIATEbySelection()
+        Dim ts As TextSelection = DTE.ActiveWindow.Selection()
+        Dim O As String = ts.Text
+        DTE.ExecuteCommand("Debug.EvaluateStatement IPDbgDisplayObject( IPGenTRIVARObject( " & O & " ) )")
+    End Sub
+
+    Sub IritDispMULTIVARIATEbyName()
+        Dim O As String = InputBox("Enter IRIT multivar variable name: ")
+        DTE.ExecuteCommand("Debug.EvaluateStatement IPDbgDisplayObject( IPGenMULTIVARObject( " & O & " ) )")
+    End Sub
+    Sub IritDispMULTIVARIATEbySelection()
+        Dim ts As TextSelection = DTE.ActiveWindow.Selection()
+        Dim O As String = ts.Text
+        DTE.ExecuteCommand("Debug.EvaluateStatement IPDbgDisplayObject( IPGenMULTIVARObject( " & O & " ) )")
+    End Sub
+
+End Module
+
+-----------------------------------------------------------------------------
+Option Strict Off
+Option Explicit Off
+
+Imports EnvDTE
+Imports System.Diagnostics
+Imports Microsoft.VisualBasic
+Imports Microsoft.VisualBasic.ControlChars
+Public Module IRIT_SM_PRINT
+    Sub IritPrintOBJECTbyName()
+        Dim V As String = InputBox("Enter IRIT object variable name: ")
+        DTE.ExecuteCommand("Debug.EvaluateStatement IPStderrObject(" & V & ")")
+    End Sub
+    Sub IritPrintOBJECTbySelection()
+        Dim ts As TextSelection = DTE.ActiveWindow.Selection()
+        Dim V As String = ts.Text
+        DTE.ExecuteCommand("Debug.EvaluateStatement IPStderrObject(" & V & ")")
+    End Sub
+    Sub IritPrintVERTEXbyName()
+        Dim V As String = InputBox("Enter IRIT vertex variable name: ")
+        DTE.ExecuteCommand("Debug.EvaluateStatement IPVertexDbg(" & V & ")")
+    End Sub
+    Sub IritPrintVERTEXbySelection()
+        Dim ts As TextSelection = DTE.ActiveWindow.Selection()
+        Dim V As String = ts.Text
+        DTE.ExecuteCommand("Debug.EvaluateStatement IPVertexDbg(" & V & ")")
+    End Sub
+    Sub IritPrintPOLYbyName()
+        Dim P As String = InputBox("Enter IRIT poly variable name: ")
+        DTE.ExecuteCommand("Debug.EvaluateStatement IPPolygonDbg(" & P & ")")
+    End Sub
+    Sub IritPrintPOLYbySelection()
+        Dim ts As TextSelection = DTE.ActiveWindow.Selection()
+        Dim Crv As String = ts.Text
+        DTE.ExecuteCommand("Debug.EvaluateStatement IPPolygonDbg(" & Crv & ")")
+    End Sub
+    Sub IritPrintCURVEbyName()
+        Dim Crv As String = InputBox("Enter IRIT curve variable name: ")
+        DTE.ExecuteCommand("Debug.EvaluateStatement CagdDbg(" & Crv & ")")
+    End Sub
+    Sub IritPrintCURVEbySelection()
+        Dim ts As TextSelection = DTE.ActiveWindow.Selection()
+        Dim Crv As String = ts.Text
+        DTE.ExecuteCommand("Debug.EvaluateStatement CagdDbg(" & Crv & ")")
+    End Sub
+    Sub IritPrintSURFACEbyName()
+        Dim Srf As String = InputBox("Enter IRIT surface variable name: ")
+        DTE.ExecuteCommand("Debug.EvaluateStatement CagdDbg(" & Srf & ")")
+    End Sub
+    Sub IritPrintSURFACEbySelection()
+        Dim ts As TextSelection = DTE.ActiveWindow.Selection()
+        Dim Srf As String = ts.Text
+        DTE.ExecuteCommand("Debug.EvaluateStatement CagdDbg(" & Srf & ")")
+    End Sub
+    Sub IritPrintTRIMMEDSURFACEbyName()
+        Dim TSrf As String = InputBox("Enter IRIT trim surface variable name: ")
+        DTE.ExecuteCommand("Debug.EvaluateStatement TrimDbg(" & TSrf & ")")
+    End Sub
+    Sub IritPrintTRIMMEDSURFACEbySelection()
+        Dim ts As TextSelection = DTE.ActiveWindow.Selection()
+        Dim TSrf As String = ts.Text
+        DTE.ExecuteCommand("Debug.EvaluateStatement TrimDbg(" & TSrf & ")")
+    End Sub
+    Sub IritPrintTRIANGLESURFACEbyName()
+        Dim TSrf As String = InputBox("Enter IRIT surface variable name: ")
+        DTE.ExecuteCommand("Debug.EvaluateStatement TrngDbg(" & TSrf & ")")
+    End Sub
+    Sub IritPrintTRIANGLESURFACEbySelection()
+        Dim ts As TextSelection = DTE.ActiveWindow.Selection()
+        Dim TSrf As String = ts.Text
+        DTE.ExecuteCommand("Debug.EvaluateStatement TrngDbg(" & TSrf & ")")
+    End Sub
+    Sub IritPrintTRIVARIATEbyName()
+        Dim TV As String = InputBox("Enter IRIT trivar variable name: ")
+        DTE.ExecuteCommand("Debug.EvaluateStatement TrivDbg(" & TV & ")")
+    End Sub
+    Sub IritPrintTRIVARIATEbySelection()
+        Dim ts As TextSelection = DTE.ActiveWindow.Selection()
+        Dim TV As String = ts.Text
+        DTE.ExecuteCommand("Debug.EvaluateStatement TrivDbg(" & TV & ")")
+    End Sub
+    Sub IritPrintMULTIVARIATEbyName()
+        Dim MV As String = InputBox("Enter IRIT multivar variable name: ")
+        DTE.ExecuteCommand("Debug.EvaluateStatement MvarDbg(" & MV & ")")
+    End Sub
+    Sub IritPrintMULTIVARIATEbySelection()
+        Dim ts As TextSelection = DTE.ActiveWindow.Selection()
+        Dim MV As String = ts.Text
+        DTE.ExecuteCommand("Debug.EvaluateStatement MvarDbg(" & MV & ")")
+    End Sub
+
+End Module

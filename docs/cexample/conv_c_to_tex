@@ -1,0 +1,36 @@
+#!/bin/csh -f
+
+set backslash='\\'
+
+echo $backslash"begin{verbatim}" >! boolean.tex
+sed -e 's/	/        /g' boolean.c >> boolean.tex
+echo $backslash"end{verbatim}" >> boolean.tex
+
+echo $backslash"begin{verbatim}" >! dist_map.tex
+sed -e 's/	/        /g' dist_map.c >> dist_map.tex
+echo $backslash"end{verbatim}" >> dist_map.tex
+
+echo $backslash"begin{verbatim}" >! imprtnc.tex
+sed -e 's/	/        /g' imprtnc.c >> imprtnc.tex
+echo $backslash"end{verbatim}" >> imprtnc.tex
+
+echo $backslash"begin{verbatim}" >! lst_sqrs.tex
+sed -e 's/	/        /g' lst_sqrs.c >> lst_sqrs.tex
+echo $backslash"end{verbatim}" >> lst_sqrs.tex
+
+echo $backslash"begin{verbatim}" >! msolve.tex
+sed -e 's/	/        /g' msolve.c >> msolve.tex
+echo $backslash"end{verbatim}" >> msolve.tex
+
+echo $backslash"begin{verbatim}" >! polyarea.tex
+sed -e 's/	/        /g' polyarea.c >> polyarea.tex
+echo $backslash"end{verbatim}" >> polyarea.tex
+
+echo $backslash"begin{verbatim}" >! polygons.tex
+sed -e 's/	/        /g' polygons.c >> polygons.tex
+echo $backslash"end{verbatim}" >> polygons.tex
+
+echo $backslash"begin{verbatim}" >! transfrm.tex
+sed -e 's/	/        /g' transfrm.c >> transfrm.tex
+echo $backslash"end{verbatim}" >> transfrm.tex
+

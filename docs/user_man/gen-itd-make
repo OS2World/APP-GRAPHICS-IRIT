@@ -1,0 +1,31 @@
+#! /bin/tcsh -f
+#
+# Creates default make commands for the given itd files in the command line.
+#
+
+set IMG_TYPE = rle
+
+set all_imgs = ""
+set all_figs = ""
+
+while ( $#argv >= 1 )
+    set all_figs = "$all_figs $1:r.ps"
+    set all_imgs = "$all_imgs $1:r.$IMG_TYPE"
+    echo ""
+    echo $1:r.ps: $1:r.itd.gz
+    echo "	"irit2ps -u -p F 0.02 -f 0 128 $1:r.itd.gz ">" $1:r.ps
+    echo ""
+    echo $1:r.$IMG_TYPE":" $1:r.itd.gz
+    echo "	"irender "\044(IRENDER_OPS)" -P 0.01 $1:r.itd.gz view0mat.itd.gz "\044(IMG_POST_PROC)" ">" $1:r.$IMG_TYPE
+    echo ""
+    shift
+end
+
+echo ""
+echo "all_figures:	" $all_figs
+echo ""
+echo "all_images:	" $all_imgs
+echo ""
+
+
+

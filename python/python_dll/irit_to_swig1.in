@@ -1,0 +1,1027 @@
+%module irit
+
+/* Array handling. */
+%include "carrays.i"
+%array_functions(double, doubleArray);
+%array_class(int,intArray);
+
+
+/* Pointer handling. */
+%include typemaps.i
+
+%{
+	#include "allocate.h"
+	#include "attribut.h"
+	#include "bool_lib.h"
+	#include "cagd_lib.h"
+	#include "extra_fn.h"
+	#include "ext_lib.h"
+	#include "filt.h"
+	#include "geom_lib.h"
+	#include "ip_cnvrt.h"
+	#include "grap_lib.h"
+	#include "iritprsr.h"
+	#include "inptprsg.h"
+	#include "inptprsl.h"
+	#include "irit_sm.h"
+	#include "mdl_lib.h"
+	#include "miscattr.h"
+	#include "misc_lib.h"
+	#include "mrchcube.h"
+	#include "mvar_lib.h"
+	#include "obj_dpnd.h"
+	#include "rndr_lib.h"
+	#include "symb_lib.h"
+	#include "trim_lib.h"
+	#include "triv_lib.h"
+	#include "trng_lib.h"
+	#include "user_lib.h"
+	#include "objects.h"
+	#include "freeform.h"
+	#include "bsc_geom.h"	
+	#include "dosintr.h"
+	#include "program.h"
+	#include "overload.h"
+	#include "python_link.h"
+	#include "iritpy_interface.h"
+%}
+
+#ifdef SUN4
+    static double natural_log(double x) { return log10(x) / log10(M_E); }
+#else
+#   define natural_log  log
+#endif /* SUN4 */
+
+typedef	unsigned char	ByteType;
+typedef double IrtRType;
+
+typedef	IrtRType	IrtPtType[3];	/* For X, Y, Z coordinates of point. */
+typedef IrtRType	IrtVecType[3]; /* For X, Y, Z coordinates of vector. */
+typedef IrtRType	IrtLnType[3];	      /* A, B, C in Ax + By + C = 0. */
+typedef IrtRType	IrtNrmlType[3];	    /* Unit normalized normal coeff. */
+typedef IrtRType	IrtPlnType[4];		    /* Plane equation coeff. */
+typedef IrtRType	IrtHmgnMatType[4][4];	   /* Homogeneous transform. */
+typedef IrtPtType 	IrtBBoxType[2];	      /* Axis parallel bounding box. */
+
+typedef struct IPObjectStruct {
+    struct IPObjectStruct *Pnext;                       /* To next in chain. */
+    struct IPAttributeStruct *Attr;                  /* Object's attributes. */
+    struct IPODObjectDpndncyStruct *Dpnds;   /* Dependencies and parameters. */
+    unsigned int Count;                                  /* Reference Count. */
+    unsigned int Tags;                                   /* Some attributes. */
+    IPObjStructType ObjType;        /* Object Type: Numeric, Geometric, etc. */
+    IrtBBoxType BBox;					  /* BBox of object. */
+    union {
+        IPPolygonStruct *Pl;                           /* Polygon/line list. */
+        CagdCrvStruct *Crvs;                          /* Free form curve(s). */
+        CagdSrfStruct *Srfs;                        /* Free form surface(s). */
+        TrimSrfStruct *TrimSrfs;            /* Free form trimmed surface(s). */
+        TrivTVStruct *Trivars;                   /* Free form trivariate(s). */
+        TrngTriangSrfStruct *TriSrfs;    /* Free form triangular surface(s). */
+        IPInstanceStruct *Instance;             /* An instance of an object. */
+        MdlModelStruct *Mdls;                                    /* A model. */
+        MvarMVStruct *MultiVars;                  /* Multivariate functions. */
+        IrtRType R;                                    /* Numeric real data. */
+        IrtPtType Pt;                            /* Numeric real point data. */
+        IrtVecType Vec;                         /* Numeric real vector data. */
+        IrtPlnType Plane;                        /* Numeric real plane data. */
+        CagdCtlPtStruct CtlPt;                        /* Control point data. */
+        IrtHmgnMatType *Mat;        /* Numeric 4 by 4 transformation matrix. */
+        struct {
+            struct IPObjectStruct **PObjList;            /* List of objects. */
+            int ListMaxLen;           /* Maximum number of elements in list. */
+        } Lst;
+        char *Str;                        /* General string for text object. */
+        VoidPtr *VPtr;
+    } U;
+    char *ObjName;		                          /* Name of object. */
+        
+} IPObjectStruct;
+
+
+%extend IPObjectStruct {
+    int __eq__(IPObjectStruct* right)
+    {          
+        InptPrsrEvalErrType nError;
+        char cError[80];
+    
+        ParseTree *pRoot = malloc(sizeof(ParseTree));
+        ParseTree *pRight = malloc(sizeof(ParseTree));
+        ParseTree *pLeft = malloc(sizeof(ParseTree));
+        ParseTree *pResult;
+        
+        pRoot -> NodeKind = IP_TKN_CMP_EQUAL;
+        pRoot -> PObj = NULL;
+        pRoot -> UserFunc = NULL;
+        pRoot -> Left = pLeft;
+        pRoot -> Right = pRight;
+        
+        pLeft -> NodeKind = IP_TKN_PARAMETER;
+        pLeft -> PObj = self;
+        pLeft -> UserFunc = NULL;
+        pLeft -> Left = NULL;
+        pLeft -> Right = NULL;
+        
+        pRight -> NodeKind = IP_TKN_PARAMETER;
+        pRight -> PObj = right;
+        pRight -> UserFunc = NULL;
+        pRight -> Left = NULL;
+        pRight -> Right = NULL;
+        
+        pResult = InptEvalCompareObject(pRoot, pLeft, pRight, &nError, cError);            
+        return (int)(pResult -> PObj ->U.R);
+    }
+    
+    int __ne__(IPObjectStruct* right)
+    {          
+        InptPrsrEvalErrType nError;
+        char cError[80];
+    
+        ParseTree *pRoot = malloc(sizeof(ParseTree));
+        ParseTree *pRight = malloc(sizeof(ParseTree));
+        ParseTree *pLeft = malloc(sizeof(ParseTree));
+        ParseTree *pResult;
+        
+        pRoot -> NodeKind = IP_TKN_CMP_NOTEQUAL;
+        pRoot -> PObj = NULL;
+        pRoot -> UserFunc = NULL;
+        pRoot -> Left = pLeft;
+        pRoot -> Right = pRight;
+        
+        pLeft -> NodeKind = IP_TKN_PARAMETER;
+        pLeft -> PObj = self;
+        pLeft -> UserFunc = NULL;
+        pLeft -> Left = NULL;
+        pLeft -> Right = NULL;
+        
+        pRight -> NodeKind = IP_TKN_PARAMETER;
+        pRight -> PObj = right;
+        pRight -> UserFunc = NULL;
+        pRight -> Left = NULL;
+        pRight -> Right = NULL;
+        
+        pResult = InptEvalCompareObject(pRoot, pLeft, pRight, &nError, cError);            
+        return (int)(pResult -> PObj ->U.R);
+    }
+    
+    int __gt__(IPObjectStruct* right)
+    {          
+        InptPrsrEvalErrType nError;
+        char cError[80];
+    
+        ParseTree *pRoot = malloc(sizeof(ParseTree));
+        ParseTree *pRight = malloc(sizeof(ParseTree));
+        ParseTree *pLeft = malloc(sizeof(ParseTree));
+        ParseTree *pResult;
+        
+        pRoot -> NodeKind = IP_TKN_CMP_GREAT;
+        pRoot -> PObj = NULL;
+        pRoot -> UserFunc = NULL;
+        pRoot -> Left = pLeft;
+        pRoot -> Right = pRight;
+        
+        pLeft -> NodeKind = IP_TKN_PARAMETER;
+        pLeft -> PObj = self;
+        pLeft -> UserFunc = NULL;
+        pLeft -> Left = NULL;
+        pLeft -> Right = NULL;
+        
+        pRight -> NodeKind = IP_TKN_PARAMETER;
+        pRight -> PObj = right;
+        pRight -> UserFunc = NULL;
+        pRight -> Left = NULL;
+        pRight -> Right = NULL;
+        
+        pResult = InptEvalCompareObject(pRoot, pLeft, pRight, &nError, cError);            
+        return (int)(pResult -> PObj ->U.R);
+    }
+    
+    int __lt__(IPObjectStruct* right)
+    {          
+        InptPrsrEvalErrType nError;
+        char cError[80];
+    
+        ParseTree *pRoot = malloc(sizeof(ParseTree));
+        ParseTree *pRight = malloc(sizeof(ParseTree));
+        ParseTree *pLeft = malloc(sizeof(ParseTree));
+        ParseTree *pResult;
+        
+        pRoot -> NodeKind = IP_TKN_CMP_LESS;
+        pRoot -> PObj = NULL;
+        pRoot -> UserFunc = NULL;
+        pRoot -> Left = pLeft;
+        pRoot -> Right = pRight;
+        
+        pLeft -> NodeKind = IP_TKN_PARAMETER;
+        pLeft -> PObj = self;
+        pLeft -> UserFunc = NULL;
+        pLeft -> Left = NULL;
+        pLeft -> Right = NULL;
+        
+        pRight -> NodeKind = IP_TKN_PARAMETER;
+        pRight -> PObj = right;
+        pRight -> UserFunc = NULL;
+        pRight -> Left = NULL;
+        pRight -> Right = NULL;
+        
+        pResult = InptEvalCompareObject(pRoot, pLeft, pRight, &nError, cError);            
+        return (int)(pResult -> PObj ->U.R);
+    }
+    
+    int __ge__(IPObjectStruct* right)
+    {          
+        InptPrsrEvalErrType nError;
+        char cError[80];
+    
+        ParseTree *pRoot = malloc(sizeof(ParseTree));
+        ParseTree *pRight = malloc(sizeof(ParseTree));
+        ParseTree *pLeft = malloc(sizeof(ParseTree));
+        ParseTree *pResult;
+        
+        pRoot -> NodeKind = IP_TKN_CMP_GTEQUAL;
+        pRoot -> PObj = NULL;
+        pRoot -> UserFunc = NULL;
+        pRoot -> Left = pLeft;
+        pRoot -> Right = pRight;
+        
+        pLeft -> NodeKind = IP_TKN_PARAMETER;
+        pLeft -> PObj = self;
+        pLeft -> UserFunc = NULL;
+        pLeft -> Left = NULL;
+        pLeft -> Right = NULL;
+        
+        pRight -> NodeKind = IP_TKN_PARAMETER;
+        pRight -> PObj = right;
+        pRight -> UserFunc = NULL;
+        pRight -> Left = NULL;
+        pRight -> Right = NULL;
+        
+        pResult = InptEvalCompareObject(pRoot, pLeft, pRight, &nError, cError);            
+        return (int)(pResult -> PObj ->U.R);
+    }
+    
+    int __le__(IPObjectStruct* right)
+    {          
+        InptPrsrEvalErrType nError;
+        char cError[80];
+    
+        ParseTree *pRoot = malloc(sizeof(ParseTree));
+        ParseTree *pRight = malloc(sizeof(ParseTree));
+        ParseTree *pLeft = malloc(sizeof(ParseTree));
+        ParseTree *pResult;
+        
+        pRoot -> NodeKind = IP_TKN_CMP_LSEQUAL;
+        pRoot -> PObj = NULL;
+        pRoot -> UserFunc = NULL;
+        pRoot -> Left = pLeft;
+        pRoot -> Right = pRight;
+        
+        pLeft -> NodeKind = IP_TKN_PARAMETER;
+        pLeft -> PObj = self;
+        pLeft -> UserFunc = NULL;
+        pLeft -> Left = NULL;
+        pLeft -> Right = NULL;
+        
+        pRight -> NodeKind = IP_TKN_PARAMETER;
+        pRight -> PObj = right;
+        pRight -> UserFunc = NULL;
+        pRight -> Left = NULL;
+        pRight -> Right = NULL;
+        
+        pResult = InptEvalCompareObject(pRoot, pLeft, pRight, &nError, cError);            
+        return (int)(pResult -> PObj ->U.R);
+    }
+    
+  
+    IPObjectStruct* __add__(IPObjectStruct* right)   
+    {
+        InptPrsrEvalErrType nError;
+        char cError[80];
+        
+        ParseTree *pRoot = malloc(sizeof(ParseTree));
+        ParseTree *pRight = malloc(sizeof(ParseTree));
+        ParseTree *pLeft = malloc(sizeof(ParseTree));
+        ParseTree *pResult = NULL;
+        
+        pRoot -> NodeKind = IP_TKN_PLUS;
+        pRoot -> PObj = NULL;
+        pRoot -> UserFunc = NULL;
+        
+        pLeft -> NodeKind = IP_TKN_PARAMETER;
+        pLeft -> PObj = self;
+        pLeft -> UserFunc = NULL;
+        pLeft -> Left = NULL;
+        pLeft -> Right = NULL;
+        
+        pRight -> NodeKind = IP_TKN_PARAMETER;
+        pRight -> PObj = right;
+        pRight -> UserFunc = NULL;
+        pRight -> Left = NULL;
+        pRight -> Right = NULL;
+                
+        pResult = OverLoadEvalOper(pRoot, pRight, pLeft, &nError, cError);
+
+        if (pResult == NULL) {
+            printf("Not legal operation.");
+            return NULL;
+        }
+        
+        free(pRoot);
+        free(pRight);
+        free(pLeft);
+        return pResult -> PObj;
+    } 
+    
+    IPObjectStruct* __add__(IrtRType right) 
+    {                
+        InptPrsrEvalErrType nError;
+        char cError[80];        
+                
+        ParseTree *pRoot = malloc(sizeof(ParseTree));
+        ParseTree *pRight = malloc(sizeof(ParseTree));
+        ParseTree *pLeft = malloc(sizeof(ParseTree));
+        ParseTree *pResult;
+        
+        pRoot -> NodeKind = IP_TKN_PLUS;
+        pRoot -> PObj = NULL;
+        pRoot -> UserFunc = NULL;
+        
+        pLeft -> NodeKind = IP_TKN_PARAMETER;
+        pLeft -> PObj = self;
+        pLeft -> UserFunc = NULL;
+        pLeft -> Left = NULL;
+        pLeft -> Right = NULL;
+        
+        pRight -> NodeKind = IP_TKN_PARAMETER;
+        pRight -> PObj = IPGenNUMObject(&right);
+        pRight -> UserFunc = NULL;   
+        pRight -> Left = NULL;
+        pRight -> Right = NULL;
+        
+                                     
+        pResult = OverLoadEvalOper(pRoot, pRight, pLeft, &nError, cError);
+        if (pResult == NULL) {
+            printf("Not legal operation.");
+            return NULL;
+        }
+        
+        free(pRoot);
+        free(pRight);
+        free(pLeft);
+        return pResult -> PObj;
+    }
+    
+    IPObjectStruct* __sub__(IPObjectStruct* right)
+    {
+        InptPrsrEvalErrType nError;
+        char cError[80];
+        
+        ParseTree *pRoot = malloc(sizeof(ParseTree));
+        ParseTree *pRight = malloc(sizeof(ParseTree));
+        ParseTree *pLeft = malloc(sizeof(ParseTree));
+        ParseTree *pResult;
+        
+        pRoot -> NodeKind = IP_TKN_MINUS;
+        pRoot -> PObj = NULL;
+        pRoot -> UserFunc = NULL;
+        
+        pLeft -> NodeKind = IP_TKN_PARAMETER;
+        pLeft -> PObj = self;
+        pLeft -> UserFunc = NULL;
+        pLeft -> Left = NULL;
+        pLeft -> Right = NULL;
+        
+        pRight -> NodeKind = IP_TKN_PARAMETER;
+        pRight -> PObj = right;
+        pRight -> UserFunc = NULL;
+        pRight -> Left = NULL;
+        pRight -> Right = NULL;
+        
+        pResult = OverLoadEvalOper(pRoot, pRight, pLeft, &nError, cError);
+        
+        if (pResult == NULL) {
+            printf("Not legal operation.");
+            return NULL;
+        }
+        
+        free(pRoot);
+        free(pRight);
+        free(pLeft);
+        return pResult -> PObj;
+    }
+    
+    IPObjectStruct* __sub__(IrtRType right)
+    {
+        InptPrsrEvalErrType nError;
+        char cError[80];
+        
+        ParseTree *pRoot = malloc(sizeof(ParseTree));
+        ParseTree *pRight = malloc(sizeof(ParseTree));
+        ParseTree *pLeft = malloc(sizeof(ParseTree));
+        ParseTree *pResult;
+        
+        pRoot -> NodeKind = IP_TKN_MINUS;
+        pRoot -> PObj = NULL;
+        pRoot -> UserFunc = NULL;
+        
+        pLeft -> NodeKind = IP_TKN_PARAMETER;
+        pLeft -> PObj = self;
+        pLeft -> UserFunc = NULL;
+        pLeft -> Left = NULL;
+        pLeft -> Right = NULL;
+        
+        pRight -> NodeKind = IP_TKN_PARAMETER;
+        pRight -> PObj = IPGenNUMObject(&right);
+        pRight -> UserFunc = NULL;
+        pRight -> Left = NULL;
+        pRight -> Right = NULL;
+        
+        pResult = OverLoadEvalOper(pRoot, pRight, pLeft, &nError, cError);
+        
+        if (pResult == NULL) {
+            printf("Not legal operation.");
+            return NULL;
+        }
+        
+        free(pRoot);
+        free(pRight);
+        free(pLeft);
+        return pResult -> PObj;
+    }
+    
+    IPObjectStruct* __mul__(IPObjectStruct* right)
+    {
+        InptPrsrEvalErrType nError;
+        char cError[80];
+        
+        ParseTree *pRoot = malloc(sizeof(ParseTree));
+        ParseTree *pRight = malloc(sizeof(ParseTree));
+        ParseTree *pLeft = malloc(sizeof(ParseTree));
+        ParseTree *pResult;
+        
+        pRoot -> NodeKind = IP_TKN_MULT;
+        pRoot -> PObj = NULL;
+        pRoot -> UserFunc = NULL;
+        
+        pLeft -> NodeKind = IP_TKN_PARAMETER;
+        pLeft -> PObj = self;
+        pLeft -> UserFunc = NULL;
+        pLeft -> Left = NULL;
+        pLeft -> Right = NULL;
+        
+        pRight -> NodeKind = IP_TKN_PARAMETER;
+        pRight -> PObj = right;
+        pRight -> UserFunc = NULL;
+        pRight -> Left = NULL;
+        pRight -> Right = NULL;
+        
+        pResult = OverLoadEvalOper(pRoot, pRight, pLeft, &nError, cError);
+        
+        if (pResult == NULL) {
+            printf("Not legal operation.");
+            return NULL;
+        }
+        
+        free(pRoot);
+        free(pRight);
+        free(pLeft);
+        return pResult -> PObj;
+    }
+    
+    IPObjectStruct* __mul__(IrtRType right)
+    {
+        InptPrsrEvalErrType nError;
+        char cError[80];
+        
+        ParseTree *pRoot = malloc(sizeof(ParseTree));
+        ParseTree *pRight = malloc(sizeof(ParseTree));
+        ParseTree *pLeft = malloc(sizeof(ParseTree));
+        ParseTree *pResult;
+        
+        pRoot -> NodeKind = IP_TKN_MULT;
+        pRoot -> PObj = NULL;
+        pRoot -> UserFunc = NULL;
+        
+        pLeft -> NodeKind = IP_TKN_PARAMETER;
+        pLeft -> PObj = self;
+        pLeft -> UserFunc = NULL;
+        pLeft -> Left = NULL;
+        pLeft -> Right = NULL;
+        
+        pRight -> NodeKind = IP_TKN_PARAMETER;
+        pRight -> PObj = IPGenNUMObject(&right);
+        pRight -> UserFunc = NULL;
+        pRight -> Left = NULL;
+        pRight -> Right = NULL;
+        
+        pResult = OverLoadEvalOper(pRoot, pRight, pLeft, &nError, cError);
+        
+        if (pResult == NULL) {
+            printf("Not legal operation.");
+            return NULL;
+        }
+        
+        free(pRoot);
+        free(pRight);
+        free(pLeft);
+        return pResult -> PObj;
+    }
+    
+    IPObjectStruct* __div__(IPObjectStruct* right)
+    {
+        InptPrsrEvalErrType nError;
+        char cError[80];
+        
+        ParseTree *pRoot = malloc(sizeof(ParseTree));
+        ParseTree *pRight = malloc(sizeof(ParseTree));
+        ParseTree *pLeft = malloc(sizeof(ParseTree));
+        ParseTree *pResult;
+        
+        pRoot -> NodeKind = IP_TKN_DIV;
+        pRoot -> PObj = NULL;
+        pRoot -> UserFunc = NULL;
+        
+        pLeft -> NodeKind = IP_TKN_PARAMETER;
+        pLeft -> PObj = self;
+        pLeft -> UserFunc = NULL;
+        pLeft -> Left = NULL;
+        pLeft -> Right = NULL;
+        
+        pRight -> NodeKind = IP_TKN_PARAMETER;
+        pRight -> PObj = right;
+        pRight -> UserFunc = NULL;
+        pRight -> Left = NULL;
+        pRight -> Right = NULL;
+        
+        pResult = OverLoadEvalOper(pRoot, pRight, pLeft, &nError, cError);
+        
+        if (pResult == NULL) {
+            printf("Not legal operation.");
+            return NULL;
+        }
+        
+        free(pRoot);
+        free(pRight);
+        free(pLeft);
+        return pResult -> PObj;
+    }
+    
+    IPObjectStruct* __div__(IrtRType right)
+    {
+        InptPrsrEvalErrType nError;
+        char cError[80];
+        
+        ParseTree *pRoot = malloc(sizeof(ParseTree));
+        ParseTree *pRight = malloc(sizeof(ParseTree));
+        ParseTree *pLeft = malloc(sizeof(ParseTree));
+        ParseTree *pResult;
+        
+        pRoot -> NodeKind = IP_TKN_DIV;
+        pRoot -> PObj = NULL;
+        pRoot -> UserFunc = NULL;
+        
+        pLeft -> NodeKind = IP_TKN_PARAMETER;
+        pLeft -> PObj = self;
+        pLeft -> UserFunc = NULL;
+        pLeft -> Left = NULL;
+        pLeft -> Right = NULL;
+        
+        pRight -> NodeKind = IP_TKN_PARAMETER;
+        pRight -> PObj = IPGenNUMObject(&right);
+        pRight -> UserFunc = NULL;
+        pRight -> Left = NULL;
+        pRight -> Right = NULL;
+        
+        pResult = OverLoadEvalOper(pRoot, pRight, pLeft, &nError, cError);
+        
+        if (pResult == NULL) {
+            printf("Not legal operation.");
+            return NULL;
+        }
+        
+        free(pRoot);
+        free(pRight);
+        free(pLeft);
+        return pResult -> PObj;
+    }
+    
+    IPObjectStruct* __xor__(IrtRType right)
+    {
+        InptPrsrEvalErrType nError;
+        char cError[80];
+        
+        ParseTree *pRoot = malloc(sizeof(ParseTree));
+        ParseTree *pRight = malloc(sizeof(ParseTree));
+        ParseTree *pLeft = malloc(sizeof(ParseTree));
+        ParseTree *pResult;
+        
+        pRoot -> NodeKind = IP_TKN_POWER;
+        pRoot -> PObj = NULL;
+        pRoot -> UserFunc = NULL;
+        
+        pLeft -> NodeKind = IP_TKN_PARAMETER;
+        pLeft -> PObj = self;
+        pLeft -> UserFunc = NULL;
+        pLeft -> Left = NULL;
+        pLeft -> Right = NULL;
+        
+        pRight -> NodeKind = IP_TKN_PARAMETER;
+        pRight -> PObj = IPGenNUMObject(&right);
+        pRight -> UserFunc = NULL;
+        pRight -> Left = NULL;
+        pRight -> Right = NULL;
+        
+        pResult = OverLoadEvalOper(pRoot, pRight, pLeft, &nError, cError);
+        
+        if (pResult == NULL) {
+            printf("Not legal operation.");
+            return NULL;
+        }
+        
+        free(pRoot);
+        free(pRight);
+        free(pLeft);
+        return pResult -> PObj;
+    }
+    
+    IPObjectStruct* __xor__(IPObjectStruct* right)
+    {
+        InptPrsrEvalErrType nError;
+        char cError[80];
+        
+        ParseTree *pRoot = malloc(sizeof(ParseTree));
+        ParseTree *pRight = malloc(sizeof(ParseTree));
+        ParseTree *pLeft = malloc(sizeof(ParseTree));
+        ParseTree *pResult;
+        
+        pRoot -> NodeKind = IP_TKN_POWER;
+        pRoot -> PObj = NULL;
+        pRoot -> UserFunc = NULL;
+        
+        pLeft -> NodeKind = IP_TKN_PARAMETER;
+        pLeft -> PObj = self;
+        pLeft -> UserFunc = NULL;
+        pLeft -> Left = NULL;
+        pLeft -> Right = NULL;
+        
+        pRight -> NodeKind = IP_TKN_PARAMETER;
+        pRight -> PObj = right;
+        pRight -> UserFunc = NULL;
+        pRight -> Left = NULL;
+        pRight -> Right = NULL;
+        
+        pResult = OverLoadEvalOper(pRoot, pRight, pLeft, &nError, cError);
+        
+        if (pResult == NULL) {
+            printf("Not legal operation.");
+            return NULL;
+        }
+        
+        free(pRoot);
+        free(pRight);
+        free(pLeft);
+        return pResult -> PObj;
+    }
+    
+            
+    IPObjectStruct* __neg__()
+    {
+        InptPrsrEvalErrType nError;
+        char cError[80];
+        
+        ParseTree *pRoot = malloc(sizeof(ParseTree));
+        ParseTree *pRight = malloc(sizeof(ParseTree));
+        ParseTree *pLeft = malloc(sizeof(ParseTree));
+        ParseTree *pResult;
+        
+        pRoot -> NodeKind = IP_TKN_UNARMINUS;
+        pRoot -> PObj = NULL;
+        pRoot -> UserFunc = NULL;
+        
+        pLeft -> NodeKind = IP_TKN_PARAMETER;
+        pLeft -> PObj = NULL;
+        pLeft -> UserFunc = NULL;
+        pLeft -> Left = NULL;
+        pLeft -> Right = NULL;
+        
+        pRight -> NodeKind = IP_TKN_PARAMETER;
+        pRight -> PObj = self;
+        pRight -> UserFunc = NULL;
+        pRight -> Left = NULL;
+        pRight -> Right = NULL;
+        
+        pResult = OverLoadEvalOper(pRoot, pRight, pLeft, &nError, cError);
+        
+        if (pResult == NULL) {
+            printf("Not legal operation.");
+            return NULL;
+        }
+        
+        free(pRoot);
+        free(pRight);
+        free(pLeft);
+        return pResult -> PObj;
+    }
+};
+
+typedef enum {
+    IP_OBJ_UNDEF = 0,
+
+    IP_OBJ_POLY,                     /* These are the objects in overload.c. */
+    IP_OBJ_NUMERIC,
+    IP_OBJ_POINT,
+    IP_OBJ_VECTOR,
+    IP_OBJ_PLANE,
+    IP_OBJ_MATRIX,
+    IP_OBJ_CURVE,
+    IP_OBJ_SURFACE,
+    IP_OBJ_STRING,
+    IP_OBJ_LIST_OBJ,
+    IP_OBJ_CTLPT,
+    IP_OBJ_TRIMSRF,
+    IP_OBJ_TRIVAR,
+    IP_OBJ_INSTANCE,
+    IP_OBJ_TRISRF,
+    IP_OBJ_MODEL,
+    IP_OBJ_MULTIVAR,
+
+    IP_OBJ_ANY = 100		 /* Match any object type, in type checking. */
+} IPObjStructType;
+
+
+/* Arrays with 3 elements. */
+%typemap(in) double[3](double temp[3]) {   
+  if (PyTuple_Check($input)) {
+    if (!PyArg_ParseTuple($input, "ddd", temp, temp + 1, temp + 2)) {
+      PyErr_SetString(PyExc_TypeError,"This type must have 3 elements.");
+      return NULL;
+    }
+    $1 = &temp[0];
+  } else {
+    PyErr_SetString(PyExc_TypeError, "Expected a type with 3 elements.");
+    return NULL;
+  }
+}
+
+/* Arrays with 4 elements. */
+%typemap(in) double[4](double temp[4]) {   
+  if (PyTuple_Check($input)) {
+    if (!PyArg_ParseTuple($input, "dddd", temp, temp + 1, temp + 2, temp + 3)) {
+      PyErr_SetString(PyExc_TypeError,"This type must have 4 elements.");
+      return NULL;
+    }
+    $1 = &temp[0];
+  } else {
+    PyErr_SetString(PyExc_TypeError, "Expected a type with 4 elements.");
+    return NULL;
+  }
+}
+
+%constant PI    = M_PI;
+%constant ON    = 1.0;
+%constant TRUE  = 1.0;
+%constant OFF   = 0.0;
+%constant FALSE = 0.0;
+
+%constant COL   = (double) CAGD_CONST_U_DIR; 
+%constant ROW   = (double) CAGD_CONST_V_DIR;
+%constant DEPTH = (double) TRIV_CONST_W_DIR;
+
+%constant CLIENTS_ALL = (double) IP_CLNT_BROADCAST_ALL_HANDLES; 
+
+%constant KV_OPEN         = (double) KV_UNIFORM_OPEN;
+%constant KV_DISC_OPEN    = (double) KV_UNIFORM_DISCONT_OPEN;
+%constant KV_FLOAT        = (double) KV_UNIFORM_FLOAT;
+%constant KV_PERIODIC     = (double) KV_UNIFORM_PERIODIC;
+
+%constant PARAM_NIELFOL   = (double) CAGD_NIELSON_FOLEY_PARAM;
+%constant PARAM_CHORD     = (double) CAGD_CHORD_LEN_PARAM;
+%constant PARAM_CENTRIP   = (double) CAGD_CENTRIPETAL_PARAM;
+%constant PARAM_UNIFORM   = (double) CAGD_UNIFORM_PARAM;
+
+%constant E1 = (double) CAGD_PT_E1_TYPE; 
+%constant E2 = (double) CAGD_PT_E2_TYPE; 
+%constant E3 = (double) CAGD_PT_E3_TYPE; 
+%constant E4 = (double) CAGD_PT_E4_TYPE; 
+%constant E5 = (double) CAGD_PT_E5_TYPE; 
+%constant E6 = (double) CAGD_PT_E6_TYPE; 
+%constant E7 = (double) CAGD_PT_E7_TYPE; 
+%constant E8 = (double) CAGD_PT_E8_TYPE; 
+%constant E9 = (double) CAGD_PT_E9_TYPE; 
+
+%constant P1 = (double) CAGD_PT_P1_TYPE; 
+%constant P2 = (double) CAGD_PT_P2_TYPE; 
+%constant P3 = (double) CAGD_PT_P3_TYPE; 
+%constant P4 = (double) CAGD_PT_P4_TYPE; 
+%constant P5 = (double) CAGD_PT_P5_TYPE; 
+%constant P6 = (double) CAGD_PT_P6_TYPE; 
+%constant P7 = (double) CAGD_PT_P7_TYPE; 
+%constant P8 = (double) CAGD_PT_P8_TYPE; 
+%constant P9 = (double) CAGD_PT_P9_TYPE; 
+
+%constant UNDEF_TYPE      = (double) IP_OBJ_UNDEF;
+%constant POLY_TYPE       = (double) IP_OBJ_POLY; 
+%constant NUMERIC_TYPE    = (double) IP_OBJ_NUMERIC; 
+%constant POINT_TYPE      = (double) IP_OBJ_POINT; 
+%constant VECTOR_TYPE     = (double) IP_OBJ_VECTOR; 
+%constant PLANE_TYPE      = (double) IP_OBJ_PLANE; 
+%constant MATRIX_TYPE     = (double) IP_OBJ_MATRIX; 
+%constant CURVE_TYPE      = (double) IP_OBJ_CURVE; 
+%constant SURFACE_TYPE    = (double) IP_OBJ_SURFACE;
+%constant STRING_TYPE     = (double) IP_OBJ_STRING; 
+%constant CTLPT_TYPE      = (double) IP_OBJ_CTLPT; 
+%constant LIST_TYPE       = (double) IP_OBJ_LIST_OBJ; 
+%constant TRIVAR_TYPE     = (double) IP_OBJ_TRIVAR; 
+%constant TRISRF_TYPE     = (double) IP_OBJ_TRISRF; 
+%constant TRIMSRF_TYPE    = (double) IP_OBJ_TRIMSRF; 
+%constant MODEL_TYPE      = (double) IP_OBJ_MODEL; 
+%constant MULTIVAR_TYPE   = (double) IP_OBJ_MULTIVAR; 
+
+%constant BEZIER_TYPE     = (double) FF_BEZIER_TYPE; 
+%constant BSPLINE_TYPE    = (double) FF_BSPLINE_TYPE; 
+%constant POWER_TYPE      = (double) FF_POWER_TYPE; 
+%constant GREGORY_TYPE    = (double) FF_GREGORY_TYPE; 
+
+%constant GEOM_CONST          = (double) CAGD_GEOM_CONST; 
+%constant GEOM_LINEAR         = (double) CAGD_GEOM_LINEAR;
+%constant GEOM_CIRCULAR       = (double) CAGD_GEOM_CIRCULAR; 
+%constant GEOM_PLANAR         = (double) CAGD_GEOM_PLANAR; 
+%constant GEOM_SPHERICAL      = (double) CAGD_GEOM_SPHERICAL; 
+%constant GEOM_SRF_OF_REV     = (double) CAGD_GEOM_SRF_OF_REV; 
+%constant GEOM_EXTRUSION      = (double) CAGD_GEOM_EXTRUSION; 
+%constant GEOM_RULED_SRF      = (double) CAGD_GEOM_RULED_SRF; 
+%constant GEOM_DEVELOP_SRF    = (double) CAGD_GEOM_DEVELOP_SRF; 
+%constant GEOM_SWEEP          = (double) CAGD_GEOM_SWEEP_SRF; 
+
+%constant BLACK     = (double) IG_IRIT_BLACK; 
+%constant BLUE	    = (double) IG_IRIT_BLUE; 
+%constant GREEN	    = (double) IG_IRIT_GREEN;
+%constant CYAN	    = (double) IG_IRIT_CYAN; 
+%constant RED	    = (double) IG_IRIT_RED; 
+%constant MAGENTA   = (double) IG_IRIT_MAGENTA;
+%constant YELLOW    = (double) IG_IRIT_YELLOW; 
+%constant WHITE     = (double) IG_IRIT_WHITE; 
+
+%constant MSDOS   = (double) IRIT_MACHINE_MSDOS; 
+%constant SGI     = (double) IRIT_MACHINE_SGI; 
+%constant HP      = (double) IRIT_MACHINE_HP; 
+%constant APOLLO  = (double) IRIT_MACHINE_APOLLO; 
+%constant SUN     = (double) IRIT_MACHINE_SUN;
+%constant UNIX    = (double) IRIT_MACHINE_UNIX;
+%constant IBMOS2  = (double) IRIT_MACHINE_IBMOS2; 
+%constant WINDOWS = (double) IRIT_MACHINE_WINDOWS; 
+%constant AMIGA   = (double) IRIT_MACHINE_AMIGA; 
+%constant CYGWIN  = (double) IRIT_MACHINE_CYGWIN; 
+%constant MACOSX  = (double) IRIT_MACHINE_MACOSX; 
+%constant LINUX   = (double) IRIT_MACHINE_LINUX; 
+
+%{
+
+typedef void (*IrtPyPutsFuncType)(char *Line);
+
+IRIT_STATIC_DATA IrtPyPutsFuncType
+    GlblIrtPyStdoutFunc = NULL,
+    GlblIrtPyStderrFunc = NULL;
+
+/*****************************************************************************
+* DESCRIPTION:                                                               M
+*   Sets the function that should be used to print one line to stdout.       M
+*                                                                            *
+* PARAMETERS:                                                                M
+*   Func:    New STDOUT function to use.                                     M
+*                                                                            *
+* RETURN VALUE:                                                              M
+*   long:   Old STDOUT function.		                             M
+*                                                                            *
+* KEYWORDS:                                                                  M
+*   IrtPySetSTDOUTLineFunc                                                   M
+*****************************************************************************/
+long IrtPySetSTDOUTLineFunc(long Func)
+{
+    IrtPyPutsFuncType
+	OldVal = GlblIrtPyStdoutFunc;
+
+    GlblIrtPyStdoutFunc = (IrtPyPutsFuncType) Func;
+
+    return (long) OldVal;
+}
+
+/*****************************************************************************
+* DESCRIPTION:                                                               M
+*   Sets the function that should be used to print one line to stderr.       M
+*                                                                            *
+* PARAMETERS:                                                                M
+*   Func:    New STDERR function to use.                                     M
+*                                                                            *
+* RETURN VALUE:                                                              M
+*   long:   Old STDERR function. 		                             M
+*                                                                            *
+* KEYWORDS:                                                                  M
+*   IrtPySetSTDERRLineFunc                                                   M
+*****************************************************************************/
+long IrtPySetSTDERRLineFunc(long Func)
+{
+    IrtPyPutsFuncType
+	OldVal = GlblIrtPyStderrFunc;
+
+    GlblIrtPyStderrFunc = (IrtPyPutsFuncType) Func;
+
+    return (long) OldVal;
+}
+
+/*****************************************************************************
+* DESCRIPTION:                                                               M
+*   gets a line from stdout's Python interpreter.			     M
+*                                                                            *
+* PARAMETERS:                                                                M
+*   Line: STDOUT line recieved.                                              M
+*                                                                            *
+* RETURN VALUE:                                                              M
+*   void		                                                     M
+*                                                                            *
+* KEYWORDS:                                                                  M
+*   IrtPyGetOneSTDOUTLine                                                    M
+*****************************************************************************/
+void IrtPyGetOneSTDOUTLine(char *Line)
+{
+    if (GlblIrtPyStdoutFunc == NULL)
+	printf("STDOUT: %s", Line);
+    else
+	GlblIrtPyStdoutFunc(Line);
+}
+
+/*****************************************************************************
+* DESCRIPTION:                                                               M
+*   gets a line from stderr's Python interpreter.			     M
+*                                                                            *
+* PARAMETERS:                                                                M
+*   Line: STDERR line recieved.                                              M
+*                                                                            *
+* RETURN VALUE:                                                              M
+*   void		                                                     M
+*                                                                            *
+* KEYWORDS:                                                                  M
+*   IrtPyGetOneSTDERRLine                                                    M
+*****************************************************************************/
+void IrtPyGetOneSTDERRLine(char *Line)
+{
+    if (GlblIrtPyStderrFunc == NULL)
+	fprintf(stderr, "STDERR: %s", Line);
+    else
+	GlblIrtPyStderrFunc(Line);
+}
+%}
+
+%rename(write_stdout) IrtPyGetOneSTDOUTLine;
+void IrtPyGetOneSTDOUTLine(char *Line);
+
+%rename(write_stderr) IrtPyGetOneSTDERRLine;
+void IrtPyGetOneSTDERRLine(char *Line);
+
+%rename(_set_stdout) IrtPySetSTDOUTLineFunc;
+long IrtPySetSTDOUTLineFunc(long Func);
+
+%rename(_set_stderr) IrtPySetSTDERRLineFunc;
+long IrtPySetSTDERRLineFunc(long Func);
+
+
+%rename(GetViewMatrix) IritPyGetViewMatrix;
+%rename(SetViewMatrix) IritPySetViewMatrix;
+%rename(GetPrspMatrix) IritPyGetPrspMatrix;
+%rename(SetPrspMatrix) IritPySetPrspMatrix;
+
+%rename(GetResolution) IritPyGetResolution;
+%rename(SetResolution) IritPySetResolution;
+
+%rename(GetDrawCtlpt) IritPyGetDrawCtlpt;
+%rename(SetDrawCtlpt) IritPySetDrawCtlpt;
+%rename(GetFlat4Ply) IritPyGetFlat4Ply;
+%rename(SetFlat4Ply) IritPySetFlat4Ply;
+%rename(GetPolyApproxOpt) IritPyGetPolyApproxOpt;
+%rename(SetPolyApproxOpt) IritPySetPolyApproxOpt;
+%rename(GetPolyApproxUV) IritPyGetPolyApproxUV;
+%rename(SetPolyApproxUV) IritPySetPolyApproxUV;
+%rename(GetPolyApproxTri) IritPyGetPolyApproxTri;
+%rename(SetPolyApproxTri) IritPySetPolyApproxTri;
+%rename(GetPolyApproxTol) IritPyGetPolyApproxTol;
+%rename(SetPolyApproxTol) IritPySetPolyApproxTol;
+%rename(GetPolyMergeCoplanar) IritPyGetPolyMergeCoplanar;
+%rename(SetPolyMergeCoplanar) IritPySEtPolyMergeCoplanar;
+%rename(GetMachine) IritPyGetMachine;
+%rename(GetAxes) IritPyGetAxes;
+%rename(GetUsrFnList) IritPyGetUsrFnList;
+%rename(SetObjectName) IritPySetObjectName;
+
+%rename(PrintObject) IritPyStdoutObject;
+%rename(PrintObjectErr) IritPyStderrObject;
+%rename(GenStrObject) IritPyGenStrObject;
+%rename(GenRealObject) IritPyGenRealObject;
+%rename(GenIntObject) IritPyGenIntObject;
+%rename(GenNullObject) IritPyGenNullObject;
+%rename(IsNullObject) IritPyIsNullObject;
+%rename(ThisObject) IritPyThisObject;
+%rename(GetMeshSize) IritPyGetMeshSize;
+
+%rename(FetchStrObject) IritPyFetchStrObject;
+%rename(FetchRealObject) IritPyFetchRealObject;
+%rename(FetchIntObject) IritPyFetchIntObject;

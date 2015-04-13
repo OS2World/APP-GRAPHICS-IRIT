@@ -1,0 +1,968 @@
+
+%pythoncode
+%{
+    import irit
+    import math
+    IritDisplayDeviceActive = 0;
+    import atexit
+    def exitDisplayDevice():
+        if irit.IritDisplayDeviceActive == 1:
+                irit.viewexit()
+                irit.msleep(500)
+
+    atexit.register(exitDisplayDevice)
+
+    irit.IritInit()
+    
+    def Fetch3TupleObject(vec) :
+        return (irit.FetchRealObject(irit.coord(vec,0)),\
+                irit.FetchRealObject(irit.coord(vec,1)),\
+                irit.FetchRealObject(irit.coord(vec,2)))
+
+    def Fetch4TupleObject(vec) :
+        return (irit.FetchRealObject(irit.coord(vec,0)),\
+                irit.FetchRealObject(irit.coord(vec,1)),\
+                irit.FetchRealObject(irit.coord(vec,2)),\
+                irit.FetchRealObject(irit.coord(vec,3)) )
+                
+    def normalizePt(x):
+        x0 = irit.FetchRealObject( irit.coord( x, 0 ) )
+        x1 = irit.FetchRealObject( irit.coord( x, 1 ) )
+        x2 = irit.FetchRealObject( irit.coord( x, 2 ) )
+        len = math.sqrt( x0 * x0 + x1 * x1 + x2 * x2 )
+        return irit.point( x0/len, x1/len, x2/len )
+
+    def normalizeVec(x):
+        return irit.coerce( irit.normalizePt(x), irit.VECTOR_TYPE )        
+
+    def list(*objs):
+        objList = irit.nil()
+        for i in range(len(objs)):
+            objType = type(objs[i])
+            if objType == int or objType == float:
+                obj = irit.GenRealObject(objs[i])
+            elif objType == str:
+                obj = irit.GenStrObject(objs[i])
+            elif objType == tuple and len(objs[i]) == 3:
+                obj = irit.point(objs[i][0], objs[i][1], objs[i][2])
+            else:
+                obj = objs[i]
+            irit.snoc(obj, objList)
+        return objList           
+        
+    def ctlpt(*objs):
+        arr = irit.new_doubleArray(len(objs))
+        irit.doubleArray_setitem(arr, 0, 0)
+        for i in range(1, len(objs)):
+            objType = type(objs[i])
+            if objType == int or objType == float:
+                irit.doubleArray_setitem(arr, i, objs[i])
+            else:
+                irit.doubleArray_setitem(arr, i, irit.FetchRealObject(objs[i]))
+        return irit.CreateCtlPt(objs[0], len(objs), arr)
+        
+    def contour(param1, param2, param3 = irit.GenNullObject(), param4 = irit.GenNullObject() ):
+        return irit.Wrapcontour(param1, param2, param3, param4)
+	        
+    def freeuserdeffuncs( funcnamelist ):
+        i = 1
+        while ( i <= irit.SizeOf( funcnamelist ) ):
+            irit.fnfree( irit.nth( funcnamelist, i ) )
+            i = i + 1
+   
+    def demo(  ):
+        irit.include( "demo.irt" )
+
+    def pause(  ):
+        irit.printf( "press return to continue:", irit.nil(  ) )
+        t = irit.getline( 9 )
+
+    def milisleep( n ):
+        irit.msleep( n )
+          
+    # 
+    #  Some simple functions.
+    # 
+    def iseven( x ):
+        retval = x == math.floor( x/2.0 ) * 2
+        return retval
+
+    def min( x, y ):
+        if ( x > y ):
+            retval = y
+        else:
+            retval = x
+        return retval
+
+    def max( x, y ):
+        if ( x > y ):
+            retval = x
+        else:
+            retval = y
+        return retval
+
+    def sqr( x ):
+        retval = x * x
+        return retval
+        
+    def midpoint( pt1, pt2 ):
+        retval = ( pt1 + pt2 ) * 0.5
+        return retval
+
+    def interppoint( pt1, pt2, t ):
+        retval = ( pt1 * ( 1 - t ) + pt2 * t )
+        return retval 
+        
+    def edge2d( x1, y1, x2, y2 ):
+        retval = ( irit.ctlpt( irit.E2, x1, y1 ) + \
+                irit.ctlpt( irit.E2, x2, y2 ) )
+        return retval
+
+    def edge3d( x1, y1, z1, x2, y2, z2 ):
+        retval = ( irit.ctlpt( irit.E3, x1, y1, z1 ) + \
+                irit.ctlpt( irit.E3, x2, y2, z2 ) )
+        return retval
+        
+    def dstptpt( pt1, pt2 ):
+        retval = math.sqrt( irit.FetchRealObject( ( pt1 - pt2 ) * ( pt1 - pt2 ) ) )
+        return retval
+
+    def genrandomcolor(  ):
+        retval = ( str(math.floor( irit.random( 100, 255 ) ) ) + \
+				   "," + \
+				   str(math.floor( irit.random( 100, 255 ) ) ) + \
+				   "," + \
+				   str(math.floor( irit.random( 100, 255 ) ) ) )
+        return retval
+
+    # 
+    #  Setting a fixed normal to polygonal object.
+    # 
+    def setnormalsinpoly( pl, normal ):
+        retval = irit.nil(  )
+        i = 0
+        while ( i <= irit.SizeOf( pl ) - 1 ):
+            v = irit.coord( pl, i )
+            irit.attrib( v, "normal", normal )
+            irit.snoc( v, retval )
+            i = i + 1
+        retval = irit.poly( retval, 0 )
+        return retval
+
+    def setnormalsinpolyobj( obj, normal ):
+        retval = irit.setnormalsinpoly( irit.coord( obj, 0 ), normal )
+        i = 1
+        while ( i <= irit.SizeOf( obj ) - 1 ):
+            pl = irit.setnormalsinpoly( irit.coord( obj, i ), normal )
+            retval = retval ^ pl
+            i = i + 1
+        return retval
+
+    def setnormalsinobjlist( objlist, normal ):
+        retval = irit.nil(  )
+        return retval
+
+    def setnormalsinobjlist( objlist, normal ):
+        retval = irit.nil(  )
+        i = 1
+        while ( i <= irit.SizeOf( objlist ) ):
+            obj = irit.nth( objlist, i )
+            if ( irit.thisobj( "obj" ) == 10 ):
+                irit.snoc( irit.setnormalsinobjlist( obj, normal ), retval )
+            else:
+                if ( irit.thisobj( "obj" ) == 1 ):
+                    irit.snoc( irit.setnormalsinpolyobj( obj, normal ), retval )
+                else:
+                    irit.snoc( obj, retval )
+            i = i + 1
+        return retval
+    
+    # 
+    #  Sweep of circular cross section.
+    # 
+    def swpcircsrf( axiscrv, scalecrv, scalerefine ):
+        if ( type(scalecrv) == int or type(scalecrv) == float ):
+            scalecrv = irit.GenRealObject(scalecrv)
+        
+        retval = irit.swpsclsrf( irit.circle( ( 0, 0, 0 ), 1 ), 
+                                 axiscrv, 
+                                 scalecrv, 
+                                 irit.GenIntObject(0),
+                                 scalerefine )
+        return retval
+
+    # 
+    #  Example for a useful recursive function.  Such function needs to be defined
+    #  first as a regular function so it is known in function name-space.
+    # 
+    def processobjsmaxedgelen( obj, maxlen ):
+        retval = 0
+        return retval
+
+    def processobjsmaxedgelen( obj, maxlen ):
+        retval = irit.nil(  )
+        if ( irit.thisobj( "obj" ) == 10 ):
+            i = 1
+            while ( i <= irit.SizeOf( obj ) ):
+                retval = retval + irit.processobjsmaxedgelen( irit.nth( obj, i ), maxlen )
+                i = i + 1
+        if ( irit.thisobj( "obj" ) == 1 ):
+            retval = irit.list( irit.maxedgelen( irit.triangl( obj, 0 ), maxlen ) )
+            irit.cpattr( irit.nref( retval, 1 ), obj )
+        return retval
+
+    # 
+    #  Extractions of Control Polygon/Mesh/Points from a curve or a surface.
+    # 
+    def getctlpoints( crv, vecs ):
+        retval = irit.nil(  )
+        i = 1
+        while ( i <= irit.SizeOf( crv ) ):
+            if ( vecs ):
+                p = irit.coerce( irit.coord( crv, i - 1 ), 4 )
+            else:
+                p = irit.coerce( irit.coord( crv, i - 1 ), 3 )
+            irit.snoc( p, retval )
+            i = i + 1
+        return retval
+
+    def getctlpolygon( crv ):
+        retval = irit.poly( irit.getctlpoints( crv, 0 ), 1 )
+        return retval
+
+    def getctlmeshpts( srf, vecs ):
+        retval = irit.nil(  )
+        rsize = irit.GetMeshSize( srf, irit.ROW )
+        csize = irit.GetMeshSize( srf, irit.COL )
+        i = 1
+        while ( i <= csize ):
+            j = 1
+            while ( j <= rsize ):
+                if ( vecs ):
+                    p = irit.coerce( irit.coord( srf, ( i - 1 ) * rsize + j - 1 ), 4 )
+                else:
+                    p = irit.coerce( irit.coord( srf, ( i - 1 ) * rsize + j - 1 ), 3 )
+                irit.snoc( p, retval )
+                j = j + 1
+            i = i + 1
+        return retval
+
+    def getctlmesh( srf ):
+        first = 1
+        rsize = irit.GetMeshSize( srf, 1302 )
+        csize = irit.GetMeshSize( srf, 1301 )
+        i = 1
+        while ( i <= rsize ):
+            pl = irit.nil(  )
+            j = 1
+            while ( j <= csize ):
+                p = irit.coerce( irit.coord( srf, ( i - 1 ) * csize + j - 1 ), 4 )
+                irit.snoc( p, pl )
+                j = j + 1
+            if ( first == 1 ):
+                retval = irit.poly( pl, 1 )
+                first = 0
+            else:
+                retval = retval + irit.poly( pl, 1 )
+            i = i + 1
+        j = 1
+        while ( j <= csize ):
+            pl = irit.nil(  )
+            i = 1
+            while ( i <= rsize ):
+                p = irit.coerce( irit.coord( srf, ( i - 1 ) * csize + j - 1 ), 4 )
+                irit.snoc( p, pl )
+                i = i + 1
+            retval = retval + irit.poly( pl, 1 )
+            j = j + 1
+        return retval
+
+    def genplgonstopllns( pl ):
+        retval = irit.nil(  )
+        i = 0
+        while ( i <= irit.SizeOf( pl ) - 1 ):
+            pl1n = irit.nil(  )
+            pl1 = irit.coord( pl, i )
+            j = 0
+            while ( j <= irit.SizeOf( pl1 ) - 1 ):
+                irit.snoc( irit.coord( pl1, j ), pl1n )
+                j = j + 1
+            irit.snoc( irit.coord( pl1, 0 ), pl1n )
+            irit.snoc( irit.poly( pl1n, 1 ), retval )
+            i = i + 1
+        retval = irit.mergepoly( retval )
+        return retval
+
+    def putcrvmarkers( crv, n, size ):
+        tmin = irit.nth( irit.pdomain( crv ), 1 )
+        tmax = irit.nth( irit.pdomain( crv ), 2 )
+        retval = irit.nil(  )
+        dt = ( tmax - tmin - 1e-006 )/float(n)
+        t = tmin
+        i = 0
+        while ( i <= n ):
+            nrml = irit.cnormal( crv, t ) * size
+            pt1 = irit.coerce( irit.ceval( crv, t ), 4 ) - nrml
+            pt2 = irit.coerce( irit.ceval( crv, t ), 4 ) + nrml
+            irit.snoc( irit.coerce( pt1, irit.E3 ) + irit.coerce( pt2, irit.E3 ), retval )
+            t = t + dt
+            i = i + 1
+        return retval
+
+    # 
+    #  Extract a network of isocurves.
+    # 
+    def getisocurves( srf, numu, numv ):
+        retval = irit.nil(  )
+        domain = irit.pdomain( srf )
+        umin = irit.FetchRealObject(irit.nth( domain, 1 ))
+        umax = irit.FetchRealObject(irit.nth( domain, 2 ))
+        vmin = irit.FetchRealObject(irit.nth( domain, 3 ))
+        vmax = irit.FetchRealObject(irit.nth( domain, 4 ))
+        
+        if ( numu > 0 ):
+            i = 0
+            while ( i <= numu ):
+                irit.snoc( irit.csurface( srf, 1301, umin + ( umax - umin ) * i/float(numu) ), retval )
+                i = i + 1
+        if ( numv > 0 ):
+            i = 0
+            while ( i <= numv ):
+                irit.snoc( irit.csurface( srf, 1302, vmin + ( vmax - vmin ) * i/float(numv) ), retval )
+                i = i + 1
+        return retval
+
+    def getisocurvetubes( srf, numu, numv, rad ):
+        retval = irit.nil(  )
+        domain = irit.pdomain( srf )
+        umin = irit.FetchRealObject( irit.nth( domain, 1 ) )
+        umax = irit.FetchRealObject( irit.nth( domain, 2 ) )
+        vmin = irit.FetchRealObject( irit.nth( domain, 3 ) )
+        vmax = irit.FetchRealObject( irit.nth( domain, 4 ) )
+        i = 0
+        while ( i <= numu ):
+            irit.snoc( irit.swpcircsrf( irit.csurface( srf, 1301, umin + ( umax - umin ) * i/float(numu) ), rad, 1 ), retval )
+            i = i + 1
+        i = 0
+        while ( i <= numv ):
+            irit.snoc( irit.swpcircsrf( irit.csurface( srf, 1302, vmin + ( vmax - vmin ) * i/float(numv) ), rad, 1 ), retval )
+            i = i + 1
+        return retval
+
+    # 
+    #  Construct a box in the size of the bbox of an object.
+    # 
+    def createbboxbox( o ):
+        b = irit.bbox( o )
+        retval = irit.box( ( irit.nth( b, 1 ), irit.nth( b, 3 ), irit.nth( b, 5 ) ), irit.nth( b, 2 ) - irit.nth( b, 1 ), irit.nth( b, 4 ) - irit.nth( b, 3 ), irit.nth( b, 6 ) - irit.nth( b, 5 ) )
+        return retval
+
+    # 
+    #  Approximate a (assumed to be) closed planar curve as a polygon
+    #  with n vertices.
+    # 
+    def cnvrtcrvtopolygon( crv, n, ispolyline ):
+        ptl = irit.nil(  )
+        t0 = irit.FetchRealObject(irit.nth( irit.pdomain( crv ), 1 ))
+        t1 = irit.FetchRealObject(irit.nth( irit.pdomain( crv ), 2 ))
+        if ( n < 2 ):
+            n = 2
+        dt = ( t1 - t0 )/( n + 0.0001 - 1 )
+        if ( ispolyline == 0 ):
+            t1 = t1 - dt
+        t = t0
+        while ( t <= t1 ):
+            pt = irit.ceval( crv, t )
+            irit.snoc( pt, ptl )
+            t = t + dt
+        retval = irit.poly( ptl, ispolyline )
+        return retval
+
+    # 
+    #  Convert a polygon/polyline into a list of points or a curve.
+    # 
+    def cnvrtpolytoptlist( ply ):
+        retval = irit.nil(  )
+        i = 0
+        while ( i <= irit.SizeOf( ply ) - 1 ):
+            irit.snoc( irit.coord( ply, i ), retval )
+            i = i + 1
+        return retval
+
+    def cnvrtpolytocrv( ply, order, kvshape ):
+        retval = irit.cbspline( order, irit.cnvrtpolytoptlist( ply ), irit.list( kvshape ) )
+        return retval
+
+    # 
+    #  Convert polynomial expressions to explicit Bezier.
+    # 
+
+    def cnvrtpolytotube( pl, rad, minctlpt, maxctlpt ):
+        ptlist = irit.cnvrtpolytoptlist( pl )
+        len = irit.sizeof( ptlist )
+        retval = irit.nil( )
+        if ( len > 1 ):
+            if ( len < 4 ):
+                c = irit.cinterp( ptlist, len, len, irit.PARAM_UNIFORM, irit.false )
+                c = irit.cinterp( ptlist, 3, irit.min( irit.max( len /10.0, minctlpt ), maxctlpt ),
+                                  irit.PARAM_UNIFORM, irit.false )
+            retval = irit.swpcircsrf( c, rad, 1 )
+        return retval
+
+
+    def univariate2bezier( polynom, deg ):
+        retval = irit.nil( )
+        f = 1
+        x = 0
+        while ( x <= 1 ):
+            exec( "f = " + polynom )
+            irit.snoc( irit.ctlpt( irit.E1, f ), retval )
+            x = x + 0.05 / deg    
+        retval = irit.coerce( irit.cinterp( retval, 
+                              deg + 1, deg + 1, 
+                              irit.PARAM_UNIFORM, irit.FALSE ), 
+                              irit.BEZIER_TYPE )		 
+        retval = irit.cbspline( order, irit.cnvrtpolytoptlist( ply ), irit.list( kvshape ) )
+        return retval
+
+
+    def bivariate2bezier( polynom, xdeg, ydeg ):
+        retval = irit.nil( )
+        f = 1
+        x = 0
+        while ( x <= 1 ):
+            y = 0
+            while ( y <= 1):
+                exec( "f = " + polynom )
+                irit.snoc( irit.ctlpt( irit.E3, x, y, f ), retval )
+                y = y + 0.1 / ydeg
+            x = x + 0.1 / xdeg
+        retval = irit.coerce( irit.sinterp( retval, 
+                                            xdeg + 1, 
+                                            ydeg + 1, 
+                                            xdeg + 1, 
+                                            ydeg + 1, 
+                                            irit.PARAM_UNIFORM ), 
+                              irit.BEZIER_TYPE )
+        return retval
+	
+    # 
+    #  Primitives in freeform surface form.
+    # 
+      
+    def planesrf( x1, y1, x2, y2 ):
+        retval = irit.ruledsrf( irit.edge2d( x1, y1, x2, y1 ), irit.edge2d( x1, y2, x2, y2 ) )
+        return retval
+
+    def spheresrf( radius ):
+        s45 = math.sin( 45 * math.pi/180 )
+        retval = irit.surfrev( irit.cbspline( 3, irit.list( irit.ctlpt( irit.P3, 1, 0, 0, (-1 ) ), \
+                                                            irit.ctlpt( irit.P3, s45, (-s45 ), 0, (-s45 ) ), \
+                                                            irit.ctlpt( irit.P3, 1, (-1 ), 0, 0 ), \
+                                                            irit.ctlpt( irit.P3, s45, (-s45 ), 0, s45 ), \
+                                                            irit.ctlpt( irit.P3, 1, 0, 0, 1 ) ), irit.list( 0, 0, 0, 1, 1, 2,
+            2,
+            2 ) ) ) * irit.scale( ( radius, radius, radius ) )
+        return retval
+
+    def torussrf( mradius, mrad ):
+        retval = irit.swpcircsrf( irit.circle( ( 0, 0, 0 ), mradius ), mrad, 0 )
+        return retval
+
+    def conesrf( height, radius ):
+        retval = irit.surfrev( irit.ctlpt( irit.E3, 0, 0, 0 ) + \
+                                irit.ctlpt( irit.E3, radius, 0, 0 ) + \
+                                irit.ctlpt( irit.E3, 0, 0, height ) )
+        return retval
+
+    def cone2srf( height, radius1, radius2 ):
+        retval = irit.surfrev( irit.ctlpt( irit.E3, 0, 0, 0 ) + \
+                                irit.ctlpt( irit.E3, radius1, 0, 0 ) + \
+                                irit.ctlpt( irit.E3, radius2, 0, height ) + \
+                                irit.ctlpt( irit.E3, 0, 0, height ) )
+        return retval
+
+    def cylinsrf( height, radius ):
+        retval = irit.surfrev( irit.ctlpt( irit.E3, 0, 0, 0 ) + \
+                                irit.ctlpt( irit.E3, radius, 0, 0 ) + \
+                                irit.ctlpt( irit.E3, radius, 0, height ) + \
+                                irit.ctlpt( irit.E3, 0, 0, height ) )
+        return retval
+
+    def boxsrf( width, dpth, height ):
+        retval = irit.list( irit.coerce( (-irit.planesrf( 0, 0, width, dpth ) ), irit.E3 ), irit.coerce( irit.planesrf( 0, 0, width, dpth ), irit.E3 ) * irit.trans( ( 0, 0, height ) ), irit.coerce( irit.planesrf( 0, 0, width, height ), irit.E3 ) * irit.rotx( 90 ), irit.coerce( (-irit.planesrf( 0, 0, width, height ) ), irit.E3 ) * irit.rotx( 90 ) * irit.trans( ( 0, dpth, 0 ) ), irit.coerce( irit.planesrf( 0, 0, height, dpth ), irit.E3 ) * irit.roty( (-90 ) ), irit.coerce( (-irit.planesrf( 0, 0, height, dpth ) ), irit.E3 ) * irit.roty( (-90 ) ) * irit.trans( ( width, 0, 0 ) ) )
+        return retval
+
+    def flatsrf( uorder, vorder ):
+        retval = irit.sbezier( irit.list( irit.list( irit.ctlpt( irit.E3, (-1 ), (-1 ), 0 ), \
+                                                    irit.ctlpt( irit.E3, (-1 ), 1, 0 ) ), irit.list( \
+                                                    irit.ctlpt( irit.E3, 1, (-1 ), 0 ), \
+                                                    irit.ctlpt( irit.E3, 1, 1, 0 ) ) ) )
+        retval = irit.sraise( irit.sraise( retval, 1302, uorder ), 1301, vorder )
+        return retval
+
+    # 
+    #  Transformations.
+    # 
+    def tx( r ):
+        retval = irit.trans( ( r, 0, 0 ) )
+        return retval
+
+    def ty( r ):
+        retval = irit.trans( ( 0, r, 0 ) )
+        return retval
+
+    def tz( r ):
+        retval = irit.trans( ( 0, 0, r ) )
+        return retval
+
+    def sx( r ):
+        retval = irit.scale( ( r, 1, 1 ) )
+        return retval
+
+    def sy( r ):
+        retval = irit.scale( ( 1, r, 1 ) )
+        return retval
+
+    def sz( r ):
+        retval = irit.scale( ( 1, 1, r ) )
+        return retval
+
+    def sc( s ):
+        retval = irit.scale( ( s, s, s ) )
+        return retval
+
+    def rx( r ):
+        retval = irit.rotx( r )
+        return retval
+
+    def ry( r ):
+        retval = irit.roty( r )
+        return retval
+
+    def rz( r ):
+        retval = irit.rotz( r )
+        return retval
+
+    # 
+    #  Rotate vector w to/from Z axis
+    # 
+    #  Rotation Trans. of w dir to Z axis.
+    def rotvec2z( w ):
+        if ( abs( irit.FetchRealObject(irit.coord( w, 0 ) ) ) > \
+			 abs( irit.FetchRealObject(irit.coord( w, 1 ) ) ) ):
+            u = irit.vector( 0, 1, 0 )
+        else:
+            u = irit.vector( 1, 0, 0 )
+        w = irit.normalizeVec( w )
+        v = irit.normalizeVec( u ^ w )
+        u = irit.normalizeVec( w ^ v )
+        retval = irit.homomat( irit.list( irit.list( irit.FetchRealObject(irit.coord( u, 0 )), 
+													 irit.FetchRealObject(irit.coord( v, 0 )), 
+													 irit.FetchRealObject(irit.coord( w, 0 )), 
+													 0 ), 
+										  irit.list( irit.FetchRealObject(irit.coord( u, 1 )), 
+													 irit.FetchRealObject(irit.coord( v, 1 )), 
+													 irit.FetchRealObject(irit.coord( w, 1 )), 
+													 0 ), 
+										  irit.list( irit.FetchRealObject(irit.coord( u, 2 )), 
+													 irit.FetchRealObject(irit.coord( v, 2 )), 
+													 irit.FetchRealObject(irit.coord( w, 2 )), 
+													 0 ), 
+										  irit.list( 0, 0, 0, 1 ) ) )
+        return retval
+
+    #  Rotation Trans. of Z axis to W dir.
+    def rotz2vec( w ):
+        retval = irit.rotvec2z( w ) ^ (-1 )
+        return retval
+
+    # 
+    #  Rotate matrix around line (Pt + t Dir), Theta degrees.
+    # 
+    def rotline( pt, dir, theta ):
+        retval = irit.trans( irit.coerce( pt, 4 ) * (-1 ) ) * irit.rotvec2z( dir ) * irit.rz( theta ) * irit.rotz2vec( dir ) * irit.trans( irit.coerce( pt, 4 ) )
+        return retval
+
+    # 
+    #  make a grid in the XY plane of n lines.
+    # 
+    def gridxy( n ):
+        retval = irit.nil(  )
+        i = 0
+        while ( i <= n ):
+            irit.snoc( irit.ctlpt( irit.e2, i/float(n), 0 ) + \
+                        irit.ctlpt( irit.e2, i/float(n), 1 ), retval )
+            i = i + 1
+        i = 0
+        while ( i <= n ):
+            irit.snoc( \
+                        irit.ctlpt( irit.e2, 0, i/float(n) ) + \
+                        irit.ctlpt( irit.e2, 1, i/float(n) ), retval )
+            i = i + 1
+        retval = retval * irit.sc( 2 ) * irit.tx( (-1 ) ) * irit.ty( (-1 ) )
+        return retval
+
+    def gridxyz( n ):
+        g = irit.gridxy( n )
+        grids = irit.nil(  )
+        i = 0
+        while ( i <= n ):
+            irit.snoc( g * irit.tz( 2 * i/float(n) - 1 ), grids )
+            i = i + 1
+        retval = irit.list( grids * irit.rx( 0 ), grids * irit.rx( 90 ), grids * irit.ry( 90 ) )
+        return retval
+
+    def makepolynsides( n ):
+        retval = irit.nil(  )
+        a = 360/float(n)
+        i = 0
+        while ( i <= 360 - a/2.0 ):
+            irit.snoc( ( math.cos( i * math.pi/180 ), math.sin( i * math.pi/180 ), 0 ), retval )
+            i = i + a
+        retval = irit.poly( retval, 0 ) * irit.rz( 270 - a/2.0 )
+        return retval
+
+    # 
+    #  A transparent grid: TranspGrid( 5, 5, 1, 5 )
+    # 
+    def transpgridaux( n, m, scl, even ):
+        sqr = irit.poly( irit.list( irit.point( 0, 0, 0 ), irit.point( 0, 1, 0 ), irit.point( 1, 1, 0 ), irit.point( 1, 0, 0 ) ), 0 )
+        retval = sqr
+        i = (-n )
+        while ( i <= n - 1 ):
+            j = (-m )
+            while ( j <= m - 1 ):
+                if ( irit.iseven( i + j ) == even ):
+                    if ( retval == sqr ):
+                        retval = sqr * irit.sc( scl ) * irit.tx( i * scl ) * irit.ty( j * scl )
+                    else:
+                        retval = ( sqr * irit.sc( scl ) * irit.tx( i * scl ) * irit.ty( j * scl ) ) ^ retval
+                j = j + 1
+            i = i + 1
+        return retval
+
+    def transpgridticks( n, m, scl, dup ):
+        line = irit.poly( irit.list( irit.point( (-n ) * scl, 0, 0 ), irit.point( n * scl, 0, 0 ) ), 1 )
+        lines = irit.nil(  )
+        i = (-n ) * dup
+        while ( i <= n * dup ):
+            irit.snoc( line * irit.ty( i * scl/float(dup) ), lines )
+            i = i + 1
+        retval = irit.mergepoly( lines + lines * irit.rz( 90 ) )
+        irit.attrib( retval, "rgb", "255,255,255" )
+        return retval
+
+    def transpgrid( n, m, scl, ticks ):
+        oddgrid = irit.transpgridaux( n, m, scl, 0 )
+        irit.attrib( oddgrid, "rgb", "0, 0, 255" )
+        irit.attrib( oddgrid, "transp", 0.01 )
+        evengrid = irit.transpgridaux( n, m, scl, 1 )
+        irit.attrib( evengrid, "rgb", "0, 255, 255" )
+        irit.attrib( evengrid, "transp", 0.01 )
+        retval = irit.list( oddgrid, evengrid )
+        if ( ticks ):
+            irit.snoc( irit.transpgridticks( n, m, scl, ticks ), retval )
+        return retval
+
+    # 
+    #  Arrows.
+    # 
+    def arrow3d( pt, dir, length, width, headlength, headwidth ):
+        retval = irit.list( irit.cylinsrf( length - headlength, width/2.0 ) * \
+							irit.rotz2vec( dir ) * \
+							irit.trans( irit.Fetch3TupleObject(irit.coerce( pt, 4 ) ) ), 
+							irit.conesrf( headlength, headwidth ) * \
+							irit.trans( ( 0, 0, length - headlength ) ) * \
+							irit.rotz2vec( dir ) * \
+							irit.trans( irit.Fetch3TupleObject(irit.coerce( pt, 4 ) ) ) )
+        return retval
+
+    def curvearrowend( crv, end, headlength, headwidth ):
+        tmin = irit.nth( irit.pdomain( crv ), 1 )
+        tmax = irit.nth( irit.pdomain( crv ), 2 )
+        if ( end ):
+            pt = irit.coerce( irit.ceval( crv, tmax ), 3 )
+            dir = irit.ctangent( crv, tmax, 1 )
+        else:
+            pt = irit.coerce( irit.ceval( crv, tmin ), 3 )
+            dir = irit.ctangent( crv, tmin, 1 )
+        retval = irit.conesrf( headlength, headwidth ) * irit.trans( ( 0, 0, (-headlength ) ) ) * irit.rotz2vec( dir ) * irit.trans( irit.coerce( pt, 4 ) )
+        return retval
+
+    # 
+    #  Emulation of view, interact and other useful viewing functions using VIEWOBJ
+    #  for the default display device.
+    # 
+    #  Make some noise.
+    def beep(  ):
+        irit.IritDisplayDeviceActive = 1;
+        command = irit.GenStrObject("beep")
+        irit.SetObjectName( command, "command_")
+        irit.viewobj( command )
+
+    #  Clear the screen.
+    def viewclear(  ):
+        irit.IritDisplayDeviceActive = 1;
+        command = irit.GenStrObject("clear")
+        irit.SetObjectName( command, "command_")
+        irit.viewobj( command )
+
+    #  Delayed clear screen.
+    def viewdclear(  ):
+        irit.IritDisplayDeviceActive = 1;
+        command = irit.GenStrObject("dclear")
+        irit.SetObjectName( command, "command_")
+        irit.viewobj( command )
+
+    #  Disconnect from this display device
+    def viewdisc(  ):
+        irit.IritDisplayDeviceActive = 1;
+        command = irit.GenStrObject("disconnect")
+        irit.SetObjectName( command, "command_")
+        irit.viewobj( command )
+
+    #  Edit the specified curve.
+    def vieweditcrv( name ):
+        irit.IritDisplayDeviceActive = 1;
+        command = irit.GenStrObject( "editcrv " + name )
+        irit.SetObjectName( command, "command_")
+        irit.viewobj( command )
+
+    #  Edit the specified surface.
+    def vieweditsrf( name ):
+        irit.IritDisplayDeviceActive = 1;
+        command = irit.GenStrObject( "editsrf " + name )
+        irit.SetObjectName( command, "command_")
+        irit.viewobj( command )
+
+    #  Edit the specified object.
+    def vieweditobj( name ):
+        irit.IritDisplayDeviceActive = 1;
+        command = irit.GenStrObject( "editobj " + name )
+        irit.SetObjectName( command, "command_")
+        irit.viewobj( command )
+
+    #  Clone & edit the specified object.
+    def viewcloneobj( name ):
+        irit.IritDisplayDeviceActive = 1;
+        command = irit.GenStrObject( "cloneobj " + name )
+        irit.SetObjectName( command, "command_")
+        irit.viewobj( command )
+
+    #  Force Display device to exit.
+    def viewexit(  ):
+        irit.IritDisplayDeviceActive = 1;
+        command = irit.GenStrObject("exit")
+        irit.SetObjectName( command, "command_")
+        irit.viewobj( command )
+
+    #  Save viewing matrix under name.
+    def viewmsave( name ):
+        irit.IritDisplayDeviceActive = 1;
+        command = irit.GenStrObject( "msave " + name )
+        irit.SetObjectName( command, "command_")
+        irit.viewobj( command )
+
+    #  Save display as image under name.
+    def viewimgsave( name ):
+        irit.IritDisplayDeviceActive = 1;
+        command = irit.GenStrObject( "imgsave " + name )
+        irit.SetObjectName( command, "command_")
+        irit.viewobj( command )
+
+    #  Remove an object from display.
+    def viewremove( name ):
+        irit.IritDisplayDeviceActive = 1;
+        command = irit.GenStrObject( "remove " + name )
+        irit.SetObjectName( command, "command_")
+        irit.viewobj( command )
+
+    #  Animate a sequence.
+    def viewanim( tmin, tmax, dt ):
+        irit.IritDisplayDeviceActive = 1;
+        command = irit.GenStrObject( "animate " + str(tmin) + " " + str(tmax) + " " + str(dt) )
+        irit.SetObjectName( command, "command_")
+        irit.viewobj( command )
+
+    #  Change display device state.
+    def viewstate( state, status ):
+        irit.IritDisplayDeviceActive = 1;
+        command = irit.GenStrObject( "state " + state + " " + str(status) )
+        irit.SetObjectName( command, "command_")
+        irit.viewobj( command )
+
+    #  Emulation of old VIEW command.
+    def view( none, clear ):
+        irit.IritDisplayDeviceActive = 1;
+        if ( clear != 0 ):
+            irit.viewdclear(  )
+        irit.viewobj( none )
+
+    #  Emulation of old INTERACT command.
+    def interact( none ):
+        irit.IritDisplayDeviceActive = 1;
+        irit.viewdclear(  )
+        irit.viewobj( none )
+        irit.pause(  )
+
+    # 
+    #  Client communication helper functions.
+    # 
+    #  Clear the screen.
+    def clntclear( h ):
+        command = irit.GenStrObject( "clear" )
+        irit.SetObjectName( command, "command_")
+        irit.clntwrite( h, command )
+
+    #  Delayed clear screen.
+    def clntdclear( h ):
+        command = irit.GenStrObject( "dclear" )
+        irit.SetObjectName( command, "command_")
+        irit.clntwrite( h, command )
+
+    #  Disconnect from this display device
+    def clntdisc( h ):
+        command = irit.GenStrObject( "disconnect" )
+        irit.SetObjectName( command, "command_")
+        irit.clntwrite( h, command )
+
+    #  Edit the specified curve.
+    def clnteditcrv( h, name ):
+        command = irit.GenStrObject( "editcrv " + name )
+        irit.SetObjectName( command, "command_")
+        irit.clntwrite( h, command )
+        return retval
+
+    #  Edit the specified surface.
+    def clnteditsrf( h, name ):
+        command = irit.GenStrObject( "editsrf " + name )
+        irit.SetObjectName( command, "command_")
+        irit.clntwrite( h, command )
+        return retval
+
+    #  Edit the specified object.
+    def clnteditobj( h, name ):
+        command = irit.GenStrObject( "editobj " + name )
+        irit.SetObjectName( command, "command_")
+        irit.clntwrite( h, command )
+
+    #  Clone & edit specified object.
+    def clntcloneobj( h, name ):
+        command = irit.GenStrObject( "cloneobj " + name )
+        irit.SetObjectName( command, "command_")
+        irit.clntwrite( h, command )
+
+    #  Force Display device to exit.
+    def clntexit( h ):
+        command = irit.GenStrObject( "exit" )
+        irit.SetObjectName( command, "command_")
+        irit.clntwrite( h, command )
+
+    #  Get an object from a client.
+    def clntgetobj( h, name ):
+        command = irit.GenStrObject( "getobj " + name )
+        irit.SetObjectName( command, "command_")
+        irit.clntwrite( h, command )
+        retval = irit.clntread( h, 10000 )
+        return retval
+
+    #  Get cursor events from a client.
+    def clntpickcrsr( h ):
+        command = irit.GenStrObject( "pickcrsr" )
+        irit.SetObjectName( command, "command_")
+        irit.clntwrite( h, command )
+
+    #  Get an object's name from a client.
+    def clntpickname( h ):
+        command = irit.GenStrObject( "pickname" )
+        irit.SetObjectName( command, "command_")
+        irit.clntwrite( h, command )
+    #  Pick an object from a client.
+
+    def clntpickobj( h ):
+        command = irit.GenStrObject( "pickobj" )
+        irit.SetObjectName( command, "command_")
+        irit.clntwrite( h, command )
+
+    #  Done picking from clients.
+    def clntpickdone( h ):
+        command = irit.GenStrObject( "pickdone" )
+        irit.SetObjectName( command, "command_")
+        irit.clntwrite( h, command )
+
+    #  Save viewing matrix under name.
+    def clntmsave( h, name ):
+        command = irit.GenStrObject( "msave " + name )
+        irit.SetObjectName( command, "command_")
+        irit.clntwrite( h, command )
+
+    #  Save display as image under name.
+    def clntimgsave( h, name ):
+        command = irit.GenStrObject( "imgsave " + name )
+        irit.SetObjectName( command, "command_")
+        irit.clntwrite( h, command )
+
+    #  Remove an object from display.
+    def clntremove( h, name ):
+        command = irit.GenStrObject( "remove " + name )
+        irit.SetObjectName( command, "command_")
+        irit.clntwrite( h, command )
+
+    #  Animate a sequence.
+    def clntanim( h, tmin, tmax, dt ):
+        command = irit.GenStrObject( "animate " ^ tmin ^ " " ^ tmax ^ " " ^ dt )
+        irit.SetObjectName( command, "command_")
+        irit.clntwrite( h, command )
+
+    #  Change state of display device.
+    def clntstate( h, state ):
+        command = irit.GenStrObject( "state " + state )
+        irit.SetObjectName( command, "command_")
+        irit.clntwrite( h, command )
+
+    #  Emulation of old VIEW command.
+    def clntview( h, none, clear ):
+        if ( clear != 0 ):
+            irit.clntclear( h )
+        irit.clntwrite( h, none )
+
+    #  Emulation of old INTERACT command.
+    def cntrintr( h, none ):
+        irit.clntclear( h )
+        irit.clntwrite( h, none )
+        irit.pause(  )
+
+    #  Highlight1 object.
+    def clnthigh1( h, name ):
+        command = irit.GenStrObject( "highlight1 " + name )
+        irit.SetObjectName( command, "command_")
+        irit.clntwrite( h, command )
+
+    #  Highlight2 object.
+    def clnthigh2( h, name ):
+        command = irit.GenStrObject( "highlight2 " + name )
+        irit.SetObjectName( command, "command_")
+        irit.clntwrite( h, command )
+
+    #  Unhighlight objects.
+    def clntunhigh( h ):
+        command = irit.GenStrObject( "unhighlight" )
+        irit.SetObjectName( command, "command_")
+        irit.clntwrite( h, command )
+
+    def freealluserdeffuncs(  ):
+        i = 1
+        while ( i <= irit.SizeOf( usr_fn_list ) ):
+            irit.fnfree( irit.nth( usr_fn_list, i ) )
+            i = i + 1
+        usr_fn_list = irit.nil(  )
+
+    usr_fn_list = irit.nil(  )
+    #  Make sure we do not delete iritinit user def funcs.
+
+    #dummy = irit.iritstate( "echosource", 1 )
+    
+    i = irit.iritstate( "BspProdMethod", irit.GenRealObject( 2 ) )
+
+%}

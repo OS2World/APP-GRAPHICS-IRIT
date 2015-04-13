@@ -1,0 +1,234 @@
+#
+# Unix makefile to convert IRIT dat files to postscript. used to create
+# the figures of the user manual of the IRIT solid modeller.
+#
+#				Gershon Elber, October 1994.
+#
+
+all:	dat_files all_figures
+
+dat_files: doc_figs.irt
+	../../bin/irit -t doc_figs.irt
+	touch dat_files
+
+arc1cnst.ps: arc1cnst.dat
+	../../bin/irit2ps -u -p F 0.02 -M arc1cnst.dat > arc1cnst.ps
+
+boolone.ps: boolone.dat
+	../../bin/irit2ps -u -p F 0.02 boolone.dat > boolone.ps
+
+boolsum.ps: boolsum.dat
+	../../bin/irit2ps -u -p F 0.02 boolsum.dat > boolsum.ps
+
+caoffset.ps: caoffset.dat
+	../../bin/irit2ps -u -p F 0.02 caoffset.dat > caoffset.ps
+
+cci.ps: cci.dat
+	../../bin/irit2ps -u -p F 0.02 cci.dat > cci.ps
+
+ccrvtr.ps: ccrvtr.dat
+	../../bin/irit2ps -u -p F 0.02 ccrvtr.dat > ccrvtr.ps
+
+cderive.ps: cderive.dat
+	../../bin/irit2ps -u -p F 0.02 cderive.dat > cderive.ps
+
+cdivide.ps: cdivide.dat
+	../../bin/irit2ps -u -p F 0.02 cdivide.dat > cdivide.ps
+
+cevolute.ps: cevolute.dat
+	../../bin/irit2ps -u -p F 0.02 cevolute.dat > cevolute.ps
+
+cextreme.ps: cextreme.dat
+	../../bin/irit2ps -u -p F 0.02 cextreme.dat > cextreme.ps
+
+cinflect.ps: cinflect.dat
+	../../bin/irit2ps -u -p F 0.02 cinflect.dat > cinflect.ps
+
+cinterp.ps: cinterp.dat
+	../../bin/irit2ps -u -p F 0.02 cinterp.dat > cinterp.ps
+
+circular.ps: circular.dat
+	../../bin/irit2ps -u -p F 0.02 circular.dat > circular.ps
+
+cmultres.ps: cmultres.dat
+	../../bin/irit2ps -u -p F 0.02 -f 0 256 cmultres.dat > cmultres.ps
+
+cmorph.ps: cmorph.dat
+	../../bin/irit2ps -u -p F 0.02 cmorph.dat > cmorph.ps
+
+cmorph2.ps: cmorph2.dat
+	../../bin/irit2ps -u -p F 0.02 -f 0 128 cmorph2.dat > cmorph2.ps
+
+coffset.ps: coffset.dat
+	../../bin/irit2ps -u -p F 0.02 coffset.dat > coffset.ps
+
+compose.ps: compose.dat
+	../../bin/irit2ps -u -p F 0.02 compose.dat > compose.ps
+
+cones.ps: cones.dat
+	../../bin/irit2ps -u -p F 0.02 cones.dat > cones.ps
+
+silhouet.ps: silhouet.dat
+	../../bin/irit2ps -u -p F 0.02 silhouet.dat > silhouet.ps
+
+cperiod.ps: cperiod.dat
+	../../bin/irit2ps -u -p F 0.02 -M -C- cperiod.dat > cperiod.ps
+
+craise.ps: craise.dat
+	../../bin/irit2ps -u -p F 0.02 -M craise.dat > craise.ps
+
+crefine.ps: crefine.dat
+	../../bin/irit2ps -u -p F 0.02 -M crefine.dat > crefine.ps
+
+cregion.ps: cregion.dat
+	../../bin/irit2ps -u -p F 0.02 -M cregion.dat > cregion.ps
+
+crvlndst.ps: crvlndst.dat
+	../../bin/irit2ps -u -p F 0.02 crvlndst.dat > crvlndst.ps
+
+crvptdst.ps: crvptdst.dat
+	../../bin/irit2ps -u -p F 0.02 crvptdst.dat > crvptdst.ps
+
+csurface.ps: csurface.dat
+	../../bin/irit2ps -u -p F 0.02 csurface.dat > csurface.ps
+
+ctrimsrf.ps: ctrimsrf.dat
+	../../bin/irit2ps -u -p F 0.02 ctrimsrf.dat > ctrimsrf.ps
+
+cylinder.ps: cylinder.dat
+	../../bin/irit2ps -u -p F 0.02 cylinder.dat > cylinder.ps
+
+czeros.ps: czeros.dat
+	../../bin/irit2ps -u -p F 0.02 czeros.dat > czeros.ps
+
+extrude.ps: extrude.dat
+	../../bin/irit2ps -u -p F 0.02 extrude.dat > extrude.ps
+
+gbox.ps: gbox.dat
+	../../bin/irit2ps -u -p F 0.02 gbox.dat > gbox.ps
+
+mergpoly.ps: mergpoly.dat
+	../../bin/irit2ps -u -p F 0.02 mergpoly.dat > mergpoly.ps
+
+smorph.ps: smorph.dat
+	../../bin/irit2ps -u -p F 0.02 smorph.dat > smorph.ps
+
+poly.ps: poly.dat
+	../../bin/irit2ps -u -p F 0.02 poly.dat > poly.ps
+
+prim_box.ps: prim_box.dat
+	../../bin/irit2ps -u -p F 0.02 prim_box.dat > prim_box.ps
+
+prisa.ps: prisa.dat
+	../../bin/irit2ps -u -p F 0.02 prisa.dat > prisa.ps
+
+ruledsrf.ps: ruledsrf.dat
+	../../bin/irit2ps -u -p F 0.02 ruledsrf.dat > ruledsrf.ps
+
+scrvtr.ps: scrvtr.dat
+	../../bin/irit2ps -u -p F 0.02 scrvtr.dat > scrvtr.ps
+
+sdivide.ps: sdivide.dat
+	../../bin/irit2ps -u -p F 0.02 sdivide.dat > sdivide.ps
+
+sfocal.ps: sfocal.dat
+	../../bin/irit2ps -u -p F 0.02 sfocal.dat > sfocal.ps
+
+sfromcrvs.ps: sfromcrvs.dat
+	../../bin/irit2ps -u -p F 0.02 sfromcrvs.dat > sfromcrvs.ps
+
+sgauss.ps: sgauss.dat
+	../../bin/irit2ps -u -p F 0.02 sgauss.dat > sgauss.ps
+
+sinterp.ps: sinterp.dat
+	../../bin/irit2ps -u -p F 0.01 sinterp.dat > sinterp.ps
+
+smeansqr.ps: smeansqr.dat
+	../../bin/irit2ps -u -p F 0.02 smeansqr.dat > smeansqr.ps
+
+snrmlsrf.ps: snrmlsrf.dat
+	../../bin/irit2ps -u -p F 0.02 snrmlsrf.dat > snrmlsrf.ps
+
+sregion.ps: sregion.dat
+	../../bin/irit2ps -u -p F 0.02 sregion.dat > sregion.ps
+
+surface.ps: surface.dat
+	../../bin/irit2ps -u -p F 0.02 surface.dat > surface.ps
+
+surfrev.ps: surfrev.dat
+	../../bin/irit2ps -u -p F 0.02 surfrev.dat > surfrev.ps
+
+strivar.ps: strivar.dat
+	../../bin/irit2ps -u -p F 0.02 -I 4 strivar.dat > strivar.ps
+
+sweepsrf.ps: sweepsrf.dat
+	../../bin/irit2ps -u -p F 0.02 sweepsrf.dat > sweepsrf.ps
+
+swpsclsrf.ps: swpsclsrf.dat
+	../../bin/irit2ps -u -p F 0.02 -I 20 swpsclsrf.dat > swpsclsrf.ps
+
+tbezier.ps: tbezier.dat
+	../../bin/irit2ps -u -p F 0.02 -I 4 tbezier.dat > tbezier.ps
+
+tdivide.ps: tdivide.dat
+	../../bin/irit2ps -u -p F 0.02 -I 3 tdivide.dat > tdivide.ps
+
+tfromsrf.ps: tfromsrf.dat
+	../../bin/irit2ps -u -p F 0.02 -I 3 tfromsrf.dat > tfromsrf.ps
+
+torus.ps: torus.dat
+	../../bin/irit2ps -u -p F 0.02 torus.dat > torus.ps
+
+trimsrf.ps: trimsrf.dat
+	../../bin/irit2ps -u -p F 0.02 trimsrf.dat > trimsrf.ps
+
+tregion.ps: tregion.dat
+	../../bin/irit2ps -u -p F 0.02 -I 3 tregion.dat > tregion.ps
+
+booleans.ps: booleans.dat
+	../../bin/poly3d-h -H -q booleans.dat | ../../bin/irit2ps -u - > booleans.ps
+
+dodechdr.ps: dodechdr.dat
+	../../bin/poly3d-h -W 0.02 -H -q dodechdr.dat view1mat.dat | ../../bin/irit2ps -d -0.59 0.59 - > dodechdr.ps
+
+molecule.ps: molecule.dat
+	../../bin/poly3d-h -W 0.01 -H -q molecule.dat view2mat.dat | ../../bin/irit2ps - > molecule.ps
+
+solid2h.ps: solid2h.dat
+	../../bin/poly3d-h -W 0.02 -q solid2h.dat view2mat.dat | ../../bin/irit2ps - > solid2h.ps
+
+solid1.ps: solid1.dat
+	../../bin/poly3d-h -q -H solid1.dat view1mat.dat | ../../bin/illustrt -s -l 0.1 -t 0.0 - | ../../bin/irit2ps -W 0.05 -D -1 2 -p h 0.05 -u - > solid1.ps
+
+icosahdr.ps: icosahdr.dat
+	../../bin/illustrt -p -s -l 0.05 -t 0.05 icosahdr.dat view1mat.dat | ../../bin/irit2ps -W 0.05 -d -1 1 -p f 0.06 -u - > icosahdr.ps
+
+#
+# Assumes you have the Utah Raster Toolkit
+#
+molecul2.ps: molecule.dat
+	echo "[OBJECT [SHADOW] [LIGHT_SOURCE] [TYPE POINT_INFTY] L1" > lsrc.dat
+	echo "    [POINT 1 1.2 1]" >> lsrc.dat
+	echo "]" >> lsrc.dat
+	../../bin/irender -s 350 350 -b 255 255 255 -S -A sync -i rle lsrc.dat molecule.dat view2mat.dat | crop 48 0 320 308 | rletops -h 4 -s > molecul2.ps
+
+glass.ps: glass.dat
+	../../bin/irender -s 700 700 -F 0 64 -M Flat -b 255 255 255 -T -A sync -i rle glass.dat view2mat.dat | crop 180 270 540 654 | rletops -h 4 -s > glass.ps
+
+all_figures:	 arc1cnst.ps boolone.ps boolsum.ps caoffset.ps cci.ps \
+	ccrvtr.ps cderive.ps cdivide.ps cevolute.ps cextreme.ps \
+	cinflect.ps cinterp.ps circular.ps cmultres.ps \
+	cmorph.ps cmorph2.ps coffset.ps compose.ps \
+	cones.ps silhouet.ps cperiod.ps craise.ps crefine.ps \
+	cregion.ps crvlndst.ps crvptdst.ps csurface.ps \
+	ctrimsrf.ps cylinder.ps czeros.ps \
+	extrude.ps gbox.ps mergpoly.ps smorph.ps poly.ps prim_box.ps \
+	prisa.ps ruledsrf.ps scrvtr.ps sdivide.ps sfocal.ps sfromcrvs.ps \
+	sgauss.ps sinterp.ps smeansqr.ps snrmlsrf.ps \
+	sregion.ps strivar.ps surface.ps surfrev.ps \
+	sweepsrf.ps swpsclsrf.ps tbezier.ps tdivide.ps tfromsrf.ps torus.ps \
+	tregion.ps trimsrf.ps \
+	booleans.ps solid1.ps solid2h.ps molecule.ps icosahdr.ps \
+	dodechdr.ps molecul2.ps glass.ps
+
+

@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{5444A308-93AA-4597-AE35-5174007BCA52}</ProjectGuid>
+    <RootNamespace>geom_lib</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+    <Import Project="..\IRIT_SM\GlobalRules.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+    <Import Project="..\IRIT_SM\GlobalRules.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(LibDir)</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(LibDir)</OutDir>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">iritGeomD</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">iritGeom</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_X86_=1;_DEBUG;DEBUG;DEBUG_IRIT_MALLOC;_LIB;__WINNT__;__OPENGL__;RANDOM_IRIT;WINNT_SETARGV;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Lib />
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>..\..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_X86_=1;NDEBUG;_LIB;__WINNT__;__OPENGL__;RANDOM_IRIT;WINNT_SETARGV;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <CompileAs>CompileAsC</CompileAs>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+    </ClCompile>
+    <Lib />
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\geom_lib\analyfit.c" />
+    <ClCompile Include="..\..\geom_lib\anim_aux.c" />
+    <ClCompile Include="..\..\geom_lib\animate.c" />
+    <ClCompile Include="..\..\geom_lib\bbox.c" />
+    <ClCompile Include="..\..\geom_lib\cnvxhull.c" />
+    <ClCompile Include="..\..\geom_lib\convex.c" />
+    <ClCompile Include="..\..\geom_lib\decimate.c" />
+    <ClCompile Include="..\..\geom_lib\dist_pts.c" />
+    <ClCompile Include="..\..\geom_lib\fit1pts.c" />
+    <ClCompile Include="..\..\geom_lib\fit2pts.c" />
+    <ClCompile Include="..\..\geom_lib\geom_bsc.c" />
+    <ClCompile Include="..\..\geom_lib\geom_err.c" />
+    <ClCompile Include="..\..\geom_lib\geom_ftl.c" />
+    <ClCompile Include="..\..\geom_lib\geomat3d.c" />
+    <ClCompile Include="..\..\geom_lib\geomvals.c" />
+    <ClCompile Include="..\..\geom_lib\intrnrml.c" />
+    <ClCompile Include="..\..\geom_lib\ln_sweep.c" />
+    <ClCompile Include="..\..\geom_lib\merge.c" />
+    <ClCompile Include="..\..\geom_lib\ms_circ.c" />
+    <ClCompile Include="..\..\geom_lib\ms_spher.c" />
+    <ClCompile Include="..\..\geom_lib\plycrvtr.c" />
+    <ClCompile Include="..\..\geom_lib\plyimprt.c" />
+    <ClCompile Include="..\..\geom_lib\plystrct.c" />
+    <ClCompile Include="..\..\geom_lib\polysmth.c" />
+    <ClCompile Include="..\..\geom_lib\poly_cln.c" />
+    <ClCompile Include="..\..\geom_lib\poly_cvr.c" />
+    <ClCompile Include="..\..\geom_lib\poly_pts.c" />
+    <ClCompile Include="..\..\geom_lib\poly_sil.c" />
+    <ClCompile Include="..\..\geom_lib\polyofst.c" />
+    <ClCompile Include="..\..\geom_lib\polyprop.c" />
+    <ClCompile Include="..\..\geom_lib\polysimp.c" />
+    <ClCompile Include="..\..\geom_lib\primitv1.c" />
+    <ClCompile Include="..\..\geom_lib\primitv2.c" />
+    <ClCompile Include="..\..\geom_lib\primitv3.c" />
+    <ClCompile Include="..\..\geom_lib\pt_morph.c" />
+    <ClCompile Include="..\..\geom_lib\quatrnn.c" />
+    <ClCompile Include="..\..\geom_lib\sbdv_srf.c" />
+    <ClCompile Include="..\..\geom_lib\scancnvt.c" />
+    <ClCompile Include="..\..\geom_lib\sph_cone.c" />
+    <ClCompile Include="..\..\geom_lib\sph_pts.c" />
+    <ClCompile Include="..\..\geom_lib\text.c" />
+    <ClCompile Include="..\..\geom_lib\zbuf_ogl.c" />
+    <ClCompile Include="..\..\geom_lib\zbuffer.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\geom_lib.h" />
+    <ClInclude Include="..\..\geom_lib\geom_loc.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\geom_lib\makefile.ami" />
+    <None Include="..\..\geom_lib\makefile.os2" />
+    <None Include="..\..\geom_lib\makefile.sas" />
+    <None Include="..\..\geom_lib\makefile.unx" />
+    <None Include="..\..\geom_lib\makefile.wce" />
+    <None Include="..\..\geom_lib\makefile.wnt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

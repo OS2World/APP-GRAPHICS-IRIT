@@ -1,0 +1,149 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{A5247004-3CCA-429F-A13B-C674229A8B96}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+    <Import Project="..\IRIT_SM\GlobalRules.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+    <Import Project="..\IRIT_SM\GlobalRules.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(LibDir)</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(LibDir)</OutDir>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">IritSymbD</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">IritSymb</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_X86_=1;_DEBUG;DEBUG;DEBUG_IRIT_MALLOC;_LIB;__WINNT__;__OPENGL__;RANDOM_IRIT;WINNT_SETARGV;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Lib />
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>..\..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_X86_=1;NDEBUG;_LIB;__WINNT__;__OPENGL__;RANDOM_IRIT;WINNT_SETARGV;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <CompileAs>CompileAsC</CompileAs>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+    </ClCompile>
+    <Lib />
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\symb_lib\adap_iso.c" />
+    <ClCompile Include="..\..\symb_lib\arc_len.c" />
+    <ClCompile Include="..\..\symb_lib\biarc.c" />
+    <ClCompile Include="..\..\symb_lib\blending.c" />
+    <ClCompile Include="..\..\symb_lib\bsp3injc.c" />
+    <ClCompile Include="..\..\symb_lib\bsp_sym.c" />
+    <ClCompile Include="..\..\symb_lib\bspiprod.c" />
+    <ClCompile Include="..\..\symb_lib\bspkntrm.c" />
+    <ClCompile Include="..\..\symb_lib\bzr_sym.c" />
+    <ClCompile Include="..\..\symb_lib\ccnvhul.c" />
+    <ClCompile Include="..\..\symb_lib\cmp_crvs.c" />
+    <ClCompile Include="..\..\symb_lib\composit.c" />
+    <ClCompile Include="..\..\symb_lib\constrct.c" />
+    <ClCompile Include="..\..\symb_lib\crv_lenv.c" />
+    <ClCompile Include="..\..\symb_lib\crv_skel.c" />
+    <ClCompile Include="..\..\symb_lib\crv_tans.c" />
+    <ClCompile Include="..\..\symb_lib\crvtrrec.c" />
+    <ClCompile Include="..\..\symb_lib\curvatur.c" />
+    <ClCompile Include="..\..\symb_lib\decompos.c" />
+    <ClCompile Include="..\..\symb_lib\distance.c" />
+    <ClCompile Include="..\..\symb_lib\duality.c" />
+    <ClCompile Include="..\..\symb_lib\evalcurv.c" />
+    <ClCompile Include="..\..\symb_lib\ffptdist.c" />
+    <ClCompile Include="..\..\symb_lib\moffset.c" />
+    <ClCompile Include="..\..\symb_lib\moments.c" />
+    <ClCompile Include="..\..\symb_lib\morphing.c" />
+    <ClCompile Include="..\..\symb_lib\multires.c" />
+    <ClCompile Include="..\..\symb_lib\nrmlcone.c" />
+    <ClCompile Include="..\..\symb_lib\offset.c" />
+    <ClCompile Include="..\..\symb_lib\orthotom.c" />
+    <ClCompile Include="..\..\symb_lib\prisa.c" />
+    <ClCompile Include="..\..\symb_lib\rflct_ln.c" />
+    <ClCompile Include="..\..\symb_lib\rrinter.c" />
+    <ClCompile Include="..\..\symb_lib\rvrs_eng.c" />
+    <ClCompile Include="..\..\symb_lib\smp_skel.c" />
+    <ClCompile Include="..\..\symb_lib\symb_crv.c" />
+    <ClCompile Include="..\..\symb_lib\symb_err.c" />
+    <ClCompile Include="..\..\symb_lib\symb_ftl.c" />
+    <ClCompile Include="..\..\symb_lib\symb_gen.c" />
+    <ClCompile Include="..\..\symb_lib\symb_srf.c" />
+    <ClCompile Include="..\..\symb_lib\symbpoly.c" />
+    <ClCompile Include="..\..\symb_lib\symbsply.c" />
+    <ClCompile Include="..\..\symb_lib\symbzero.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\symb_lib.h" />
+    <ClInclude Include="..\..\symb_lib\symb_loc.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\symb_lib\makefile.ami" />
+    <None Include="..\..\symb_lib\makefile.os2" />
+    <None Include="..\..\symb_lib\makefile.sas" />
+    <None Include="..\..\symb_lib\makefile.unx" />
+    <None Include="..\..\symb_lib\makefile.wce" />
+    <None Include="..\..\symb_lib\makefile.wnt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

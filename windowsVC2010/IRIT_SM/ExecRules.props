@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <IntDir>$(Configuration)\$(TargetName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <Link>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IritLibsD);$(OtherLibs);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IritLibs);$(OtherLibs);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(LibDir)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\bool_lib\bool_lib.vcxproj">
+      <Project>{140f2724-8202-4ad8-97cc-669530521878}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\cagd_lib\cagd_lib.vcxproj">
+      <Project>{6898f79b-686b-421c-91b4-e0e4bd4eb5e6}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\ext_lib\ext_lib.vcxproj">
+      <Project>{c96cabfc-07b5-4dc6-8ad8-f435d8d0d603}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\geom_lib\geom_lib.vcxproj">
+      <Project>{5444a308-93aa-4597-ae35-5174007bca52}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\grap_lib\grap_lib.vcxproj">
+      <Project>{95c49d13-4dc3-41f4-b0cb-2b7d9ff74383}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\mdl_lib\mdl_lib.vcxproj">
+      <Project>{7d71ae32-9fef-48d5-8635-22ba87b0e973}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\mvar_lib\mvar_lib.vcxproj">
+      <Project>{ad302cbd-bfdb-431f-92bc-8668845c8479}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\prsr_lib\prsr_lib.vcxproj">
+      <Project>{efc5c6aa-0171-4290-bf55-2d64fc425427}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\rndr_lib\rndr_lib.vcxproj">
+      <Project>{68e78824-9a1d-4c97-8ca5-a4d2c6f834f3}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\symb_lib\symb_lib.vcxproj">
+      <Project>{a5247004-3cca-429f-a13b-c674229a8b96}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\trim_lib\trim_lib.vcxproj">
+      <Project>{59b43357-d27a-41c0-9a54-99355fcc69b2}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\triv_lib\triv_lib.vcxproj">
+      <Project>{a3af48c7-f8c5-4919-b964-0448d5334980}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\trng_lib\trng_lib.vcxproj">
+      <Project>{a1429189-eee4-402f-acb8-90a8917a8fe9}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\user_lib\user_lib.vcxproj">
+      <Project>{32953a2d-2cd1-495a-b814-83d81d71fad5}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\xtra_lib\xtra_lib.vcxproj">
+      <Project>{235c017f-ddf6-432a-b641-7dd396b9ff3e}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\misc_lib\misc_lib.vcxproj">
+      <Project>{856d49ea-ebce-4b49-9da4-d85627be0151}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

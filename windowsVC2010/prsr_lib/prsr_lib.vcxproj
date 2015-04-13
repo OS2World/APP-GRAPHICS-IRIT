@@ -1,0 +1,162 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{EFC5C6AA-0171-4290-BF55-2D64FC425427}</ProjectGuid>
+    <RootNamespace>prsr_lib</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+    <Import Project="..\IRIT_SM\GlobalRules.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+    <Import Project="..\IRIT_SM\GlobalRules.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(LibDir)</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(LibDir)</OutDir>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">IritPrsrD</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">IritPrsr</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_X86_=1;_DEBUG;DEBUG;DEBUG_IRIT_MALLOC;_LIB;__WINNT__;__OPENGL__;RANDOM_IRIT;WINNT_SETARGV;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Lib />
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>..\..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_X86_=1;NDEBUG;_LIB;__WINNT__;__OPENGL__;RANDOM_IRIT;WINNT_SETARGV;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <CompileAs>CompileAsC</CompileAs>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+    </ClCompile>
+    <Lib />
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\prsr_lib\allocate.c" />
+    <ClCompile Include="..\..\prsr_lib\attribut.c" />
+    <ClCompile Include="..\..\prsr_lib\bsp_read.c" />
+    <ClCompile Include="..\..\prsr_lib\bsp_wrt.c" />
+    <ClCompile Include="..\..\prsr_lib\bzr_read.c" />
+    <ClCompile Include="..\..\prsr_lib\bzr_wrt.c" />
+    <ClCompile Include="..\..\prsr_lib\cagd_wrt.c" />
+    <ClCompile Include="..\..\prsr_lib\cagdread.c" />
+    <ClCompile Include="..\..\prsr_lib\cnv2irit.c" />
+    <ClCompile Include="..\..\prsr_lib\coerce.c" />
+    <ClCompile Include="..\..\prsr_lib\ff_cnvrt.c" />
+    <ClCompile Include="..\..\prsr_lib\igs_irit.c" />
+    <ClCompile Include="..\..\prsr_lib\ip_cnvrt.c" />
+    <ClCompile Include="..\..\prsr_lib\ip_procs.c" />
+    <ClCompile Include="..\..\prsr_lib\iritprs1.c" />
+    <ClCompile Include="..\..\prsr_lib\irit_cnc.c" />
+    <ClCompile Include="..\..\prsr_lib\irit_dxf.c" />
+    <ClCompile Include="..\..\prsr_lib\irit_igs.c" />
+    <ClCompile Include="..\..\prsr_lib\irit_obj.c" />
+    <ClCompile Include="..\..\prsr_lib\irit_stl.c" />
+    <ClCompile Include="..\..\prsr_lib\iritprs2.c" />
+    <ClCompile Include="..\..\prsr_lib\iritprsb.c" />
+    <ClCompile Include="..\..\prsr_lib\iritprsc.c">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level3</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="..\..\prsr_lib\iritprsd.c" />
+    <ClCompile Include="..\..\prsr_lib\iritvrml.c" />
+    <ClCompile Include="..\..\prsr_lib\iritwcnc.c" />
+    <ClCompile Include="..\..\prsr_lib\linklist.c" />
+    <ClCompile Include="..\..\prsr_lib\mdl_read.c" />
+    <ClCompile Include="..\..\prsr_lib\mdl_wrt.c" />
+    <ClCompile Include="..\..\prsr_lib\mvar_wrt.c" />
+    <ClCompile Include="..\..\prsr_lib\mvarread.c" />
+    <ClCompile Include="..\..\prsr_lib\obj_dpnd.c" />
+    <ClCompile Include="..\..\prsr_lib\obj_irit.c" />
+    <ClCompile Include="..\..\prsr_lib\objirlst.c" />
+    <ClCompile Include="..\..\prsr_lib\prsr_err.c" />
+    <ClCompile Include="..\..\prsr_lib\prsr_ftl.c" />
+    <ClCompile Include="..\..\prsr_lib\prsrgeom.c" />
+    <ClCompile Include="..\..\prsr_lib\sock_aux.c" />
+    <ClCompile Include="..\..\prsr_lib\sockets.c" />
+    <ClCompile Include="..\..\prsr_lib\stl_irit.c" />
+    <ClCompile Include="..\..\prsr_lib\trim_wrt.c" />
+    <ClCompile Include="..\..\prsr_lib\trimread.c" />
+    <ClCompile Include="..\..\prsr_lib\triv_wrt.c" />
+    <ClCompile Include="..\..\prsr_lib\trivread.c" />
+    <ClCompile Include="..\..\prsr_lib\trng_wrt.c" />
+    <ClCompile Include="..\..\prsr_lib\trngread.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\allocate.h" />
+    <ClInclude Include="..\..\include\attribut.h" />
+    <ClInclude Include="..\..\include\ip_cnvrt.h" />
+    <ClInclude Include="..\..\prsr_lib\ipc_loc.h" />
+    <ClInclude Include="..\..\include\iritprsr.h" />
+    <ClInclude Include="..\..\include\irt_clr.h" />
+    <ClInclude Include="..\..\include\obj_dpnd.h" />
+    <ClInclude Include="..\..\prsr_lib\objirlst.h" />
+    <ClInclude Include="..\..\prsr_lib\prsr_loc.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\prsr_lib\makefile.ami" />
+    <None Include="..\..\prsr_lib\makefile.os2" />
+    <None Include="..\..\prsr_lib\makefile.sas" />
+    <None Include="..\..\prsr_lib\makefile.unx" />
+    <None Include="..\..\prsr_lib\makefile.wce" />
+    <None Include="..\..\prsr_lib\makefile.wnt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
